@@ -1,0 +1,4 @@
+<p>
+\format[HTMLChars,AuthorLastFirst,AuthorAbbreviator,AuthorAndsReplacer]{\author} (\year), 
+'\format[HTMLChars]{\title}'\begin{school}, PhD thesis, \school\end{school}.
+</p>

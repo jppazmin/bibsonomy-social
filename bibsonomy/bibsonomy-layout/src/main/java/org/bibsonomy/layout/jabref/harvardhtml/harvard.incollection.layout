@@ -1,0 +1,13 @@
+<p>
+\format[HTMLChars,AuthorLastFirst,AuthorAbbreviator,AuthorAndsReplacer]{\author} (\year), 
+\format[HTMLChars]{\title}\begin{editor}, <i>in \format[HTMLChars,AuthorFirstFirst,AuthorAndsReplacer]{\editor}</i>, ed.,\end{editor}
+\begin{booktitle}
+'\format[HTMLChars]{\booktitle}'
+\end{booktitle}
+\begin{publisher}
+, \format[HTMLChars]{\publisher}, \format[HTMLChars]{\address}
+\end{publisher}
+\begin{pages}
+, pp. \pages
+\end{pages}.
+</p>

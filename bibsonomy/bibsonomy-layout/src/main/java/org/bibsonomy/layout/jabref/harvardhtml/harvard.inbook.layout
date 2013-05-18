@@ -1,0 +1,18 @@
+<p>
+\begin{author}
+\format[HTMLChars,AuthorLastFirst,AuthorAbbreviator,AuthorAndsReplacer]{\author}
+\end{author}
+ (\year), <i>\format[HTMLChars]{\title}</i>
+\begin{publisher}
+, \format[HTMLChars]{\publisher}
+\end{publisher}
+\begin{address}
+, \format[HTMLChars]{\address}
+\end{address}
+\begin{chapter}
+, chapter \chapter
+\end{chapter}
+\begin{pages}
+, pp. \pages
+\end{pages}.
+</p>

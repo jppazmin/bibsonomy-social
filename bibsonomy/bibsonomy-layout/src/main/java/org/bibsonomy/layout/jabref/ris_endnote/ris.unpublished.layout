@@ -1,0 +1,16 @@
+TY  - UNPB
+\format[FormatChars,RisAuthors(AU)]{\author}
+\format[FormatChars,RisAuthors(A2)]{\editor}
+T1  - \format[FormatChars]{\title}
+PY  - \format[FormatChars]{\year}/\format[FormatChars,RisMonth]{\month}
+SP  - \format[FormatChars,FirstPage]{\pages}
+EP  - \format[FormatChars,LastPage]{\pages}
+UR  - \url
+DO  - \doi
+\format[FormatChars,RisKeywords]{\keywords}
+L1  - \pdf
+N1  - \format[FormatChars]{\comment}
+N1  - \format[FormatChars]{\notes}
+AB  - \format[FormatChars]{\abstract}
+ER  -
+

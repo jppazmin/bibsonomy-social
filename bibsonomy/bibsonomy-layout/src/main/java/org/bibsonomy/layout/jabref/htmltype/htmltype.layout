@@ -1,0 +1,48 @@
+<tr>
+	<td style="vertical-align: top;"></td>
+	<td>
+		<div style="margin-bottom:1em">
+		\begin{author}\format[AuthorLastFirstAbbreviator,AuthorAndsReplacer,HTMLChars]{\author}\end{author}
+		\begin{year}(\format[HTMLChars]{\year}):\end{year}
+		\begin{title}<i>\format[HTMLChars,FormatPagesForHTML]{\title}</i>. \end{title}\begin{series}\format[HTMLChars]{\series} \end{series}\begin{address}\format[HTMLChars]{\address}\end{address}<br/>
+		\begin{url}<a href="\format[HTMLChars]{\url}">[Volltext]</a>&nbsp;\end{url}\begin{abstract}<a name="DependOnJS" style="display:none" href="javascript:toggleInfo('\bibsonomyIntrahash\username','abstract')">[Kurzfassung]</a>&nbsp;\end{abstract}<a name="DependOnJS" style="display:none" href="javascript:toggleInfo('\intrahash\username','bibtex')">[BibTeX]</a>
+		<a name="DependOnJS" style="display:none" href="javascript:toggleInfo('\intrahash\username','endnote')">[Endnote]</a>
+		\begin{abstract}<p><div id="abs_\bibsonomyIntrahash\username" style="display:none">\format[HTMLChars,FormatPagesForHTML]{\abstract}</div></p>\end{abstract}<p><div id="bib_\intrahash\username" style="display:none;white-space:pre;max-width:100%;">
+		@\format[ToLowerCase]{\bibtextype}{\bibtexkey,\begin{author}
+		  author = {\format[HTMLChars]{\author}}\end{author}\begin{title},
+		  title = {\format[HTMLChars]{\title}}\end{title}\begin{editor},
+		  editor = {\format[HTMLChars]{\editor}}\end{editor}\begin{booktitle},
+		  booktitle = {\format[HTMLChars]{\booktitle}}\end{booktitle}\begin{series},
+		  series = {\format[HTMLChars]{\series}}\end{series}\begin{journal},
+		  journal = {\format[HTMLChars]{\journal}}\end{journal}\begin{publisher},
+		  publisher = {\format[HTMLChars]{\publisher}}\end{publisher}\begin{school},
+		  school = {\format[HTMLChars]{\school}}\end{school}\begin{type},
+		  type = {\format[HTMLChars]{\type}}\end{type}\begin{address},
+		  address = {\format[HTMLChars]{\address}}\end{address}\begin{year},
+		  year = {\format[HTMLChars]{\year}}\end{year}\begin{volume},
+		  volume = {\format[HTMLChars]{\volume}}\end{volume}\begin{number},
+		  number = {\format[HTMLChars]{\number}}\end{number}\begin{pages},
+		  pages = {\format[HTMLChars]{\pages}}\end{pages}\begin{edition},
+		  edition = {\format[HTMLChars]{\edition}}\end{edition}\begin{note},
+		  note = {\format[HTMLChars]{\note}}\end{note}\begin{url},
+		  url = {\format[HTMLChars]{\url}}\end{url}\begin{doi},
+		  doi = {\format[HTMLChars]{\doi}}\end{doi}\begin{isbn},
+		  isbn = {\format[HTMLChars]{\isbn}}\end{isbn}\begin{issn},
+		  issn = {\format[HTMLChars]{\issn}}\end{issn}\begin{keywords},
+		  keywords = {\format[HTMLChars]{\keywords}}\end{keywords}\begin{abstract},
+		  abstract = {\format[Replace(\n,)HTMLChars]{\abstract}}\end{abstract}
+		  }
+		</div></p>
+		<p><div id="end_\intrahash\username" style="display:none;white-space:pre;max-width:100%;">
+		%0 = \format[ToLowerCase]{\bibtextype}\begin{author}
+		%A = \format[HTMLChars]{\author}\end{author}
+		%B = \format[HTMLChars]{\booktitle}}\end{booktitle}
+		%C = \format[HTMLChars]{\address}\end{address}
+		%D = \format[HTMLChars]{\year}\end{year}
+		%I = \format[HTMLChars]{\publisher}\end{publisher}
+		%T = \format[HTMLChars]{\title}}\end{title}
+		%U = \format[HTMLChars]{\url}\end{url}
+		</div></p>
+		</div>
+	</td>
+</tr>

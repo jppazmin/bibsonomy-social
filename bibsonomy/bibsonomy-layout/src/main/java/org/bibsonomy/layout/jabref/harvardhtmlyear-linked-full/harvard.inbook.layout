@@ -1,0 +1,32 @@
+\begingroup{year}<h3 class="bibsonomy_quicknav_group"><a name="\year">\year</a></h3>\endgroup{year}
+<p>
+\begin{author}
+\format[HTMLChars,AuthorLastFirst,AuthorAbbreviator,AuthorAndsReplacer]{\author}
+\end{author}
+ (\year), <i>\format[HTMLChars]{\title}</i>
+\begin{publisher}
+, \format[HTMLChars]{\publisher}
+\end{publisher}
+\begin{address}
+, \format[HTMLChars]{\address}
+\end{address}
+\begin{chapter}
+, chapter \chapter
+\end{chapter}
+\begin{pages}
+, pp. \pages
+\end{pages}.
+<br/>
+\begin{pdfurl}<a href="\pfdurl" target="_blank"> [Volltext] </a>&nbsp;\end{pdfurl}
+\begin{pubmedurl}<a href="\pubmedurl" target="_blank"> [Kurzfassung] </a>&nbsp;\end{pubmedurl}
+<a onclick="toggleBibtex('\username', '\intrahash', '\biburl?format=bibtex'); return false;" href="\biburl?format=bibtex">[BibTeX]</a>&nbsp;
+<a onclick="toggleBibtex2('\username', '\intrahash', '\biburl?format=endnote'); return false;" href="\biburl?format=endnote">[Endnote]</a>&nbsp;
+<div id="abs_\intrahash\username" style="display:none;border:1px dotted grey;">
+\format[Replace("\n, "),HTMLChars]{\abstract}
+</div>
+<div style="position:relative">						
+	<div id="bib_\intrahash\username" style="display:inline;position:relativ;"></div>
+	<div id="bib_\intrahash\username_2" style="display:inline;position:relativ;"></div>
+
+</div>
+</p>

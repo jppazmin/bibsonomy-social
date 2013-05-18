@@ -1,0 +1,52 @@
+\begingroup{year}<h3 class="bibsonomy_quicknav_group"><a name="\year">\year</a></h3>\endgroup{year}
+<p>
+\format[AuthorLastFirst,AuthorAbbreviator,AuthorAndsReplacer,HTMLChars]{\author} (\year),
+'\format[HTMLChars]{\title}'
+\begin{journal}
+, <i>\format[HTMLChars]{\journal}</i> <b>\volume</b>
+\end{journal}
+\begin{number}
+(\number)
+\end{number}
+\begin{editor}
+, <i> in \format[AuthorFirstFirst,AuthorAndsReplacer,HTMLChars]{\editor}</i>, ed.,
+\end{editor}
+\begin{booktitle}
+'\format[HTMLChars]{\booktitle}'
+\end{booktitle}
+\begin{organization}
+, \organization
+\end{organization}
+\begin{institution}
+, Technical report, \institution
+\end{institution}
+\begin{publisher}
+, \format[HTMLChars]{\publisher}
+\end{publisher}
+\begin{howpublished}
+, \howpublished
+\end{howpublished}
+\begin{address}
+, \format[HTMLChars]{\address}
+\end{address}
+\begin{note}
+, \note
+\end{note}
+\begin{pages}
+, \pages
+\end{pages}.
+<br/>
+
+
+\begin{pubmedurl}<a href="\pubmedurl" target="_blank"> [Kurzfassung] </a>&nbsp;\end{pubmedurl}
+<a onclick="toggleBibtex('\username', '\intrahash', '\biburl?format=bibtex'); return false;" href="\biburl?format=bibtex">[BibTeX]</a>&nbsp;
+<a onclick="toggleBibtex2('\username', '\intrahash', '\biburl?format=endnote'); return false;" href="\biburl?format=endnote">[Endnote]</a>&nbsp;
+<div id="abs_\intrahash\username" style="display:none;border:1px dotted grey;">
+\format[Replace("\n, "),HTMLChars]{\abstract}
+</div>
+<div style="position:relative">						
+	<div id="bib_\intrahash\username" style="display:inline;position:relativ;"></div>
+	<div id="bib_\intrahash\username_2" style="display:inline;position:relativ;"></div>
+
+</div>
+</p>

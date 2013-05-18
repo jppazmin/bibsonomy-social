@@ -1,0 +1,9 @@
+\begin{author}
+\format[HTMLChars,AuthorLastFirstCommas]{\author}. \end{author}
+\begin{title}&quot;\format[HTMLChars]{\title}.&quot; \end{title} In <i> \format[HTMLChars]{\booktitle}</i>
+\begin{editor}, edited by \format[HTMLChars,AuthorFirstFirstCommas]{\editor}\end{editor}
+\begin{pages}, \pages\end{pages}.
+\begin{edition}\format[HTMLChars]{\edition}\end{edition} 
+\begin{address}\format[HTMLChars]{\address}\end{address}:
+\begin{publisher} \format[HTMLChars]{\publisher}\end{publisher}, 
+\begin{year}\format[HTMLChars]{\year}. \end{year}<br/><br/>

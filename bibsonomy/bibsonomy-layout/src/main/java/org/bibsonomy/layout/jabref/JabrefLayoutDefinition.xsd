@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+     
+     BibSonomy-Layout - Layout engine for the webapp.
+      
+     Copyright (C) 2006 - 2010 Knowledge & Data Engineering Group, 
+                               University of Kassel, Germany
+                               http://www.kde.cs.uni-kassel.de/
+     
+     This program is free software; you can redistribute it and/or
+     modify it under the terms of the GNU General Public License
+     as published by the Free Software Foundation; either version 2
+     of the License, or (at your option) any later version.
+    
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+     
+     You should have received a copy of the GNU General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+
+-->
+
+<schema targetNamespace="http://www.bibsonomy.org/resources/xml/JabrefLayoutDefinition" 
+		elementFormDefault="qualified" 
+		xmlns="http://www.w3.org/2001/XMLSchema" 
+		xmlns:tns="http://www.bibsonomy.org/resources/xml/JabrefLayoutDefinition">
+		
+	<import
+            namespace="http://www.w3.org/XML/1998/namespace"
+            schemaLocation="http://www.w3.org/2001/03/xml.xsd"
+            />
+
+
+    <complexType name="JabrefLayout">
+    	<annotation>
+    		<documentation>Defines one Jabref Layout.</documentation>
+    	</annotation>
+    	<sequence>
+    		<element name="displayName" type="string" maxOccurs="1"
+    			minOccurs="1">
+    			<annotation>
+    				<documentation>
+    					The name shown to the user.
+    				</documentation>
+    			</annotation>
+    		</element>
+    		<element name="description" maxOccurs="unbounded"
+    			minOccurs="1">
+    			<annotation>
+			    	<documentation>
+			    		A short textual description.
+			    	</documentation>
+			    </annotation>
+    			<complexType>
+    				<simpleContent>
+    					<extension base="string">
+    						<attribute ref="xml:lang" use="required"/>
+    					</extension>
+    				</simpleContent>
+    			</complexType>
+    		</element>
+    		<element name="directory" type="string" maxOccurs="1"
+    			minOccurs="0">
+    			<annotation>
+    				<documentation>
+    					If the layout files are in a subdirectory of the
+    					layout directory, the name of the directory.
+    				</documentation>
+    			</annotation>
+    		</element>
+    		<element name="baseFileName" type="string" maxOccurs="1"
+    			minOccurs="1">
+    			<annotation>
+    				<documentation>
+    					The base file name, most often equal to name.
+    				</documentation>
+    			</annotation>
+    		</element>
+    		<element name="mimeType" type="string" maxOccurs="1"
+    			minOccurs="1">
+    			<annotation>
+    				<documentation>
+    					The mime type of the rendered file.
+    				</documentation>
+    			</annotation>
+    		</element>
+    		<element name="extension" type="string" maxOccurs="1"
+    			minOccurs="0">
+    			<annotation>
+    				<documentation>
+    					The extension of the rendered file, including
+    					the dot.
+    				</documentation>
+    			</annotation>
+    		</element>
+    	</sequence>
+    	<attribute name="name" type="string" use="required"></attribute>
+    	<attribute name="public" type="boolean" use="optional">
+    		<annotation>
+    			<documentation>
+    				Documents if the layout should be publicly announced
+    				on the layout overview page. Making a layout
+    				non-public does not prevent other users from using
+    				it! Everyone who knows the URL prefix can access the
+    				layout.
+    			</documentation>
+    		</annotation></attribute>
+    </complexType>
+
+    <element name="layouts" type="tns:JabrefLayouts"></element>
+
+    <complexType name="JabrefLayouts">
+    	<sequence>
+    		<element name="layout" type="tns:JabrefLayout" maxOccurs="unbounded" minOccurs="0"></element>
+    	</sequence>
+    </complexType>
+
+</schema>
+

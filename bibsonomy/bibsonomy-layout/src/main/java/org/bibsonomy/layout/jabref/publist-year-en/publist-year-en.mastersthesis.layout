@@ -1,0 +1,18 @@
+\begingroup{year}<h3 id="bib:year-\year" class="bibsonomy_quicknav_group"><a name="\year">\year</a></h3>\endgroup{year}
+<div style="margin-bottom:1em">\begin{title}<b>\format[Replace(\n,),HTMLChars,FormatPagesForHTML]{\title}</b>\end{title}.
+<br/>
+Master's thesis\begin{type} (\format[Replace(\n,),HTMLChars]{\type})\end{type}\begin{school}, \format[Replace(\n,),HTMLChars]{\school}\end{school}\begin{address}, \format[Replace(\n,),HTMLChars]{\address}\end{address}\begin{year}, \format[Replace(\n,),HTMLChars]{\year}\end{year}.
+\begin{note}\format[Replace("\\\\path\|(.*)\|,$1"),Replace(\n,),HTMLChars]{\note}\end{note}
+<br/>
+\begin{author}\format[AuthorFirstFirstCommas,HTMLChars]{\author}.\end{author}
+<br/>
+\begin{url}<a href="\format[Replace(\n,),HTMLChars]{\url}">[doi]</a>&nbsp;\end{url}\begin{pdf}<a
+href="\format[Replace(\n,),HTMLChars]{\pdf}">[PDF]</a>&nbsp;\end{pdf}
+\begin{abstract}<a onclick="toggleAbstract('\username', '\intrahash'); return false;" href="\biburl?format=bibtex">[abstract]</a>&nbsp;\end{abstract}
+<a onclick="toggleBibtex('\username', '\intrahash', '\biburl?format=bibtex'); return false;" href="\biburl?format=bibtex">[BibTeX]</a>&nbsp;
+<div id="abs_\intrahash\username" style="display:none;border:1px dotted grey;">
+\format[Replace("\n, "),HTMLChars]{\abstract}
+</div>
+<div style="position:relative">						
+	<div id="bib_\intrahash\username" style="display:inline;position:absolute;"></div>
+</div></div>

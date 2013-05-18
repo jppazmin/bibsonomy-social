@@ -1,0 +1,51 @@
+\format[HTMLChars,AuthorLastFirstCommas]{\author} \format[HTMLChars]{\title}.
+
+\begin{journal}
+}<i> \format[HTMLChars]{\journal}</i>{ }<b> \volume</b>{
+\end{journal}
+
+\begin{number}
+ (\number) 
+\end{number}
+
+\begin{editor}
+ \format[HTMLChars,AuthorLastFirstCommas]{\editor}, eds.
+\end{editor}
+
+\begin{booktitle}
+<i> \format[HTMLChars]{\booktitle}</i>
+\end{booktitle}
+
+\begin{organization}
+, \organization
+\end{organization}
+
+\begin{institution}
+, \institution
+\end{institution}
+
+\begin{publisher}
+, \format[HTMLChars]{\publisher}
+\end{publisher}
+
+\begin{howpublished}
+, \howpublished
+\end{howpublished}
+
+\begin{address}
+, \format[HTMLChars]{\address}
+\end{address}
+
+(\year).
+\begin{note}
+, \note
+\end{note}
+
+\begin{pages}
+, \pages
+\end{pages}
+
+.
+<br/>
+<br/>
+

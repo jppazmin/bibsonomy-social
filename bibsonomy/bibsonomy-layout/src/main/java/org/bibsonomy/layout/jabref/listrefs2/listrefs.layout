@@ -1,0 +1,32 @@
+<tr id="\format{\bibtexkey}" class="entry">
+	<td>\begin{author}\format[AuthorLastFirst,AuthorAndsReplacer,NoSpaceBetweenAbbreviations,HTMLChars]{\author}\end{author} (\year): <i>\format[HTMLChars]{\title}.</i>\begin{journal} \format[HTMLChars]{\journal}.\end{journal}\begin{booktitle} In: \format[AuthorLastFirst,AuthorAndsReplacer,NoSpaceBetweenAbbreviations,HTMLChars]{\editor} (Hg.): \format[HTMLChars]{\booktitle}.\end{booktitle}\begin{series} (\series).\end{series}\begin{howpublished} \howpublished.\end{howpublished}\begin{type}. \format[HTMLChars]{\type}\end{type}\begin{school}. \format[HTMLChars]{\school}.\end{school}\begin{address} \format[HTMLChars]{\address}\end{address}\begin{publisher}: \format[HTMLChars]{\publisher}.\end{publisher}\begin{month}, \format[HTMLChars]{\month}, \year.\end{month} \begin{volume} Jg. \volume\end{volume}\begin{number}(\format[FormatPagesForHTML]{\number})\end{number}\begin{pages} S. \format[FormatPagesForHTML]{\pages}.\end{pages}\begin{url} URN: \format[FormatPagesForHTML]{\url}\end{url}\begin{note} [\format[FormatPagesForHTML]{\note}]\end{note}
+	<p class="infolinks">\begin{abstract}<a href="javascript:toggleInfo('\format{\bibtexkey}','abstract')">[Abstract]</a>\end{abstract}\begin{review} [<a href="javascript:toggleInfo('\format{\bibtexkey}','review')">Review</a>] \end{review} <a href="javascript:toggleInfo('\format{\bibtexkey}','bibtex')">[BibTeX]</a>\begin{doi} <a href="\format[DOICheck]{\doi}">[DOI]</a>\end{doi}\begin{url} <a href="\format{\url}">[URL]</a>\end{url}\begin{file} <a href="\format[FileLink(pdf),]{\file}">[PDF]</a>\end{file}</p>
+	</td>
+</tr>\begin{abstract}
+<tr id="abs_\format{\bibtexkey}" class="abstract noshow">
+	<td><b>Abstract</b>: \format[HTMLChars]{\abstract}</td>
+</tr>\end{abstract}\begin{review}
+<tr id="rev_\format{\bibtexkey}" class="review noshow">
+	<td><b>Review</b>: \format[HTMLChars]{\review}</td>
+</tr>\end{review}
+<tr id="bib_\format{\bibtexkey}" class="bibtex noshow">
+<td><b>BibTeX</b>:
+<pre>
+@\format[ToLowerCase]{\bibtextype}{\bibtexkey,\begin{author}
+  author = {\format[HTMLChars]{\author}}\end{author}\begin{title},
+  title = {\format[HTMLChars]{\title}}\end{title}\begin{booktitle},
+  booktitle = {\format[HTMLChars]{\booktitle}}\end{booktitle}\begin{journal},
+  journal = {\format[HTMLChars]{\journal}}\end{journal}\begin{publisher},
+  publisher = {\format[HTMLChars]{\publisher}}\end{publisher}\begin{school},
+  school = {\format[HTMLChars]{\school}}\end{school}\begin{year},
+  year = {\format[HTMLChars]{\year}}\end{year}\begin{volume},
+  volume = {\format[HTMLChars]{\volume}}\end{volume}\begin{number},
+  number = {\format[HTMLChars]{\number}}\end{number}\begin{pages},
+  pages = {\format[HTMLChars]{\pages}}\end{pages}\begin{edition},
+  edition = {\format[HTMLChars]{\edition}}\end{edition}\begin{note},
+  note = {\format[HTMLChars]{\note}}\end{note}\begin{url},
+  url = {\format[HTMLChars]{\url}}\end{url}\begin{doi},
+  doi = {\format[DOICheck]{\doi}}\end{doi}
+}
+</pre></td>
+</tr>

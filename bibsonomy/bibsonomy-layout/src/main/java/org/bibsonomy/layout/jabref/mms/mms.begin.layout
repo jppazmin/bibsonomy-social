@@ -1,0 +1,35 @@
+<!-- 
+
+	This software is distributed under a Creative Commons Attribution 3.0 License
+	http://creativecommons.org/licenses/by/3.0/
+
+	*Attribution*
+	JavaScript by Mark Schenk
+	JabRef export filter by Michael Domhardt
+	BibSonomy and Typo3 integration by Dominik Benz
+	Content by BibSonomy - Lesezeichen und Referenzen teilen - in blau! http://bibsonomy.org/
+
+-->
+
+<script type="text/javascript">
+<!--
+
+function toggleInfo(articleid,info) {
+	var abs = document.getElementById('abs_'+articleid);
+	var bib = document.getElementById('bib_'+articleid);
+	
+	if (abs && info == 'abstract') {
+		if(abs.id.indexOf('abs_') != -1) {
+			abs.style.display = ( abs.style.display == 'none' ? '' : 'none' );
+		}
+	} else if (bib && info == 'bibtex') {
+		if(bib.id.indexOf('bib_') != -1) {
+			bib.style.display = ( bib.style.display == 'none' ? '' : 'none' );
+		}	
+	} else { 
+		return;
+	}
+}
+
+-->
+</script>

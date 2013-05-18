@@ -1,0 +1,73 @@
+<div style="margin:1.2em;">
+
+\begin{author}
+	<span class="entry_author">
+		\author.
+	</span>
+\end{author}
+
+\begin{title}
+	<span class="entry_title">
+		<a href="/bibtex/2\intraHash/\username"/>
+			\title
+		</a>.
+	</span>
+\end{title}
+
+\begin{journal}
+	In
+	<span class="entry_journal"> 
+		\journal, 
+	</span>
+\end{journal}
+
+\begin{booktitle}
+	<span class="entry_booktitle"> 
+		\booktitle. 
+	</span>
+\end{booktitle}
+
+\begin{editor}
+	<span class="entry_editor"> 
+		editor(s) \editor. 
+	</span>
+\end{editor}
+ 
+<span class="entry_series">
+	\begin{series} 
+		\series, 
+	\end{series}
+	
+	\begin{volume}
+		(\volume)
+	\end{volume}
+	
+	\begin{number}
+		\number:
+	\end{number}
+	
+	\begin{pages}
+		\pages,
+	\end{pages}
+</span>
+
+\begin{publisher}
+	<span class="entry_publisher"> 
+		\publisher, 
+	</span>
+\end{publisher}
+
+\begin{address}
+	<span class="entry_address"> 
+		\address, 
+	</span>
+\end{address}
+
+\begin{year}
+	Year 
+	<span class="entry_year"> 
+		\year. 
+	</span>
+\end{year}
+
+</div>

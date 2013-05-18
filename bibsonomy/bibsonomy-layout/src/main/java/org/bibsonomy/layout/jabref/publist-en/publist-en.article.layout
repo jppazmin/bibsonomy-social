@@ -1,0 +1,35 @@
+<div style="margin-bottom:1em">
+\begin{title}<b>\format[Replace(\n,),HTMLChars,FormatPagesForHTML]{\title}</b>. \end{title}<br/>
+\begin{journal}<i>\format[Replace(\n,),HTMLChars]{\journal}</i>\end{journal}\begin{volume}\format[Replace("^,\, "),Replace("^\,  ?$,")HTMLChars]{\volume}\end{volume}\begin{number}\format[Replace("^,\("),Replace("$,\)"),Replace("^\( \)$,"),HTMLChars]{\number}\end{number}\begin{pages}\format[Replace("^,:"),Replace("^: ?$,")FormatPagesForHTML]{\pages}\end{pages}\begin{year}, \format[Replace(\n,),HTMLChars]{\year}.\end{year}
+\begin{note}\format[Replace("\\\\path\|(.*)\|,$1"),Replace(\n,),HTMLChars]{\note}\end{note}
+<br/>
+\begin{author}\format[AuthorFirstFirstCommas,HTMLChars]{\author}.\end{author}
+<br/>
+\begin{url}<a href="\format[Replace(\n,),HTMLChars]{\url}">[doi]</a>&nbsp;\end{url}\begin{pdf}<a
+href="\format[Replace(\n,),HTMLChars]{\pdf}">[PDF]</a>&nbsp;\end{pdf}\begin{abstract}<a name="DependOnJS" style="display:none" href="javascript:toggleInfo('\bibtexkey','abstract')">[abstract]</a>&nbsp;\end{abstract}<a name="DependOnJS" style="display:none" href="javascript:toggleInfo('\bibtexkey','bibtex')">[BibTeX]</a>
+\begin{abstract}<div id="abs_\bibtexkey" style="display:none">\format[Replace("\n, "),HTMLChars,FormatPagesForHTML]{\abstract}</div>\end{abstract}<div id="bib_\bibtexkey" style="display:none;white-space:pre;max-width:100%;">@\format[ToLowerCase]{\bibtextype}{\bibtexkey,\begin{author}
+  author = {\format[Replace(\n,),HTMLChars]{\author}}\end{author}\begin{title},
+  title = {\format[Replace(\n,),HTMLChars]{\title}}\end{title}\begin{editor},
+  editor = {\format[Replace(\n,),HTMLChars]{\editor}}\end{editor}\begin{booktitle},
+  booktitle = {\format[Replace(\n,),HTMLChars]{\booktitle}}\end{booktitle}\begin{series},
+  series = {\format[Replace(\n,),HTMLChars]{\series}}\end{series}\begin{journal},
+  journal = {\format[Replace(\n,),HTMLChars]{\journal}}\end{journal}\begin{publisher},
+  publisher = {\format[Replace(\n,),HTMLChars]{\publisher}}\end{publisher}\begin{school},
+  school = {\format[Replace(\n,),HTMLChars]{\school}}\end{school}\begin{type},
+  type = {\format[Replace(\n,),HTMLChars]{\type}}\end{type}\begin{address},
+  address = {\format[Replace(\n,),HTMLChars]{\address}}\end{address}\begin{year},
+  year = {\format[Replace(\n,),HTMLChars]{\year}}\end{year}\begin{volume},
+  volume = {\format[Replace(\n,),HTMLChars]{\volume}}\end{volume}\begin{number},
+  number = {\format[Replace(\n,),HTMLChars]{\number}}\end{number}\begin{pages},
+  pages = {\format[Replace(\n,),HTMLChars]{\pages}}\end{pages}\begin{edition},
+  edition = {\format[Replace(\n,),HTMLChars]{\edition}}\end{edition}\begin{note},
+  note = {\format[Replace(\n,),HTMLChars]{\note}}\end{note}\begin{url},
+  url = {\format[Replace(\n,),HTMLChars]{\url}}\end{url}\begin{pdf},
+  pdf = {\format[Replace(\n,),HTMLChars]{\pdf}}\end{pdf}\begin{doi},
+  doi = {\format[Replace(\n,),HTMLChars]{\doi}}\end{doi}\begin{isbn},
+  isbn = {\format[Replace(\n,),HTMLChars]{\isbn}}\end{isbn}\begin{issn},
+  issn = {\format[Replace(\n,),HTMLChars]{\issn}}\end{issn}\begin{keywords},
+  keywords = {\format[Replace(\n,),HTMLChars]{\keywords}}\end{keywords}\begin{abstract},
+  abstract = {\format[Replace("\n, "),HTMLChars]{\abstract}}\end{abstract}
+  }
+</div></div>

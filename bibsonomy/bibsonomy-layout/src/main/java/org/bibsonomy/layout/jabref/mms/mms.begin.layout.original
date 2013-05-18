@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="de">
+
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<title>Publikationen</title>
+
+<!-- 
+
+	This software is distributed under a Creative Commons Attribution 3.0 License
+	http://creativecommons.org/licenses/by/3.0/
+
+	*Attribution*
+	JavaScript by Mark Schenk
+	JabRef export filter by Michael Domhardt
+	BibSonomy and Typo3 integration by Dominik Benz
+	Content by BibSonomy - Lesezeichen und Referenzen teilen - in blau! http://bibsonomy.org/
+
+-->
+
+<script type="text/javascript">
+<!--
+
+function toggleInfo(articleid,info) {
+
+	var entry = document.getElementById(articleid);
+	var abs = document.getElementById('abs_'+articleid);
+	var bib = document.getElementById('bib_'+articleid);
+	
+	if (abs && info == 'abstract') {
+		if(abs.className.indexOf('abstract') != -1) {
+			abs.className.indexOf('noshow') == -1?abs.className = 'abstract noshow':abs.className = 'abstract';
+		}
+	} else if (bib && info == 'bibtex') {
+		if(bib.className.indexOf('bibtex') != -1) {
+			bib.className.indexOf('noshow') == -1?bib.className = 'bibtex noshow':bib.className = 'bibtex';
+		}		
+	} else { 
+		return;
+	}
+
+	var absshow = false;
+	var bibshow = false;
+	(abs && abs.className.indexOf('noshow') == -1)? absshow = true: absshow = false;
+	(bib && bib.className == 'bibtex')? bibshow = true: bibshow = false;
+}
+
+-->
+</script>
+
+<style type="text/css">
+
+.noshow {
+  display : none;
+  }
+
+div {
+  white-space : div;
+  }
+
+</style>
+
+</head>
+<body>
+

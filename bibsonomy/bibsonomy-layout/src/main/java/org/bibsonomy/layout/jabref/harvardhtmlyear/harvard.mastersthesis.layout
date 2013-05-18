@@ -1,0 +1,5 @@
+\begingroup{year}<h3 class="bibsonomy_quicknav_group"><a name="\year">\year</a></h3>\endgroup{year}
+<p>
+\format[HTMLChars,AuthorLastFirst,AuthorAbbreviator,AuthorAndsReplacer]{\author} (\year), 
+'\format[HTMLChars]{\title}'\begin{school}, Master's thesis, \school\end{school}.
+</p>

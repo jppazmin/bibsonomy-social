@@ -1,0 +1,41 @@
+<!-- 
+	This software is distributed under a Creative Commons Attribution 3.0 License
+	http://creativecommons.org/licenses/by/3.0/
+
+	*Attribution*
+	JavaScript by Mark Schenk, Dominik Benz and Michael Domhardt
+	JabRef export filter and css by Michael Domhardt http://mensch-maschine-systemtechnik.de/
+	BibSonomy and Typo3 integration by Dominik Benz
+	Content by BibSonomy - Lesezeichen und Referenzen teilen - in blau! http://bibsonomy.org/
+-->
+
+<script type="text/javascript">
+<!--
+function toggleAbstract(user,hash) {
+	var abs = document.getElementById('abs_'+hash+user);	
+	if (abs) {
+		if(abs.id.indexOf('abs_') != -1) {
+			abs.style.display = ( abs.style.display == 'none' ? '' : 'none' );
+		}
+	} 
+	return;
+}
+
+function toggleBibtex(user,hash,biburl) {
+    var f = document.getElementById('bib_' + hash + user + '_src');
+	if (undefined != f) {
+		f.parentNode.removeChild(f);
+		return;
+	}
+	var el = document.getElementById('bib_' + hash + user);
+    iframe = document.createElement("iframe");
+    iframe.setAttribute("src", biburl);
+	iframe.setAttribute("id", 'bib_' + hash + user + '_src');
+    iframe.style.width = 500+"px";
+    iframe.style.height = 200+"px";
+	iframe.style.background = "#eee";
+    el.appendChild(iframe);
+	return;
+}
+-->
+</script>

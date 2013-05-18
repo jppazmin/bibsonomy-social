@@ -1,0 +1,19 @@
+<li class=bibtexentry><b>\begin{author}\format[AuthorLastFirst,AuthorAndsReplacer,NoSpaceBetweenAbbreviations,HTMLChars,Replace(" &amp;,;")]{\author}\end{author}:</b> 
+<i>\begin{pdf}<a href="\pdf">\end{pdf}\format[HTMLChars,FormatPagesForHTML]{\title}\begin{pdf}</a>\end{pdf}.</i>
+\begin{journal}, \format[HTMLChars]{\journal}.\end{journal}
+\begin{booktitle} In: \end{booktitle}
+\begin{editor}\format[AuthorLastFirst,AuthorAndsReplacer,NoSpaceBetweenAbbreviations,HTMLChars,Replace(" &amp;,;")]{\editor}: \end{editor}
+\begin{url}<a href="\url">\end{url}\begin{booktitle}\format[HTMLChars,FormatPagesForHTML]{\booktitle}.\end{booktitle}\begin{url}</a>\end{url}
+\begin{howpublished}, \howpublished.\end{howpublished}
+\begin{school}<i>School</i>: \format[HTMLChars]{\school}.\end{school}
+\begin{series}\format[HTMLChars]{\series}\end{series}
+\begin{volume} Vol. \volume\end{volume}
+\begin{number}(\format[FormatPagesForHTML]{\number})\end{number}
+\begin{address} \format[HTMLChars]{\address}: \end{address}
+\begin{publisher} \format[HTMLChars]{\publisher}.\end{publisher}
+\begin{year} \year\end{year}
+\begin{pages}- S. \format[FormatPagesForHTML]{\pages}\end{pages}
+\begin{isbn}- ISBN: \format[FormatPagesForHTML]{\isbn}\end{isbn}
+<a href="http://www.bibsonomy.org/bib/bibtex/\interhash/ebie">(bibtex)</a>
+</li>
+

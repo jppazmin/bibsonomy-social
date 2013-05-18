@@ -1,0 +1,2 @@
+\begin{author}
+\format[HTMLChars,AuthorLastFirstCommas]{\author}. \end{author}\begin{title}&quot;\format[HTMLChars]{\title}.&quot; \end{title}PhD diss., \format[HTMLChars]{\school}, \begin{year}\format[HTMLChars]{\year}. \end{year}<br/><br/>

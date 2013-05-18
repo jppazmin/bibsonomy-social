@@ -1,0 +1,28 @@
+<\format[ToLowerCase]{\bibtextype} mdate="\year" key="\bibtexkey">
+\begin{author}       \format[XMLChars,org.bibsonomy.layout.jabref.SeparatedAuthorsFormatter]{\author} \end{author}
+\begin{editor}    <editor>\format[XMLChars,AuthorFirstFirst]{\editor}</editor>\end{editor}
+\begin{address}    <address>\format[XMLChars]{\address}</address>\end{address}
+
+\begin{title}    <title>\format[XMLChars]{\title}</title>\end{title}
+\begin{booktitle}    <booktitle>\format[XMLChars]{\booktitle}</booktitle>\end{booktitle}
+\begin{pages}    <pages>\format[FormatPagesForXML]{\pages}</pages>\end{pages}
+\begin{year}    <year>\year</year>\end{year}
+\begin{journal}    <journal>\format[XMLChars]{\journal}</journal>\end{journal}
+\begin{volume}    <volume>\format[XMLChars]{\volume}</volume>\end{volume}
+\begin{number}    <number>\format[XMLChars]{\number}</number>\end{number}
+\begin{month}    <month>\format[XMLChars]{\month}</month>\end{month}
+\begin{url}    <url>\format[XMLChars]{\url}</url>\end{url}
+\begin{school}    <school>\format[XMLChars]{\school}</school>\end{school}
+\begin{publisher}    <publisher>\format[XMLChars]{\publisher}</publisher>\end{publisher}
+
+\begin{note}    <note>\format[XMLChars]{\note}</note>\end{note}
+
+\begin{crossref}    <crossref>\format[XMLChars]{\crossref}</crossref>\end{crossref}
+\begin{isbn}    <isbn>\format[XMLChars]{\isbn}</isbn>\end{isbn}
+\begin{chapter}    <chapter>\format[XMLChars]{\chapter}</chapter>\end{chapter}
+\begin{series}    <series>\format[XMLChars]{\series}</series>\end{series}
+</\format[ToLowerCase]{\bibtextype}>
+ 
+
+
+

@@ -1,0 +1,3 @@
+\begin{author}
+\format[HTMLChars,AuthorLastFirstCommas]{\author}. \end{author}\begin{title}&quot;\format[HTMLChars]{\title}.&quot; \end{title}Paper presented at the meeting of the \format[HTMLChars]{\booktitle}, \begin{address}\format[HTMLChars]{\address},\end{address} 
+\begin{year}\format[HTMLChars]{\year}. \end{year}<br/><br/>

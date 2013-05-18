@@ -1,0 +1,671 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+     
+     BibSonomy-Layout - Layout engine for the webapp.
+      
+     Copyright (C) 2006 - 2010 Knowledge & Data Engineering Group, 
+                               University of Kassel, Germany
+                               http://www.kde.cs.uni-kassel.de/
+     
+     This program is free software; you can redistribute it and/or
+     modify it under the terms of the GNU General Public License
+     as published by the Free Software Foundation; either version 2
+     of the License, or (at your option) any later version.
+    
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+     
+     You should have received a copy of the GNU General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+
+-->
+
+<layouts
+	xmlns="http://www.bibsonomy.org/resources/xml/JabrefLayoutDefinition"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.bibsonomy.org/resources/xml/JabrefLayoutDefinition JabrefLayoutDefinition.xsd "
+	xmlns:xml="http://www.w3.org/XML/1998/namespace">
+	<layout name="html">
+		<displayName>HTML</displayName>
+		<description xml:lang="en">
+			A simple layout where each entry is represented as row in a
+			table.
+		</description>
+		<description xml:lang="de">
+			Ausgabe einer einfach formatierten Seite, die Sie in Ihre 
+			Homepage einfügen können.
+		</description>
+		<baseFileName>html</baseFileName>
+		<mimeType>text/html</mimeType>
+		<extension>.html</extension>
+	</layout>
+	<layout name="simplehtml">
+		<displayName>Simple HTML</displayName>
+		<description xml:lang="en">
+			An HTML layout without any header or footer but very nice
+			output. This is useful for integrating publication lists
+			into other HTML pages.
+		</description>
+		<description xml:lang="de">
+			Ein HTML-Layout ohne Kopf- und Fußzeile, aber mit einer formatierten Ausgabe.
+			Geeignet, um Publikationslisten auf anderen HTML-Seiten einzubetten.
+		</description>
+		<baseFileName>simplehtml</baseFileName>
+		<mimeType>text/html</mimeType>
+		<extension>.html</extension>
+	</layout>
+	<layout name="simplehtmlyear">
+		<displayName>Simple HTML, grouped by year</displayName>
+		<description xml:lang="en">
+			An HTML layout without any header or footer but very nice
+			output. This is useful for integrating publication lists
+			into other HTML pages, grouped by year
+		</description>
+		<description xml:lang="de">
+			Ein HTML-Layout ohne Kopf- und Fußzeile, aber mit einer formatierten Ausgabe.
+			Geeignet, um Publikationslisten auf anderen HTML-Seiten einzubetten, gruppiert nach Jahren.
+		</description>
+		<baseFileName>simplehtmlyear</baseFileName>
+		<mimeType>text/html</mimeType>
+		<extension>.html</extension>
+	</layout>
+	<layout name="plain">
+		<displayName>plain </displayName>
+		<description xml:lang="en">
+			A simple layout for cvpage
+		</description>
+		<description xml:lang="de">
+			Ausgabe f\u00FCr die cvpage
+		</description>
+		<baseFileName>plain</baseFileName>
+		<mimeType>text/html</mimeType>
+		<extension>.html</extension>
+	</layout>
+	<layout name="tablerefs">
+		<displayName>HTML table</displayName>
+		<description xml:lang="en">
+			A more structured HTML output with each entry as a row in a
+			table and additional JavaScript search function.
+		</description>
+		<description xml:lang="de">
+			Erzeugt eine strukturierte HTML-Ausgabe, bei der jeder Eintrag in einer Reihe
+			innerhalb einer Tabelle dargestellt wird. Die Ausgabe bietet weiterhin Suchfunktionen mittels JavaScript.
+		</description>
+		<directory>tablerefs</directory>
+		<baseFileName>tablerefs</baseFileName>
+		<mimeType>text/html</mimeType>
+		<extension>.html</extension>
+	</layout>
+	<layout name="tablerefsabsbib">
+		<displayName>
+			HTML table (with Abstract &amp; BibTeX)
+		</displayName>
+		<description xml:lang="en">
+			Similar to tablerefs but additionally includes the BibTeX
+			source and the abstract of the publication.
+		</description>
+		<description xml:lang="de">
+			Ähnlich wie TableRefs, beinhaltet aber zusätzlich den BibTeX Quelltext und
+			eine Zusammenfassung der jeweiligen Publikation.
+		</description>
+		<directory>tablerefsabsbib</directory>
+		<baseFileName>tablerefsabsbib</baseFileName>
+		<mimeType>text/html</mimeType>
+		<extension>.html</extension>
+	</layout>
+	<layout name="tablerefsabsbibsort">
+		<displayName>
+			HTML table (with Abstract &amp; BibTeX, sortable)
+		</displayName>
+		<description xml:lang="en">
+			Similar to TableRefsAbsBib, but includes possibility to sort
+			the table by each column.
+		</description>
+		<description xml:lang="de">
+			Ähnlich wie TableRefsAbsBib, bietet aber zusätzlich die Möglichkeit,
+			die Tabelle nach jeder Spalte zu sortieren.
+		</description>
+		<directory>tablerefsabsbibsort</directory>
+		<baseFileName>tablerefsabsbibsort</baseFileName>
+		<mimeType>text/html</mimeType>
+		<extension>.html</extension>
+	</layout>
+	<layout name="docbook">
+		<displayName>DocBook</displayName>
+		<description xml:lang="en">
+			This is an XML output according to the DocBook schema.
+		</description>
+		<description xml:lang="de">
+			Liefert eine XML-Ausgabe entsprechend dem DocBook-Schema.
+		</description>
+		<baseFileName>docbook</baseFileName>
+		<mimeType>application/xml</mimeType>
+		<extension>.xml</extension>
+	</layout>
+	<layout name="dblp">
+		<displayName>DBLP XML</displayName>
+		<description xml:lang="en">
+			DBLP export your records to a DBLP conformable XML
+			structure.
+		</description>
+		<description xml:lang="de">
+			Exportiert ihre Einträge in einer DBLP-konformen XML-Struktur.
+		</description>
+		<baseFileName>dblp</baseFileName>
+		<mimeType>application/xml</mimeType>
+		<extension>.xml</extension>
+	</layout>
+	<layout name="bibtexml">
+		<displayName>BibTeXML</displayName>
+		<description xml:lang="en"></description>
+		<description xml:lang="de"></description>
+		<baseFileName>bibtexml</baseFileName>
+		<mimeType>application/xml</mimeType>
+		<extension>.xml</extension>
+	</layout>
+	<layout name="bibordf">
+		<displayName>BibO RDF</displayName>
+		<description xml:lang="en"></description>
+		<description xml:lang="de"></description>
+		<baseFileName>bibordf</baseFileName>
+		<mimeType>application/rdf+xml</mimeType>
+		<extension>.rdf</extension>
+	</layout>
+	<layout name="harvard">
+		<displayName>Harvard RTF</displayName>
+		<description xml:lang="en">
+			This exports the publication list in Rich Text Format which
+			can be used by word processors like OpenOffice or Microsoft
+			Word. It is formatted according to the Harvard bibliography
+			style guidelines.
+		</description>
+		<description xml:lang="de">
+			Export der Publikationsliste in das Rich Text Format, das von 
+			Textverarbeitungsprogrammen wie OpenOffice oder Microsoft verwendet wird. 
+			Die Ausgabe wird entsprechend den Harvard-Bibliographie-Richtlinien formatiert. 
+		</description>
+		<directory>harvard</directory>
+		<baseFileName>harvard</baseFileName>
+		<mimeType>text/rtf</mimeType>
+		<extension>.rtf</extension>
+	</layout>
+	<layout name="endnote">
+		<displayName>EndNote</displayName>
+		<description xml:lang="en">
+			This is an output in EndNote format which is used by EndNote, another
+			bibliography management tool.
+		</description>
+		<description xml:lang="de">
+			Es wird eine Ausgabe in EndNote Format erzeugt, das von EndNote verwendet wird.
+			EndNote ist ein weiteres Bibliographie-Werkzeug.
+		</description>
+		<directory>endnote</directory>
+		<baseFileName>EndNote</baseFileName>
+		<mimeType>text/plain</mimeType>
+		<extension>.txt</extension>
+	</layout>
+	<layout name="ris_endnote">
+		<displayName>RIS (EndNote)</displayName>
+		<description xml:lang="en">
+			This is an output in RIS which is used by EndNote, another
+			bibliography management tool.
+		</description>
+		<description xml:lang="de">
+			Es wird eine Ausgabe im Format RIS erzeugt, das von EndNote verwendet wird.
+			EndNote ist ein weiteres Bibliographie-Werkzeug.
+		</description>
+		<directory>ris_endnote</directory>
+		<baseFileName>ris</baseFileName>
+		<mimeType>text/plain</mimeType>
+		<extension>.txt</extension>
+	</layout>
+	<layout name="ris_refman">
+		<displayName>RIS (ReferenceManager)</displayName>
+		<description xml:lang="en">
+			This is an output in RIS which is used by ReferenceManager, another
+			bibliography management tool.
+		</description>
+		<description xml:lang="de">
+			Es wird eine Ausgabe im Format RIS erzeugt, das vom ReferenceManager verwendet wird.
+			ReferenceManager ist ein weiteres Bibliographie-Werkzeug.
+		</description>
+		<directory>ris_refman</directory>
+		<baseFileName>ris</baseFileName>
+		<mimeType>text/plain</mimeType>
+		<extension>.txt</extension>
+	</layout>
+	<layout name="openoffice-csv">
+		<displayName>OpenOffice CSV</displayName>
+		<description xml:lang="en">
+			CSV, or Comma Separated Values divides all fields of the
+			entry by a comma. It is useful to import the publications
+			into spreadsheet programs.
+		</description>
+		<description xml:lang="de">
+			CSV-Dateien ("Komma-separierte Werte") unterteilen alle Felder eines
+			Eintrages mit einem Komma. Damit ist es beispielsweise möglich, Publikationen in
+			Tabellenkalkulationsprogramme zu importieren.
+		</description>
+		<directory>openoffice</directory>
+		<baseFileName>openoffice-csv</baseFileName>
+		<mimeType>text/csv</mimeType>
+		<extension>.csv</extension>
+	</layout>
+	<layout name="text">
+		<displayName>Text (BibTeX)</displayName>
+		<description xml:lang="en">Another BibTeX output.</description>
+		<description xml:lang="de">Erzeugt eine BibTeX-Ausgabe.</description>
+		<baseFileName>text</baseFileName>
+		<mimeType>text/plain</mimeType>
+		<extension>.txt</extension>
+	</layout>
+
+	<!-- additional layouts, installed by us -->
+	<!-- typemap.put("custom",              new OutputType(null, "text/html")); -->
+	<layout name="se" public="false">
+		<displayName>SE Kassel</displayName>
+		<description xml:lang="en">
+			Custom output format provided by the Research Group Software
+			Engineering, University of Bochum.
+		</description>
+		<description xml:lang="de">
+			Benutzerdefiniertes Ausgabeformat, das von der Abteilung
+			"Research Group Software Engineering" der Universität Bochum 
+			angeboten wird.
+		</description>
+		<baseFileName>se</baseFileName>
+		<mimeType>text/html</mimeType>
+		<extension>.html</extension>
+	</layout>
+	<layout name="ebie" public="false">
+		<displayName>Electronic Business and Integration Engineering</displayName>
+		<description xml:lang="en">
+			Custom output format provided by the Research Group 
+                        Electronic Business and Integration Engineering, University of Leipzig
+		</description>
+		<description xml:lang="de">
+			Benutzerdefiniertes Ausgabeformat, das von der Abteilung
+			Electronic Business and Integration Engineering, University of Leipzig
+			angeboten wird.
+		</description>
+		<baseFileName>ebie</baseFileName>
+		<mimeType>text/html</mimeType>
+		<extension>.html</extension>
+	</layout>
+	<layout name="jucs">
+		<displayName>JUCS</displayName>
+		<description xml:lang="en">
+			Output formatted according to the guidelines of the Journal
+			of Universal Computer Science.
+		</description>
+		<description xml:lang="de">
+			Erzeugt eine formatierte Ausgabe entsprechend der "Journal
+			of Universal Computer Science"-Richtlinien.
+		</description>
+		<baseFileName>jucs</baseFileName>
+		<mimeType>text/rtf</mimeType>
+		<extension>.rtf</extension>
+	</layout>
+	<layout name="imtm" public="false">
+		<displayName>IMTM</displayName>
+		<description xml:lang="en">
+			Custom output format provided by the Department of
+			Information and Technology Management (IMTM), University of
+			Bochum.
+		</description>
+		<description xml:lang="de">
+			Benutzerdefiniertes Ausgabeformat, das von der Abteilung
+			Informations und Technologie Management (IMTM), Universität Bochum
+			angeboten wird.
+		</description>
+		<baseFileName>imtm</baseFileName>
+		<mimeType>text/html</mimeType>
+		<extension>.html</extension>
+	</layout>
+	<layout name="din1505">
+		<displayName>DIN 1505</displayName>
+		<description xml:lang="en">
+			HTML output format according to the German Institute for
+			Standardization (DIN).
+		</description>
+		<description xml:lang="de">
+			HTML Ausgabeformat gemäß dem Deutschen Institut für Normung.
+		</description>
+		<baseFileName>din1505</baseFileName>
+		<mimeType>text/html</mimeType>
+		<extension>.html</extension>
+	</layout>
+	<layout name="din1505year">
+		<displayName>DIN 1505, grouped by year</displayName>
+		<description xml:lang="en">
+			HTML output format according to the German Institute for
+			Standardization (DIN), grouped by year.
+		</description>
+		<description xml:lang="de">
+			HTML Ausgabe Format gemäß dem Deutschen Institut für Normung, gruppiert
+			nach Jahren.
+		</description>
+		<baseFileName>din1505year</baseFileName>
+		<mimeType>text/html</mimeType>
+		<extension>.html</extension>
+	</layout>		
+	<layout name="mms">
+		<displayName>DIN 1505 MMS</displayName>
+		<description xml:lang="en">
+			HTML output format according to the German Institute for
+			Standardization (DIN). Special version of the
+			Mensch-Maschine-Systemtechnik Institute.
+		</description>
+		<description xml:lang="de">
+			HTML Ausgabe Format gemäß dem Deutschen Institut für Normung. 
+			Spezielle Version des Mensch-Maschine-Systemtechnik Instituts.
+		</description>
+		<directory>mms</directory>
+		<baseFileName>mms</baseFileName>
+		<mimeType>text/html</mimeType>
+		<extension>.html</extension>
+	</layout>
+	<layout name="mmsyear">
+		<displayName>DIN 1505 MMS, grouped by year</displayName>
+		<description xml:lang="en">
+			HTML output format according to the German Institute for
+			Standardization (DIN). Special version of the
+			Mensch-Maschine-Systemtechnik Institute, grouped by year.
+		</description>
+		<description xml:lang="de">
+			HTML Ausgabe Format gemäß dem Deutschen Institut für Normung. 
+			Spezielle Version des Mensch-Maschine-Systemtechnik Instituts, gruppiert
+			nach Jahren.
+		</description>
+		<directory>mmsyear</directory>
+		<baseFileName>mmsyear</baseFileName>
+		<mimeType>text/html</mimeType>
+		<extension>.html</extension>
+	</layout>
+	<layout name="listrefs" public="false">
+		<displayName>HTML list</displayName>
+		<description xml:lang="en">
+			A more structured HTML output with each entry as an item in a
+			list and additional JavaScript search function.
+		</description>
+		<description xml:lang="de">
+			Erzeugt eine strukturierte HTML-Ausgabe, bei der jede Publikation als Eintrag 
+			in einer Liste dargestellt wird und bietet außerdem Suchfunktionen mittels JavaScript.
+		</description>
+		<directory>listrefs</directory>
+		<baseFileName>listrefs</baseFileName>
+		<mimeType>text/html</mimeType>
+		<extension>.html</extension>
+	</layout>
+	<layout name="listrefs2" public="false">
+		<displayName>HTML list</displayName>
+		<description xml:lang="en">
+			A more structured HTML output with each entry as an item in a
+			list and additional JavaScript search function. Adapted version for Manuel Franzmann.
+		</description>
+		<description xml:lang="de">
+			Erzeugt eine strukturierte HTML-Ausgabe, bei der jede Publikation als Eintrag 
+			in einer Liste dargestellt wird und bietet außerdem Suchfunktionen mittels JavaScript.
+			Angepasstte Version für Manuel Franzmann.
+		</description>
+		<directory>listrefs2</directory>
+		<baseFileName>listrefs</baseFileName>
+		<mimeType>text/html</mimeType>
+		<extension>.html</extension>
+	</layout>	
+	<layout name="harvardhtml">
+		<displayName>Harvard (HTML version)</displayName>
+		<description xml:lang="en">
+			HTML output format formatted according to the Harvard bibliography
+			style guidelines.
+		</description>
+		<description xml:lang="de">
+			HTML-Ausgabe Format gemäß den "Harvard bibliography
+			style" Richtlinien.
+		</description>
+		<directory>harvardhtml</directory>
+		<baseFileName>harvard</baseFileName>
+		<mimeType>text/html</mimeType>
+		<extension>.html</extension>
+	</layout>
+	<layout name="harvardhtmlyear">
+		<displayName>Harvard (HTML version), grouped by year</displayName>
+		<description xml:lang="en">
+			HTML output format formatted according to the Harvard bibliography
+			style guidelines and grouped by year
+		</description>
+		<description xml:lang="de">
+			HTML-Ausgabe Format gemäß den "Harvard bibliography
+			style" Richtlinien, gruppiert nach Jahren
+		</description>
+		<directory>harvardhtmlyear</directory>
+		<baseFileName>harvard</baseFileName>
+		<mimeType>text/html</mimeType>
+		<extension>.html</extension>
+	</layout>
+	<layout name="harvardhtmlyear-linked">
+		<displayName>Harvard (HTML version), grouped by year</displayName>
+		<description xml:lang="en">
+			HTML output format formatted according to the Harvard bibliography
+			style guidelines and grouped by year. Includes Links to Abstract and
+			Export Formats. Special version created in cooperation with 
+			Clayhouse.de.
+		</description>
+		<description xml:lang="de">
+			HTML-Ausgabe Format gemäß den "Harvard bibliography
+			style" Richtlinien, gruppiert nach Jahren. Enthält auch Links zur
+			Zusammenfassung und Exportformaten. Angepasste Version in Zusammenarbeit
+			mit Clayhouse.de.
+		</description>
+		<directory>harvardhtmlyear-linked</directory>
+		<baseFileName>harvard</baseFileName>
+		<mimeType>text/html</mimeType>
+		<extension>.html</extension>
+	</layout>	
+	<layout name="harvardhtmlyear-linked-full">
+		<displayName>Harvard (HTML version), grouped by year</displayName>
+		<description xml:lang="en">
+			HTML output format formatted according to the Harvard bibliography
+			style guidelines and grouped by year. Includes Links to Abstract, 
+			Export Formats and Full Text. Special version created in cooperation with 
+			Clayhouse.de.
+		</description>
+		<description xml:lang="de">
+			HTML-Ausgabe Format gemäß den "Harvard bibliography
+			style" Richtlinien, gruppiert nach Jahren. Enthält auch Links zu
+			Zusammenfassung, Exportformaten sowie Volltext. Angepasste Version in Zusammenarbeit
+			mit Clayhouse.de.
+		</description>
+		<directory>harvardhtmlyear-linked-full</directory>
+		<baseFileName>harvard</baseFileName>
+		<mimeType>text/html</mimeType>
+		<extension>.html</extension>
+	</layout>		
+	<layout name="winfoyear">
+		<displayName>DIN 1505 MMS, with endnote entry, grouped by year</displayName>
+		<description xml:lang="en">
+			HTML output format according to the German Institute for
+			Standardization (DIN). Special version of the
+			Mensch-Maschine-Systemtechnik Institute, grouped by year, 
+			and with an endnote export.		
+		</description>
+		<description xml:lang="de">
+			HTML Ausgabe Format gemäß dem Deutschen Institut für Normung. 
+			Spezielle Version des Mensch-Maschine-Systemtechnik Instituts, gruppiert
+			nach Jahren und mit Endnote-Eintrag für jede Publikation.		
+		</description>
+		<directory>winfoyear</directory>
+		<baseFileName>winfoyear</baseFileName>
+		<mimeType>text/html</mimeType>
+		<extension>.html</extension>
+	</layout>
+	<layout name="htmltype">
+		<displayName>htmltype</displayName>
+		<description xml:lang="en">
+			A simple layout with entrytype and number.
+		</description>
+		<description xml:lang="de">
+			HTML Ausgabe Format mit Nummerierung und Anzeige des Entrytypes. 
+		</description>
+		<directory>htmltype</directory>
+		<baseFileName>htmltype</baseFileName>
+		<mimeType>text/html</mimeType>
+		<extension>.html</extension>
+	</layout>
+	<layout name="winfoyear_n" >
+		<displayName>DIN 1505 MMS, with endnote entry and display of note, grouped by year</displayName>
+		<description xml:lang="en">
+			HTML output format according to the German Institute for
+			Standardization (DIN). Special version of the
+			Mensch-Maschine-Systemtechnik Institute, grouped by year, 
+			with an endnote export and display of the note.		
+		</description>
+		<description xml:lang="de">
+			HTML Ausgabe Format gemäß dem Deutschen Institut für Normung. 
+			Spezielle Version des Mensch-Maschine-Systemtechnik Instituts, gruppiert
+			nach Jahren, mit Endnote-Eintrag für jede Publikation und Anzeige der
+			Notiz (note).		
+		</description>
+		<directory>winfoyear_n</directory>
+		<baseFileName>winfoyear_n</baseFileName>
+		<mimeType>text/html</mimeType>
+		<extension>.html</extension>
+	</layout>	
+	<layout name="publist-de" >
+		<displayName>Publication List in HTML Format similar to DIN1505 (German version)</displayName>
+		<description xml:lang="en">
+			HTML output format for publication lists similar to the DIN1505 norm of the German Institute for
+			Standardization (DIN); German version.
+			Additionally, there is Javascript functionality to show/ hide BibTeX and Abstract
+			information of an entry. 
+		</description>
+		<description xml:lang="de">
+			HTML-Ausgabe zur Erzeugung von Publikationslisten ähnlich zum 
+			Format DIN1505 gemäß dem Deutschen Institut für Normung (deutsche Version).
+			Die BibTex-/Abstrakt-Information zu einem Eintrag kann mittels Javascript-Links
+			ein- und ausgeblendet werden.		
+		</description>
+		<directory>publist-de</directory>
+		<baseFileName>publist-de</baseFileName>
+		<mimeType>text/html</mimeType>
+		<extension>.html</extension>
+	</layout>	
+	<layout name="publist-en" >
+		<displayName>Publication List in HTML Format similar to DIN1505 (English version)</displayName>
+		<description xml:lang="en">
+			HTML output format for publication lists similar to the DIN1505 norm of the German Institute for
+			Standardization (DIN); English version.
+			Additionally, there is Javascript functionality to show/ hide BibTeX and Abstract
+			information of an entry.			
+		</description>
+		<description xml:lang="de">
+			HTML-Ausgabe zur Erzeugung von Publikationslisten ähnlich zum 
+			Format DIN1505 gemäß dem Deutschen Institut für Normung (englische Version).
+			Die BibTex-/Abstrakt-Information zu einem Eintrag kann mittels Javascript-Links
+			ein- und ausgeblendet werden.
+		</description>
+		<directory>publist-en</directory>
+		<baseFileName>publist-en</baseFileName>
+		<mimeType>text/html</mimeType>
+		<extension>.html</extension>
+	</layout>	
+	<layout name="publist-type-de" >
+		<displayName>Publication List in HTML Format similar to DIN1505, grouped by entrytype (German version)</displayName>
+		<description xml:lang="en">
+			HTML output format for publication lists similar to the DIN1505 norm of the German Institute for
+			Standardization (DIN), grouped by entrytype; German version.
+			Additionally, there is Javascript functionality to show/ hide BibTeX and Abstract
+			information of an entry.			
+		</description>
+		<description xml:lang="de">
+			HTML-Ausgabe zur Erzeugung von Publikationslisten ähnlich zum 
+			Format DIN1505 gemäß dem Deutschen Institut für Normung, gruppiert nach Eintragstyp (deutsche Version).
+			Die BibTex-/Abstrakt-Information zu einem Eintrag kann mittels Javascript-Links
+			ein- und ausgeblendet werden.					
+		</description>
+		<directory>publist-type-de</directory>
+		<baseFileName>publist-type-de</baseFileName>
+		<mimeType>text/html</mimeType>
+		<extension>.html</extension>
+	</layout>	
+	<layout name="publist-type-en" >
+		<displayName>Publication List in HTML Format similar to DIN1505, grouped by entrytype (English version)</displayName>
+		<description xml:lang="en">
+			HTML output format for publication lists similar to the DIN1505 norm of the German Institute for
+			Standardization (DIN), grouped by entrype; English version.
+			Additionally, there is Javascript functionality to show/ hide BibTeX and Abstract
+			information of an entry.			
+		</description>
+		<description xml:lang="de">
+			HTML-Ausgabe zur Erzeugung von Publikationslisten ähnlich zum 
+			Format DIN1505 gemäß dem Deutschen Institut für Normung, gruppiert nach Eintragstyp (englische Version).
+			Die BibTex-/Abstrakt-Information zu einem Eintrag kann mittels Javascript-Links
+			ein- und ausgeblendet werden.					
+		</description>
+		<directory>publist-type-en</directory>
+		<baseFileName>publist-type-en</baseFileName>
+		<mimeType>text/html</mimeType>
+		<extension>.html</extension>
+	</layout>		
+	<layout name="publist-year-de" >
+		<displayName>Publication List in HTML Format similar to DIN1505, grouped by year (German version)</displayName>
+		<description xml:lang="en">
+			HTML output format for publication lists similar to the DIN1505 norm of the German Institute for
+			Standardization (DIN), grouped by year; German version.
+			Additionally, there is Javascript functionality to show/ hide BibTeX and Abstract
+			information of an entry.			
+		</description>
+		<description xml:lang="de">
+			HTML-Ausgabe zur Erzeugung von Publikationslisten ähnlich zum 
+			Format DIN1505 gemäß dem Deutschen Institut für Normung, gruppiert nach Jahr (deutsche Version).
+			Die BibTex-/Abstrakt-Information zu einem Eintrag kann mittels Javascript-Links
+			ein- und ausgeblendet werden.					
+		</description>
+		<directory>publist-year-de</directory>
+		<baseFileName>publist-year-de</baseFileName>
+		<mimeType>text/html</mimeType>
+		<extension>.html</extension>
+	</layout>	
+	<layout name="publist-year-en" >
+		<displayName>Publication List in HTML Format similar to DIN1505, grouped by year (English version)</displayName>
+		<description xml:lang="en">
+			HTML output format for publication lists similar to the DIN1505 norm of the German Institute for
+			Standardization (DIN), grouped by year; English version.
+			Additionally, there is Javascript functionality to show/ hide BibTeX and Abstract
+			information of an entry.			
+		</description>
+		<description xml:lang="de">
+			HTML-Ausgabe zur Erzeugung von Publikationslisten ähnlich zum 
+			Format DIN1505 gemäß dem Deutschen Institut für Normung, gruppiert nach Jahr (englische Version).
+			Die BibTex-/Abstrakt-Information zu einem Eintrag kann mittels Javascript-Links
+			ein- und ausgeblendet werden.					
+		</description>
+		<directory>publist-year-en</directory>
+		<baseFileName>publist-year-en</baseFileName>
+		<mimeType>text/html</mimeType>
+		<extension>.html</extension>
+	</layout>	
+	<layout name="chicago" >
+		<displayName>Publication List in HTML Format according the Chicago Manual of Style</displayName>
+		<description xml:lang="en">
+			The Chicago Manual considers three distinct formats – those appropriate for bibliographies,
+			notes, and shortened notes. This filter creates an HTML output of the bibliographies version.	
+			For further details, see http://jabref.sourceforge.net/plugins/Chicago_export_filters.pdf.	
+			This filter was originally created by Juan Jose Baldrich.	
+		</description>
+		<description xml:lang="de">
+			Das Chicago Manual kennt drei Formate - eines für Bibliographien, eines für Notizen und eines
+			für gekürzte Notizen. Dieser Export-filter erzeugt eine HTML-Ausgabe der Bibliographien-Version.
+			Für weitere Details siehe http://jabref.sourceforge.net/plugins/Chicago_export_filters.pdf.
+			Dieser Filter wurde ursprünglich von Juan Jose Baldrich erstellt. 					
+		</description>
+		<directory>chicago</directory>
+		<baseFileName>Chicago.biblio</baseFileName>
+		<mimeType>text/html</mimeType>
+		<extension>.html</extension>
+	</layout>					
+</layouts>

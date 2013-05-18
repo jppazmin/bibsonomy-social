@@ -1,0 +1,17 @@
+\begingroup{year}<h3 class="bibsonomy_quicknav_group"><a name="\year">\year</a></h3>\endgroup{year}
+<p>
+\format[HTMLChars,AuthorLastFirst,AuthorAbbreviator,AuthorAndsReplacer]{\author} (\year), 
+\format[HTMLChars]{\title}, <i>in</i>
+\begin{editor}
+\format[HTMLChars,AuthorFirstFirst,AuthorAndsReplacer]{\editor}, ed.,
+\end{editor}
+\begin{booktitle}
+'\format[HTMLChars]{\booktitle}'
+\end{booktitle}
+\begin{publisher}
+, \format[HTMLChars]{\publisher}, \format[HTMLChars]{\address}
+\end{publisher}
+\begin{pages}
+, pp. \pages
+\end{pages}.
+</p>

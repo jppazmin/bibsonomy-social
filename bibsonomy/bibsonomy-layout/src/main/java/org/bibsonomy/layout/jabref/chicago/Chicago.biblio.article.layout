@@ -1,0 +1,7 @@
+\begin{author}
+\format[HTMLChars,AuthorLastFirstCommas]{\author}. \end{author}
+&quot;\format[HTMLChars]{\title}.&quot; <i>\format[HTMLChars]{\journal}</i>
+\begin{volume} \volume\end{volume}
+\begin{number}, no. \number\end{number} 
+\begin{year}(\format[HTMLChars]{\year}): \end{year}
+\begin{pages}\pages\end{pages}. <br/><br/>

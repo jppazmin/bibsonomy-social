@@ -1,0 +1,11 @@
+\begingroup{year}<h3 class="bibsonomy_quicknav_group"><a name="\year">\year</a></h3>\endgroup{year}
+<div style="margin-bottom:1em">\begin{author}\format[AuthorLastFirstAbbreviator,AuthorAndsReplacer,HTMLChars]{\author}: \end{author}\begin{title}\format[Replace(\n,),HTMLChars,FormatPagesForHTML]{\title}. \end{title}\begin{journal}In: <i>\format[Replace(\n,),HTMLChars]{\journal}</i> \end{journal}\begin{volume}\format[Replace(\n,),HTMLChars] {\volume} \end{volume}\begin{year}(\format[Replace(\n,),HTMLChars] {\year}), \end{year}\begin{number}Nr. \format[Replace(\n,),HTMLChars]{\number}, \end{number}\begin{pages}S. \format[FormatPagesForHTML]{\pages}\end{pages}<br/>
+\begin{url}<a href="\format[Replace(\n,),HTMLChars]{\url}">[Volltext]</a>&nbsp;\end{url}
+\begin{abstract}<a onclick="toggleAbstract('\username', '\intrahash'); return false;" href="\biburl?format=bibtex">[Kurzfassung]</a>&nbsp;\end{abstract}
+<a onclick="toggleBibtex('\username', '\intrahash', '\biburl?format=bibtex'); return false;" href="\biburl?format=bibtex">[BibTeX]</a>&nbsp;
+<div id="abs_\intrahash\username" style="display:none;border:1px dotted grey;">
+\format[Replace("\n, "),HTMLChars]{\abstract}
+</div>
+<div style="position:relative">						
+	<div id="bib_\intrahash\username" style="display:inline;position:absolute;"></div>
+</div></div>

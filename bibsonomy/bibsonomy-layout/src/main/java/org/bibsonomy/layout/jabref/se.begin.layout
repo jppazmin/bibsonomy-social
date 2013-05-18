@@ -1,0 +1,10 @@
+<style type="text/css">
+.bib_list { list-style-type:square;font-family:arial,helvetica,sans-serif; }
+.bib_item { margin-top:5px;margin-bottom:5px; }
+.bib_bibtexkey { font-weight:bold; }
+.bib_title { font-style:italic; }
+.bib_type_item { list-style-type:none;margin-left:-20; }
+.bib_type { margin-top:10px;margin-bottom:10px;font-weight:bold; }
+</style>
+<ul class="bib_list">
+

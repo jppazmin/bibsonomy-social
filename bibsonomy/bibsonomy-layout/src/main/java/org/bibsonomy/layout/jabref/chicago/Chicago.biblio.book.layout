@@ -1,0 +1,10 @@
+\begin{author}
+\format[HTMLChars,AuthorLastFirstCommas]{\author}. \end{author}
+<i> \format[HTMLChars]{\title}</i>.
+\begin{edition} \format[HTMLChars]{\edition}\end{edition}
+\begin{editor} Edited by \format[HTMLChars,AuthorFirstFirstCommas]{\editor}.\end{editor}
+\begin{volume} Vol. \volume.\end{volume}
+\begin{number}, bk. \format[HTMLChars]{\number}.\end{number}
+\begin{address} \format[HTMLChars]{\address}\end{address}:
+\begin{publisher} \format[HTMLChars]{\publisher}\end{publisher}, 
+\begin{year}\format[HTMLChars]{\year}. \end{year}<br/><br/>

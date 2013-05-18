@@ -1,0 +1,19 @@
+TY  - JOUR
+\format[FormatChars,RisAuthors(AU)]{\author}
+T1  - \format[FormatChars]{\title}
+JO  - \format[FormatChars]{\journal}
+PY  - \format[FormatChars]{\year}/\format[FormatChars,RisMonth]{\month}
+VL  - \format[FormatChars]{\volume}
+IS  - \format[FormatChars]{\number}
+SP  - \format[FormatChars,FirstPage]{\pages}
+EP  - \format[FormatChars,LastPage]{\pages}
+UR  - \url
+M3  - \doi
+\format[FormatChars,RisKeywords]{\keywords}
+L1  - \pdf
+SN  - \format[FormatChars]{\isbn}
+N1  - \format[FormatChars]{\comment}
+N1  - \format[FormatChars]{\notes}
+AB  - \format[FormatChars]{\abstract}
+ER  -
+

@@ -1,0 +1,4 @@
+\begin{author}
+\format[HTMLChars,AuthorLastFirstCommas]{\author}. \end{author}\begin{title}&quot;\format[HTMLChars]{\title}.&quot; \end{title}
+\begin{year}\format[HTMLChars]{\year}. \end{year}
+\begin{url}\format[HTMLChars]{\url}. \end{url}<br/><br/>

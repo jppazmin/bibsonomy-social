@@ -1,0 +1,16 @@
+TY  - THES
+\format[FormatChars,RisAuthors(AU)]{\author}
+T1  - \format[FormatChars]{\title}
+PY  - \format[FormatChars]{\year}/\format[FormatChars,RisMonth]{\month}
+PB  - \format[FormatChars]{\school}
+SP  - \format[FormatChars,FirstPage]{\pages}
+EP  - \format[FormatChars,LastPage]{\pages}
+UR  - \url
+M3  - \doi
+\format[FormatChars,RisKeywords]{\keywords}
+L1  - \pdf
+N1  - \format[FormatChars]{\comment}
+N1  - \format[FormatChars]{\notes}
+AB  - \format[FormatChars]{\abstract}
+ER  -
+

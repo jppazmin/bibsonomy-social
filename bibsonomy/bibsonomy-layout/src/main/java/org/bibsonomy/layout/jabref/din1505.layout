@@ -1,0 +1,50 @@
+<div class="bibtex">
+	<div class="bibtex_content">		
+		\begin{author}
+			\format[AuthorLastFirst,AuthorAndsReplacer,HTMLChars]{\author}: 
+		\end{author}
+		
+		<i>
+		\begin{title}
+			\format[HTMLChars]{\title} 
+  		\end{title}
+  		</i>
+  		
+		\begin{journal}
+			 In: \format[HTMLChars]{\journal}
+		\end{journal} 
+		
+		\begin{volume}
+			, Vol. \volume
+		\end{volume} 
+				
+		\begin{number}
+ 			, Nr. \number
+ 		\end{number}
+		
+		\begin{address}
+			\format[HTMLChars]{\address}:
+  		\end{address}
+  		
+  		\begin{publisher}
+			\format[HTMLChars]{\publisher}
+  		\end{publisher}
+ 
+			
+		\begin{year}
+		
+			\begin{month}
+				, \format[HTMLChars]{\month}
+			\end{month} 
+		
+			(\format[HTMLChars]{\year})
+			 
+		\end{year} 
+		
+		\begin{pages}
+			, S. \format[FormatPagesForHTML]{\pages}
+		\end{pages}.
+		<br>		
+		<br>
+	</div>
+</div>

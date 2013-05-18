@@ -1,0 +1,19 @@
+<p>
+\begin{author}
+\format[HTMLChars,AuthorLastFirst,AuthorAbbreviator,AuthorAndsReplacer]{\author}
+\end{author}
+\begin{editor}
+\format[HTMLChars,AuthorLastFirst,AuthorAbbreviator,AuthorAndsReplacer]{\editor}, ed.
+\end{editor}
+ (\year), 
+<i> \format[HTMLChars]{\title}</i>
+\begin{volume}
+, Vol. \volume
+\end{volume}
+\begin{publisher}
+, \format[HTMLChars]{\publisher}
+\end{publisher}
+\begin{address}
+, \format[HTMLChars]{\address}
+\end{address}.
+</p>

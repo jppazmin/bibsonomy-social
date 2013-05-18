@@ -1,0 +1,32 @@
+<p>\begin{author}\format[AuthorLastFirstAbbreviator,AuthorAndsReplacer,HTMLChars]{\author}: \end{author}\begin{title}<i>\format[HTMLChars,FormatPagesForHTML]{\title}</i>. \end{title}\begin{address}\format[HTMLChars]{\address}, \end{address}\begin{school}\format[HTMLChars]{\school}, \end{school}\begin{type}\format[HTMLChars]{\type}, \end{type}\begin{year}\format[HTMLChars]{\year}\end{year}<br/>
+\begin{url}<a href="\format[HTMLChars]{\url}">[Volltext]</a> \end{url}
+<script type="text/javascript"><!-- 
+\begin{abstract}document.write("<a href=\\"javascript:toggleInfo('\intrahash\username','abstract')\\">[Kurzfassung]</a>&nbsp;"); \end{abstract} document.write("<a href=\\"javascript:toggleInfo('\intrahash\username','bibtex')\\">[BibTeX]</a>"); 
+--></script>
+\begin{abstract}<span id="abs_\intrahash\username" style="display:none"><br/>\format[HTMLChars,FormatPagesForHTML]{\abstract}<br/></span>\end{abstract}
+<div id="bib_\intrahash\username" style="display:none;white-space:pre;max-width:100%;">
+@\format[ToLowerCase]{\bibtextype}{\bibtexkey,\begin{author}
+  author = {\format[HTMLChars]{\author}}\end{author}\begin{title},
+  title = {\format[HTMLChars]{\title}}\end{title}\begin{editor},
+  editor = {\format[HTMLChars]{\editor}}\end{editor}\begin{booktitle},
+  booktitle = {\format[HTMLChars]{\booktitle}}\end{booktitle}\begin{series},
+  series = {\format[HTMLChars]{\series}}\end{series}\begin{journal},
+  journal = {\format[HTMLChars]{\journal}}\end{journal}\begin{publisher},
+  publisher = {\format[HTMLChars]{\publisher}}\end{publisher}\begin{school},
+  school = {\format[HTMLChars]{\school}}\end{school}\begin{type},
+  type = {\format[HTMLChars]{\type}}\end{type}\begin{address},
+  address = {\format[HTMLChars]{\address}}\end{address}\begin{year},
+  year = {\format[HTMLChars]{\year}}\end{year}\begin{volume},
+  volume = {\format[HTMLChars]{\volume}}\end{volume}\begin{number},
+  number = {\format[HTMLChars]{\number}}\end{number}\begin{pages},
+  pages = {\format[HTMLChars]{\pages}}\end{pages}\begin{edition},
+  edition = {\format[HTMLChars]{\edition}}\end{edition}\begin{note},
+  note = {\format[HTMLChars]{\note}}\end{note}\begin{url},
+  url = {\format[HTMLChars]{\url}}\end{url}\begin{doi},
+  doi = {\format[HTMLChars]{\doi}}\end{doi}\begin{isbn},
+  isbn = {\format[HTMLChars]{\isbn}}\end{isbn}\begin{keywords},
+  keywords = {\format[HTMLChars]{\keywords}}\end{keywords}\begin{abstract},
+  abstract = {\format[HTMLChars]{\abstract}}\end{abstract}
+  }
+</div></p>
+

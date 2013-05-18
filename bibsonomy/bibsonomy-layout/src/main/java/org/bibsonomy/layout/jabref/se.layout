@@ -1,0 +1,24 @@
+<!--\begingroup{bibtextype}<li class="bib_type_item"><span class="bib_type">\format[HTMLChars]{\bibtextype}</span></li>\endgroup{bibtextype}-->
+<li class="bib_item">
+\begin{url}<a class="bib_url" href="\url" target="_blank">\end{url}<span class="bib_bibtexkey">[\format[HTMLChars]{\bibtexkey}]</span>\begin{url}</a>\end{url}
+\begin{author}<span class="bib_author">\format[AuthorFirstAbbrLastCommas,RemoveLatexCommands,HTMLChars]{\author}:</span>\end{author}
+\begin{editor}<span class="bib_editors">\format[AuthorFirstAbbrLastCommas,RemoveLatexCommands,HTMLChars]{\editor}:</span>\end{editor}
+\begin{title}<span class="bib_title">\format[RemoveLatexCommands,HTMLChars]{\title}</i>;</span>\end{title}
+\begin{booktitle}<span class="bib_booktitle">\format[RemoveLatexCommands,HTMLChars]{\booktitle},</span>\end{booktitle}
+\begin{journal}<span class="bib_journal">\format[RemoveLatexCommands,HTMLChars]{\journal},</span>\end{journal}
+\begin{pages}<span class="bib_pages">pp. \pages,</span>\end{pages}
+\begin{volume}<span class="bib_volume">vol. \volume,</span>\end{volume}
+\begin{number}<span class="bib_number">no. \number,</span>\end{number}
+\begin{edition}<span class="bib_edition">\format[RemoveLatexCommands,HTMLChars]{\edition},</span>\end{edition}
+\begin{chapter}<span class="bib_chapter">\format[RemoveLatexCommands,HTMLChars]{\chapter},</span>\end{chapter}
+\begin{series}<span class="bib_series">\format[RemoveLatexCommands,HTMLChars]{\series},</span>\end{series}
+\begin{publisher}<span class="bib_publisher">\format[RemoveLatexCommands,HTMLChars]{\publisher},</span>\end{publisher}
+\begin{school}<span class="bib_school">\format[RemoveLatexCommands,HTMLChars]{\school},</span>\end{school}
+\begin{organization}<span class="bib_organization">\format[RemoveLatexCommands,HTMLChars]{\organization},</span>\end{organization}
+\begin{institution}<span class="bib_institution">\format[RemoveLatexCommands,HTMLChars]{\institution},</span>\end{institution}
+\begin{howpublished}<span class="bib_howpublished">\format[RemoveLatexCommands,HTMLChars]{\howpublished},</span>\end{howpublished}
+\begin{address}<span class="bib_address">\format[RemoveLatexCommands,HTMLChars]{\address},</span>\end{address}
+\begin{month}<span class="bib_month">\format[RemoveLatexCommands,HTMLChars]{\month} </span>\end{month}
+\begin{year}<span class="bib_year">\year</span>\end{year}
+</li>
+
