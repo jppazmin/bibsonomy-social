@@ -1,0 +1,70 @@
+<?xml version="1.0"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <artifactId>bibsonomy</artifactId>
+    <groupId>org.bibsonomy</groupId>
+    <version>2.0.17</version>
+  </parent>
+  
+  <artifactId>bibsonomy-web-common</artifactId>
+  <name>BibSonomy-Web-Common</name>
+  <url>http://maven.apache.org</url>
+  <dependencies>
+  	<dependency>
+		<groupId>org.bibsonomy</groupId>
+		<artifactId>bibsonomy-common</artifactId>
+	</dependency>
+	<dependency>
+		<groupId>org.bibsonomy</groupId>
+		<artifactId>bibsonomy-model</artifactId>
+	</dependency>
+  	<dependency>
+		<groupId>commons-logging</groupId>
+		<artifactId>commons-logging</artifactId>
+	</dependency>
+	<!-- 
+		the following jar has been manually deployed to our artifactory proxy
+		(it's basically a subset of fastutil/fastutil/5.0.9, extracted by
+		autojar). dbe, 20090506
+	 --> 
+	<dependency>
+		<groupId>it.unimi.dsi.fastutil.chars</groupId>
+		<artifactId>charopenhashset</artifactId>
+		<version>5.0.9</version>
+	</dependency>
+	<dependency>
+		<groupId>javax.mail</groupId>
+		<artifactId>mail</artifactId>
+		<version>1.4</version>
+	</dependency>
+	<dependency>
+		<groupId>org.springframework</groupId>
+		<artifactId>spring-context</artifactId>
+	</dependency>
+	<dependency>
+		<groupId>org.springframework.security</groupId>
+		<artifactId>spring-security-core</artifactId>
+		<version>${spring-security.version}</version>
+	</dependency>
+	<dependency>
+		<groupId>commons-fileupload</groupId>
+		<artifactId>commons-fileupload</artifactId>
+		<version>1.2.1</version>
+	</dependency>
+	<dependency>
+		<groupId>commons-io</groupId>
+		<artifactId>commons-io</artifactId>
+		<version>1.4</version>
+	</dependency>
+	<dependency>
+		<groupId>jtidy</groupId>
+		<artifactId>jtidy</artifactId>
+		<version>8.0-SNAPSHOT</version>
+	</dependency>
+	<dependency>
+		<groupId>commons-httpclient</groupId>
+		<artifactId>commons-httpclient</artifactId>
+	</dependency>
+  </dependencies>
+</project>
