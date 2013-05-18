@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+
+
+     BibSonomy-Logging - Logs clicks from users of the BibSonomy webapp.
+
+     Copyright (C) 2006 - 2011 Knowledge & Data Engineering Group,
+                               University of Kassel, Germany
+                               http://www.kde.cs.uni-kassel.de/
+
+     This program is free software; you can redistribute it and/or
+     modify it under the terms of the GNU General Public License
+     as published by the Free Software Foundation; either version 2
+     of the License, or (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+
+     You should have received a copy of the GNU General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+
+-->
+
+
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="BibLog">
+
+<!-- 
+**************************************************************
+CREATE DATABASE logging;
+
+USE logging;
+
+CREATE TABLE `clicklog` (
+  `id` int(11) NOT NULL auto_increment,
+  `logdate` datetime default NULL,
+  `dompath` text character set utf8 collate utf8_unicode_ci,
+  `dompathwclasses` text character set utf8 collate utf8_unicode_ci,
+  `type` text character set utf8 collate utf8_unicode_ci,
+  `pageurl` text character set utf8 collate utf8_unicode_ci,
+  `ahref` text character set utf8 collate utf8_unicode_ci,
+  `acontent` longtext character set utf8 collate utf8_unicode_ci,
+  `useragent` text character set utf8 collate utf8_unicode_ci,
+  `host` text character set utf8 collate utf8_unicode_ci,
+  `completeheader` text character set utf8 collate utf8_unicode_ci,
+  `xforwardedfor` text character set utf8 collate utf8_unicode_ci,
+  `username` text character set utf8 collate utf8_unicode_ci,
+  `sessionid` text character set utf8 collate utf8_unicode_ci,
+  `listpos` varchar(20) character set utf8 collate utf8_unicode_ci default NULL,  `mouseclientpos` varchar(20) character set utf8 collate utf8_unicode_ci default NULL COMMENT 'mouse position in current client window',
+  `mousedocumentpos` varchar(20) character set utf8 collate utf8_unicode_ci default NULL COMMENT 'mouse position in current document',
+  `clientwindowsize` varchar(20) character set utf8 collate utf8_unicode_ci default NULL,
+  `anumofposts` int(11) default NULL,
+  `abmown` tinyint(4) default NULL,
+  `referer` varchar(250) default NULL,
+  PRIMARY KEY  (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+GRANT ALL PRIVILEGES ON *.* TO logger@localhost IDENTIFIED BY ''
+
+**************************************************************
+ -->
+
+  <!-- Use type aliases to avoid typing the full classname every time. -->
+  <typeAlias alias="Log" type="org.bibsonomy.logging.Log"/>
+
+  <!-- Result maps describe the mapping between the columns returned
+       from a query, and the rce="Bookmark.xml" />
+	<sqlMap resource="BibTclass properties.  A result map isn't
+       necessary if the columns (or aliases) match to the properties 
+       exactly. -->
+  <resultMap id="LogResult" class="Log">
+    <result property="id" column="id" />
+    <result property="logdate" column="logdate" />
+    <result property="dompath" column="dompath"/>
+    <result property="dompath2" column="dompathwclasses"/>
+    <result property="type" column="type"/>
+    <result property="pageurl" column="pageurl"/>
+    <result property="ahref" column="ahref"/>
+    <result property="acontent" column="acontent"/>
+    <result property="useragent" column="useragent"/>
+    <result property="username" column="username"/>
+    <result property="sessionid" column="sessionid"/>
+    <result property="host" column="host"/>
+    <result property="completeheader" column="completeheader"/>
+    <result property="xforwardedfor" column="xforwardedfor"/>
+    <result property="listpos" column="listpos"/>
+    <result property="windowsize" column="clientwindowsize"/>
+    <result property="mousedocumentpos" column="mousedocumentpos"/>
+    <result property="mouseclientpos" column="mouseclientpos"/>
+    <result property="anumberofposts" column="anumberofposts"/>
+    <result property="abmown" column="abmown"/>
+    <result property="referer" column="referer"/>
+  </resultMap>
+
+  <!-- Select with no parameters using the result map for Account class. -->
+  <select id="selectAllLogdata" resultMap="LogResult">
+    select * from CLICKLOG
+  </select>
+  
+  <insert id="insertLogdata" parameterClass="Log">
+    insert into clicklog (
+		LOGDATE,
+		DOMPATH,
+		DOMPATHWCLASSES,
+		TYPE,
+		PAGEURL,
+		AHREF,
+		ACONTENT,
+		USERAGENT,
+		HOST,
+		COMPLETEHEADER,
+		XFORWARDEDFOR,
+		USERNAME,
+		SESSIONID,
+		LISTPOS,
+		CLIENTWINDOWSIZE,
+		MOUSECLIENTPOS,
+		MOUSEDOCUMENTPOS,
+		ANUMOFPOSTS,
+		ABMOWN,
+		REFERER
+      )
+    values (
+      now(), 
+      #dompath#, 
+      #dompath2#, 
+      #type#, 
+      #pageurl#, 
+      #ahref#, 
+      #acontent#, 
+      #useragent#, 
+      #host#, 
+      #completeheader#, 
+      #xforwardedfor#,
+      #username#, 
+      #sessionid#,
+      #listpos#,
+      #windowsize#,
+      #mouseclientpos#,
+      #mousedocumentpos#,
+      #anumberofposts#,
+      #abmown#,
+      #referer#
+    )
+  </insert>
+</sqlMap>
