@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+
+     BibSonomy-Lucene - A blue social bookmark and publication sharing system.
+
+     Copyright (C) 2006 - 2011 Knowledge & Data Engineering Group,
+                               University of Kassel, Germany
+                               http://www.kde.cs.uni-kassel.de/
+
+     This program is free software; you can redistribute it and/or
+     modify it under the terms of the GNU Lesser General Public License
+     as published by the Free Software Foundation; either version 2
+     of the License, or (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU Lesser General Public License for more details.
+
+     You should have received a copy of the GNU Lesser General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+
+-->
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-2.5.xsd">
+	<!--+
+	    | type handler 
+	    +-->
+	<bean id="intConverter" class="org.bibsonomy.lucene.param.typehandler.LuceneIntegerFormatter"/>
+	<bean id="dateConverter" class="org.bibsonomy.lucene.param.typehandler.LuceneDateFormatter"/>
+	<bean id="dateMSConverter" class="org.bibsonomy.lucene.param.typehandler.LuceneDateMSFormatter"/>
+	<bean id="tagsConverter" class="org.bibsonomy.lucene.param.typehandler.LuceneTagsFormatter"/>
+	<bean id="groupsConverter" class="org.bibsonomy.lucene.param.typehandler.LuceneGroupsFormatter"/>
+
+	<!--+
+	    | index field configurations 
+	    +-->
+	<bean id="fieldNotIndexed" class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean">
+ 		<property name="staticField" value="org.apache.lucene.document.Field$Index.NO"/>
+	</bean>
+	<bean id="fieldNotAnalyzed" class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean">
+ 		<property name="staticField" value="org.apache.lucene.document.Field$Index.NOT_ANALYZED"/>
+	</bean>
+	<bean id="fieldAnalyzed" class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean">
+ 		<property name="staticField" value="org.apache.lucene.document.Field$Index.ANALYZED"/>
+	</bean>
+
+	<bean id="fieldStored" class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean">
+ 		<property name="staticField" value="org.apache.lucene.document.Field$Store.YES"/>
+	</bean>
+	<bean id="fieldNotStored" class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean">
+ 		<property name="staticField" value="org.apache.lucene.document.Field$Store.NO"/>
+	</bean>
+
+	<!--+
+	    | analyzer (==tokenizer/normalizer)
+	    +-->
+	<bean id="luceneStandardAnalyzer" class="org.apache.lucene.analysis.standard.StandardAnalyzer">
+		<constructor-arg ref="lucene24Compat"/>
+	</bean>
+	<bean id="luceneGermanAnalyzer" class="org.apache.lucene.analysis.de.GermanAnalyzer">
+		<constructor-arg ref="lucene24Compat"/>
+	</bean>
+	<bean id="luceneWhitespaceAnalyzer" class="org.bibsonomy.lucene.index.analyzer.WhiteSpaceLowerCaseFilteringAnalyzer"/>
+	<bean id="luceneDiacriticsAnalyzer" class="org.bibsonomy.lucene.index.analyzer.DiacriticsLowerCaseFilteringAnalyzer"/>
+	<bean id="luceneSimpleKeywordAnalyzer" class="org.bibsonomy.lucene.index.analyzer.SimpleKeywordAnalyzer"/>
+	
+	<bean id="luceneBookmarkFieldWrapperAnalyzer" class="org.bibsonomy.lucene.index.analyzer.SpringPerFieldAnalyzerWrapper">
+		<property name="fullTextSearchAnalyzer" ref="luceneDiacriticsAnalyzer"/>
+		<property name="propertyMap" ref="bookmarkPropertyMap"/>
+		<property name="defaultAnalyzer" ref="luceneStandardAnalyzer"/>
+	</bean>
+
+	<bean id="luceneBibTexFieldWrapperAnalyzer" class="org.bibsonomy.lucene.index.analyzer.SpringPerFieldAnalyzerWrapper">
+		<property name="fullTextSearchAnalyzer" ref="luceneDiacriticsAnalyzer"/>
+		<property name="propertyMap" ref="bibTexPropertyMap"/>
+		<property name="defaultAnalyzer" ref="luceneStandardAnalyzer"/>
+	</bean>
+
+
+	<bean id="lucene24Compat" class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean">
+ 		<property name="staticField" value="org.apache.lucene.util.Version.LUCENE_24"/>
+	</bean>
+	    
+	<!--+
+	    | import resource field configurations 
+	    +-->
+    <import resource="LucenePostFields.xml"/>
+    <import resource="LuceneBibTexFields.xml"/>
+    <import resource="LuceneBookmarkFields.xml"/>
+</beans>

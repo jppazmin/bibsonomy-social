@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+
+     BibSonomy-Lucene - A blue social bookmark and publication sharing system.
+
+     Copyright (C) 2006 - 2011 Knowledge & Data Engineering Group,
+                               University of Kassel, Germany
+                               http://www.kde.cs.uni-kassel.de/
+
+     This program is free software; you can redistribute it and/or
+     modify it under the terms of the GNU Lesser General Public License
+     as published by the Free Software Foundation; either version 2
+     of the License, or (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU Lesser General Public License for more details.
+
+     You should have received a copy of the GNU Lesser General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+
+-->
+
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="BookmarkCommon">
+	<resultMap id="bookmark" class="bookmark" extends="Common.resource">
+    	<result property="url"      column="book_url"  javaType="string" /> 
+	</resultMap>
+	
+	<resultMap id="bookmarkWithoutUrl" class="bookmark" extends="Common.resource">
+	</resultMap>
+
+	<resultMap id="bookmarkPost" class="lucenepost" extends="Common.posts">
+		<result property="resource"   resultMap="BookmarkCommon.bookmark" />
+	</resultMap>
+
+	<resultMap id="bookmarkPostWithoutUrl" class="lucenepost" extends="Common.posts">
+		<result property="resource"   resultMap="BookmarkCommon.bookmarkWithoutUrl" />
+	</resultMap>
+
+
+	<resultMap id="luceneBookmarkPost" class="lucenePost" extends="BookmarkCommon.bookmarkPost">
+		<result property="lastTasId"    column="tas_id" />
+	</resultMap>
+
+	<resultMap id="luceneLogBookmarkPost" class="lucenePost" extends="BookmarkCommon.bookmarkPost">
+		<result property="lastTasId"    column="tas_id" />
+		<result property="lastLogDate"  column="log_date" javaType="date"/>
+	</resultMap>
+
+	<sql id="bookmarkAttributes">
+		b.content_id, b.book_description as title, b.book_extended as description, b.user_name, b.date, b.book_url_hash AS intraHash, b.book_url_hash AS interHash
+	</sql>	
+
+	<sql id="luceneCommonBookmarkAttributes">
+	    b.content_id, b.user_name, b.book_description as title, b.book_extended as description, 
+		b.date, b.book_url_hash AS intraHash, b.book_url_hash AS interHash
+	</sql>
+	
+	<sql id="luceneBookmarkAttributes">
+		<include refid="luceneCommonBookmarkAttributes"/>,
+		g.*,
+		t.tag_name, 
+		t.tas_id,
+		u.book_url, u.book_url_ctr AS count
+	</sql>	
+		       
+	<sql id="luceneLogBookmarkAttributes">
+		<include refid="luceneCommonBookmarkAttributes"/>,
+		b.log_date
+		t.tag_name,
+		u.book_url, u.book_url_ctr AS count
+	</sql>	
+</sqlMap>

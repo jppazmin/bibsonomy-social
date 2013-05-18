@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+
+     BibSonomy-Lucene - A blue social bookmark and publication sharing system.
+
+     Copyright (C) 2006 - 2011 Knowledge & Data Engineering Group,
+                               University of Kassel, Germany
+                               http://www.kde.cs.uni-kassel.de/
+
+     This program is free software; you can redistribute it and/or
+     modify it under the terms of the GNU Lesser General Public License
+     as published by the Free Software Foundation; either version 2
+     of the License, or (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU Lesser General Public License for more details.
+
+     You should have received a copy of the GNU Lesser General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+
+-->
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-2.5.xsd">
+
+	<!--+
+        | Bookmark property mapping configuration
+        +-->
+	<bean id="bookmarkPropertyMap"  parent="postPropertyMap" class="org.springframework.beans.factory.config.MapFactoryBean">
+		<property name="sourceMap">
+			<map merge="true">
+				<entry key="resource.title">
+					<map>
+						<entry key="luceneName" value="desc" />
+						<entry key="luceneIndex" value-ref="fieldNotIndexed" />
+						<entry key="dbName" value="book_description" />
+						<entry key="fulltextSearch">
+							<value type="java.lang.Boolean">true</value>
+						</entry>
+					</map>
+				</entry>
+				<entry key="resource.intraHash">
+					<map>
+						<entry key="luceneName" value="intrahash" />
+						<entry key="luceneIndex" value-ref="fieldNotAnalyzed" />
+					</map>
+				</entry>
+				<entry key="resource.interHash">
+					<map>
+						<entry key="luceneName" value="interhash" />
+						<entry key="luceneIndex" value-ref="fieldNotAnalyzed" />
+					</map>
+				</entry>
+				<entry key="resource.url">
+					<map>
+						<entry key="luceneName" value="url" />
+						<entry key="luceneIndex" value-ref="fieldNotIndexed" />
+						<entry key="dbName" value="book_url" />
+						<entry key="fulltextSearch">
+							<value type="java.lang.Boolean">true</value>
+						</entry>
+					</map>
+				</entry>
+			</map>
+		</property>
+	</bean>
+	
+	
+</beans>

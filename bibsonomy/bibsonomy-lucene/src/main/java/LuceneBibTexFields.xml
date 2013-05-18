@@ -1,0 +1,303 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+
+     BibSonomy-Lucene - A blue social bookmark and publication sharing system.
+
+     Copyright (C) 2006 - 2011 Knowledge & Data Engineering Group,
+                               University of Kassel, Germany
+                               http://www.kde.cs.uni-kassel.de/
+
+     This program is free software; you can redistribute it and/or
+     modify it under the terms of the GNU Lesser General Public License
+     as published by the Free Software Foundation; either version 2
+     of the License, or (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU Lesser General Public License for more details.
+
+     You should have received a copy of the GNU Lesser General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+
+-->
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-2.5.xsd">
+
+	<!--+
+        | BibTex property mapping configuration
+        +-->
+	<bean id="bibTexPropertyMap" parent="postPropertyMap" class="org.springframework.beans.factory.config.MapFactoryBean">
+		<property name="sourceMap">
+			<map merge="true">
+				<entry key="resource.address">
+					<map>
+						<entry key="luceneName" value="address" />
+						<entry key="luceneIndex" value-ref="fieldNotIndexed" />
+						<entry key="fulltextSearch">
+							<value type="java.lang.Boolean">true</value>
+						</entry>
+					</map>
+				</entry>
+				<entry key="resource.annote">
+					<map>
+						<entry key="luceneName" value="annote" />
+						<entry key="luceneIndex" value-ref="fieldNotIndexed" />
+						<entry key="fulltextSearch">
+							<value type="java.lang.Boolean">true</value>
+						</entry>
+					</map>
+				</entry>
+				<entry key="resource.author">
+					<map>
+						<entry key="luceneName" value="author" />
+						<entry key="luceneIndex" value-ref="fieldAnalyzed" />
+						<entry key="fulltextSearch">
+							<value type="java.lang.Boolean">true</value>
+						</entry>
+					</map>
+				</entry>
+				<entry key="resource.key">
+					<map>
+						<entry key="luceneName" value="bKey" />
+						<entry key="luceneIndex" value-ref="fieldNotIndexed" />
+					</map>
+				</entry>
+				<entry key="resource.abstract">
+					<map>
+						<entry key="luceneName" value="bibtexAbstract" />
+						<entry key="luceneIndex" value-ref="fieldNotIndexed" />
+						<entry key="fulltextSearch">
+							<value type="java.lang.Boolean">true</value>
+						</entry>
+					</map>
+				</entry>
+				<entry key="resource.bibtexKey">
+					<map>
+						<entry key="luceneName" value="bibtexKey" />
+						<entry key="luceneIndex" value-ref="fieldNotIndexed" />
+					</map>
+				</entry>
+				<entry key="resource.booktitle">
+					<map>
+						<entry key="luceneName" value="booktitle" />
+						<entry key="luceneIndex" value-ref="fieldNotIndexed" />
+						<entry key="fulltextSearch">
+							<value type="java.lang.Boolean">true</value>
+						</entry>
+					</map>
+				</entry>
+				<entry key="resource.chapter">
+					<map>
+						<entry key="luceneName" value="chapter" />
+						<entry key="luceneIndex" value-ref="fieldNotIndexed" />
+						<entry key="fulltextSearch">
+							<value type="java.lang.Boolean">true</value>
+						</entry>
+					</map>
+				</entry>
+				<entry key="resource.crossref">
+					<map>
+						<entry key="luceneName" value="crossref" />
+						<entry key="luceneIndex" value-ref="fieldNotIndexed" />
+						<entry key="fulltextSearch">
+							<value type="java.lang.Boolean">true</value>
+						</entry>
+					</map>
+				</entry>
+				<entry key="resource.day">
+					<map>
+						<entry key="luceneName" value="day" />
+						<entry key="luceneIndex" value-ref="fieldNotIndexed" />
+					</map>
+				</entry>
+				<entry key="resource.edition">
+					<map>
+						<entry key="luceneName" value="edition" />
+						<entry key="luceneIndex" value-ref="fieldNotIndexed" />
+						<entry key="fulltextSearch">
+							<value type="java.lang.Boolean">true</value>
+						</entry>
+					</map>
+				</entry>
+				<entry key="resource.editor">
+					<map>
+						<entry key="luceneName" value="editor" />
+						<entry key="luceneIndex" value-ref="fieldNotIndexed" />
+						<entry key="fulltextSearch">
+							<value type="java.lang.Boolean">true</value>
+						</entry>
+					</map>
+				</entry>
+				<entry key="resource.entrytype">
+					<map>
+						<entry key="luceneName" value="entrytype" />
+						<entry key="luceneIndex" value-ref="fieldNotIndexed" />
+						<entry key="fulltextSearch">
+							<value type="java.lang.Boolean">true</value>
+						</entry>
+					</map>
+				</entry>
+				<entry key="resource.howpublished">
+					<map>
+						<entry key="luceneName" value="howPublished" />
+						<entry key="luceneIndex" value-ref="fieldNotIndexed" />
+					</map>
+				</entry>
+				<entry key="resource.institution">
+					<map>
+						<entry key="luceneName" value="institution" />
+						<entry key="luceneIndex" value-ref="fieldNotIndexed" />
+						<entry key="fulltextSearch">
+							<value type="java.lang.Boolean">true</value>
+						</entry>
+					</map>
+				</entry>
+				<entry key="resource.interHash">
+					<map>
+						<entry key="luceneName" value="interhash" />
+						<entry key="luceneIndex" value-ref="fieldNotAnalyzed" />
+					</map>
+				</entry>
+				<entry key="resource.intraHash">
+					<map>
+						<entry key="luceneName" value="intrahash" />
+						<entry key="luceneIndex" value-ref="fieldNotAnalyzed" />
+					</map>
+				</entry>
+				<entry key="resource.journal">
+					<map>
+						<entry key="luceneName" value="journal" />
+						<entry key="luceneIndex" value-ref="fieldNotIndexed" />
+						<entry key="fulltextSearch">
+							<value type="java.lang.Boolean">true</value>
+						</entry>
+					</map>
+				</entry>
+				<entry key="resource.misc">
+					<map>
+						<entry key="luceneName" value="misc" />
+						<entry key="luceneIndex" value-ref="fieldNotIndexed" />
+						<entry key="fulltextSearch">
+							<value type="java.lang.Boolean">true</value>
+						</entry>
+					</map>
+				</entry>
+				<entry key="resource.month">
+					<map>
+						<entry key="luceneName" value="month" />
+						<entry key="luceneIndex" value-ref="fieldNotIndexed" />
+					</map>
+				</entry>
+				<entry key="resource.note">
+					<map>
+						<entry key="luceneName" value="note" />
+						<entry key="luceneIndex" value-ref="fieldNotIndexed" />
+						<entry key="fulltextSearch">
+							<value type="java.lang.Boolean">true</value>
+						</entry>
+					</map>
+				</entry>
+				<entry key="resource.number">
+					<map>
+						<entry key="luceneName" value="number" />
+						<entry key="luceneIndex" value-ref="fieldNotIndexed" />
+					</map>
+				</entry>
+				<entry key="resource.organization">
+					<map>
+						<entry key="luceneName" value="organization" />
+						<entry key="luceneIndex" value-ref="fieldNotIndexed" />
+						<entry key="fulltextSearch">
+							<value type="java.lang.Boolean">true</value>
+						</entry>
+					</map>
+				</entry>
+				<entry key="resource.pages">
+					<map>
+						<entry key="luceneName" value="pages" />
+						<entry key="luceneIndex" value-ref="fieldNotIndexed" />
+					</map>
+				</entry>
+				<entry key="resource.privnote">
+					<map>
+						<entry key="luceneName" value="privnote" />
+						<entry key="luceneIndex" value-ref="fieldAnalyzed" />
+						<entry key="luceneStore" value-ref="fieldNotStored" />
+						<entry key="privateSearch">
+							<value type="java.lang.Boolean">true</value>
+						</entry>
+					</map>
+				</entry>
+				<entry key="resource.publisher">
+					<map>
+						<entry key="luceneName" value="publisher" />
+						<entry key="luceneIndex" value-ref="fieldNotIndexed" />
+						<entry key="fulltextSearch">
+							<value type="java.lang.Boolean">true</value>
+						</entry>
+					</map>
+				</entry>
+				<entry key="resource.school">
+					<map>
+						<entry key="luceneName" value="school" />
+						<entry key="luceneIndex" value-ref="fieldNotIndexed" />
+						<entry key="fulltextSearch">
+							<value type="java.lang.Boolean">true</value>
+						</entry>
+					</map>
+				</entry>
+				<entry key="resource.series">
+					<map>
+						<entry key="luceneName" value="series" />
+						<entry key="luceneIndex" value-ref="fieldNotIndexed" />
+					</map>
+				</entry>
+				<entry key="resource.title">
+					<map>
+						<entry key="luceneName" value="title" />
+						<entry key="luceneIndex" value-ref="fieldAnalyzed" />
+						<entry key="fulltextSearch">
+							<value type="java.lang.Boolean">true</value>
+						</entry>
+					</map>
+				</entry>
+				<entry key="resource.type">
+					<map>
+						<entry key="luceneName" value="type" />
+						<entry key="luceneIndex" value-ref="fieldNotIndexed" />
+					</map>
+				</entry>
+				<entry key="resource.url">
+					<map>
+						<entry key="luceneName" value="url" />
+						<entry key="luceneIndex" value-ref="fieldNotIndexed" />
+						<entry key="fulltextSearch">
+							<value type="java.lang.Boolean">true</value>
+						</entry>
+					</map>
+				</entry>
+				<entry key="resource.volume">
+					<map>
+						<entry key="luceneName" value="volume" />
+						<entry key="luceneIndex" value-ref="fieldNotIndexed" />
+					</map>
+				</entry>
+				<entry key="resource.year">
+					<map>
+						<entry key="luceneName" value="year" />
+						<entry key="luceneIndex" value-ref="fieldNotAnalyzed" />
+						<entry key="fulltextSearch">
+							<value type="java.lang.Boolean">true</value>
+						</entry>
+					</map>
+				</entry>
+			</map>
+		</property>
+	</bean>
+	
+</beans>

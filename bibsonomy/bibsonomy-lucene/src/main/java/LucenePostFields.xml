@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+
+     BibSonomy-Lucene - A blue social bookmark and publication sharing system.
+
+     Copyright (C) 2006 - 2011 Knowledge & Data Engineering Group,
+                               University of Kassel, Germany
+                               http://www.kde.cs.uni-kassel.de/
+
+     This program is free software; you can redistribute it and/or
+     modify it under the terms of the GNU Lesser General Public License
+     as published by the Free Software Foundation; either version 2
+     of the License, or (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU Lesser General Public License for more details.
+
+     You should have received a copy of the GNU Lesser General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+
+-->
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-2.5.xsd">
+
+	<!--+
+        | Post property mapping configuration
+        +-->
+	<bean id="postPropertyMap" class="org.springframework.beans.factory.config.MapFactoryBean">
+  		<property name="sourceMap">
+  			<map>
+				<entry key="contentId">
+					<map>
+						<entry key="luceneName" value="content_id" />
+						<entry key="luceneIndex" value-ref="fieldNotAnalyzed" />
+						<entry key="typeHandler" value-ref="intConverter" />
+					</map>
+				</entry>
+				<entry key="date">
+					<map>
+						<entry key="luceneName" value="date" />
+						<entry key="luceneIndex" value-ref="fieldNotAnalyzed" />
+						<entry key="typeHandler" value-ref="dateMSConverter" />
+					</map>
+				</entry>
+				<entry key="lastLogDate">
+					<map>
+						<entry key="luceneName" value="last_log_date" />
+						<entry key="luceneIndex" value-ref="fieldNotAnalyzed" />
+						<entry key="typeHandler" value-ref="dateMSConverter" />
+					</map>
+				</entry>
+				<entry key="lastTasId">
+					<map>
+						<entry key="luceneName" value="last_tas_id" />
+						<entry key="luceneIndex" value-ref="fieldNotAnalyzed" />
+						<entry key="typeHandler" value-ref="intConverter" />
+					</map>
+				</entry>
+				<entry key="description">
+					<map>
+						<entry key="luceneName" value="ext" />
+						<entry key="luceneIndex" value-ref="fieldNotIndexed" />
+						<entry key="fulltextSearch">
+							<value type="java.lang.Boolean">true</value>
+						</entry>
+					</map>
+				</entry>
+				<entry key="groups">
+					<map>
+						<entry key="luceneName" value="group" />
+						<entry key="luceneIndex" value-ref="fieldNotAnalyzed" />
+						<entry key="itemProperty" value="name" />
+						<entry key="typeHandler" value-ref="groupsConverter" />
+						<entry key="fulltextSearch">
+							<value type="java.lang.Boolean">true</value>
+						</entry>
+					</map>
+				</entry>
+				<entry key="tags">
+					<map>
+						<entry key="luceneName" value="tas" />
+						<entry key="luceneStore" value-ref="fieldStored" />
+						<entry key="luceneIndex" value-ref="fieldAnalyzed" />
+						<entry key="fieldAnalyzer" value-ref="luceneWhitespaceAnalyzer" />
+						<entry key="typeHandler" value-ref="tagsConverter" />
+						<entry key="itemDelimitier" value=" " />
+						<entry key="fulltextSearch">
+							<value type="java.lang.Boolean">true</value>
+						</entry>
+					</map>
+				</entry>
+				<entry key="user.name">
+					<map>
+						<entry key="luceneName" value="user_name" />
+						<entry key="fieldAnalyzer" value-ref="luceneStandardAnalyzer" />
+						<entry key="fulltextSearch">
+							<value type="java.lang.Boolean">true</value>
+						</entry>
+					</map>
+				</entry>
+  			</map>
+  		</property>
+	</bean>
+</beans>

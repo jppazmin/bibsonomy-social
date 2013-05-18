@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+
+     BibSonomy-Lucene - A blue social bookmark and publication sharing system.
+
+     Copyright (C) 2006 - 2011 Knowledge & Data Engineering Group,
+                               University of Kassel, Germany
+                               http://www.kde.cs.uni-kassel.de/
+
+     This program is free software; you can redistribute it and/or
+     modify it under the terms of the GNU Lesser General Public License
+     as published by the Free Software Foundation; either version 2
+     of the License, or (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU Lesser General Public License for more details.
+
+     You should have received a copy of the GNU Lesser General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+
+-->
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-2.5.xsd">
+		
+	<!--+
+	    | lucene post converter
+	    +-->
+	<bean id="luceneBibTexConverter" class="org.bibsonomy.lucene.util.LuceneBibTexConverter">
+		<property name="postPropertyMap" ref="bibTexPropertyMap"/>
+	</bean>
+	
+	<bean id="luceneBookmarkConverter" class="org.bibsonomy.lucene.util.LuceneBookmarkConverter">
+		<property name="postPropertyMap" ref="bookmarkPropertyMap"/>
+	</bean>
+	
+	<bean id="luceneGoldStandardPublicationConverter" class="org.bibsonomy.lucene.util.LuceneBibTexConverter">
+		<property name="postPropertyMap" ref="bibTexPropertyMap"/>
+	</bean>
+	    
+	<!--+
+	    | lucene index generator 
+	    +-->
+	<bean id="luceneBibTexIndexGenerator" class="org.bibsonomy.lucene.util.generator.LuceneGenerateBibTexIndex" factory-method="getInstance">
+		<property name="logic" ref="luceneBibTexLogic"/>
+		<property name="analyzer" ref="luceneBibTexFieldWrapperAnalyzer"/>
+		<property name="resourceConverter" ref="luceneBibTexConverter"/>
+	</bean>
+	<bean id="luceneBookmarkIndexGenerator" class="org.bibsonomy.lucene.util.generator.LuceneGenerateBookmarkIndex" factory-method="getInstance">
+		<property name="logic" ref="luceneBookmarkLogic"/>
+		<property name="analyzer" ref="luceneBookmarkFieldWrapperAnalyzer"/>
+		<property name="resourceConverter" ref="luceneBookmarkConverter"/>
+	</bean>
+	<bean id="luceneGoldStandardPublicationIndexGenerator" class="org.bibsonomy.lucene.util.generator.LuceneGenerateGoldStandardPublicationIndex" factory-method="getInstance">
+		<property name="logic" ref="luceneGoldStandardPublicationLogic"/>
+		<property name="analyzer" ref="luceneBibTexFieldWrapperAnalyzer"/>
+		<property name="resourceConverter" ref="luceneGoldStandardPublicationConverter"/>
+	</bean>
+	 
+	<!--+
+	    | lucene indexes 
+	    +-->
+	<util:list id="bibtexIndeces">
+		<bean id="luceneBibTexIndex0" class="org.bibsonomy.lucene.index.LuceneBibTexIndex">
+			<constructor-arg value="0"/>
+			<property name="analyzer" ref="luceneBibTexFieldWrapperAnalyzer"/>
+		</bean>
+		<bean id="luceneBibTexIndex1" class="org.bibsonomy.lucene.index.LuceneBibTexIndex">
+			<constructor-arg value="1"/>
+			<property name="analyzer" ref="luceneBibTexFieldWrapperAnalyzer"/>
+		</bean>
+	</util:list>
+	
+	<util:list id="bookmarkIndeces">
+		<bean id="luceneBookmarkIndex0" class="org.bibsonomy.lucene.index.LuceneBookmarkIndex">
+			<constructor-arg value="0"/>
+			<property name="analyzer" ref="luceneBookmarkFieldWrapperAnalyzer"/>
+		</bean>
+		<bean id="luceneBookmarkIndex1" class="org.bibsonomy.lucene.index.LuceneBookmarkIndex">
+			<constructor-arg value="1"/>
+			<property name="analyzer" ref="luceneBookmarkFieldWrapperAnalyzer"/>
+		</bean>
+	</util:list>
+	
+	<util:list id="goldStandardPublicationIndeces">
+		<bean id="goldStandardPublicationIndex0" class="org.bibsonomy.lucene.index.LuceneGoldStandardPublicationIndex">
+			<constructor-arg value="0"/>
+			<property name="analyzer" ref="luceneBibTexFieldWrapperAnalyzer"/>
+		</bean>
+		<bean id="goldStandardPublicationIndex1" class="org.bibsonomy.lucene.index.LuceneGoldStandardPublicationIndex">
+			<constructor-arg value="1"/>
+			<property name="analyzer" ref="luceneBibTexFieldWrapperAnalyzer"/>
+		</bean>
+	</util:list>
+	
+	<!--+
+	    | lucene database access logics 
+	    +-->
+	<bean id="luceneBibTexLogic" class="org.bibsonomy.lucene.database.LuceneBibTexLogic" factory-method="getInstance"/>
+	<bean id="luceneBookmarkLogic" class="org.bibsonomy.lucene.database.LuceneBookmarkLogic" factory-method="getInstance"/>
+	<bean id="luceneGoldStandardPublicationLogic" class="org.bibsonomy.lucene.database.LuceneGoldStandardPublicationLogic"/>
+
+	<!--+
+	    | lucene index searcher 
+	    +-->
+	<bean id="luceneBibTexSearch" class="org.bibsonomy.lucene.search.LuceneSearchBibTex" factory-method="getInstance">
+		<property name="dbLogic" ref="luceneBibTexLogic"/>
+		<property name="analyzer" ref="luceneBibTexFieldWrapperAnalyzer"/>
+		<property name="resourceConverter" ref="luceneBibTexConverter"/>
+	</bean>
+	
+	<bean id="luceneBookmarkSearch" class="org.bibsonomy.lucene.search.LuceneSearchBookmarks" factory-method="getInstance">
+		<property name="dbLogic" ref="luceneBookmarkLogic"/>
+		<property name="analyzer" ref="luceneBookmarkFieldWrapperAnalyzer"/>
+		<property name="resourceConverter" ref="luceneBookmarkConverter"/>
+	</bean>
+	
+	<bean id="luceneGoldStandardPublicationSearch" class="org.bibsonomy.lucene.search.LuceneSearchGoldStandardPublications" factory-method="getInstance">
+		<property name="dbLogic" ref="luceneGoldStandardPublicationLogic"/>
+		<property name="analyzer" ref="luceneBibTexFieldWrapperAnalyzer"/>
+		<property name="resourceConverter" ref="luceneGoldStandardPublicationConverter"/>
+	</bean>
+	
+	<!--+
+	    | lucene index manager (e.g. spam) 
+	    +-->
+	<bean id="luceneBibTexManager" class="org.bibsonomy.lucene.index.manager.LuceneBibTexManager" factory-method="getInstance">
+		<property name="resourceIndeces" ref="bibtexIndeces"/>
+		<property name="dbLogic" ref="luceneBibTexLogic"/>
+		<property name="searcher" ref="luceneBibTexSearch"/>
+		<property name="resourceConverter" ref="luceneBibTexConverter"/>
+	</bean>
+	<bean id="luceneBookmarkManager" class="org.bibsonomy.lucene.index.manager.LuceneBookmarkManager" factory-method="getInstance">
+		<property name="resourceIndeces" ref="bookmarkIndeces"/>
+		<property name="dbLogic" ref="luceneBookmarkLogic"/>
+		<property name="searcher" ref="luceneBookmarkSearch"/>
+		<property name="resourceConverter" ref="luceneBookmarkConverter"/>
+	</bean>
+	
+	<bean id="luceneGoldStandardPublicationManager" class="org.bibsonomy.lucene.index.manager.LuceneGoldStandardPublicationManager" factory-method="getInstance">
+		<property name="resourceIndeces" ref="goldStandardPublicationIndeces" />
+		<property name="dbLogic" ref="luceneGoldStandardPublicationLogic" />
+		<property name="searcher" ref="luceneGoldStandardPublicationSearch" />
+		<property name="resourceConverter" ref="luceneGoldStandardPublicationConverter" />
+	</bean>
+	
+	<!--  #################### imports #################### -->
+	<import resource="LuceneIndexConfig.xml"/>
+</beans>

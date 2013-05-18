@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+
+
+     BibSonomy-Lucene - A blue social bookmark and publication sharing system.
+
+     Copyright (C) 2006 - 2011 Knowledge & Data Engineering Group,
+                               University of Kassel, Germany
+                               http://www.kde.cs.uni-kassel.de/
+
+     This program is free software; you can redistribute it and/or
+     modify it under the terms of the GNU Lesser General Public License
+     as published by the Free Software Foundation; either version 2
+     of the License, or (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU Lesser General Public License for more details.
+
+     You should have received a copy of the GNU Lesser General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+
+-->
+
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" 
+ "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="Lucene">
+	<!--+ 
+		| Queries.
+	 	+-->
+	 <!-- get number of tag assignments -->
+	<select id="getLastTasId" resultClass="integer">
+		SELECT MAX(tas_id)
+		FROM tas
+	</select>   
+	
+	<!-- used by the gold standard index instead of getLastTasId -->
+	<select id="getLastContentId" resultClass="integer">
+		SELECT MAX(content_id)
+		FROM gold_standard_publications 
+	</select>
+
+	<!-- get number of public bookmark posts -->
+	<select id="getBookmarkCount" resultClass="integer">
+		SELECT count(*) 
+		FROM bookmark b 
+		WHERE b.group &gt;= 0
+	</select>   
+
+	<!-- get number of public bibtex posts -->
+	<select id="getBibTexCount" resultClass="integer">
+		SELECT count(*) 
+		FROM bibtex b
+		WHERE b.group &gt;= 0
+	</select>   
+	
+	<!-- get number of public goldstandard posts -->
+	<select id="getGoldStandardPublicationCount" resultClass="integer">
+		SELECT count(*) 
+		FROM gold_standard_publications b 
+		WHERE b.group &gt;= 0
+	</select>
+	 
+	<!-- get last log_date from resource tables -->
+	<select id="getLastLogBibTex" resultClass="date">
+		SELECT MAX(log_date)
+		FROM log_bibtex
+	</select>
+
+	<select id="getLastLogBookmark" resultClass="date">
+		SELECT MAX(log_date)
+		FROM log_bookmark
+	</select>
+	
+	<select id="getLastLogGoldStandardPublication" resultClass="date">
+		SELECT MAX(log_date) FROM log_gold_standard_publications
+	</select>
+	
+	<!-- get users which where flagged as spammers/non-spammers since last index update --> 
+	<select id="getPredictionForTimeRange" parameterClass="date" resultMap="Common.spamPrediction">
+		SELECT user_name,prediction,updated_at 
+		FROM prediction 
+		WHERE updated_at &gt;= #date# 
+		ORDER BY updated_at DESC
+	</select>
+	
+	<!-- get list of all non-spam bookmarks -->
+	<select id="getBookmarkForIndex" parameterClass="bookmarkParam" resultMap="BookmarkCommon.bookmarkPost">
+		SELECT 
+			bb.*, 
+			t.tag_name,
+			g.*,
+			u.book_url, u.book_url_ctr AS count
+		FROM 
+		( 
+		  SELECT <include refid ="luceneCommonBookmarkAttributes"/>, b.group
+		  FROM bookmark b 
+	      JOIN urls u USING (book_url_hash)
+		  WHERE b.group &gt;= 0
+          <!-- ORDER BY b.content_id -->		  
+		  LIMIT #limit# OFFSET #offset#
+		) AS bb
+		LEFT JOIN tas t USING (content_id)
+	    LEFT JOIN groupids g ON (bb.group = g.group)
+	    LEFT JOIN urls u ON (u.book_url_hash = bb.intraHash)
+ 	<!-- 
+		SELECT <include refid ="luceneBookmarkAttributes"/>
+	    FROM tas t
+	      JOIN bookmark b USING (content_id)
+	      JOIN urls u USING (book_url_hash)
+	      JOIN groupids g ON (b.group = g.group)
+	    WHERE b.group &gt;= 0
+	      AND b.content_id &gt; #requestedContentId#
+	    ORDER BY b.content_id ASC, t.tas_id DESC
+	    LIMIT #limit#
+ 	-->
+	</select>
+	
+	<!-- get list of all non-spam publication posts -->
+	<select id="getBibTexForIndex" parameterClass="bibtexParam" resultMap="BibTexCommon.bibtexPost">
+		SELECT 
+			bb.*, 
+			t.tag_name,
+			g.*  
+		FROM 
+		( 
+		  SELECT <include refid ="commonBibtexAttributes2"/>, b2.group, h.ctr AS count, b2.scraperid
+		  FROM bibtex b2 
+	      JOIN bibhash h ON (<include refid="bibtexSimHash4"/>)
+		  WHERE b2.group &gt;= 0
+		  LIMIT #limit# OFFSET #offset#
+		) AS bb
+		LEFT JOIN tas t USING (content_id)
+	    LEFT JOIN groupids g ON (bb.group = g.group)
+		<!-- 
+		SELECT <include refid ="luceneBibtexAttributes2"/>, t.tag_name, g.*, h.ctr AS count
+		FROM tas t
+	      JOIN bibtex b2 USING (content_id)
+	      JOIN bibhash h ON (<include refid="bibtexSimHash4"/>)
+	      JOIN groupids g ON (b2.group = g.group)
+		WHERE b2.group &gt;= 0
+		  AND b2.content_id &gt; #requestedContentId#
+		ORDER BY b2.content_id ASC, t.tas_id DESC
+		LIMIT #limit#
+		 -->
+	</select>
+	
+	<select id="getGoldStandardPublicationForIndex" resultMap="GoldStandardPublicationCommon.luceneGoldStandardPublicationPost">
+		SELECT <include refid ="allGoldStandardPublicationAttributesWithSimHashes"/>, b.group, 'public' AS group_name, 1 AS count FROM gold_standard_publications b LIMIT #limit# OFFSET #offset#
+	</select>
+</sqlMap>
