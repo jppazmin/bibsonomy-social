@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+
+     BibSonomy-Database - Database for BibSonomy.
+
+     Copyright (C) 2006 - 2011 Knowledge & Data Engineering Group,
+                               University of Kassel, Germany
+                               http://www.kde.cs.uni-kassel.de/
+
+     This program is free software; you can redistribute it and/or
+     modify it under the terms of the GNU Lesser General Public License
+     as published by the Free Software Foundation; either version 2
+     of the License, or (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU Lesser General Public License for more details.
+
+     You should have received a copy of the GNU Lesser General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+
+-->
+
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="GoldStandardPublicationReferneces">
+	<update id="updateGoldStandardPublicationReference">
+		UPDATE gold_standard_publication_references SET publication = #newId# WHERE publication = #oldId#
+	</update>
+	
+	<update id="updateReferenceGoldStandardPublication">
+		UPDATE gold_standard_publication_references SET reference = #newId# WHERE reference = #oldId#
+	</update>
+	
+	<delete id="deleteGoldStandardPublicationReferences">
+		DELETE FROM gold_standard_publication_references WHERE publication = #hash#
+	</delete>
+	
+	<delete id="deleteReferencesGoldStandardPublication">
+		DELETE FROM gold_standard_publication_references WHERE reference = #refHash#
+	</delete>
+	
+	<update id="updateDiscussion">
+		UPDATE discussion SET interHash = #newId# WHERE interHash = #oldId#
+	</update>
+	
+	<update id="updateReviewRatingCache">
+		UPDATE review_ratings_cache SET interHash = #newId# WHERE interHash = #oldId#
+	</update>
+</sqlMap>

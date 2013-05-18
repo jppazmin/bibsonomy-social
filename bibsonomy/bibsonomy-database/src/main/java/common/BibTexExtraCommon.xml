@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+
+     BibSonomy-Database - Database for BibSonomy.
+
+     Copyright (C) 2006 - 2011 Knowledge & Data Engineering Group,
+                               University of Kassel, Germany
+                               http://www.kde.cs.uni-kassel.de/
+
+     This program is free software; you can redistribute it and/or
+     modify it under the terms of the GNU Lesser General Public License
+     as published by the Free Software Foundation; either version 2
+     of the License, or (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU Lesser General Public License for more details.
+
+     You should have received a copy of the GNU Lesser General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+
+-->
+
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="BibTexExtraCommon">
+
+	<resultMap id="bibtexExtraURL" class="bibtexExtra">
+		<result property="url"  column="url"  javaType="url" />
+		<result property="text" column="text" javaType="string" />
+		<result property="date" column="date" javaType="date" />
+	</resultMap>
+	
+	<resultMap id="extendedField" class="extendedBibtex">
+		<result property="created"      column="date_of_create"   javaType="date" />
+		<result property="lastModified" column="date_of_last_mod" javaType="date" />
+		<result property="key"          column="key"              javaType="string" />
+		<result property="value"        column="value"            javaType="string" />
+	</resultMap>
+	
+	<resultMap id="MyStringListMap" class="string">
+    	<result property="" column="value"   javaType="string"/>
+	</resultMap>	
+
+	<resultMap id="extendedList" class="extendedBibtexList" groupBy="key">
+	    <result property="key" column="key" javaType="string"/>
+	    <result property="valueList" resultMap="BibTexExtraCommon.MyStringListMap"/>
+	</resultMap>
+
+</sqlMap>

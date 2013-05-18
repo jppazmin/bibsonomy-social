@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+
+     BibSonomy-Database - Database for BibSonomy.
+
+     Copyright (C) 2006 - 2011 Knowledge & Data Engineering Group,
+                               University of Kassel, Germany
+                               http://www.kde.cs.uni-kassel.de/
+
+     This program is free software; you can redistribute it and/or
+     modify it under the terms of the GNU Lesser General Public License
+     as published by the Free Software Foundation; either version 2
+     of the License, or (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU Lesser General Public License for more details.
+
+     You should have received a copy of the GNU Lesser General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+
+-->
+
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="Document">
+	
+	<insert id="insertDoc" parameterClass="documentParam">
+		INSERT INTO document (hash, content_id, name, user_name, date, md5hash)
+		  VALUES (#fileHash#, #contentId#, #fileName#, #userName#, NOW(), #md5hash#)
+	</insert>
+	
+	<update id="updateDoc" parameterClass="documentParam">
+		UPDATE document d 
+		  SET d.name=#fileName#, d.hash=#fileHash#, d.date=NOW(), d.md5hash=#md5hash#
+		  WHERE d.content_id = #contentId# 
+	</update>
+	
+	<select id="getDocumentForPost" resultMap="DocumentCommon.document" parameterClass="documentParam">
+		SELECT <include refid="allDocumentAttributes"/> 
+		  FROM document d JOIN bibtex b USING (content_id)
+		  WHERE b.simhash$requestedSimHash$=#resourceHash# 
+		    AND b.user_name = #userName#
+		    AND d.user_name = #userName#
+		    AND d.name = #fileName#
+	</select>	
+		
+	<select id="getDocumentsForPost" resultMap="DocumentCommon.document" parameterClass="documentParam">
+		SELECT <include refid="allDocumentAttributes"/>
+		  FROM document d JOIN bibtex b USING (content_id)
+	      WHERE b.simhash$requestedSimHash$ = #resourceHash#
+			AND d.user_name = #userName# 
+	</select>
+	
+	<select id="getDocumentForLayout" resultMap="DocumentCommon.document" parameterClass="documentParam">
+		SELECT <include refid="allDocumentAttributes"/>
+			FROM document d 
+			WHERE d.user_name=#userName#
+			AND d.hash=#fileHash# 
+			AND d.content_id=#contentId#
+	</select>
+	
+	<delete id="deleteDoc" parameterClass="documentParam">
+		DELETE FROM document 
+		WHERE content_id = #contentId# 
+		AND user_name = #userName#
+		AND name = #fileName#
+	</delete>
+	
+	<delete id="deleteDocWithNoPost" parameterClass="documentParam">
+		DELETE FROM document 
+		WHERE content_id = #contentId# 
+		AND user_name = #userName#
+		AND hash = #fileHash#
+	</delete>
+</sqlMap>

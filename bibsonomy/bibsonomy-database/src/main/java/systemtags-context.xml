@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+
+     BibSonomy-Database - Database for BibSonomy.
+
+     Copyright (C) 2006 - 2011 Knowledge & Data Engineering Group,
+                               University of Kassel, Germany
+                               http://www.kde.cs.uni-kassel.de/
+
+     This program is free software; you can redistribute it and/or
+     modify it under the terms of the GNU Lesser General Public License
+     as published by the Free Software Foundation; either version 2
+     of the License, or (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU Lesser General Public License for more details.
+
+     You should have received a copy of the GNU Lesser General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+
+-->
+
+<!-- 
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+-->
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:util="http://www.springframework.org/schema/util" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+	                    http://www.springframework.org/schema/beans/spring-beans.xsd
+	                    http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-2.5.xsd">
+
+<!--+
+    | Every systemTag in BibSonomy is registered in one of the following sets/maps
+    | A systemTag that is not registered here will not be identified as a systemTag. 
+	+-->
+
+	<!--+
+	    | EXECUTABLE SYSTEMTAGS
+		| In this list we list all executable systemTags
+		| The references are used in the construction of instances of such tags
+		+-->
+	<util:set id="executableSystemTagSet" set-class="java.util.HashSet">
+		<ref bean="forGroupTag"/>
+		<ref bean="forFriendTag"/>
+	</util:set>
+	
+	<!--+
+	    | beans for the executable systemTags
+	    +-->
+	<bean id="forGroupTag" class="org.bibsonomy.database.systemstags.executable.ForGroupTag"/>
+	<bean id="forFriendTag" class="org.bibsonomy.database.systemstags.executable.ForFriendTag"/>
+	
+	<!--+
+	    |SEARCH SYSTEMTAGS
+ 		+-->
+	<util:set id="searchSystemTagSet" set-class="java.util.HashSet">
+		<ref bean="authorTag"/>
+		<ref bean="bibtexkeyTag"/>
+		<ref bean="daysTag"/>
+		<ref bean="entrytypeTag"/>
+		<ref bean="groupTag"/>
+		<ref bean="titleTag"/>
+		<ref bean="userTag"/>
+		<ref bean="yearTag"/>
+		<ref bean="userRelationSystemTag"/>
+		<ref bean="networkRelationSystemTag"/>
+	</util:set>
+	
+	
+	<!--+
+	    | beans for the search systemTags
+	    +-->
+	<bean id="authorTag" class="org.bibsonomy.database.systemstags.search.AuthorSystemTag"/>
+	<bean id="bibtexkeyTag" class="org.bibsonomy.database.systemstags.search.BibTexKeySystemTag"/>
+	<bean id="daysTag" class="org.bibsonomy.database.systemstags.search.DaysSystemTag"/>
+	<bean id="entrytypeTag" class="org.bibsonomy.database.systemstags.search.EntryTypeSystemTag"/>
+	<bean id="groupTag" class="org.bibsonomy.database.systemstags.search.GroupSystemTag"/>
+	<bean id="titleTag" class="org.bibsonomy.database.systemstags.search.TitleSystemTag"/>
+	<bean id="userTag" class="org.bibsonomy.database.systemstags.search.UserSystemTag"/>
+	<bean id="yearTag" class="org.bibsonomy.database.systemstags.search.YearSystemTag"/>
+	<bean id="userRelationSystemTag" class="org.bibsonomy.database.systemstags.search.UserRelationSystemTag"/>
+	<bean id="networkRelationSystemTag" class="org.bibsonomy.database.systemstags.search.NetworkRelationSystemTag"/>
+
+	<!--+
+	    |MARKUP SYSTEMTAGS
+		+-->	  
+	<util:set id="markUpSystemTagSet" set-class="java.util.HashSet">
+		<ref bean="relevantForSystemTag"/>
+		<ref bean="sentSystemTag"/>
+		<ref bean="myOwnSystemTag"/>
+		<ref bean="unfiledSystemTag"/>
+		<ref bean="jabrefSystemTag"/>
+		<ref bean="hiddenSystemTag"/>
+		
+	</util:set>
+	
+	<!--+
+	    | beans for the markUp systemTags
+	    +-->
+	<bean id="relevantForSystemTag" class="org.bibsonomy.database.systemstags.markup.RelevantForSystemTag"/>
+	<bean id="sentSystemTag" class="org.bibsonomy.database.systemstags.markup.SentSystemTag"/>
+	<bean id="myOwnSystemTag" class="org.bibsonomy.database.systemstags.markup.MyOwnSystemTag"/>
+	<bean id="unfiledSystemTag" class="org.bibsonomy.database.systemstags.markup.UnfiledSystemTag"/>
+	<bean id="jabrefSystemTag" class="org.bibsonomy.database.systemstags.markup.JabrefSystemTag"/>
+	<bean id="hiddenSystemTag" class="org.bibsonomy.database.systemstags.markup.HiddenTagSystemTag"/>
+
+</beans>

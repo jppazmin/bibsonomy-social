@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+
+     BibSonomy-Database - Database for BibSonomy.
+
+     Copyright (C) 2006 - 2011 Knowledge & Data Engineering Group,
+                               University of Kassel, Germany
+                               http://www.kde.cs.uni-kassel.de/
+
+     This program is free software; you can redistribute it and/or
+     modify it under the terms of the GNU Lesser General Public License
+     as published by the Free Software Foundation; either version 2
+     of the License, or (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU Lesser General Public License for more details.
+
+     You should have received a copy of the GNU Lesser General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+
+-->
+
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="BibTexExtra">
+
+	<select id="getBibTexExtraURL" resultMap="BibTexExtraCommon.bibtexExtraURL" parameterClass="bibtexExtraParam">
+		SELECT u.url, u.text, u.date
+		FROM bibtexurls u
+		     JOIN bibtex b ON u.content_id = b.content_id
+		WHERE b.simhash$simHash$ = #hash#
+		      AND b.user_name = #userName#
+		ORDER BY u.date DESC
+	</select>
+
+	<insert id="insertBibTexExtraURL" parameterClass="bibtexExtraParam">
+		INSERT INTO bibtexurls (url, text, content_id)
+		VALUES (#bibtexExtra.url#, #bibtexExtra.text#, #requestedContentId#)
+	</insert>
+	
+	<insert id="insertScraperMetadata" parameterClass="scraperMetadata">
+	  INSERT INTO scraperMetaData (`id`,`metaResult`,`scraper`,`url`) 
+	    VALUES (#id#,#metaData#,#scraperClass#,#url#)
+	</insert>
+
+	<update id="updateBibTexURL" parameterClass="bibtexExtraParam">
+		UPDATE bibtexurls SET content_id = #newContentId# WHERE content_id = #requestedContentId#
+	</update>
+
+	<delete id="deleteAllBibTexExtraURLs" parameterClass="int">
+		DELETE FROM bibtexurls WHERE content_id = #requestedContentId#
+	</delete>
+
+	<delete id="deleteBibTexExtraURL" parameterClass="bibtexExtraParam">
+		DELETE FROM bibtexurls WHERE content_id = #requestedContentId# AND url = #bibtexExtra.url#
+	</delete>
+
+	<select id="getBibTexPrivnoteForUser" resultClass="string" parameterClass="bibtexExtraParam">
+		SELECT privnote FROM bibtex WHERE user_name = #userName# AND simhash$simHash$ = #hash# LIMIT 1
+	</select>
+
+	<update id="updateBibTexPrivnoteForUser" parameterClass="bibtexExtraParam">
+		UPDATE bibtex SET privnote = #resource.note#
+		WHERE user_name = #userName# AND simhash$simHash$ = #hash#
+	</update>
+
+	<select id="getDocumentByHash" resultClass="string" parameterClass="string">
+		SELECT name FROM document WHERE hash = #hash#
+	</select>
+
+	<select id="getDocumentByHashAndUser" resultClass="string" parameterClass="bibtexExtraParam">
+		SELECT name FROM document WHERE hash = #hash# AND user_name = #userName#
+	</select>
+
+	<update id="updateDocument" parameterClass="bibtexExtraParam">
+		UPDATE document SET content_id = #newContentId# WHERE content_id = #requestedContentId#
+	</update>
+
+	<delete id="deleteDocument" parameterClass="int">
+		DELETE FROM document WHERE content_id = #requestedContentId#
+	</delete>
+	
+	<insert id="insertExtendedBibtex" parameterClass="bibtexExtendedParam">
+		INSERT INTO extended_fields_data (`key`, `value`, `content_id`, `date_of_create`)
+		VALUES (#extendedField.key#, #extendedField.value#, #requestedContentId#, #extendedField.created#)
+	</insert>
+
+	<select id="getExtendedFields" resultMap="BibTexExtraCommon.extendedList" parameterClass="bibtexExtendedParam">
+		SELECT d.*
+		FROM extended_fields_data d
+		     JOIN bibtex b ON b.content_id = d.content_id
+		WHERE b.user_name = #userName# AND b.simhash$simHash$ = #hash#
+		ORDER BY d.date_of_create
+	</select>
+	
+	<select id="getExtendedFieldsByKey" resultMap="BibTexExtraCommon.extendedList" parameterClass="bibtexExtendedParam">
+		SELECT d.*
+		FROM extended_fields_data d
+		     JOIN bibtex b ON b.content_id = d.content_id
+		WHERE b.user_name = #userName# AND b.simhash$simHash$ = #hash# AND d.key = #extendedField.key#
+		ORDER BY d.date_of_create
+	</select>
+
+	<update id="updateExtendedFieldsData" parameterClass="bibtexExtraParam">
+		UPDATE extended_fields_data SET content_id = #newContentId# WHERE content_id = #requestedContentId#
+	</update>
+	
+	<delete id="deleteExtendedFieldByKey" parameterClass="bibtexExtendedParam">
+		DELETE extended_fields_data
+		FROM extended_fields_data INNER JOIN bibtex 
+		WHERE bibtex.content_id = extended_fields_data.content_id
+		AND bibtex.user_name = #userName# AND bibtex.simhash$simHash$ = #hash#  AND extended_fields_data.key = #extendedField.key#
+	</delete>
+	
+	<delete id="deleteExtendedFieldByKeyValue" parameterClass="bibtexExtendedParam">
+		DELETE extended_fields_data
+		FROM extended_fields_data INNER JOIN bibtex 
+		WHERE bibtex.content_id = extended_fields_data.content_id
+		AND bibtex.user_name = #userName# AND bibtex.simhash$simHash$ = #hash#  AND extended_fields_data.key = #extendedField.key# AND extended_fields_data.value = #extendedField.value#
+	</delete>
+
+	<delete id="deleteAllExtendedFieldsData" parameterClass="int">
+		DELETE FROM extended_fields_data WHERE content_id = #requestedContentId#
+	</delete>
+</sqlMap>

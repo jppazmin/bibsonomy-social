@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+
+     BibSonomy-Database - Database for BibSonomy.
+
+     Copyright (C) 2006 - 2011 Knowledge & Data Engineering Group,
+                               University of Kassel, Germany
+                               http://www.kde.cs.uni-kassel.de/
+
+     This program is free software; you can redistribute it and/or
+     modify it under the terms of the GNU Lesser General Public License
+     as published by the Free Software Foundation; either version 2
+     of the License, or (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU Lesser General Public License for more details.
+
+     You should have received a copy of the GNU Lesser General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+
+-->
+
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="DocumentCommon">
+	<resultMap id="document" class="document" groupBy="fileHash">
+		<result property="fileHash"      column="hash"      javaType="string" />
+    	<result property="fileName"      column="name"      javaType="string" />
+    	<result property="md5hash"		 column="md5hash"   javaType="string" />
+    	<!-- 
+    		Prepended doc_ to columns to not mix it with bibtex table columns.
+    		Without that, the query getBibTexByTagNamesForUserWithPDF returns 
+    		posts with empty documents (which breaks some other things ...).
+    		Also, without that on the 'date' column, we can't get the documents
+    		date (the post date would be used instead).
+    		Thus, use always the SQL snippet "allDocumentAttributes" below in
+    		the SELECT statements.
+    	 -->
+    	<result property="userName"		 column="doc_user_name" javaType="string" />
+    	<result property="date"          column="doc_date"      javaType="date" />
+	</resultMap>
+	
+
+	<sql id="allDocumentAttributes">
+		d.hash, d.name, d.md5hash, d.user_name AS doc_user_name, d.date AS doc_date
+	</sql>
+	
+</sqlMap>

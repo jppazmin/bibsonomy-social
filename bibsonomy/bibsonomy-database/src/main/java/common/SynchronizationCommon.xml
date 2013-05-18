@@ -1,0 +1,59 @@
+<!--
+
+
+     BibSonomy-Database - Database for BibSonomy.
+
+     Copyright (C) 2006 - 2011 Knowledge & Data Engineering Group,
+                               University of Kassel, Germany
+                               http://www.kde.cs.uni-kassel.de/
+
+     This program is free software; you can redistribute it and/or
+     modify it under the terms of the GNU Lesser General Public License
+     as published by the Free Software Foundation; either version 2
+     of the License, or (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU Lesser General Public License for more details.
+
+     You should have received a copy of the GNU Lesser General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+
+-->
+
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+<sqlMap namespace="SynchronizationCommon">
+	
+	<resultMap id="syncResource" class="syncResource">
+		<result property="createDate"	column="date"			javaType="date"		/>
+		<result property="changeDate"	column="change_date"	javaType="date"		/>
+	</resultMap>
+	
+	<resultMap id="syncPost" class="syncPost" extends="syncResource">
+		<result property="interHash"	column="interHash"		javaType="string"	/>
+		<result property="intraHash"	column="intraHash"		javaType="string"	/>
+	</resultMap>
+	
+	<resultMap id="syncData" class="syncData">
+		<result property="service"		column="uri"			javaType="uri" />
+		<result property="userName"		column="user_name"		javaType="string" />
+		<result property="resourceType"	column="content_type"	javaType="resourceTypeClass" />
+		<result property="lastSyncDate"	column="last_sync_date"	javaType="date" />
+		<result property="status"		column="status"			javaType="syncStatus" />
+		<result property="info"			column="info"			javaType="string" />
+	</resultMap>
+	
+	<resultMap id="syncService" class="syncService">
+		<result property="service"		column="uri"			javaType="uri" />
+		<result property="serverUser"	column="credentials"	javaType="properties"/>
+		<result property="direction"	column="direction"		javaType="syncDirection" />
+		<result property="resourceType"	column="content_type"	javaType="resourceTypeClass" />
+		<result property="strategy"		column="strategy"		javaType="conflictStrategy" />
+	</resultMap>
+	
+	<sql id="syncDataColumns">
+		ss.uri, sd.user_name, sd.content_type, sd.last_sync_date, sd.status, sd.info
+	</sql>
+</sqlMap>

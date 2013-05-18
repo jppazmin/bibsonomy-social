@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+
+     BibSonomy-Database - Database for BibSonomy.
+
+     Copyright (C) 2006 - 2011 Knowledge & Data Engineering Group,
+                               University of Kassel, Germany
+                               http://www.kde.cs.uni-kassel.de/
+
+     This program is free software; you can redistribute it and/or
+     modify it under the terms of the GNU Lesser General Public License
+     as published by the Free Software Foundation; either version 2
+     of the License, or (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU Lesser General Public License for more details.
+
+     You should have received a copy of the GNU Lesser General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+
+-->
+
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="Comment">
+	
+	<select id="getCommentsByHashForResource" parameterClass="discussionItemParam" resultMap="CommentCommon.comment">
+		SELECT <include refid ="commonDiscussionAttributes"/>, NULL AS `group`, NULL AS group_name FROM
+			discussion d
+		WHERE d.hash = #hash#
+			AND d.interHash = #interHash#
+			AND d.user_name = #userName#
+			AND d.rating IS NULL
+	</select>
+	
+	<insert id="insertComment" parameterClass="commentParam">
+		INSERT INTO discussion (discussion_id, interHash, hash, type, user_name, text, parent_hash, anonymous, `group`, date, change_date) VALUES (#comment.id#, #interHash#, #comment.hash#, #discussionItemType.id#, #userName#, #comment.text#, #comment.parentHash#, #comment.anonymous#, #groupId#, #comment.date#, #comment.changeDate#)
+	</insert>
+</sqlMap>

@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+
+     BibSonomy-Database - Database for BibSonomy.
+
+     Copyright (C) 2006 - 2011 Knowledge & Data Engineering Group,
+                               University of Kassel, Germany
+                               http://www.kde.cs.uni-kassel.de/
+
+     This program is free software; you can redistribute it and/or
+     modify it under the terms of the GNU Lesser General Public License
+     as published by the Free Software Foundation; either version 2
+     of the License, or (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU Lesser General Public License for more details.
+
+     You should have received a copy of the GNU Lesser General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+
+-->
+
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="GoldStandardPublicationCommon">
+	<resultMap id="goldStandardPublication" class="goldStandardPublication" extends="BibTexCommon.bibtex_common">
+		<!-- to get a GoldStandardPublication object instead of a normal publication (aka bibtex) -->
+	</resultMap>
+	
+	<resultMap id="posts" class="post" groupBy="contentId">
+		<result property="date"         column="date"           javaType="date" />
+		<result property="user"         resultMap="Common.user" />
+		<result property="description"  column="description"    javaType="string" />
+	</resultMap>
+	
+	<resultMap id="goldStandardPublicationPost" class="post" extends="GoldStandardPublicationCommon.posts">
+		<result property="resource"   resultMap="GoldStandardPublicationCommon.goldStandardPublication" />
+	</resultMap>
+	
+	<sql id="allGoldStandardPublicationAttributesWithSimHashes">
+		<include refid="allGoldStandardPublicationAttributes"/>,
+		<include refid="bibtexSimHashes"/>
+	</sql>
+	
+	<sql id="allGoldStandardPublicationColumns">title, entrytype, author, editor, year, journal, volume, chapter,
+		edition, month, bookTitle, howpublished, institution, organization, publisher, address, school, series,
+		bibtexKey, `group`, date, user_name, url, description, annote, note, pages, bKey, number, crossref, misc,
+		bibtexAbstract, type, day, privnote, simhash0, simhash1, simhash2, simhash3</sql>
+		
+	<sql id="allGoldStandardPublicationValues">#resource.title#, #resource.entrytype#, #resource.author#, #resource.editor#, #resource.year#,
+		#resource.journal#, #resource.volume#, #resource.chapter#, #resource.edition#,
+		#resource.month#, #resource.booktitle#, #resource.howpublished#, #resource.institution#,
+		#resource.organization#, #resource.publisher#, #resource.address#, #resource.school#,
+        #resource.series#, #resource.bibtexKey#, #groupId#, #date#, #userName#,
+        #resource.url#, #description#, #resource.annote#, #resource.note#, #resource.pages#,
+        #resource.key#, #resource.number#, #resource.crossref#, #resource.misc#, #resource.bibtexAbstract#,
+        #resource.type#, #resource.day#, #resource.privnote#, #resource.simHash0#, #resource.simHash1#,
+        #resource.simHash2#, #resource.simHash3#</sql>
+	
+	<sql id="allGoldStandardPublicationAttributes">
+		b.address, b.annote, b.booktitle, b.chapter, b.crossref, b.edition, b.howpublished,
+		b.institution, b.journal, b.bkey, b.month, b.note, b.number, b.organization, b.pages, b.publisher,
+		b.school, b.series, b.type, b.volume, b.day, b.url, b.description, b.bibtexKey, b.misc,
+		b.bibtexAbstract, b.user_name, b.date, b.title, b.author, b.editor, b.year, b.entrytype
+	</sql>
+</sqlMap>

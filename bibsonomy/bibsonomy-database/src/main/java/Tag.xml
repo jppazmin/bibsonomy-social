@@ -1,0 +1,491 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+
+     BibSonomy-Database - Database for BibSonomy.
+
+     Copyright (C) 2006 - 2011 Knowledge & Data Engineering Group,
+                               University of Kassel, Germany
+                               http://www.kde.cs.uni-kassel.de/
+
+     This program is free software; you can redistribute it and/or
+     modify it under the terms of the GNU Lesser General Public License
+     as published by the Free Software Foundation; either version 2
+     of the License, or (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU Lesser General Public License for more details.
+
+     You should have received a copy of the GNU Lesser General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+
+-->
+
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="Tag">
+
+	<select id="getTagById" resultMap="TagCommon.tagWithDetails" parameterClass="int">
+		SELECT T.tag_id, TAS.tag_name, count(TAS.tag_name) as tag_ctr 
+		FROM tags T, tas TAS 
+		WHERE T.tag_name=TAS.tag_name AND
+			  (TAS.user_name=#requestedUserName# OR TAS.group=0) AND			  
+			  T.tag_id = #id#
+		GROUP BY TAS.tag_name
+	</select>
+
+	<select id="getTagByName" resultMap="TagCommon.tagWithGlobalCount" parameterClass="tagParam">
+		SELECT t1.tag_name, count(t1.tag_name) as tag_ctr 
+		FROM <include refid="tagFromQuery"/>
+		WHERE <include refid="tagWhereQuery"/> AND
+			  (t1.user_name=#requestedUserName# OR
+			  t1.group=0)
+		GROUP BY t1.tag_name
+		LIMIT #limit# OFFSET #offset#
+	</select>	
+
+	<select id="getTagByCount" resultMap="TagCommon.tagWithGlobalCount" parameterClass="tagParam">
+		SELECT DISTINCT T.tag_name, T.tag_ctr  
+		FROM tags T, tas TAS  
+		WHERE T.tag_name=TAS.tag_name AND 
+		      T.tag_ctr=#count# AND 
+		      (TAS.group=0 OR TAS.user_name=#requestedUserName#)
+		LIMIT #limit# OFFSET #offset#	      
+	</select>
+
+	<select id="getAllTags" resultMap="TagCommon.tagWithGlobalCount" parameterClass="tagParam">
+		<!-- 
+			the table 'popular_tags' contains only the 100 most popular tags for each content
+			type (bibtex, bookmark, all); that's why we can safely use offset/limit values 
+			here, as nobody can crawl ALL tags via this query (which is visible via the api/tags).
+		 -->
+		SELECT tag_lower AS tag_name, tag_ctr 
+		FROM popular_tags
+		WHERE content_type=#contentType#
+		AND tag_lower != 'imported'
+		LIMIT #limit# OFFSET #offset#		 
+	</select>
+	
+	<select id="getTagsByExpression" resultMap="TagCommon.tagWithGlobalCount" parameterClass="tagParam">
+		SELECT t.tag_name, count(t.tag_name) as tag_ctr 
+		FROM tas t
+		WHERE t.user_name=#requestedUserName# 
+			  AND
+			  t.tag_name REGEXP #regex#
+			  <include refid="getTagsByResourceType"/>
+		GROUP BY t.tag_name
+		LIMIT #limit# OFFSET #offset#		
+	</select>
+
+ 	<select id="getTagsViewable" resultMap="TagCommon.tagWithGlobalCount" parameterClass="tagParam">
+		SELECT tag_name, count(tag_name) AS tag_ctr 
+		FROM tas t
+		WHERE t.group = #groupId#
+		<include refid="getTagsByResourceType"/>
+		GROUP BY t.tag_name LIMIT #limit# OFFSET #offset#
+	</select>
+
+	<select id="getTagsViewableBySpecialGroup" resultMap="TagCommon.tagWithGlobalCount" parameterClass="tagParam">
+		SELECT tag_name, count(tag_name) AS tag_ctr 
+		FROM tas t
+		WHERE t.group = #groupId# 
+		AND t.user_name = #requestedUserName#
+		<include refid="getTagsByResourceType"/>
+		GROUP BY t.tag_name LIMIT #limit# OFFSET #offset#
+	</select>
+				
+	<!--
+		ATTENTION: for the query 'getTagsByUser', the resultMap 'TagCommon.tagWithGlobalCount'
+	 	might be a bit misleading, als the 'global' count here is not the total number of posts
+	 	_in the system_ which are annotated by this tag, but the total number of posts
+	 	_of a single user_ annotated by this tag.
+	 	We should rename the attribute 'globalcount' to 'resourcecount' to make it better 
+	 	understandable- (see https://gforge.cs.uni-kassel.de/tracker/index.php?func=detail&aid=433&group_id=52&atid=278)
+	 	dbe, 2007/09/27
+	-->		  
+	<select id="getTagsByUser" resultMap="TagCommon.tagWithGlobalAndUserCount" parameterClass="tagParam">
+		SELECT t1.tag_name, count(t1.tag_name) AS tag_ctr_user, t.tag_ctr_public AS tag_ctr_global   
+		FROM tas t1, tags t  
+		WHERE t1.user_name = #requestedUserName# 	 
+		<include refid="getTagsByResourceType"/>
+		<include refid="restrictToGroups"/>
+		AND t1.tag_name = t.tag_name 
+		GROUP BY t1.tag_name 
+		<isEqual property="order" compareValue="FREQUENCY">
+			ORDER BY tag_ctr_user DESC
+		</isEqual>
+		LIMIT #limit# OFFSET #offset#
+	</select>
+
+	<select id="getTagsByGroup" resultMap="TagCommon.tagWithGlobalCount" parameterClass="tagParam">
+		SELECT tag_name, count(tag_name) AS tag_ctr FROM 
+		((SELECT t1.tag_name 
+		  FROM tas t1, groups g
+		  WHERE g.group = #groupId# AND g.user_name=t1.user_name
+		  <include refid="getTagsByResourceType"/>
+		  <include refid="inGroups"/>) 
+		 UNION ALL
+		 (SELECT t1.tag_name 
+		  FROM tas t1, groups g, friends f
+		  WHERE <include refid="matchGroupMemberTrust"/>    <!-- currUser is friend of a group member -->
+		        AND t1.user_name = f.user_name AND g.group = #groupId# AND t1.group = #groupTypeFriends#
+		        <include refid="getTagsByResourceType"/>)     
+		 UNION ALL
+		 (SELECT t1.tag_name
+		  FROM tas t1, groups g
+		  WHERE t1.user_name = #userName# AND g.user_name = t1.user_name
+		        AND g.group = #groupId#
+		        <include refid="getTagsByResourceType"/>)) AS tagsalias
+		GROUP BY tag_name 
+		<isEqual property="order" compareValue="FREQUENCY">
+			ORDER BY tag_ctr DESC
+		</isEqual>
+		LIMIT #limit# OFFSET #offset#
+	</select>
+
+
+	<select id="getSubtagsOfTag" resultMap="TagCommon.tagWithGlobalCount" parameterClass="tagParam">
+		SELECT t1.tag_name, count(distinct(t1.tas_id)) as tag_ctr 
+		FROM tas t1, tagtagrelations TTR 
+		WHERE TTR.upper = <iterate property="tagIndex">#tagIndex[].tagName#</iterate> AND 
+                TTR.lower = t1.tag_name AND
+                (t1.group=0 OR t1.user_name = #requestedUserName#)
+		GROUP BY t1.tag_name
+		LIMIT #limit# OFFSET #offset#
+	</select>
+
+	<select id="getSupertagsOfTag" resultMap="TagCommon.tagWithGlobalCount" parameterClass="tagParam">
+		SELECT t1.tag_name, count(distinct(t1.tas_id)) as tag_ctr 
+		FROM tas t1, tagtagrelations TTR 
+		WHERE TTR.lower = <iterate property="tagIndex">#tagIndex[].tagName#</iterate> AND 
+                TTR.upper = t1.tag_name AND
+                (t1.group=0 OR t1.user_name = #requestedUserName#)
+		GROUP BY t1.tag_name
+		LIMIT #limit# OFFSET #offset#
+	</select>
+	
+	<!-- noch an TagParam anpassen für das Einfügen von Bookmark bzw Bibtex Objekten -->
+	<insert id="insertTag" parameterClass="tag">
+		INSERT INTO tags (tag_name, tag_ctr) 
+		VALUES (#name#, 1) 
+		ON DUPLICATE KEY UPDATE tag_ctr = tag_ctr + 1
+	</insert>
+	<!-- FIXME: this statement is broken! (the same tag is added twice) 
+	<insert id="insertTagTag" parameterClass="tag">
+		INSERT INTO tagtag (t1, t2, ctr)
+			VALUES (#name#, #name#, 1)
+			ON DUPLICATE KEY UPDATE ctr = ctr + 1
+	</insert>
+ 	-->
+
+	<update id="updateTagDec" parameterClass="string">
+		UPDATE tags 
+		SET tag_ctr = tag_ctr - 1 
+		WHERE tag_name = #tagName#
+	</update>
+
+	<select id="getTagsByAuthor" resultMap="TagCommon.tagWithGlobalCount" parameterClass="tagParam">
+		SELECT tag_name, count(tag_name) AS tag_ctr 
+		FROM tas t1, search_bibtex s 
+		WHERE MATCH(s.author) AGAINST (#search# IN BOOLEAN MODE)
+			<include refid="getTagsByResourceType"/>
+			AND t1.content_id = s.content_id
+			<include refid="restrictToGroups"/> 
+		GROUP BY t1.tag_name ORDER BY tag_name COLLATE utf8_unicode_ci
+		LIMIT #limit# OFFSET #offset#
+	</select>
+	
+	<select id="getRelatedTagsForGroup" resultMap="TagCommon.tagWithGlobalCount" parameterClass="tagParam">
+		SELECT t1.tag_name, COUNT(t1.tag_name) AS tag_ctr
+		FROM tas t, tas t1, groups g, groupids i
+		WHERE t1.content_id = t.content_id
+		AND i.group_name = #requestedGroupName#		
+		AND i.group = g.group 
+		AND g.user_name = t.user_name
+		<include refid="restrictToGroups"/>
+		AND (<iterate property="tagIndex" conjunction=" OR ">t.tag_name = #tagIndex[].tagName#</iterate>)
+		AND (<iterate property="tagIndex" conjunction=" AND ">t1.tag_name != #tagIndex[].tagName#</iterate>)	
+		GROUP BY t1.tag_name
+		ORDER BY tag_ctr DESC 
+		LIMIT #limit# OFFSET #offset#
+	</select>
+
+	<select id="getRelatedTagsViewable" resultMap="TagCommon.tagWithGlobalCount" parameterClass="tagParam">
+		SELECT tt.tag_name, COUNT(tt.tag_name) AS tag_ctr
+		FROM tas t, tas tt
+		WHERE tt.content_id = t.content_id	
+		AND t.group = #groupId#
+		<isNotNull property="requestedUserName">
+			AND t.user_name = #requestedUserName#
+		</isNotNull>
+		AND (<iterate property="tagIndex" conjunction=" OR ">t.tag_name = #tagIndex[].tagName#</iterate>)
+		AND (<iterate property="tagIndex" conjunction=" AND ">tt.tag_name != #tagIndex[].tagName#</iterate>)	
+		GROUP BY tt.tag_name
+		ORDER BY tag_ctr DESC 
+		LIMIT #limit# OFFSET #offset#
+	</select>
+	 
+	<!-- 
+		query to retrieve related tags restricted to groups, users or viewable pages
+	-->
+	<select id="getRelatedTagsRestricted" resultMap="TagCommon.tagWithGlobalCount" parameterClass="tagParam" timeout="2">
+		    SELECT t.tag_name AS tag_name, count(t.tag_name) as tag_ctr
+	      	FROM tas t, <include refid="tagFromQuery"/> <!-- a TAS join (t1, t2, ...) for each requested tag -->
+	      		<isNotEmpty property="requestedGroupName">
+	      		<!-- get related tas for group (group/GROUPNAME/tag) -->
+	      		, groups g, groupids i
+	      		</isNotEmpty>
+	      	WHERE t.content_id=t1.content_id 
+	          AND <include refid="tagWhereQuery"/>
+	              <iterate property="tagIndex" conjunction=" AND " prepend=" AND ">
+	              <!-- exclude requested tags -->
+	              t.tag_name != #tagIndex[].tagName#
+	              </iterate>
+	          <isNotEmpty property="requestedUserName">
+	          	  <!-- get related tags for user (user/USERNAME/tag) -->
+	          	  AND t.user_name = #requestedUserName#
+	          	  <include refid="restrictToGroups"/>	
+	          </isNotEmpty>
+	          <isNotEqual property="groupId" compareValue="-1">
+	          	  <!-- get related tags for viewable page (viewable/GROUPNAME/tag -->
+				  AND t.group = #groupId#	          	  
+	          </isNotEqual>	   
+	          <isNotEmpty property="requestedGroupName">
+	          	  <!-- get related tas for group (group/GROUPNAME/tag) -->
+				  AND i.group_name = #requestedGroupName#		
+				  AND i.group = g.group 
+				  AND g.user_name = t.user_name
+				  <include refid="restrictToGroups"/>	          
+	          </isNotEmpty>	             			   
+	      	GROUP BY t.tag_name
+	      	ORDER BY tag_ctr DESC
+	      	LIMIT #limit# OFFSET #offset#
+	</select>
+	
+	<!-- 
+		query to retrieve globally related tags 
+	-->
+	<select id="getRelatedTags" resultMap="TagCommon.tagWithGlobalCount" parameterClass="tagParam" timeout="2">
+	    <!-- single tag requested: query tagtag table -->
+		<isEqual property="maxTagIndex" compareValue="1">
+			SELECT TT.t2 AS tag_name, TT.ctr_public AS tag_ctr
+			FROM tagtag TT
+			WHERE TT.t1 = #tagIndex[0].tagName#
+			  AND TT.ctr_public > 0
+			  AND TT.t2 != #tagIndex[0].tagName# <!-- exclude requested tag -->
+			ORDER BY TT.ctr_public DESC
+			LIMIT #limit# OFFSET #offset#
+		</isEqual>
+		<!-- more than one tag requested: query tas -->
+		<isGreaterThan property="maxTagIndex" compareValue="1">		
+		    SELECT t.tag_name AS tag_name, count(t.tag_name) as tag_ctr
+	      	FROM tas t, <include refid="tagFromQuery"/> <!-- a TAS join (t1, t2, ...) for each requested tag -->
+	      	WHERE t.content_id=t1.content_id 
+	          AND <include refid="tagWhereQuery"/>
+	              <iterate property="tagIndex" conjunction=" AND " prepend=" AND ">
+	              <!-- exclude requested tags -->
+	              t.tag_name != #tagIndex[].tagName#
+	              </iterate>
+	          <!-- restrict to visible tags - not using restrictToGroups because of different table alias -->
+			  AND t.group IN (<iterate property="groups" conjunction=",">$groups[]$</iterate>)         			   
+	      	GROUP BY t.tag_name
+	      	ORDER BY tag_ctr DESC
+	      	LIMIT #limit# OFFSET #offset#
+	    </isGreaterThan>
+	</select>
+	
+	
+	<!-- 
+		For updateTags(User user, List<Tag> tagsToReplace, List<Tag> replacementTags) 
+		we need the TAS of all posts which have all of the tags in tagsToReplace.
+		
+		The JOIN has two parts which are merged by a UNION:
+		1. get all public/private TAS from tas table
+		2. get other TAS from grouptas table
+	 -->	
+	<select id="getTASByTagNames" resultMap="Common.mockPost" parameterClass="genericParam">
+		SELECT t.tag_name, t.content_id, tt.group, t.content_type, t.user_name, t.date, t.change_date, NULL as description, NULL AS `group`, NULL AS group_name
+		FROM tas t 
+		  JOIN (
+		      SELECT t1.content_id, t1.group 
+		        FROM <include refid="tagFromQuery"/>
+		        WHERE <include refid="tagWhereQuery"/>
+		          AND t1.user_name = #userName#
+		          AND t1.group &lt; 2
+    		  UNION 
+		      SELECT t1.content_id, t1.group
+		        FROM <include refid="grouptasTagFromQuery"/>
+		        WHERE <include refid="tagWhereQuery"/>
+		          AND t1.user_name = #userName#
+             ) AS tt
+		  USING (content_id)
+	</select>
+	
+	<select id="getRelatedTagsOrderedByFolkrank" resultMap="TagCommon.tagWithGlobalCount" parameterClass="tagParam">
+		SELECT w.item AS tag_name , ROUND(SUM(weight),5) * 10000 AS tag_ctr
+		FROM rankings r
+			JOIN weights w USING (id)
+		WHERE (<iterate property="tagIndex" conjunction=" OR ">r.item = #tagIndex[].tagName#</iterate>) 
+			AND r.dim = 0
+			AND w.dim = 0 
+			AND w.itemtype = 0
+			AND <iterate property="tagIndex" conjunction=" AND ">w.item != #tagIndex[].tagName#</iterate>
+		GROUP BY w.item
+		ORDER BY 2 DESC
+		LIMIT #limit#
+	</select>
+	
+
+	<select id="getTagsByBookmarkHash" resultMap="TagCommon.tagWithGlobalCount" parameterClass="tagParam">
+    	SELECT t.tag_name, count(t.tag_name) AS tag_ctr
+      	FROM (
+      		SELECT t1.tag_name 
+          	FROM tas t1, bookmark b
+          	WHERE t1.content_id = b.content_id
+			<isNotEmpty prepend="AND" property="requestedUserName">
+				t1.user_name=#requestedUserName#
+			</isNotEmpty>            	
+          	AND b.book_url_hash = #hash#
+          	<include refid="restrictToGroups"/>
+        ) AS t      
+      	GROUP BY t.tag_name
+      	ORDER BY 2 DESC
+      	LIMIT #limit#
+      	OFFSET #offset#		
+	</select>
+		
+	<select id="getTagsByBibtexHash" resultMap="TagCommon.tagWithGlobalCount" parameterClass="tagParam">
+    	SELECT t.tag_name, count(t.tag_name) AS tag_ctr
+      	FROM (
+        	SELECT t1.tag_name 
+          	FROM tas t1, bibtex b
+          	WHERE t1.content_id=b.content_id
+			<isNotEmpty prepend="AND" property="requestedUserName">
+				t1.user_name=#requestedUserName#
+			</isNotEmpty>          	
+          	AND b.simhash#simHash# = #hash#
+          	<include refid="restrictToGroups"/>
+        ) AS t      
+      	GROUP BY t.tag_name
+      	ORDER BY 2 DESC
+      	LIMIT #limit#
+      	OFFSET #offset#
+	</select>
+	
+	<select id="getSimilarTags" resultMap="TagCommon.tagWithGlobalCount" parameterClass="tagParam">
+		SELECT t2 AS tag_name, ROUND(sim * 100) AS tag_ctr
+		FROM tagtag_similarity TTS
+		WHERE TTS.t1=#tagName#
+		ORDER BY sim DESC
+      	LIMIT #limit#
+      	OFFSET #offset#
+	</select>
+	
+	<select id="getTagsPopular" resultMap="TagCommon.tagWithGlobalCount" parameterClass="tagParam">
+		SELECT tag_lower AS tag_name, tag_ctr 
+		FROM popular_tags
+		WHERE content_type=#contentType#
+		LIMIT #limit#		 
+	</select>
+	
+	<select id="getPopularTags" resultMap="TagCommon.tagWithGlobalCount" parameterClass="tagParam">
+		SELECT * FROM 
+      	(
+        	SELECT tag_name, tag_ctr_public AS tag_ctr
+          	FROM tags 
+            WHERE tag_name NOT IN ('dblp', 'imported', 'system:imported', 'public','nn')
+              AND show_tag = TRUE  
+          	ORDER BY tag_ctr_public 
+          	DESC LIMIT #limit#
+      	) AS a 
+      	ORDER BY LOWER(tag_name)
+	</select>
+
+	<select id="getTagsByFriendOfUser" resultMap="TagCommon.tagWithGlobalCount" parameterClass="tagParam">
+		SELECT t1.tag_name, count(t1.tag_name) AS tag_ctr
+            FROM tas t1, friends f 
+            WHERE f.f_user_name = #userName#
+              AND f.tag_name = #bibSonomyFriendsTag#
+              AND t1.user_name = #requestedUserName#
+              AND t1.user_name = f.user_name
+              AND t1.group = 2
+              <include refid="getTagsByResourceType"/>
+            GROUP BY t1.tag_name 
+            ORDER BY tag_ctr DESC, t1.tag_name COLLATE utf8_unicode_ci
+            LIMIT #limit# OFFSET #offset#
+	</select>
+	
+	<!--+
+		| get tags from all related users according to the given relation tag
+		+-->
+	<select id="getTagsByTaggedUserRelation" resultMap="TagCommon.tagWithGlobalCount" parameterClass="tagParam">
+		SELECT t1.tag_name, count(t1.tag_name) AS tag_ctr, t.tag_ctr_public AS tag_ctr_global   
+		FROM tas t1, tags t, <include refid="relationTagFromQuery"/>     <!-- bookmarks from users which are tagged accordingly --> 
+        WHERE <include refid="relationTagTagWhereQuery"/>         <!-- to see users which are tagged accordingly by the currUser -->
+		  AND <include refid="relationTagUsernameWhereQuery"/>    <!--                            ++++                           -->
+		  AND <include refid="relationTagTasWhereQuery"/>         <!-- take all rows, which are owned by a related user -->
+		  AND t1.tag_name = t.tag_name
+              <include refid="getTagsByResourceType"/>
+		  <include refid="restrictToGroups"/>
+		GROUP BY t1.tag_name 
+		<isEqual property="order" compareValue="FREQUENCY">
+			ORDER BY tag_ctr DESC
+		</isEqual>
+		LIMIT #limit# OFFSET #offset#
+	</select>
+	
+	<select id="getTagsByBibtexkey" resultMap="TagCommon.tagWithGlobalCount" parameterClass="tagParam">
+		SELECT t1.tag_name, count(tag_name) AS tag_ctr
+		FROM tas t1,
+			(SELECT * FROM bibtex 
+			 WHERE bibtexKey = #bibtexKey#
+			 <isNotEmpty property="requestedUserName" prepend="AND"> user_name = #requestedUserName# </isNotEmpty>
+			 ) b 
+		WHERE b.content_id = t1.content_id
+		<include refid="restrictToGroups"/>
+		GROUP BY t1.tag_name
+		LIMIT #limit# OFFSET #offset#
+	</select>	
+	
+	<select id="getRelatedTagsByAuthorAndTag" resultMap="Common.tag" parameterClass="tagParam">
+		SELECT tt.tag_name
+		FROM (SELECT t1.content_id
+       			FROM tas t1, search_bibtex s 
+        		WHERE MATCH(s.author) AGAINST (#search# IN BOOLEAN MODE) 			 
+        		AND t1.content_type = #contentType#
+        		AND t1.content_id = s.content_id
+        		AND (<iterate property="tagIndex" conjunction=" OR ">t1.tag_name = #tagIndex[].tagName#</iterate>)
+        		<include refid="restrictToGroups"/>
+        		GROUP BY t1.tag_name ORDER BY tag_name COLLATE utf8_unicode_ci
+        ) AS t
+		LEFT JOIN tas tt ON (t.content_id = tt.content_id)
+		LIMIT #limit# OFFSET #offset#
+	</select>
+	
+	<insert id="insertTas" parameterClass="tagParam">
+		INSERT INTO tas (tas_id, tag_name, content_id, content_type, user_name, date, change_date, `group`, tag_lower)
+		VALUES (#tasId#, #tagName#, #newContentId#, #contentType#, #userName#, #date#, #changeDate#, #groupId#, #tagNameLower#)
+		<!-- VALUES
+			<iterate conjunction="," property="tags">
+				<iterate conjunction="," property="groups">
+					((select max(tas_id)+1 FROM tas), #post.tags[].name#, #contentId#, #contentType#, #post.user.name#, #post.date#, #post.groups[].groupId#, lower(#post.tags[].name#))
+				</iterate>
+			</iterate -->
+	</insert>
+	
+	<insert id="insertGroupTas" parameterClass="tagParam">
+		INSERT INTO grouptas (tas_id, tag_name, content_id, content_type, user_name, date, `group`, tag_lower)
+		VALUES (#tasId#, #tagName#, #newContentId#, #contentType#, #userName#, #date#, #groupId#, #tagNameLower#)
+	</insert>
+
+	<delete id="deleteTas" parameterClass="int">
+		DELETE FROM tas WHERE content_id = #requestedContentId#
+	</delete>
+	
+	<delete id="deleteGroupTas" parameterClass="int">
+		DELETE FROM grouptas WHERE content_id = #requestedContentId#
+	</delete>
+</sqlMap>

@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+
+     BibSonomy-Database - Database for BibSonomy.
+
+     Copyright (C) 2006 - 2011 Knowledge & Data Engineering Group,
+                               University of Kassel, Germany
+                               http://www.kde.cs.uni-kassel.de/
+
+     This program is free software; you can redistribute it and/or
+     modify it under the terms of the GNU Lesser General Public License
+     as published by the Free Software Foundation; either version 2
+     of the License, or (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU Lesser General Public License for more details.
+
+     You should have received a copy of the GNU Lesser General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+
+-->
+
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="Synchronization">
+
+	<select id="getSyncServices" resultClass="uri" parameterClass="boolean">
+		SELECT ss.uri
+		  FROM sync_services ss
+		  WHERE ss.server = #server#
+		  ORDER BY ss.uri
+	</select>
+	
+	
+	<insert id="insertSyncService" parameterClass="syncParam">
+		INSERT INTO sync_services (uri, service_id, server)
+		  VALUES (#service#, #serviceId#, #server#)
+	</insert>
+
+	<select id="getSyncServersForUser" resultMap="SynchronizationCommon.syncService" parameterClass="syncParam">
+		SELECT s.user_name, s.credentials, ss.uri, s.content_type, s.direction, s.strategy
+		  FROM sync s
+		    JOIN sync_services ss USING (service_id)
+		  WHERE s.user_name = #userName#
+		    AND ss.server = TRUE
+		  ORDER BY ss.uri
+	</select>
+	
+	<select id="getSyncServerForUserByUri" resultMap="SynchronizationCommon.syncService" parameterClass="syncParam">
+		SELECT s.user_name, s.credentials, ss.uri, s.content_type, s.direction, s.strategy
+		  FROM sync s
+		    JOIN sync_services ss USING (service_id)
+		  WHERE s.user_name = #userName#
+		    AND ss.uri = #service#
+		    AND ss.server = #server#
+	</select>
+	
+	<insert id="insertSyncServiceForUser" parameterClass="syncParam">
+		INSERT INTO sync (user_name, service_id, credentials, content_type, direction, strategy)
+		  SELECT #userName#, service_id, #credentials# , #resourceType#, #direction#, #strategy#
+		    FROM sync_services 
+		    WHERE uri = #service# 
+		      AND server = #server#
+	</insert> 
+
+	<select id="getSyncBibTex" resultMap="SynchronizationCommon.syncPost" parameterClass="bibtexParam">
+		SELECT <include refid="bibtexSimHashes"/>, b.date, t.change_date
+		  FROM bibtex b
+		    JOIN tas t USING (content_id)
+		  WHERE b.user_name = #userName#
+		  GROUP BY content_id
+	</select>
+
+	<select id="getSyncBookmark" resultMap="SynchronizationCommon.syncPost" parameterClass="bookmarkParam">
+		SELECT b.book_url_hash AS intrahash, NULL AS interhash, b.date, b.change_date
+		FROM bookmark b
+		JOIN tas t USING (content_id)
+		WHERE b.user_name = #userName#
+		GROUP BY content_id
+	</select>
+	
+	<select id="getLastSyncData" resultMap="SynchronizationCommon.syncData" parameterClass="syncParam">
+		SELECT <include refid="syncDataColumns"/>
+		  FROM sync_data sd
+		    JOIN sync_services ss USING (service_id)
+		  WHERE sd.user_name = #userName#
+			AND sd.content_type = #resourceType#
+			AND ss.uri = #service#
+			<isNotEmpty property="status" prepend="AND">
+		  		sd.status = #status# 
+		  	</isNotEmpty>
+			AND ss.server = #server#
+		  ORDER BY sd.last_sync_date DESC
+		  LIMIT 1
+	</select> 
+	
+	<insert id="insertSync" parameterClass="syncParam">
+		INSERT INTO sync_data (service_id, user_name, content_type, last_sync_date, status)
+		  SELECT service_id, #userName#, #resourceType#, #lastSyncDate#, #status# 
+		    FROM sync_services 
+		    WHERE uri = #service#
+		      AND server = #server#
+	</insert>
+	
+	<update id="updateSyncStatus" parameterClass="syncParam">
+		UPDATE sync_data sd JOIN sync_services ss USING (service_id)
+			SET sd.status = #status#, sd.info = #info#
+			WHERE sd.user_name = #userName#
+			  AND sd.content_type = #resourceType#
+			  AND sd.last_sync_date = #lastSyncDate#
+			  AND ss.uri = #service#
+			  AND ss.server = #server#
+	</update>
+	
+	<delete id="deleteSyncStatus" parameterClass="syncParam">
+		DELETE FROM sd 
+		  USING sync_data sd 
+		    JOIN sync_services ss USING (service_id)
+			WHERE sd.user_name = #userName#
+			  AND sd.content_type = #resourceType#
+			  <isNotNull property="lastSyncDate" prepend="AND">
+			  	sd.last_sync_date = #lastSyncDate#
+			  </isNotNull>
+			  AND ss.uri = #service#
+			  AND ss.server = #server#
+	</delete>	
+	
+	<update id="updateSyncServerForUser" parameterClass="syncParam">
+		UPDATE sync s
+		  JOIN sync_services ss USING (service_id)
+		  SET s.credentials = #credentials#,
+		  	  s.direction = #direction#,
+		  	  s.content_type = #resourceType#,
+		  	  s.strategy = #strategy#
+		  WHERE s.user_name = #userName#
+			AND ss.uri = #service#
+			AND ss.server = #server#
+ 	</update>
+	
+	<delete id="deleteSyncServerForUser" parameterClass="syncParam">
+		DELETE FROM s
+		  USING sync s
+		    JOIN sync_services ss USING (service_id) 
+		  WHERE s.user_name = #userName#
+			AND ss.uri = #service#
+			AND ss.server = #server#
+	</delete>
+	
+	<delete id="deleteSyncService" parameterClass="SyncParam">
+		DELETE FROM sync_services
+		  WHERE server = #server#
+			AND uri = #service#
+	</delete>
+	
+	
+</sqlMap>

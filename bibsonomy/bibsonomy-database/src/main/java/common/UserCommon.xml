@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+
+     BibSonomy-Database - Database for BibSonomy.
+
+     Copyright (C) 2006 - 2011 Knowledge & Data Engineering Group,
+                               University of Kassel, Germany
+                               http://www.kde.cs.uni-kassel.de/
+
+     This program is free software; you can redistribute it and/or
+     modify it under the terms of the GNU Lesser General Public License
+     as published by the Free Software Foundation; either version 2
+     of the License, or (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU Lesser General Public License for more details.
+
+     You should have received a copy of the GNU Lesser General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+
+-->
+
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="UserCommon">
+
+	<resultMap id="userForGroup" extends="Common.user" class="user">
+		<result property="homepage"   column="user_homepage"  javaType="url"  />
+		<result property="realname"   column="user_realname"  javaType="string" />
+	</resultMap>
+	
+	<resultMap id="userWithWeight" extends="Common.user" class="user">
+		<result property="prediction" column="weight"         javaType="integer"/>
+	</resultMap>
+
+	<resultMap id="user" class="user" extends="userForGroup">
+		<result property="apiKey"           column="api_key"       javaType="string" />
+		<result property="birthday"         column="birthday"      javaType="date" />
+		<result property="email"            column="user_email"    javaType="string" />				
+		<result property="gender"           column="gender"        javaType="string" />
+		<result property="hobbies"          column="hobbies"       javaType="string" />
+		<result property="interests"        column="interests"     javaType="string" />
+		<result property="IPAddress"        column="ip_address"    javaType="string" />
+		<result property="openURL"          column="openurl"       javaType="string" />
+		<result property="password"         column="user_password" javaType="string" />
+		<result property="place"            column="place"         javaType="string" />
+		<result property="profession"       column="profession"    javaType="string" />
+		<result property="institution"      column="institution"   javaType="string" />
+		<result property="registrationDate" column="reg_date"      javaType="date" />
+		<result property="spammer"          column="spammer"       javaType="boolean" />
+		<result property="role"             column="role"          javaType="Role" />	
+		<result property="updatedBy"        column="updated_by"    javaType="string" />
+		<result property="updatedAt"	    column="updated_at"    javaType="date" />
+		<result property="toClassify"       column="to_classify"   javaType="integer" />
+		<result property="reminderPassword" column="tmp_password"  javaType="string" />
+		<result property="reminderPasswordRequestDate" column="tmp_request_date"  javaType="date" />
+		<result property="ldapId" 			column="ldapUserId"		javaType="string" />
+		<result property="openID" 			column="openID"  		javaType="string" />			
+	</resultMap>
+	
+	<resultMap id="userWithActivationCode"  class="user" extends="user"> 
+		<result property="activationCode"   column="activation_code" javaType="string" />
+	</resultMap>
+
+	<resultMap id="userWithSettings"  class="user" extends="user"> 
+		<result property="settings"   resultMap="UserCommon.userSettings"/>
+	</resultMap>
+	
+	<resultMap id="userSettings" class="userSettings">
+		<result property="listItemcount"   	column="list_itemcount" 	javaType="integer" />	
+		<result property="tagboxMinfreq"   	column="tagbox_minfreq" 	javaType="integer" />
+		<result property="tagboxMaxCount"  	column="tagbox_max_count" 	javaType="integer" />
+		<result property="isMaxCount"      	column="is_max_count"   	javaType="boolean" />
+		<result property="tagboxSort"      	column="tagbox_sort"    	javaType="integer" />
+		<result property="tagboxStyle"     	column="tagbox_style"   	javaType="integer" />
+		<result property="tagboxTooltip"   	column="tagbox_tooltip" 	javaType="integer" />	
+		<result property="logLevel"        	column="log_level"      	javaType="integer" />
+		<result property="defaultLanguage" 	column="lang" 	       		javaType="string" />	
+		<result property="confirmDelete"   	column="confirmDelete"  	javaType="boolean" />
+		<result property="profilePrivlevel" column="profilegroup"   	javaType="ProfilePrivlevel" />	
+		<result property="showBookmark"   	column="show_bookmark"  	javaType="boolean" />
+		<result property="showBibtex"   	column="show_bibtex"  		javaType="boolean" />
+		<result property="simpleInterface"  column="simple_interface"  	javaType="boolean" />	
+	</resultMap>	
+
+	<resultMap id="userWithTags" extends="Common.user" class="user">
+		<result property="tags" column="tag" resultMap="Common.tag"/>
+	</resultMap>
+
+	<!-- IMPORTANT: changing this requires you to change "insertUserAttributes", too! -->
+	<sql id="allUserAttributes">
+		<include refid="commonUserAttributes"/>,
+		<include refid="userSettingsAttributes"/>
+	</sql>
+
+	<!-- IMPORTANT: changing this requires you to change "insertUserAttributes", too! -->
+	<sql id="commonUserAttributes">
+		user_name, user_realname,
+		user_password, api_key, openurl, tmp_password, tmp_request_date,
+		role, ip_address, reg_date, spammer, updated_by, updated_at, to_classify, 
+		user_email, user_homepage, birthday, gender, hobbies, interests, place, profession, institution
+	</sql>
+	
+	<!-- IMPORTANT: changing this requires you to change "insertUserAttributes", too! -->
+	<sql id="userSettingsAttributes">
+		tagbox_style, tagbox_sort, tagbox_minfreq, tagbox_tooltip, list_itemcount, 
+		lang, log_level, confirmDelete, profilegroup, tagbox_max_count, is_max_count, 
+		show_bookmark, show_bibtex, simple_interface
+	</sql>	
+
+	<!-- 
+		for insert and update statements matching 'allUserAttributes'  
+		-->
+	<sql id="insertUserAttributes">
+		#name#, #realname#,
+		#password#, #apiKey#, #openURL#,
+		<isNotNull property="reminderPassword">#reminderPassword#,#reminderPasswordRequestDate#,</isNotNull>
+		<isNull property="reminderPassword">NULL,DEFAULT(tmp_request_date),</isNull>
+		#role#, #IPAddress#, #registrationDate#, #spammer#, #updatedBy#, #updatedAt#, #toClassify#, 
+		#email#, #homepage#, #birthday#, #gender#, #hobbies#, #interests#, #place#, #profession#, #institution#,
+		#settings.tagboxStyle#, #settings.tagboxSort#, #settings.tagboxMinfreq#, #settings.tagboxTooltip#, #settings.listItemcount#, 
+		<isNotNull property="settings.defaultLanguage">#settings.defaultLanguage#,</isNotNull>
+		<isNull property="settings.defaultLanguage">DEFAULT(lang),</isNull> 
+		#settings.logLevel#, #settings.confirmDelete#, #settings.profilePrivlevel#, #settings.tagboxMaxCount#, #settings.isMaxCount#, 
+		#settings.showBookmark#, #settings.showBibtex#, #settings.simpleInterface#
+	</sql>
+
+	<sql id="updateUserProfileAttributes">
+	    birthday = #birthday#, 
+		user_realname = #realname#,
+		gender = #gender#,
+		user_email = #email#,
+		user_homepage = #homepage#,
+		openurl = #openURL#,
+		profession = #profession#,
+		institution = #institution#, 
+		interests = #interests#,
+		hobbies = #hobbies#,
+		place = #place#
+	</sql>
+	
+	<sql id="updateUserSettingsAttributes">
+		log_level = #settings.logLevel#, 
+		lang = #settings.defaultLanguage#,
+		list_itemcount = #settings.listItemcount#,
+		tagbox_tooltip = #settings.tagboxTooltip#,
+		tagbox_minfreq = #settings.tagboxMinfreq#,
+		tagbox_max_count = #settings.tagboxMaxCount#,
+		tagbox_sort = #settings.tagboxSort#,
+		tagbox_style = #settings.tagboxStyle#,
+		is_max_count = #settings.isMaxCount#,
+		confirmDelete = #settings.confirmDelete#, 
+		show_bookmark = #settings.showBookmark#,
+		show_bibtex = #settings.showBibtex#, 
+		simple_interface = #settings.simpleInterface#
+	</sql>
+	
+	<!-- matches resources owned by group members which trust the currUser -->
+	<sql id="matchGroupMemberTrust">
+		f.f_user_name = #userName#       
+			AND f.tag_name = #bibSonomyFriendsTag#
+			AND g.user_name = f.user_name
+	</sql>
+	
+	
+	<!-- matches resources owned by group members which trust the currUser -->
+	<sql id="matchTrustersResource">
+		f.f_user_name = #userName#       <!-- to see, which users have currUser as friend -->
+			AND f.tag_name = #bibSonomyFriendsTag#
+			AND b.user_name = f.user_name
+	</sql>
+		
+	<!-- match friendship relations according to given tag -->
+	<sql id="matchTaggedRelation">
+		<isNotNull prepend="AND" property="tag.name">
+			tag_name = #tag.name#
+		</isNotNull>  
+	</sql>
+	
+	<!-- Should be used in conjunction with tagWhereQuery. -->
+	<sql id="relationTagFromQuery">
+	    friends rt1
+		<iterate property="relationTagIndex">
+			<isGreaterThan property="relationTagIndex[].index" compareValue="1">
+				JOIN friends rt$relationTagIndex[].index$ USING (user_name,f_user_name)
+			</isGreaterThan>
+		</iterate>
+	</sql>
+	
+	<!--
+	   Should be used in conjunction with tagFromQuery.
+
+	   Depending on the number of tags it creates a query like:
+	        t1.tag_name = 'some-tag'
+	    AND t2.tag_name = 'a-tag'
+	    AND t3.tag_name = 'another-tag'
+	    AND t1.content_id = t2.content_id
+	    AND t2.content_id = t3.content_id
+	-->
+	<sql id="relationTagTagWhereQuery">
+		<iterate property="relationTagIndex" conjunction="AND">
+		    rt$relationTagIndex[].index$.tag_name = lower(#relationTagIndex[].tagName#) 
+		</iterate>
+	</sql>
+	<sql id="relationTagUsernameWhereQuery">
+		<iterate property="relationTagIndex" conjunction="AND">
+		    rt$relationTagIndex[].index$.user_name = #userName# 
+		</iterate>
+	</sql>
+	<sql id="relationTagResourceWhereQuery">
+		<iterate property="relationTagIndex" conjunction="AND">
+			b.user_name = rt$relationTagIndex[].index$.f_user_name 
+		</iterate>
+	</sql>
+	<sql id="relationTagTasWhereQuery">
+		<iterate property="relationTagIndex" conjunction="AND">
+			t1.user_name = rt$relationTagIndex[].index$.f_user_name 
+		</iterate>
+	</sql>
+	
+	
+</sqlMap>

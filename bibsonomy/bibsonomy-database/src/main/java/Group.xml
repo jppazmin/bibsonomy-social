@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+
+     BibSonomy-Database - Database for BibSonomy.
+
+     Copyright (C) 2006 - 2011 Knowledge & Data Engineering Group,
+                               University of Kassel, Germany
+                               http://www.kde.cs.uni-kassel.de/
+
+     This program is free software; you can redistribute it and/or
+     modify it under the terms of the GNU Lesser General Public License
+     as published by the Free Software Foundation; either version 2
+     of the License, or (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU Lesser General Public License for more details.
+
+     You should have received a copy of the GNU Lesser General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+
+-->
+
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="Group">
+
+	<select id="getAllGroups" resultMap="GroupCommon.group" parameterClass="groupParam">
+		SELECT i.group, i.group_name, i.privlevel, i.sharedDocuments, u.user_realname AS realname, u.user_homepage AS homepage
+		FROM groupids i 
+		  JOIN user u ON (i.group_name = u.user_name)
+		WHERE i.group > 2
+		ORDER BY i.group_name
+		LIMIT #limit# OFFSET #offset#
+	</select>
+
+	<select id="getGroupByName" resultMap="GroupCommon.group" parameterClass="string">
+		SELECT i.group, i.group_name, i.privlevel, i.sharedDocuments, u.user_realname AS realname, u.user_homepage AS homepage
+		FROM groupids i 
+		  JOIN user u ON (i.group_name = u.user_name)
+		WHERE i.group_name = #groupname#
+	</select>
+
+	<select id="getGroupMembers" resultMap="GroupCommon.groupWithMembers" parameterClass="string">
+		SELECT i.group, i.group_name, i.privlevel, i.sharedDocuments, u.user_realname, u.user_homepage, u.user_name
+		FROM groupids i 
+		  JOIN groups g USING (`group`) 
+		  JOIN user u ON (u.user_name = g.user_name) 
+		WHERE group_name = #groupname#
+		  AND i.group > 2
+		  <!-- AND g.user_name != #requestedGroupName# -->
+	</select>
+
+	<select id="getPrivlevelForGroup" resultClass="Privlevel" parameterClass="int">
+		SELECT privlevel FROM groupids WHERE `group` = #groupId#
+	</select>
+
+	<select id="getGroupsForUser" resultMap="GroupCommon.group_basic" parameterClass="string">
+		(SELECT i.group_name, i.group, i.privlevel, i.sharedDocuments
+		 FROM groups g
+		   JOIN groupids i USING (`group`)
+		 WHERE g.user_name = #username#
+		)
+		UNION
+		(SELECT i.group_name, i.group, i.privlevel, i.sharedDocuments
+		 FROM groupids i
+		 WHERE i.group BETWEEN 0 AND 2)
+		ORDER BY `group`
+	</select>
+
+	<select id="getGroupsForContentId" resultMap="GroupCommon.group_basic" parameterClass="int">
+		SELECT DISTINCT i.group, i.group_name, i.privlevel, i.sharedDocuments 
+		  FROM groupids i JOIN grouptas t USING (`group`) 
+		  WHERE t.content_id = #contentId# 
+	</select>	
+
+	<select id="getNewGroupId" resultClass="int">
+		SELECT MAX(`group`) + 1 AS id FROM groupids
+	</select>
+
+	<select id="getGroupIdsForUser" resultClass="int" parameterClass="string">
+		SELECT `group` FROM groups WHERE user_name = #userName#
+	</select>
+
+	<select id="getGroupIdByGroupNameAndUserName" resultClass="int" parameterClass="group">
+		SELECT g.group
+		FROM groupids g <isNotNull property="user" prepend=",">groups i</isNotNull>
+		WHERE g.group_name = #name#
+		      <isNotNull property="user" prepend="AND">
+		        i.user_name = #user.name#
+		        AND i.group = g.group
+		      </isNotNull>
+	</select>
+
+	<select id="getTagSetsForGroup" resultMap="GroupCommon.tagsets" parameterClass="string">
+		SELECT set_name, tag_name 
+		FROM groupids i
+		  JOIN group_tagsets s USING (`group`)
+		WHERE i.group_name = #groupname#
+	</select>
+	
+	<select id="getTagSetBySetNameAndGroup" resultMap="GroupCommon.tagsets" parameterClass="tagSetParam">
+		SELECT set_name, tag_name from group_tagsets s
+		WHERE s.group = #groupId#
+		AND s.set_name = #setName#
+	</select>
+	
+	<insert id="insertGroup" parameterClass="group">
+		INSERT INTO groupids (group_name, `group`, privlevel, sharedDocuments) VALUES (#name#, #groupId#, #privlevel#, #sharedDocuments#)
+	</insert>
+
+	<insert id="insertTagSet" parameterClass="tagSetParam">
+		INSERT INTO group_tagsets (set_name, tag_name, `group`) VALUES (#setName#, #tagName#, #groupId#)
+	</insert>
+
+	<delete id="deleteGroup" parameterClass="int">
+		DELETE FROM groupids WHERE `group` = #groupId#
+	</delete>
+
+	<delete id="deleteTagSet" parameterClass="tagSetParam">
+		DELETE FROM group_tagsets WHERE set_name = #setName# AND `group` = #groupId#
+	</delete>
+
+	<insert id="addUserToGroup" parameterClass="group">
+		INSERT INTO groups (user_name, `group`, defaultgroup) VALUES (#name#, #groupId#, #groupId#)
+	</insert>
+
+	<delete id="removeUserFromGroup" parameterClass="group">
+		DELETE FROM groups WHERE `group` = #groupId# AND user_name = #name#
+	</delete>
+
+	<delete id="removeAllUserFromGroup" parameterClass="int">
+		DELETE FROM groups WHERE `group` = #groupId#
+	</delete>
+
+	<select id="getGroupNameByGroupId" resultClass="String" parameterClass="int">
+		SELECT group_name
+		FROM groupids
+		WHERE `group` = #groupId#
+	</select>
+
+	<insert id="updateGroupSettings" parameterClass="group">
+		UPDATE groupids 
+		SET privlevel=#privlevel#, sharedDocuments=#sharedDocuments#
+		WHERE `group` = #groupId#
+	</insert>
+</sqlMap>

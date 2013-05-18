@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+
+     BibSonomy-Database - Database for BibSonomy.
+
+     Copyright (C) 2006 - 2011 Knowledge & Data Engineering Group,
+                               University of Kassel, Germany
+                               http://www.kde.cs.uni-kassel.de/
+
+     This program is free software; you can redistribute it and/or
+     modify it under the terms of the GNU Lesser General Public License
+     as published by the Free Software Foundation; either version 2
+     of the License, or (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU Lesser General Public License for more details.
+
+     You should have received a copy of the GNU Lesser General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+
+-->
+
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<!--
+	All aliases are collected here, because they must not exist twice (i.e. their names).
+-->
+<sqlMap namespace="TypeAliases">
+	<!-- Model types -->
+	<typeAlias alias="tag"                type="org.bibsonomy.model.Tag" />
+	<typeAlias alias="bookmark"           type="org.bibsonomy.model.Bookmark" />
+	<typeAlias alias="bibtex"             type="org.bibsonomy.model.BibTex" />
+	<typeAlias alias="goldStandardPublication" type="org.bibsonomy.model.GoldStandardPublication" />
+	<typeAlias alias="post"               type="org.bibsonomy.model.Post" />
+	<typeAlias alias="resource"           type="org.bibsonomy.model.Resource" />
+	<typeAlias alias="repository"         type="org.bibsonomy.model.Repository" />
+	<typeAlias alias="wiki"               type="org.bibsonomy.model.Wiki" />
+	<typeAlias alias="user"               type="org.bibsonomy.model.User" />
+	<typeAlias alias="userSettings"       type="org.bibsonomy.model.UserSettings" />
+	<typeAlias alias="group"              type="org.bibsonomy.model.Group" />
+	<typeAlias alias="tagset"             type="org.bibsonomy.model.TagSet" />
+	<typeAlias alias="document"           type="org.bibsonomy.model.Document" />
+	<typeAlias alias="author"			  type="org.bibsonomy.model.Author" />
+	<typeAlias alias="scraperMetadata"	  type="org.bibsonomy.model.ScraperMetadata" />
+	<typeAlias alias="discussionItem"		type="org.bibsonomy.model.DiscussionItem" />
+	<typeAlias alias="comment"				type="org.bibsonomy.model.Comment" />
+	<typeAlias alias="review"				type="org.bibsonomy.model.Review" />
+	
+	<!-- Synchronization -->
+	<typeAlias alias="syncResource"		  type="org.bibsonomy.model.sync.SynchronizationResource" />
+	<typeAlias alias="syncPost"			  type="org.bibsonomy.model.sync.SynchronizationPost" />	
+	<typeAlias alias="syncParam"		  type="org.bibsonomy.sync.SyncParam" />
+	<typeAlias alias="syncData"			  type="org.bibsonomy.model.sync.SynchronizationData" />
+	<typeAlias alias="syncService"		  type="org.bibsonomy.model.sync.SyncService" />
+	<typeAlias alias="syncStatus"		  type="org.bibsonomy.model.sync.SynchronizationStatus" />
+	<typeAlias alias="syncDirection"	  type="org.bibsonomy.model.sync.SynchronizationDirection" />
+	<typeAlias alias="conflictStrategy"	  type="org.bibsonomy.model.sync.ConflictResolutionStrategy" />
+	
+	<!-- Extras -->
+	<typeAlias alias="bibtexExtra"        type="org.bibsonomy.model.extra.BibTexExtra" />
+	<typeAlias alias="extendedBibtex"     type="org.bibsonomy.model.extra.ExtendedField" />
+	<typeAlias alias="extendedBibtexList" type="org.bibsonomy.model.extra.ExtendedFieldList" />
+
+	<!-- Parameters -->
+	<typeAlias alias="genericParam"       type="org.bibsonomy.database.params.GenericParam" />
+	<typeAlias alias="resourceParam"      type="org.bibsonomy.database.params.ResourceParam" />
+	<typeAlias alias="bookmarkParam"      type="org.bibsonomy.database.params.BookmarkParam" />
+	<typeAlias alias="bibtexParam"        type="org.bibsonomy.database.params.BibTexParam" />
+	<typeAlias alias="bibtexExtraParam"   type="org.bibsonomy.database.params.BibTexExtraParam" />
+	<typeAlias alias="bibtexExtendedParam" type="org.bibsonomy.database.params.BibtexExtendedParam" />
+	<typeAlias alias="repositoryParam" 	  type="org.bibsonomy.database.params.RepositoryParam"/>
+	<typeAlias alias="statisticParam"     type="org.bibsonomy.database.params.StatisticsParam" />	
+	<typeAlias alias="userParam"          type="org.bibsonomy.database.params.UserParam" />
+	<typeAlias alias="groupParam"         type="org.bibsonomy.database.params.GroupParam" />
+	<typeAlias alias="tagParam"           type="org.bibsonomy.database.params.TagParam" />
+	<typeAlias alias="tagRelationParam"   type="org.bibsonomy.database.params.TagRelationParam" />
+	<typeAlias alias="documentParam"      type="org.bibsonomy.database.params.DocumentParam" />	
+	<typeAlias alias="adminParam"         type="org.bibsonomy.database.params.AdminParam" />
+	<typeAlias alias="statisticsParam"    type="org.bibsonomy.database.params.StatisticsParam" />	
+	<typeAlias alias="tagSetParam"    	  type="org.bibsonomy.database.params.TagSetParam" />
+	<typeAlias alias="basketParam"    	  type="org.bibsonomy.database.params.BasketParam" />	
+	<typeAlias alias="inboxParam"			type="org.bibsonomy.database.params.InboxParam" />
+	<typeAlias alias="loggingParam"			type="org.bibsonomy.database.params.LoggingParam" />
+	<typeAlias alias="wikiParam"			type="org.bibsonomy.database.params.WikiParam" />
+	
+	<typeAlias alias="discussionItemParam"	type="org.bibsonomy.database.params.discussion.DiscussionItemParam" />
+	<typeAlias alias="commentParam"		  	type="org.bibsonomy.database.params.discussion.CommentParam" />
+	<typeAlias alias="reviewParam"			type="org.bibsonomy.database.params.discussion.ReviewParam" />
+	
+	<!-- Java types  -->
+	<typeAlias alias="resourceTypeClass"	type="java.lang.Class" />
+	<typeAlias alias="url"					type="java.net.URL" />
+	<typeAlias alias="uri"					type="java.net.URI" />
+	<typeAlias alias="InetAddress"			type="java.net.InetAddress" />
+	<typeAlias alias="date"					type="java.util.Date" />
+	<typeAlias alias="properties"			type="java.util.Properties" />
+
+	<!-- Enums -->
+	<typeAlias alias="InetAddressStatus"	type="org.bibsonomy.common.enums.InetAddressStatus" />
+	<typeAlias alias="ProfilePrivLevel"		type="org.bibsonomy.common.enums.ProfilePrivlevel" />
+	<typeAlias alias="PrivLevel"			type="org.bibsonomy.common.enums.Privlevel" />
+	<typeAlias alias="Role"					type="org.bibsonomy.common.enums.Role" />
+	
+</sqlMap>

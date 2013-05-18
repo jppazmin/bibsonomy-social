@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+
+     BibSonomy-Database - Database for BibSonomy.
+
+     Copyright (C) 2006 - 2011 Knowledge & Data Engineering Group,
+                               University of Kassel, Germany
+                               http://www.kde.cs.uni-kassel.de/
+
+     This program is free software; you can redistribute it and/or
+     modify it under the terms of the GNU Lesser General Public License
+     as published by the Free Software Foundation; either version 2
+     of the License, or (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU Lesser General Public License for more details.
+
+     You should have received a copy of the GNU Lesser General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+
+-->
+
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="GoldStandardPublication">
+
+	<select id="getGoldStandardPublicationByHash" resultMap="GoldStandardPublicationCommon.goldStandardPublicationPost" parameterClass="resourceParam">
+		SELECT <include refid ="allGoldStandardPublicationAttributesWithSimHashes"/>, 1 AS count, <include refid="reviewRatingsRows" /> FROM gold_standard_publications b
+		LEFT JOIN review_ratings_cache c ON c.interHash = b.simhash1
+		WHERE b.simhash1 = #hash# ORDER BY b.date DESC
+	</select>
+	
+	<select id="getGoldStandardPublicationRefercences" resultMap="BibTexCommon.bibtex" parameterClass="resourceParam">
+		SELECT <include refid ="allGoldStandardPublicationAttributesWithSimHashes"/>, scraperid, 1 AS count, -1 AS rating, -1 AS number_of_ratings FROM (gold_standard_publications b, gold_standard_publication_references r)
+		WHERE r.publication = #hash# AND b.simhash1 = r.reference ORDER BY b.title DESC
+	</select>
+	
+	<select id="getGoldStandardPublicationRefercencedBy" resultMap="BibTexCommon.bibtex" parameterClass="resourceParam">
+		SELECT <include refid ="allGoldStandardPublicationAttributesWithSimHashes"/>, scraperid, 1 AS count, -1 AS rating, -1 AS number_of_ratings FROM (gold_standard_publications b, gold_standard_publication_references r)
+		WHERE r.reference = #hash# AND b.simhash1 = r.publication ORDER BY b.title DESC
+	</select>
+	
+	<insert id="insertGoldStandardPublication" parameterClass="bibtexParam">
+		INSERT INTO gold_standard_publications (<include refid ="allGoldStandardPublicationColumns"/>, content_id)
+		VALUES (<include refid ="allGoldStandardPublicationValues"/>, #requestedContentId#)
+	</insert>
+	
+	<delete id="deleteGoldStandardPublication">
+		DELETE FROM gold_standard_publications WHERE simhash1 = #hash#
+	</delete>
+	
+	<insert id="insertGoldStandardPublicationReference">
+		INSERT INTO gold_standard_publication_references (publication, reference, user_name) VALUES (#hash#, #refHash#, #username#)
+	</insert>
+	
+	<!-- be careful hash or refHash must be not null!!! or you delete everything -->
+	<delete id="deleteGoldStandardPublicationReference">
+		DELETE FROM gold_standard_publication_references WHERE publication = #hash# AND reference = #refHash#
+	</delete>
+	
+</sqlMap>

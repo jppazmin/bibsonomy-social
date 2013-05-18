@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+
+     BibSonomy-Database - Database for BibSonomy.
+
+     Copyright (C) 2006 - 2011 Knowledge & Data Engineering Group,
+                               University of Kassel, Germany
+                               http://www.kde.cs.uni-kassel.de/
+
+     This program is free software; you can redistribute it and/or
+     modify it under the terms of the GNU Lesser General Public License
+     as published by the Free Software Foundation; either version 2
+     of the License, or (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU Lesser General Public License for more details.
+
+     You should have received a copy of the GNU Lesser General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+
+-->
+
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="TagCommon">
+
+	<!-- tag with its global count, i.e. the number of posts it is part of -->
+	<resultMap id="tagWithGlobalCount" class="tag" extends="Common.tag">
+	    <result property="globalcount" column="tag_ctr" javaType="int" />
+	</resultMap>
+	
+	<resultMap id="tagWithGlobalAndUserCount" class="tag" extends="Common.tag">
+	    <result property="usercount" column="tag_ctr_user" javaType="int" />
+	    <result property="globalcount" column="tag_ctr_global" javaType="int" />
+	</resultMap>	
+
+	<resultMap id="subTag" class="tag">
+		<result property="name" column="subTag" javaType="string" />
+		<result property="usercount" column="subTagCount" javaType="int" />
+	</resultMap>
+
+	<!-- tag name with its usercount, i.e. the number of users that have used it -->
+	<resultMap id="tagWithUserCount" class="tag" extends="Common.tag">
+	    <result property="usercount" column="user_count" javaType="int" />
+	</resultMap>
+	
+	<!--  tag name with its subtags -->
+	<resultMap id="tagWithSubtags" class="tag" extends="Common.tag">
+	    <result property="subTags" resultMap="TagCommon.subTag" />
+	</resultMap>
+		
+	<resultMap id="tagWithSubtagsAndUserCount" class="tag" extends="tagWithUserCount">
+	    <result property="subTags" resultMap="TagCommon.subTag" />
+	</resultMap>
+	
+	<!-- tag with its id, name and global count -->
+	<resultMap id="tagWithDetails" class="tag" extends="Common.tag">
+		<result property="id"     		column="tag_id"      	javaType="int" />
+		<result property="globalcount" 	column="tag_ctr"      	javaType="int" />	    
+	    <!-- not yet supported:	    	
+	    	<result property="stem"			column="tag_stem"      	javaType="string" />
+	     -->
+	    <!-- 
+	    	excluded for now because it does not correspond to a table field in the
+	    	database, and hast to be computed separately:
+	    	<result property="usercount" column="user_count" javaType="int" />
+	     -->	     	     
+	</resultMap>	
+	
+			
+</sqlMap>

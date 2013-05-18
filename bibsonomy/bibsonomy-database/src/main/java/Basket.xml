@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+
+     BibSonomy-Database - Database for BibSonomy.
+
+     Copyright (C) 2006 - 2011 Knowledge & Data Engineering Group,
+                               University of Kassel, Germany
+                               http://www.kde.cs.uni-kassel.de/
+
+     This program is free software; you can redistribute it and/or
+     modify it under the terms of the GNU Lesser General Public License
+     as published by the Free Software Foundation; either version 2
+     of the License, or (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU Lesser General Public License for more details.
+
+     You should have received a copy of the GNU Lesser General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+
+-->
+
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="Basket">
+
+	<select id="getNumBasketEntries" resultClass="Integer" parameterClass="String">
+		SELECT count(user_name) AS count 
+		FROM collector 
+		WHERE user_name = #userName#
+	</select>
+	
+	<insert id="createBasketItem" parameterClass="basketParam">
+		INSERT IGNORE INTO collector (user_name, content_id) 
+		VALUES (#userName#, #contentId#)
+	</insert>
+	
+	<update id="updateBasketItems" parameterClass="basketParam">
+		UPDATE collector 
+		SET content_id = #newContentId#
+		WHERE content_id = #contentId#
+	</update>
+	
+	<delete id="deleteBasketItems" parameterClass="basketParam">
+		DELETE FROM collector
+		WHERE content_id = #contentId#
+	</delete>
+	
+	<delete id="deleteBasketItem" parameterClass="basketParam">
+		DELETE FROM collector
+		WHERE content_id = #contentId#
+			AND user_name = #userName#
+	</delete>
+	
+	<delete id="deleteAllItems" parameterClass="String">
+		DELETE FROM collector
+		WHERE user_name = #userName#
+	</delete>
+</sqlMap>

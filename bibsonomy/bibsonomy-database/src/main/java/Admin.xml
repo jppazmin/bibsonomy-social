@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+
+     BibSonomy-Database - Database for BibSonomy.
+
+     Copyright (C) 2006 - 2011 Knowledge & Data Engineering Group,
+                               University of Kassel, Germany
+                               http://www.kde.cs.uni-kassel.de/
+
+     This program is free software; you can redistribute it and/or
+     modify it under the terms of the GNU Lesser General Public License
+     as published by the Free Software Foundation; either version 2
+     of the License, or (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU Lesser General Public License for more details.
+
+     You should have received a copy of the GNU Lesser General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+
+-->
+
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="Admin">
+
+	<select id="getInetAddressStatus" resultClass="InetAddressStatus" parameterClass="InetAddress">
+		SELECT status FROM inetAddressStates 
+		WHERE address = #address#
+	</select>
+
+	<insert id="addInetAddressStatus" parameterClass="adminParam">
+		INSERT INTO inetAddressStates (address, status) VALUES (#inetAddress#, #inetAddressStatus#); 
+	</insert>
+
+	<delete id="deleteInetAddressStatus" parameterClass="InetAddress">
+		DELETE FROM inetAddressStates WHERE address = #address#
+	</delete>
+	
+	<select id="getClassifierUserBeforeUpdate" resultMap="UserCommon.user" parameterClass="adminParam">
+		SELECT *
+		  FROM user
+		    LEFT JOIN ldapUser USING (user_name)
+		    LEFT JOIN openIDUser USING (user_name)
+		  WHERE user_name=#userName# FOR UPDATE
+	</select>
+
+	<update id="flagSpammer" parameterClass="adminParam">
+		UPDATE user SET spammer = #spammer#, updated_by = #updatedBy#, updated_at = #updatedAt#, to_classify = #toClassify# 
+		WHERE user_name = #userName#
+	</update>
+	
+	<update id="flagSpammerEvaluation" parameterClass="adminParam">
+		UPDATE evaluation SET $evaluator$ = #prediction# WHERE user_name = #userName#
+	</update>
+
+	<select id="getAdminClassifiedUsers" resultMap="AdminCommon.userProperties" parameterClass="adminParam">
+		SELECT *
+		FROM user u JOIN prediction p ON (u.user_name = p.user_name)
+		WHERE ((u.updated_by != 'classifier' AND u.updated_by != 'on_delete') OR ISNULL(u.updated_by)) AND prediction = #prediction# AND algorithm='admin'
+		<isGreaterThan property="interval" compareValue="0" prepend="AND">
+			u.updated_at > NOW() - INTERVAL #interval# HOUR		
+	    </isGreaterThan>
+		ORDER BY u.updated_at DESC
+		LIMIT #limit#
+	</select>
+
+	<select id="getAdminClassifiedUsersCount" resultClass="integer" parameterClass="adminParam">
+		SELECT COUNT(*) 
+		FROM user WHERE (updated_by != 'classifier' OR ISNULL(updated_by)) AND spammer = #prediction# 
+		<isGreaterThan property="interval" compareValue="0" prepend="AND">
+			updated_at > NOW() - INTERVAL #interval# HOUR		
+	    </isGreaterThan>
+	</select>
+	
+	<select id="getClassifiedUsers" resultMap="AdminCommon.userPredictionWithUserProperties" parameterClass="adminParam">
+		SELECT *
+		FROM user u JOIN prediction p ON (u.user_name = p.user_name AND u.updated_at = p.updated_at)
+		WHERE updated_by = 'classifier' AND prediction = #prediction# 
+		ORDER BY u.updated_at DESC
+		LIMIT #limit#
+	</select>
+	
+	<select id="getBibtexUsers" resultMap="AdminCommon.userPredictionWithUserProperties" parameterClass="adminParam" timeout="300">
+		SELECT * 
+			FROM user u 
+				JOIN prediction p ON (u.user_name = p.user_name AND u.updated_at = p.updated_at)
+				JOIN bibtex b ON (u.user_name = b.user_name)
+			WHERE algorithm != "self_deleted"
+			GROUP BY u.user_name
+			ORDER BY u.updated_at DESC
+			LIMIT #limit#
+	</select>
+	
+	<select id="getAllUsersWithSpam" resultMap="AdminCommon.userProperties" parameterClass="adminParam">
+		SELECT * 
+		FROM user u 
+		ORDER BY u.reg_date DESC
+		LIMIT #limit#
+	</select>
+	
+	<select id="getClassifiedUsersCount" resultClass="integer" parameterClass="adminParam">
+		SELECT COUNT(*)  
+		FROM user u JOIN prediction p ON (u.user_name = p.user_name AND u.updated_at = p.updated_at)
+		WHERE updated_by = 'classifier' AND prediction = #prediction#		
+	   <isGreaterThan property="interval" compareValue="0" prepend="AND">	
+			p.updated_at > NOW() - INTERVAL #interval# HOUR		
+		</isGreaterThan>
+	</select>	
+	
+	<select id="getClassifierSettings" resultClass="string" parameterClass="string">
+		SELECT value FROM classifier_settings cs WHERE cs.key = #key#		
+	</select>	
+
+	<update id="updateClassifierSettings" parameterClass="adminParam">
+		UPDATE classifier_settings cs SET value = #value# WHERE cs.key = #key# 
+	</update>
+	
+	 <!--  
+	 	Inserts a regular expression into the whitelist
+	 -->
+	<insert id="insertClassifierWhitelist" parameterClass="adminParam">
+		INSERT INTO classifier_whitelist (white_regex) VALUES (#value#); 
+	</insert>
+
+	<select id="getClassifierHistory" resultMap="AdminCommon.userHistory" parameterClass="string">
+		SELECT user_name, updated_at, <include refid="commonPredictionAttributes"/>  FROM log_prediction 
+		WHERE user_name  = #userName# AND algorithm != 'admin' 
+		ORDER BY updated_at DESC LIMIT 25
+	</select>
+	 
+	<select id="getClassifierUserDetails" resultMap="AdminCommon.userPrediction" parameterClass="string">
+		SELECT <include refid="commonPredictionAttributes"/>
+		FROM prediction
+		WHERE user_name = #userName#
+		ORDER BY timestamp DESC
+		LIMIT 1
+	</select>
+	
+	 <select id="getClassifierComparison" resultMap="AdminCommon.userPredictionWithUserProperties" parameterClass="adminParam">
+	 	SELECT a.user_name, u.spammer, u.updated_by, u.updated_at, a.prediction, a.algorithm, a.confidence, a.mode
+	 	FROM user u
+	 	JOIN prediction a ON (u.user_name = a.user_name)
+	 	JOIN tas t ON (t.user_name = a.user_name)
+	 	WHERE a.evaluator=1 AND t.date > NOW() - INTERVAL 148 HOUR AND algorithm!='admin'
+	 	<isGreaterThan property="interval" compareValue="0" prepend="AND">	
+			u.reg_date > NOW() - INTERVAL #interval# DAY
+		</isGreaterThan>
+	 	group by u.user_name order by t.date DESC
+	 </select>
+	 
+	 <!-- 
+	 	| Statement updates group ids of user (either into spam groups or non-spam groups) 
+	 	| Timeout is set to 0, according to ibatis doc:
+	 	| "If you specify a default timeout and decide that you don't want a timeout for a 
+	 	| particular statement, set the timeout value to 0."
+	  -->
+	 <update id="updateGroupIds" parameterClass="adminParam" timeout="0">
+		UPDATE $groupIdTable$ SET `group` = 
+		<dynamic prepend="IF">
+			<isEqual property="spammer" compareValue="true">
+				((`group` &gt;= 0), `group` + #groupRange#, `group`)
+			</isEqual>
+			<isEqual property="spammer" compareValue="false">
+				((`group` &lt; 0), `group` - #groupRange#, `group`)
+			</isEqual>
+		</dynamic>
+		WHERE user_name = #userName#
+	</update>
+	
+	<!-- FIXME: double check this statement!!! -->
+	<update id="updateReviewRatingsCache" parameterClass="adminParam" timeout="0">
+		UPDATE review_ratings_cache c JOIN discussion d USING (interHash) SET 
+		<isEqual property="spammer" compareValue="true">
+			c.rating_arithmetic_mean = COALESCE((rating_arithmetic_mean * number_of_ratings - d.rating)/(number_of_ratings - 1), 0),
+			c.number_of_ratings = c.number_of_ratings - 1
+		</isEqual>
+		<isEqual property="spammer" compareValue="false">
+			c.rating_arithmetic_mean = COALESCE((rating_arithmetic_mean * number_of_ratings + d.rating)/(number_of_ratings + 1), 0),
+			c.number_of_ratings = c.number_of_ratings + 1
+		</isEqual>
+		WHERE d.interHash IN (SELECT di.interHash FROM discussion di WHERE di.user_name = #userName#
+			AND di.rating IS NOT NULL) AND d.user_name = #userName#
+	</update>
+	
+</sqlMap>

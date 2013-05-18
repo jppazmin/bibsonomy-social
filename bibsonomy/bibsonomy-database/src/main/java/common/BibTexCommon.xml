@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+
+     BibSonomy-Database - Database for BibSonomy.
+
+     Copyright (C) 2006 - 2011 Knowledge & Data Engineering Group,
+                               University of Kassel, Germany
+                               http://www.kde.cs.uni-kassel.de/
+
+     This program is free software; you can redistribute it and/or
+     modify it under the terms of the GNU Lesser General Public License
+     as published by the Free Software Foundation; either version 2
+     of the License, or (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU Lesser General Public License for more details.
+
+     You should have received a copy of the GNU Lesser General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+
+-->
+
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="BibTexCommon">
+	<resultMap id="bibtex_common" class="bibtex" extends="Common.resource">
+		<result property="address"        column="address"        javaType="string" />
+		<result property="annote"         column="annote"         javaType="string" />
+		<result property="booktitle"      column="booktitle"      javaType="string" />
+		<result property="chapter"        column="chapter"        javaType="string" />
+		<result property="crossref"       column="crossref"       javaType="string" />
+		<result property="edition"        column="edition"        javaType="string" />
+		<result property="howpublished"   column="howpublished"   javaType="string" />
+		<result property="institution"    column="institution"    javaType="string" />
+		<result property="journal"        column="journal"        javaType="string" />
+		<result property="key"            column="bkey"           javaType="string" />
+		<result property="month"          column="month"          javaType="string" />
+		<result property="note"           column="note"           javaType="string" />
+		<result property="number"         column="number"         javaType="string" />
+		<result property="organization"   column="organization"   javaType="string" />
+		<result property="pages"          column="pages"          javaType="string" />
+		<result property="publisher"      column="publisher"      javaType="string" />
+		<result property="school"         column="school"         javaType="string" />
+		<result property="series"         column="series"         javaType="string" />
+		<result property="type"           column="type"           javaType="string" />
+		<result property="volume"         column="volume"         javaType="string" />
+		<result property="day"            column="day"            javaType="string" />
+		<result property="url"            column="url"            javaType="string" />
+		<result property="bibtexKey"      column="bibtexKey"      javaType="string" />
+		<result property="misc"           column="misc"           javaType="string" />
+		<result property="abstract"       column="bibtexAbstract" javaType="string" />
+		<result property="author"         column="author"         javaType="string" />
+		<result property="editor"         column="editor"         javaType="string" />
+		<result property="year"           column="year"           javaType="string" />
+		<result property="entrytype"      column="entrytype"      javaType="string" />
+	</resultMap>
+	
+	<resultMap id="bibtex" class="bibtex" extends="bibtex_common">
+		<result property="scraperId"      column="scraperid"      javaType="int" />
+	</resultMap>
+	
+	<resultMap id="bibtexWithDocuments" class="bibtex" extends="bibtex_common">
+		<result property="documents"      resultMap="DocumentCommon.document" />
+	</resultMap>	
+
+	<resultMap id="bibtexPost" class="post" extends="Common.posts">
+		<result property="resource"   resultMap="BibTexCommon.bibtex" />
+	</resultMap>
+	
+	<resultMap id="bibtexPostWithDocuments" class="post" extends="Common.posts">
+		<result property="resource"   resultMap="BibTexCommon.bibtexWithDocuments" />
+	</resultMap>	
+	
+	<resultMap id="bibtexPostWithRepositorys" class="post" extends="bibtexPost" >
+		<result property="repositorys"	resultMap="RepositoryCommon.repository"/>
+	</resultMap>
+
+	<sql id="commonBibtexAttributes">
+		b.address, b.annote, b.booktitle, b.chapter, b.crossref, b.edition, b.howpublished,
+		b.institution, b.journal, b.bkey, b.month, b.note, b.number, b.organization, b.pages, b.publisher,
+		b.school, b.series, b.type, b.volume, b.day, b.url, b.content_id, b.description, b.bibtexKey, b.misc,
+		b.bibtexAbstract, b.user_name, b.date, b.title, b.author, b.editor, b.year, b.entrytype
+	</sql>
+
+	<sql id="allBibtexAttributes">
+		<include refid="commonBibtexAttributes"/>, b.scraperid
+	</sql>
+
+	<sql id="allBibtexAttributesWithSimHashes">
+		<include refid="allBibtexAttributes"/>,
+		<include refid="bibtexSimHashes"/>
+	</sql>
+
+	<sql id="commonBibtexAttributes2">
+		b2.address, b2.annote, b2.booktitle, b2.chapter, b2.crossref, b2.edition, b2.howpublished,
+		b2.institution, b2.journal, b2.bkey, b2.month, b2.note, b2.number, b2.organization, b2.pages, b2.publisher,
+		b2.school, b2.series, b2.type, b2.volume, b2.day, b2.url, b2.content_id, b2.description, b2.bibtexKey,
+		b2.misc, b2.bibtexAbstract, b2.user_name, b2.date, b2.title, b2.author, b2.editor, b2.year, b2.entrytype,
+		<include refid="bibtexSimHashes2"/>
+	</sql>
+
+	<sql id="bibtexAttributes2">
+		<include refid="commonBibtexAttributes2"/>, b2.scraperid
+	</sql>
+
+	<sql id="bibtexSimHashes">
+		b.simhash1 AS interHash, b.simhash2 AS intraHash
+	</sql>
+
+	<sql id="bibtexSimHashes2">
+		b2.simhash1 AS interHash, b2.simhash2 AS intraHash
+	</sql>
+
+	<sql id="bibtexSimHash">
+		b.simhash$simHash$ = h.hash AND h.type = $simHash$
+	</sql>
+
+	<sql id="bibtexSimHash2">
+		b2.simhash$simHash$ = h.hash AND h.type = $simHash$
+	</sql>
+	
+	<sql id="bibtexSimHash3">
+		t1.simhash$simHash$ = h.hash AND h.type = $simHash$
+	</sql>	
+
+	<sql id="duplicatesCount">
+		SELECT b0.simhash1,count(b0.simhash1) AS ctr
+		FROM bibtex b0
+		WHERE b0.user_name = #requestedUserName#
+		GROUP BY b0.simhash1 HAVING ctr > 1
+	</sql>
+</sqlMap>

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+
+     BibSonomy-Database - Database for BibSonomy.
+
+     Copyright (C) 2006 - 2011 Knowledge & Data Engineering Group,
+                               University of Kassel, Germany
+                               http://www.kde.cs.uni-kassel.de/
+
+     This program is free software; you can redistribute it and/or
+     modify it under the terms of the GNU Lesser General Public License
+     as published by the Free Software Foundation; either version 2
+     of the License, or (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU Lesser General Public License for more details.
+
+     You should have received a copy of the GNU Lesser General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+
+-->
+
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="GroupCommon">
+
+	<resultMap id="group_basic"	class="group">
+		<result property="groupId"          column="group"             javaType="int" />
+		<result property="name"             column="group_name"        javaType="string" />
+		<result property="privlevel"        column="privlevel"         javaType="Privlevel"/>
+		<result property="sharedDocuments"  column="sharedDocuments"   javaType="boolean"/>
+	</resultMap>
+
+	<resultMap id="group" class="group" extends="group_basic" groupBy="name">
+		<result property="realname"         column="realname"          javaType="string" />
+		<result property="homepage"         column="homepage"          javaType="url" />
+	</resultMap>
+
+	<resultMap id="groupWithMembers" class="group" extends="group_basic" groupBy="name">
+		<result property="users"    resultMap="UserCommon.userForGroup" />
+	</resultMap>
+	
+	<resultMap id="tagsets" class="tagset" groupBy="setName">
+		<result property="setName"   	column="set_name"  	javaType="string"  />
+		<result property="tags"         resultMap="Common.tag" />
+	</resultMap>
+
+</sqlMap>

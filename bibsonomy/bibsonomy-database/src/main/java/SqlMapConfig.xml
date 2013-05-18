@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+
+     BibSonomy-Database - Database for BibSonomy.
+
+     Copyright (C) 2006 - 2011 Knowledge & Data Engineering Group,
+                               University of Kassel, Germany
+                               http://www.kde.cs.uni-kassel.de/
+
+     This program is free software; you can redistribute it and/or
+     modify it under the terms of the GNU Lesser General Public License
+     as published by the Free Software Foundation; either version 2
+     of the License, or (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU Lesser General Public License for more details.
+
+     You should have received a copy of the GNU Lesser General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+
+-->
+
+<!DOCTYPE sqlMapConfig PUBLIC "-//iBATIS.com//DTD SQL Map Config 2.0//EN" "http://www.ibatis.com/dtd/sql-map-config-2.dtd">
+
+<sqlMapConfig>
+
+	<!-- define query timeout (works only with mysql-connector-java 5.0.5+) -->	
+	<settings defaultStatementTimeout="30" />
+
+	<!-- Type Aliases -->
+	<sqlMap resource="common/TypeAliases.xml" />
+
+	<!-- Type Handler -->
+	<typeHandler javaType="url"					callback="org.bibsonomy.database.common.typehandler.UrlTypeHandlerCallback" />
+	<typeHandler javaType="InetAddress"		 	callback="org.bibsonomy.database.common.typehandler.InetAddressTypeHandlerCallback" />
+  	<typeHandler javaType="properties"			callback="org.bibsonomy.database.common.typehandler.PropertiesTypeHandlerCallback" />  
+	<typeHandler javaType="uri"					callback="org.bibsonomy.database.common.typehandler.UriTypeHandlerCallback" />
+	<typeHandler javaType="resourceTypeClass"	callback="org.bibsonomy.database.common.typehandler.ContentTypeTypeHandlerCallback" />
+
+  	<typeHandler javaType="InetAddressStatus"	callback="org.bibsonomy.database.common.typehandler.InetAddressStatusTypeHandlerCallback" />
+  	<typeHandler javaType="ProfilePrivlevel"	callback="org.bibsonomy.database.common.typehandler.ProfilePrivlevelTypeHandlerCallback" />
+  	<typeHandler javaType="Privlevel"			callback="org.bibsonomy.database.common.typehandler.PrivlevelTypeHandlerCallback" />
+  	<typeHandler javaType="Role"				callback="org.bibsonomy.database.common.typehandler.RoleTypeHandlerCallback" />
+    <typeHandler javaType="syncStatus"			callback="org.bibsonomy.database.common.typehandler.SyncStatusTypeHandlerCallback" />
+    <typeHandler javaType="syncDirection"		callback="org.bibsonomy.database.common.typehandler.SyncDirectionTypeHandlerCallback" />
+    <typeHandler javaType="conflictStrategy"	callback="org.bibsonomy.database.common.typehandler.ConflictResolutionStrategyTypeHandlerCallback" />
+    
+
+	<transactionManager type="JDBC">
+		<dataSource type="JNDI">
+			<property name="DataSource" value="${JNDIDataSource}"/>
+		</dataSource>
+	</transactionManager>
+
+	
+	<sqlMap resource="common/Common.xml" />
+	<sqlMap resource="common/BookmarkCommon.xml" />
+	<sqlMap resource="common/BibTexCommon.xml" />
+	<sqlMap resource="common/BibTexExtraCommon.xml" />
+	<sqlMap resource="common/GoldStandardPublicationCommon.xml" />
+	<sqlMap resource="common/UserCommon.xml" />
+	<sqlMap resource="common/GroupCommon.xml" />
+	<sqlMap resource="common/TagCommon.xml" />
+	<sqlMap resource="common/DocumentCommon.xml" />
+	<sqlMap resource="common/RepositoryCommon.xml" />
+	<sqlMap resource="common/AdminCommon.xml" />
+	<sqlMap resource="common/AuthorCommon.xml"/>
+	<sqlMap resource="common/WikiCommon.xml" />
+	<sqlMap resource="common/SynchronizationCommon.xml" />
+	<sqlMap resource="common/DiscussionCommon.xml" />
+	<sqlMap resource="common/CommentCommon.xml" />
+	<sqlMap resource="common/ReviewCommon.xml" />
+
+	<sqlMap resource="Synchronization.xml" />
+	<sqlMap resource="General.xml" />
+	<sqlMap resource="Tag.xml" />
+	<sqlMap resource="TagRelation.xml" />
+	<sqlMap resource="Bookmark.xml" />
+	<sqlMap resource="BibTex.xml" />
+	<sqlMap resource="BibTexExtra.xml" />
+	<sqlMap resource="GoldStandardPublication.xml" />
+	<sqlMap resource="User.xml" />
+	<sqlMap resource="Group.xml" />
+	<sqlMap resource="Document.xml" />
+	<sqlMap resource="Basket.xml" />
+	<sqlMap resource="Admin.xml" />
+	<sqlMap resource="Statistics.xml" />
+	<sqlMap resource="Author.xml" />
+	<sqlMap resource="Inbox.xml" />
+	<sqlMap resource="Permission.xml" />
+	<sqlMap resource="Discussion.xml" />
+	<sqlMap resource="Review.xml" />
+	<sqlMap resource="Comment.xml" />
+	<sqlMap resource="Wiki.xml" />
+
+	<!-- plugins -->
+	<sqlMap resource="plugins/Logging.xml" />
+	<sqlMap resource="plugins/GoldStandardPublicationReference.xml" />
+	<sqlMap resource="plugins/DiscussionPlugin.xml" />
+</sqlMapConfig>

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+
+     BibSonomy-Database - Database for BibSonomy.
+
+     Copyright (C) 2006 - 2011 Knowledge & Data Engineering Group,
+                               University of Kassel, Germany
+                               http://www.kde.cs.uni-kassel.de/
+
+     This program is free software; you can redistribute it and/or
+     modify it under the terms of the GNU Lesser General Public License
+     as published by the Free Software Foundation; either version 2
+     of the License, or (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU Lesser General Public License for more details.
+
+     You should have received a copy of the GNU Lesser General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+
+-->
+
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="AdminCommon">
+
+	<resultMap id="userProperties" class="user" extends="Common.user">
+		<result property="email"            column="user_email"    javaType="string" />				
+		<result property="IPAddress"        column="ip_address"    javaType="string" />
+		<result property="place"            column="place"         javaType="string" />
+		<result property="registrationDate" column="reg_date"      javaType="date" />
+		<result property="spammer"          column="spammer"       javaType="boolean" />
+		<result property="updatedBy"        column="updated_by"    javaType="string" />
+		<result property="updatedAt"	    column="updated_at"    javaType="date" />	
+		<result property="realname"   		column="user_realname" javaType="string" />
+	</resultMap>
+	
+	<resultMap id="userHistory" class="user" extends="Common.user">
+		<result property="updatedAt"	column="updated_at"    javaType="date" />	
+		<result property="prediction"   column="prediction" javaType="integer" />
+		<result property="algorithm"   	column="algorithm"  javaType="string" />
+		<result property="mode"         column="mode"       javaType="string" />
+		<result property="confidence"   column="confidence" javaType="double" />	
+	</resultMap>
+	
+	<resultMap id="userPrediction" class="user">
+		<result property="prediction"   column="prediction" javaType="integer" />
+		<result property="algorithm"   	column="algorithm"  javaType="string" />
+		<result property="mode"         column="mode"       javaType="string" />
+		<result property="confidence"   column="confidence" javaType="double" />		
+	</resultMap>
+	
+	<resultMap id="userPredictionWithUserProperties" class="user" extends="userProperties">
+		<result property="prediction"   column="prediction" javaType="integer" />
+		<result property="algorithm"   	column="algorithm"  javaType="string" />
+		<result property="mode"         column="mode"       javaType="string" />
+		<result property="confidence"   column="confidence" javaType="double" />		
+	</resultMap>
+
+	<sql id="commonPredictionAttributes">
+		prediction, algorithm, mode, confidence
+	</sql>
+
+</sqlMap>

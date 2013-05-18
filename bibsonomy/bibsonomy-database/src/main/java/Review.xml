@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+
+     BibSonomy-Database - Database for BibSonomy.
+
+     Copyright (C) 2006 - 2011 Knowledge & Data Engineering Group,
+                               University of Kassel, Germany
+                               http://www.kde.cs.uni-kassel.de/
+
+     This program is free software; you can redistribute it and/or
+     modify it under the terms of the GNU Lesser General Public License
+     as published by the Free Software Foundation; either version 2
+     of the License, or (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU Lesser General Public License for more details.
+
+     You should have received a copy of the GNU Lesser General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+
+-->
+
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="Review">	
+	
+	<select id="getReviewsByHashForResource" parameterClass="discussionItemParam" resultMap="ReviewCommon.review">
+		SELECT <include refid ="commonDiscussionAttributes"/>, NULL AS `group`, NULL AS group_name FROM
+			discussion d
+		WHERE d.hash = #hash#
+			AND d.interHash = #interHash#
+			AND d.user_name = #userName#
+			AND d.rating IS NOT NULL
+	</select>
+	
+	<select id="getReviewForHashAndUser" parameterClass="reviewParam" resultMap="ReviewCommon.review">
+		SELECT <include refid ="commonDiscussionAttributes"/>, NULL AS `group`, NULL AS group_name FROM
+			discussion d
+		WHERE d.user_name = #userName#
+			AND d.interHash = #interHash#
+			AND d.rating IS NOT NULL
+	</select>
+		
+	<insert id="insertReview" parameterClass="reviewParam">
+		INSERT INTO discussion (discussion_id, interHash, hash, type, user_name, text, rating, anonymous, `group`, date, change_date) VALUES (#review.id#, #interHash#, #review.hash#, #discussionItemType.id#, #userName#, #review.text#, #review.rating#, #review.anonymous#, #groupId#, #review.date#, #review.changeDate#)
+	</insert>
+	
+	<!--
+		ratings cache update queries
+		-->
+	<insert id="updateReviewRatingsCacheInsert" parameterClass="reviewParam">
+		INSERT INTO review_ratings_cache (interHash, number_of_ratings, rating_arithmetic_mean) VALUES (#interHash#, 1 , #review.rating#)
+  			ON DUPLICATE KEY UPDATE rating_arithmetic_mean = (rating_arithmetic_mean * number_of_ratings + #review.rating#)/(number_of_ratings + 1), number_of_ratings = number_of_ratings + 1;
+	</insert>
+	
+	<!-- COALASCE the result because devision by zero returns null -->
+	<update id="updateReviewRatingsCacheDelete" parameterClass="reviewParam">
+		UPDATE review_ratings_cache SET rating_arithmetic_mean = COALESCE((rating_arithmetic_mean * number_of_ratings - #review.rating#)/(number_of_ratings - 1), 0), number_of_ratings = number_of_ratings - 1 WHERE interHash = #interHash#
+	</update>
+</sqlMap>

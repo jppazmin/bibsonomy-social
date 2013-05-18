@@ -1,0 +1,269 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+
+     BibSonomy-Database - Database for BibSonomy.
+
+     Copyright (C) 2006 - 2011 Knowledge & Data Engineering Group,
+                               University of Kassel, Germany
+                               http://www.kde.cs.uni-kassel.de/
+
+     This program is free software; you can redistribute it and/or
+     modify it under the terms of the GNU Lesser General Public License
+     as published by the Free Software Foundation; either version 2
+     of the License, or (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU Lesser General Public License for more details.
+
+     You should have received a copy of the GNU Lesser General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+
+-->
+
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="User">
+
+	<select id="getAllUsers" resultMap="Common.user" parameterClass="userParam">
+		SELECT <include refid="commonUserAttributes"/>, NULL as ldapUserId, NULL as openID
+		  FROM user 
+		  WHERE spammer = 0 LIMIT #limit# OFFSET #offset#
+	</select>
+	
+	<select id="getUsersBySearch" resultMap="Common.user" parameterClass="userParam">
+		SELECT <include refid="commonUserAttributes"/>, NULL as ldapUserId, NULL as openID
+		  FROM user
+		  WHERE user_name LIKE CONCAT(#rawSearch#, '%')
+		  LIMIT #limit#
+	</select>
+	
+	<select id="getPendingUserByActivationCode" resultMap="UserCommon.userWithActivationCode" parameterClass="userParam">
+		SELECT <include refid="commonUserAttributes"/>, activation_code, NULL as ldapUserId, NULL as openID
+		  FROM pendingUser 
+		  WHERE spammer = 0 
+		    AND activation_code = #rawSearch#
+		  LIMIT #limit# OFFSET #offset#
+	</select>
+
+	<select id="getPendingUserByUsername" resultMap="UserCommon.userWithActivationCode" parameterClass="userParam">
+		SELECT <include refid="commonUserAttributes"/>, activation_code, NULL as ldapUserId, NULL as openID
+		  FROM pendingUser 
+  		  WHERE spammer = 0 
+	    	AND user_name = #requestedGroupName#
+		  LIMIT #limit# OFFSET #offset#
+	</select>
+	
+	<select id="getPendingUsers" resultMap="UserCommon.userWithActivationCode" parameterClass="userParam">
+		SELECT <include refid="commonUserAttributes"/>, activation_code, NULL as ldapUserId, NULL as openID
+		  FROM pendingUser 
+		  WHERE spammer = 0 
+		  LIMIT #limit# OFFSET #offset#
+	</select>
+	
+	<insert id="activateUser" parameterClass="string"> 	
+		INSERT INTO user (<include refid="allUserAttributes"/>)
+		  SELECT <include refid="allUserAttributes"/>
+		    FROM pendingUser 
+		    WHERE pendingUser.user_name = #username#
+	</insert>
+	
+	<select id="getUserDetails" resultMap="UserCommon.userWithSettings" parameterClass="string">
+		SELECT <include refid="allUserAttributes"/>, ldapUserId, openID
+		  FROM user 
+		    LEFT JOIN ldapUser USING (user_name)
+		    LEFT JOIN openIDUser USING (user_name)  
+		  WHERE user_name = #username#
+	</select>
+
+	<select id="getUserNamesByGroupId" resultClass="string" parameterClass="int">
+		SELECT user_name 
+		FROM groups 
+		WHERE `group` = #groupId#
+	</select>
+
+	<insert id="insertPendingUser" parameterClass="user">
+		INSERT INTO pendingUser (<include refid="allUserAttributes"/>, activation_code)
+  		  VALUES (<include refid="insertUserAttributes"/>, #activationCode#)
+	</insert>
+	
+	<insert id="insertUser" parameterClass="user">
+		INSERT INTO user (<include refid="allUserAttributes"/>)
+  		  VALUES (<include refid="insertUserAttributes"/>)
+	</insert>
+	
+	<!--+ 
+		|
+		| FIXME: unify the next three methods and use 
+		|
+	    +-->
+	<update id="updateUser" parameterClass="user">
+		UPDATE user
+		SET	<include refid="updateUserProfileAttributes"/>,
+			user_password = #password#,
+			api_key = #apiKey#, 
+			ip_address= #IPAddress#,   
+			spammer = #spammer#,
+			role = #role#, 
+			updated_by = #updatedBy#, 
+			updated_at = #updatedAt#
+			<isNotNull property="reminderPassword">,tmp_password = #reminderPassword#, tmp_request_date = #reminderPasswordRequestDate#</isNotNull>		
+		WHERE user_name=#name#
+	</update>
+	
+	<update id="updateUserProfile" parameterClass="user">
+		UPDATE user 
+		  SET <include refid="updateUserProfileAttributes"/>, profilegroup = #settings.profilePrivlevel#
+		  WHERE user_name = #name#
+	</update>
+	
+	<update id="updateUserSettings" parameterClass="user">
+		UPDATE user 
+		  SET <include refid="updateUserSettingsAttributes"/>
+		  WHERE user_name = #name#
+	</update>
+	
+	
+	<insert id="insertOpenIDUser" parameterClass="user">
+		INSERT INTO openIDUser 
+		VALUES (#name#, #openID#)
+	</insert>	
+
+	<insert id="insertLdapUser" parameterClass="user">
+		INSERT INTO ldapUser 
+		VALUES (#name#, #ldapId#, CURRENT_TIMESTAMP)
+	</insert>	
+
+	<delete id="deleteUser" parameterClass="string">
+		DELETE FROM user WHERE user_name = #userName#
+	</delete>
+	
+	<delete id="deletePendingUser" parameterClass="string">
+		DELETE FROM pendingUser WHERE pendingUser.user_name = #username#
+	</delete>
+
+	<delete id="deleteOpenIDUser" parameterClass="string">
+		DELETE FROM openIDUser WHERE user_name = #userName#
+	</delete>	
+	
+	<delete id="deleteLdapUser" parameterClass="string">
+		DELETE FROM ldapUser WHERE user_name = #userName#
+	</delete>	
+
+	<select id="getOpenIDUser" resultClass="string" parameterClass="string"> 
+		SELECT user_name FROM openIDUser WHERE openID = #openID#
+	</select>
+	
+	<select id="getUsernameByLdapUser" resultClass="string" parameterClass="string"> 
+		SELECT user_name FROM ldapUser WHERE ldapUserId = #ldapUser#
+	</select>	
+
+	<select id="getUserSettings" resultMap="UserCommon.userSettings" parameterClass="userParam">
+		SELECT <include refid="userSettingsAttributes"/>
+		FROM user 
+		WHERE user_name = #userName#
+	</select>
+	
+	<select id="getApiKeyForUser" resultClass="string" parameterClass="string">
+		SELECT api_key 
+		FROM user 
+		WHERE user_name = #userName#
+	</select>
+
+	<update id="updateApiKeyForUser" parameterClass="user">
+		UPDATE user 
+		SET api_key = #apiKey# 
+		WHERE user_name = #name#
+	</update>
+	
+    <update id="updatePasswordForUser" parameterClass="user">
+		UPDATE user 
+		SET user_password = #password# 
+		WHERE user_name = #name#
+	</update>
+
+	<select id="getRelatedUsersByFolkrankAndTags" resultMap="UserCommon.userWithWeight" parameterClass="userParam"> 
+		SELECT w.item AS user_name, ROUND(SUM(weight),5) * 10000 AS weight
+		FROM rankings r
+			JOIN weights w USING (id)
+			WHERE (<iterate property="tagIndex" conjunction=" OR ">r.item = #tagIndex[].tagName#</iterate>) AND r.dim = 0
+			AND w.dim = 1 AND w.itemtype = 0
+		GROUP BY w.item
+		HAVING weight > 1
+		ORDER BY 2 DESC
+		LIMIT #limit# OFFSET #offset#
+	</select>
+	
+	<select id="getRelatedUsersByFolkrankAndUser" resultMap="UserCommon.userWithWeight" parameterClass="userParam"> 
+		SELECT w.item AS user_name, ROUND(weight,5) * 10000 AS weight
+		FROM rankings r
+			JOIN weights w USING (id)
+			WHERE r.item=#requestedUserName# AND r.dim = 1
+			AND w.dim = 1
+			AND w.item != #requestedUserName#
+			<isNotNull property="userName">
+			AND w.item NOT IN (SELECT f_user_name FROM followers WHERE user_name=#userName#)
+			</isNotNull> 
+		ORDER BY 2 DESC
+		LIMIT #limit#
+	</select>	
+	
+	<select id="getRelatedUsersBySimilarity" resultMap="UserCommon.userWithWeight" parameterClass="userParam">
+		SELECT u2 AS user_name, sim * 10 AS weight 
+		FROM useruser_similarity 
+		WHERE measure_id = #userRelation.id# 
+		AND u1 = #requestedUserName#
+		AND u2 != #requestedUserName#
+		<isNotNull property="userName">		
+		AND u2 NOT IN (SELECT f_user_name FROM followers WHERE user_name=#userName#)
+		</isNotNull>
+		ORDER by 2 DESC 
+		LIMIT #limit# OFFSET #offset#
+	</select>
+	
+
+	<!-- get all users u, which have user in their friend list (user, u)\in FRIEND_OF-->
+	<select id="getRelation_FRIEND_OF" resultMap="UserCommon.userWithTags"	parameterClass="userParam">
+		SELECT user_name, tag_name FROM friends WHERE f_user_name = #userName# <include refid="matchTaggedRelation"/>
+	</select>
+	
+	<!-- get all users, which user has in his friend list (user, u)\in OF_FRIEND-->
+	<select id="getRelation_OF_FRIEND" resultMap="UserCommon.userWithTags" parameterClass="userParam">
+		SELECT f_user_name AS user_name, tag_name FROM friends WHERE user_name = #userName# <include refid="matchTaggedRelation"/>
+	</select>
+	
+	<!-- get all users, that follow the user (user, u)\in OF_FOLLOWER-->
+	<select id="getRelation_OF_FOLLOWER" resultMap="Common.user"	parameterClass="userParam">
+		SELECT user_name FROM followers WHERE f_user_name = #userName#
+	</select>
+	
+	<!-- get all users u, which user follows (user, u)\in FOLLOWER_OF-->
+	<select id="getRelation_FOLLOWER_OF" resultMap="Common.user" parameterClass="userParam">
+		SELECT f_user_name AS user_name FROM followers WHERE user_name = #userName#
+	</select>
+
+	<!-- delete (userName, requestedUserName) from OF_FRIEND-->
+	<delete id="deleteRelation_OF_FRIEND" parameterClass="userParam">
+		DELETE FROM friends WHERE f_user_name = #requestedUserName# and user_name = #userName# <include refid="matchTaggedRelation"/>
+	</delete>
+
+	<!-- insert (userName, requestedUserName) into OF_FRIEND-->
+	<insert id="insertRelation_OF_FRIEND" parameterClass="userParam">
+		INSERT IGNORE INTO friends (user_name, f_user_name, tag_name, friendship_date) VALUES (#userName#,#requestedUserName#,#tag.name#, NOW())
+	</insert>
+	
+	<!-- delete (userName, requestedUserName) from FOLLOWER_OF-->
+	<delete id="deleteRelation_FOLLOWER_OF" parameterClass="userParam">
+		DELETE FROM followers WHERE f_user_name = #requestedUserName# and user_name = #userName#
+	</delete>
+	
+	<!-- insert (userName, requestedUserName) into FOLLOWER_OF-->
+	<insert id="insertRelation_FOLLOWER_OF" parameterClass="userParam">
+		INSERT IGNORE INTO followers (user_name, f_user_name, fellowship_date) VALUES (#userName#,#requestedUserName#,NOW())
+	</insert>
+	
+
+</sqlMap>

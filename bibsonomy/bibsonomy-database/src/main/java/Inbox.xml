@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+
+     BibSonomy-Database - Database for BibSonomy.
+
+     Copyright (C) 2006 - 2011 Knowledge & Data Engineering Group,
+                               University of Kassel, Germany
+                               http://www.kde.cs.uni-kassel.de/
+
+     This program is free software; you can redistribute it and/or
+     modify it under the terms of the GNU Lesser General Public License
+     as published by the Free Software Foundation; either version 2
+     of the License, or (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU Lesser General Public License for more details.
+
+     You should have received a copy of the GNU Lesser General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+
+-->
+
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="Inbox">
+
+	<!-- Get the number of Messages in a given users inbox -->
+	<select id="getNumInboxMessages" resultClass="Integer" parameterClass="String">
+		SELECT COUNT(message_id) AS count
+		FROM inboxMail 
+		WHERE receiver_user=#receiver#
+	</select>
+
+
+	<select id="getNumInboxMessagesByHashAndSenderAndReceiver" resultClass="Integer" parameterClass="inboxParam">
+		SELECT COUNT(message_id) AS count
+		FROM inboxMail
+		WHERE receiver_user=#receiver#
+			AND sender_user=#sender#
+			AND intraHash=#intraHash#
+	</select>
+	
+	<select id="getNumInboxMessagesByType" resultClass="Integer" parameterClass="inboxParam">
+		SELECT COUNT(message_id) AS count
+			FROM inboxMail i
+			WHERE receiver_user=#receiver#
+			AND content_type=#contentType#
+	</select>
+	
+
+	<!-- insert a new Message into the inbox -->
+	<insert id="createInboxMessage" parameterClass="inboxParam">
+		INSERT IGNORE INTO inboxMail (sender_user, receiver_user, content_id, date, message_id, intraHash, content_type) 
+		VALUES (#sender#, #receiver#, #contentId#, NOW(), #messageId#, #intraHash#, #contentType#)
+	</insert>
+	
+	<!-- insert one tag to a Message from the inbox -->
+	<insert id="createInboxMessageTag" parameterClass="inboxParam">
+		INSERT INTO inbox_tas (message_id, tag_name)
+		VALUES (#messageId#, #tagName#)
+	</insert>
+	
+	<!-- get the messageId of that message that points to a post with a given resourceHash -->
+	<select id="getInboxMessageId" resultClass="Integer" parameterClass="inboxParam">
+		SELECT i.message_id
+		FROM inboxMail i
+		WHERE i.sender_user=#sender#
+		  AND i.receiver_user=#receiver#
+		  AND i.intraHash=#intraHash#
+		LIMIT 1
+	</select>
+	
+	<!-- get all messageIds from the inbox of a user -->
+	<select id="getInboxMessageIds" resultClass="Integer" parameterClass="String">
+		SELECT i.message_id
+		FROM inboxMail i
+		WHERE i.receiver_user=#receiver#
+	</select>
+	
+	<!-- delete a message with a given messageId -->
+	<delete id="deleteInboxMessage" parameterClass="Integer">
+		DELETE FROM inboxMail
+		WHERE message_id=#messageId# 
+	</delete>
+
+	<!--  delete all tags to a given messageId -->
+	<delete id="deleteInboxMessageTags" parameterClass="Integer">
+		DELETE FROM inbox_tas
+		WHERE message_id=#messageId# 
+	</delete>
+	
+	<!-- delete all Messages of a given user -->
+	<delete id="deleteAllInboxMessages" parameterClass="String">
+		DELETE FROM inboxMail
+		WHERE receiver_user=#receiver#
+	</delete>
+	
+</sqlMap>

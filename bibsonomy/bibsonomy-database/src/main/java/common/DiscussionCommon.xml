@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+
+     BibSonomy-Database - Database for BibSonomy.
+
+     Copyright (C) 2006 - 2011 Knowledge & Data Engineering Group,
+                               University of Kassel, Germany
+                               http://www.kde.cs.uni-kassel.de/
+
+     This program is free software; you can redistribute it and/or
+     modify it under the terms of the GNU Lesser General Public License
+     as published by the Free Software Foundation; either version 2
+     of the License, or (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU Lesser General Public License for more details.
+
+     You should have received a copy of the GNU Lesser General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+
+-->
+
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="DiscussionCommon">
+
+	<resultMap id="discussionItem" class="discussionItem">
+		<discriminator column="type" javaType="int">
+			<subMap value="0" resultMap="DiscussionCommon.abstractDiscussionItem" />
+			<subMap value="1" resultMap="ReviewCommon.review" />
+			<subMap value="2" resultMap="CommentCommon.comment" />
+		</discriminator>
+	</resultMap>
+	
+	<resultMap id="abstractDiscussionItem" class="discussionItem" groupBy="id">
+		<result property="id"			column="discussion_id"	javaType="int" />
+		<result property="hash"			column="hash"			javaType="string" />
+		<result property="parentHash"	column="parent_hash"	javaType="string" />
+		<result property="anonymous"	column="anonymous"		javaType="boolean" />
+		<result property="date" 		column="date"			javaType="date" />
+		<result property="changeDate"	column="change_date"	javaType="date" />
+		<result property="user"			resultMap="Common.user"  />
+		<result property="groups"     	resultMap="Common.group" />
+	</resultMap>
+	
+	<sql id="discussionColumns">
+		discussion_id, interHash, user_name, text, rating, date, change_date, anonymous, parent_hash, hash, type, `group`
+	</sql>
+	
+	<sql id="commonDiscussionLogsAttributes">
+		d.discussion_id, d.interHash, d.user_name, d.text, d.rating, d.date, d.change_date, d.anonymous, d.parent_hash, d.hash, d.type, d.group
+	</sql>
+	
+	<sql id="commonDiscussionAttributes">
+		d.discussion_id, d.interHash, CASE WHEN d.anonymous = 1 AND (#userName# IS NULL OR d.user_name != #userName#) THEN "" ELSE d.user_name END AS user_name, d.text, d.rating, d.date, d.change_date, d.anonymous, d.type, d.parent_hash, d.hash
+	</sql>
+	
+	<sql id="allDiscussionColumns">
+		<include refid="commonDiscussionAttributes" />, d.group, d.group_name
+	</sql>
+	
+	<sql id="allDiscussionAttributesGroupExtra">
+		<include refid="commonDiscussionAttributes" />, g.group, g.group_name
+	</sql>
+	
+	<sql id="commonDiscussionGroupColumns">
+		discussion_id, `group`, user_name, date, change_date
+	</sql>
+	
+	<sql id="commonDiscussionGroupInsertColumns">
+		dg.discussion_id, dg.`group`, dg.user_name, dg.date, dg.change_date
+	</sql>
+	
+	<sql id="inGroupsUncheckedDiscussion">
+		d.group IN (
+		<iterate property="groups" conjunction=",">
+		    $groups[]$
+		</iterate>)	
+	</sql>
+</sqlMap>
