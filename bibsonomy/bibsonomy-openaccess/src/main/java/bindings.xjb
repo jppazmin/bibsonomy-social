@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bindings version="2.1"
+  xmlns="http://java.sun.com/xml/ns/jaxb"
+  xmlns:xs="http://www.w3.org/2001/XMLSchema">
+	<bindings schemaLocation="puma-sword.xsd">
+		<schemaBindings>
+			<package name="de.unikassel.puma.sword.renderer.xml"/>
+		</schemaBindings>
+	</bindings>
+	<bindings schemaLocation="mets.xsd">
+		<schemaBindings>
+			<package name="gov.log.mets" />
+		</schemaBindings>
+	</bindings>
+</bindings>

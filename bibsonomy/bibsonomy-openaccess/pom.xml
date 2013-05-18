@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<name>BibSonomy-OpenAccess</name>
+	<artifactId>bibsonomy-openaccess</artifactId>
+	<packaging>jar</packaging>
+	<description>
+		Check Open Access Policies for Publications
+	</description>
+	<parent>
+		<groupId>org.bibsonomy</groupId>
+		<artifactId>bibsonomy</artifactId>
+		<version>2.0.17</version>
+	</parent>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.bibsonomy</groupId>
+			<artifactId>bibsonomy-model</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.bibsonomy</groupId>
+			<artifactId>bibsonomy-common</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.bibsonomy</groupId>
+			<artifactId>bibsonomy-web-common</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.sun.xml.bind</groupId>
+			<artifactId>jaxb-impl</artifactId>
+			<version>2.2.1.1</version>
+			<type>jar</type>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.bibsonomy</groupId>
+			<artifactId>bibsonomy-rest-client</artifactId>
+			<scope>compile</scope>
+		</dependency>
+		
+		<dependency>
+			<groupId>commons-logging</groupId>
+			<artifactId>commons-logging</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>commons-httpclient</groupId>
+			<artifactId>commons-httpclient</artifactId>
+		</dependency>
+     <dependency>
+        <groupId>net.sf.json-lib</groupId>
+        <artifactId>json-lib</artifactId>
+        <classifier>jdk15</classifier>
+        <version>2.4</version>
+     </dependency>
+     <dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.swordapp</groupId>
+			<artifactId>sword-common</artifactId>
+	        <version>1.1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.bibsonomy</groupId>
+			<artifactId>bibsonomy-database</artifactId>
+		</dependency>
+	</dependencies>
+	
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>com.mycila.maven-license-plugin</groupId>
+				<artifactId>maven-license-plugin</artifactId>
+				<version>1.6.0</version>
+				<configuration>
+					<excludes>
+						<exclude>**/src/test/resources/**</exclude>
+						<exclude>**/*.txt</exclude>
+					</excludes>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>2.0</version>
+				<configuration>
+					<source>1.6</source>
+					<target>1.6</target>
+					<compilerArguments>
+						<encoding>UTF-8</encoding>
+					</compilerArguments>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.jvnet.jaxb2.maven2</groupId>
+				<artifactId>maven-jaxb2-plugin</artifactId>
+				<version>0.7.2</version>
+				<!--<executions>
+					<execution>
+						<goals>
+							<goal>generate</goal>
+						</goals>
+					</execution>
+				</executions>-->
+				<configuration>
+					<generatePackage>
+						de.unikassel.puma.openaccess.sword.renderer.xml
+					</generatePackage>
+					<extension>true</extension>
+					<episodes>
+						<episode>
+							<groupId>org.bibsonomy</groupId>
+							<artifactId>bibsonomy-model</artifactId>
+						</episode>
+					</episodes>
+				</configuration>
+			</plugin>
+		</plugins>		
+		
+	</build>
+	
+	<distributionManagement>
+		<site>
+			<!-- copy site documentation via scp to gromit -->
+			<id>bibsonomy-rest-common-website-documentation</id>
+			<url>
+				scp://bibsonomy@gromit:/home/bibsonomy/bibsonomy-doc-www/${project.artifactId}
+			</url>
+		</site>
+	</distributionManagement>
+	
+</project>

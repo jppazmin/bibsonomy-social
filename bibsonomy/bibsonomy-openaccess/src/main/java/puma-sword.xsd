@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+
+     BibSonomy-OpenAccess - Check Open Access Policies for Publications
+
+     Copyright (C) 2006 - 2011 Knowledge & Data Engineering Group,
+                               University of Kassel, Germany
+                               http://www.kde.cs.uni-kassel.de/
+
+     This program is free software; you can redistribute it and/or
+     modify it under the terms of the GNU Lesser General Public License
+     as published by the Free Software Foundation; either version 2
+     of the License, or (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU Lesser General Public License for more details.
+
+     You should have received a copy of the GNU Lesser General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+
+-->
+
+<xsd:schema targetNamespace="http://puma.uni-kassel.de/2010/11/PUMA-SWORD"
+	elementFormDefault="qualified" 
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	xmlns:puma="http://puma.uni-kassel.de/2010/11/PUMA-SWORD"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+>
+
+	<xsd:import
+		schemaLocation="../../../../bibsonomy-model/src/main/resources/xschema.xsd"
+	></xsd:import>	
+<!--	<xsd:import namespace="http://www.loc.gov/METS/" schemaLocation="mets.xsd"></xsd:import>-->
+
+	<xsd:element name="PumaPost" xmlns:puma="http://puma.uni-kassel.de/2010/11/PUMA-SWORD">
+		<xsd:complexType>
+			<xsd:complexContent>
+				<xsd:extension base="PostType" >
+					<xsd:sequence>
+						<xsd:element name="author" type="xsd:string" minOccurs="0" maxOccurs="unbounded"/>
+						<xsd:element name="examinstitution" type="xsd:string" minOccurs="0" maxOccurs="1"/>
+						<xsd:element name="examreferee" type="xsd:string" minOccurs="0" maxOccurs="unbounded"/>
+						<xsd:element name="phdoralexam" type="xsd:date" minOccurs="0" maxOccurs="1"/>
+						<xsd:element name="sponsors" type="xsd:string" minOccurs="0" maxOccurs="unbounded"/>
+						<xsd:element name="additionaltitle" type="xsd:string" minOccurs="0" maxOccurs="unbounded"/>
+						<xsd:element name="classification" minOccurs="0" maxOccurs="unbounded">
+							<xsd:complexType>
+								<xsd:attribute name="name" type="xsd:string"></xsd:attribute>
+								<xsd:attribute name="value" type="xsd:string"></xsd:attribute>
+							</xsd:complexType>
+						</xsd:element>
+						<xsd:element name="user" type="puma:PumaUserType"/>
+						<xsd:element name="publisherinfo" type="xsd:string" minOccurs="0" maxOccurs="1"/>
+					</xsd:sequence>
+					<xsd:attribute name="ISBN" type="xsd:string"></xsd:attribute>
+					<xsd:attribute name="ISSN" type="xsd:string"></xsd:attribute>
+					<xsd:attribute name="DOI" type="xsd:string"></xsd:attribute>
+					<xsd:attribute name="location" type="xsd:string"></xsd:attribute>
+					<xsd:attribute name="DCC" type="xsd:string"></xsd:attribute>
+				</xsd:extension>
+			</xsd:complexContent>
+		</xsd:complexType>
+
+	</xsd:element>
+
+
+	<xsd:complexType name="PumaUserType" >
+		<xsd:complexContent>
+			<xsd:extension base="UserType" >
+				<xsd:attribute name="id" type="xsd:string"></xsd:attribute>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+
+
+</xsd:schema>
