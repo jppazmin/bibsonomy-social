@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bindings xmlns="http://java.sun.com/xml/ns/jaxb" version="2.1">
+	<bindings schemaLocation="xschema.xsd">
+		<schemaBindings>
+			<package name="org.bibsonomy.rest.renderer.xml" />
+		</schemaBindings>
+	</bindings>
+</bindings>

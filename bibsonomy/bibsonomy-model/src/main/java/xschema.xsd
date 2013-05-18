@@ -1,0 +1,346 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+
+     BibSonomy-Model - Java- and JAXB-Model.
+
+     Copyright (C) 2006 - 2011 Knowledge & Data Engineering Group,
+                               University of Kassel, Germany
+                               http://www.kde.cs.uni-kassel.de/
+
+     This program is free software; you can redistribute it and/or
+     modify it under the terms of the GNU Lesser General Public License
+     as published by the Free Software Foundation; either version 2
+     of the License, or (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU Lesser General Public License for more details.
+
+     You should have received a copy of the GNU Lesser General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+
+-->
+
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+
+	<!--
+		root element
+	-->
+	<xsd:element name="bibsonomy" type="bibsonomyXML" />
+
+
+	<!--
+		root element type
+	-->
+	<xsd:complexType name="bibsonomyXML">
+		<xsd:sequence>
+			<xsd:choice>
+				<!-- container -->
+				<xsd:element name="users" type="UsersType" />
+				<xsd:element name="groups" type="GroupsType" />
+				<xsd:element name="tags" type="TagsType" />
+				<xsd:element name="posts" type="PostsType" />
+				<!-- single elements -->
+				<xsd:element name="user" type="UserType" />
+				<xsd:element name="group" type="GroupType" />
+				<xsd:element name="post" type="PostType" />
+				<xsd:element name="tag" type="TagType" />
+				<xsd:element name="bookmark" type="BookmarkType" />
+				<xsd:element name="bibtex" type="BibtexType" />
+				<!-- error -->
+				<xsd:element name="error" type="xsd:string" />
+				<!-- hashes to return when creating / updating resources -->
+				<xsd:element name="resourcehash" type="hashType" />
+				<!-- user-/group-ids to return when creating / updating users / groups -->
+				<xsd:element name="userid" type="xsd:string" />
+				<xsd:element name="groupid" type="xsd:string" />
+				<!-- uri to return (i.e. on uploading documents) -->
+				<xsd:element name="uri" type="xsd:anyURI" />
+				<!-- gold standard references -->
+				<xsd:element name="references" type="ReferencesType" />
+			</xsd:choice>
+		</xsd:sequence>
+		<!-- status flag: contains "ok" when request was successful, "fail" otherwise -->
+		<xsd:attribute name="stat" type="statType" />
+	</xsd:complexType>
+
+	<!--
+		this type encapsulates a list of users
+	-->
+	<xsd:complexType name="UsersType">
+		<xsd:sequence>
+			<xsd:element maxOccurs="unbounded" minOccurs="0" name="user" type="UserType" />
+		</xsd:sequence>
+		<xsd:attribute name="start" type="positiveIntegerIncludingZero" use="required" />
+		<xsd:attribute name="end" type="positiveIntegerIncludingZero" use="required" />
+		<xsd:attribute name="next" type="xsd:anyURI" />
+	</xsd:complexType>
+
+	<!--
+		a user
+	-->
+	<xsd:complexType name="UserType">
+		<xsd:sequence>
+			<xsd:element name="groups" type="GroupsType" minOccurs="1" maxOccurs="1">
+				<xsd:annotation>
+					<xsd:documentation>
+						The groups, the user is a member of, excluding
+						the standard groups 'public', 'private', and
+						'friends'.
+					</xsd:documentation>
+				</xsd:annotation></xsd:element>
+		</xsd:sequence>
+		<xsd:attribute name="name" type="xsd:string" use="required" />
+		<xsd:attribute name="realname" type="xsd:string" />
+		<xsd:attribute name="email" type="xsd:string" />
+		<xsd:attribute name="homepage" type="xsd:string" />
+		<xsd:attribute name="password" type="xsd:string" />
+		<xsd:attribute name="spammer" type="xsd:boolean" />
+		<xsd:attribute name="prediction" type="xsd:positiveInteger" />
+		<xsd:attribute name="algorithm" type="xsd:string" />
+		<xsd:attribute name="toClassify" type="xsd:positiveInteger" />
+		<xsd:attribute name="classifierMode" type="xsd:string" />
+
+		<!-- link to details page -->
+		<xsd:attribute name="href" type="xsd:anyURI" />
+		<xsd:attribute name="confidence" type="xsd:double"></xsd:attribute>
+	</xsd:complexType>
+
+	<!--
+		this type encapsulates a list of groups
+	-->
+	<xsd:complexType name="GroupsType">
+		<xsd:sequence>
+			<xsd:element maxOccurs="unbounded" minOccurs="0" name="group" type="GroupType" />
+		</xsd:sequence>
+		<xsd:attribute name="start" type="positiveIntegerIncludingZero" use="required" />
+		<xsd:attribute name="end" type="positiveIntegerIncludingZero" use="required" />
+		<xsd:attribute name="next" type="xsd:anyURI" />
+	</xsd:complexType>
+
+	<!--
+		a group
+	-->
+	<xsd:complexType name="GroupType">
+		<xsd:sequence>
+			<xsd:element maxOccurs="unbounded" minOccurs="0" name="user" type="UserType" />
+		</xsd:sequence>
+		<xsd:attribute name="name" type="xsd:string" use="required" />
+		<xsd:attribute name="realname" type="xsd:string" />
+		<xsd:attribute name="homepage" type="xsd:anyURI" />
+		<xsd:attribute name="description" type="xsd:string" />
+		<!-- link to details page -->
+		<xsd:attribute name="href" type="xsd:anyURI" />
+	</xsd:complexType>
+
+	<!--
+		this type encapsulated a list of tags
+	-->
+	<xsd:complexType name="TagsType">
+		<xsd:sequence>
+			<xsd:element maxOccurs="unbounded" minOccurs="0" name="tag" type="TagType" />
+		</xsd:sequence>
+		<xsd:attribute name="start" type="positiveIntegerIncludingZero" use="required" />
+		<xsd:attribute name="end" type="positiveIntegerIncludingZero" use="required" />
+		<xsd:attribute name="next" type="xsd:anyURI" />
+	</xsd:complexType>
+
+	<!--
+		a tag
+	-->
+	<xsd:complexType name="TagType">
+		<xsd:sequence>
+			<xsd:element maxOccurs="unbounded" minOccurs="0" name="subTags" type="TagsType" />
+			<xsd:element maxOccurs="unbounded" minOccurs="0" name="superTags" type="TagsType" />
+		</xsd:sequence>
+		<xsd:attribute name="name" type="xsd:string" use="required" />
+		<xsd:attribute name="globalcount" type="positiveIntegerIncludingZero" />
+		<xsd:attribute name="usercount" type="positiveIntegerIncludingZero" />
+		<xsd:attribute name="score" type="probabilityValue" />
+		<xsd:attribute name="confidence" type="probabilityValue" />
+		<!-- link to details page -->
+		<xsd:attribute name="href" type="xsd:anyURI" />		
+	</xsd:complexType>
+
+	<!--
+		this type encapsulated a list of posts
+	-->
+	<xsd:complexType name="PostsType">
+		<xsd:sequence>
+			<xsd:element maxOccurs="unbounded" minOccurs="0" name="post" type="PostType" />
+		</xsd:sequence>
+		<xsd:attribute name="start" type="positiveIntegerIncludingZero" use="required" />
+		<xsd:attribute name="end" type="positiveIntegerIncludingZero" use="required" />
+		<xsd:attribute name="next" type="xsd:anyURI" />
+	</xsd:complexType>
+
+	<!--
+		a post
+	-->
+	<xsd:complexType name="PostType">
+		<xsd:sequence>
+			<xsd:element name="user" type="UserType" />
+			<xsd:element maxOccurs="unbounded" minOccurs="0"
+				name="group" type="GroupType" />
+			<!-- Note: a post must have at least one tag -->
+			<xsd:element maxOccurs="unbounded" name="tag"
+				type="TagType" />
+			<xsd:element minOccurs="0" maxOccurs="1" name="documents"
+				type="DocumentsType" />
+			<xsd:choice>
+				<xsd:element name="bookmark" maxOccurs="1"
+					type="BookmarkType" />
+				<xsd:element name="bibtex" maxOccurs="1"
+					type="BibtexType" />
+				<xsd:element name="goldStandardPublication"
+					maxOccurs="1" type="GoldStandardPublicationType" />
+			</xsd:choice>
+		</xsd:sequence>
+		<xsd:attribute name="description" type="xsd:string" />
+		<xsd:attribute name="postingdate" type="xsd:dateTime" />
+		<xsd:attribute name="changedate" type="xsd:dateTime"></xsd:attribute>
+	</xsd:complexType>
+
+	<!--
+		the final Document entry 
+	 -->
+	<xsd:complexType name="DocumentType">
+		<xsd:attribute name="filename" type="xsd:string" />
+		<xsd:attribute name="md5hash" type="xsd:string" />
+		<xsd:attribute name="href" type="xsd:anyURI" />
+	</xsd:complexType>
+	
+	<!-- 
+		list of Documents to be shown in the xml 
+	 -->
+	<xsd:complexType name="DocumentsType">
+		<xsd:sequence>
+			<xsd:element maxOccurs="unbounded" name="document" type="DocumentType" />
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<!--
+		a bookmark
+	-->
+	<xsd:complexType name="BookmarkType">
+		<xsd:attribute name="title" type="xsd:string" use="required" />
+		<xsd:attribute name="url" type="xsd:anyURI" use="required" />
+
+		<!-- hash value identifying this resource -->
+		<xsd:attribute name="interhash" type="xsd:string" />
+		<xsd:attribute name="intrahash" type="xsd:string" />
+		<!-- link to all posts of this bookmark -->
+		<xsd:attribute name="href" type="xsd:anyURI" />
+	</xsd:complexType>
+
+	<!--
+		a bibtex
+	-->
+	<xsd:complexType name="BibtexType">
+		<xsd:attribute name="title" type="xsd:string" use="required" />
+		<xsd:attribute name="bibtexKey" type="xsd:string" />
+		<xsd:attribute name="bKey" type="xsd:string" />
+		<xsd:attribute name="misc" type="xsd:string" />
+		<xsd:attribute name="bibtexAbstract" type="xsd:string" />
+		<xsd:attribute name="entrytype" type="xsd:string" />
+		<xsd:attribute name="address" type="xsd:string" />
+		<xsd:attribute name="annote" type="xsd:string" />
+		<xsd:attribute name="author" type="xsd:string" />
+		<xsd:attribute name="booktitle" type="xsd:string" />
+		<xsd:attribute name="chapter" type="xsd:string" />
+		<xsd:attribute name="crossref" type="xsd:string" />
+		<xsd:attribute name="edition" type="xsd:string" />
+		<xsd:attribute name="editor" type="xsd:string" />
+		<xsd:attribute name="howpublished" type="xsd:string" />
+		<xsd:attribute name="institution" type="xsd:string" />
+		<xsd:attribute name="organization" type="xsd:string" />
+		<xsd:attribute name="journal" type="xsd:string" />
+		<xsd:attribute name="note" type="xsd:string" />
+		<xsd:attribute name="number" type="xsd:string" />
+		<xsd:attribute name="pages" type="xsd:string" />
+		<xsd:attribute name="publisher" type="xsd:string" />
+		<xsd:attribute name="school" type="xsd:string" />
+		<xsd:attribute name="series" type="xsd:string" />
+		<xsd:attribute name="volume" type="xsd:string" />
+		<xsd:attribute name="day" type="xsd:string" />
+		<xsd:attribute name="month" type="xsd:string" />
+		<xsd:attribute name="year" type="xsd:string" />
+		<xsd:attribute name="type" type="xsd:string" />
+		<!-- <xsd:attribute name="scraperId" type="xsd:positiveInteger"/>  -->
+		<xsd:attribute name="url" type="xsd:string" />
+		<xsd:attribute name="privnote" type="xsd:string" />
+
+		<!-- hash value identifying this resource -->
+		<xsd:attribute name="intrahash" type="xsd:string" />
+		<xsd:attribute name="interhash" type="xsd:string" />
+		<!-- link to all posts of this bibtex -->
+		<xsd:attribute name="href" type="xsd:anyURI" />
+	</xsd:complexType>
+	
+	
+	<!--
+		this type encapsulated a list of references for a gold standard
+	-->
+	<xsd:complexType name="ReferencesType">
+		<xsd:sequence>
+			<xsd:element maxOccurs="unbounded" minOccurs="0" name="reference" type="ReferenceType" />
+		</xsd:sequence>
+	</xsd:complexType>
+	
+	<xsd:complexType name="ReferenceType">
+		<xsd:attribute name="interhash" type="xsd:string" />
+	</xsd:complexType>
+	
+	<xsd:complexType name="GoldStandardPublicationType">
+		<xsd:complexContent>
+   			<xsd:extension base="BibtexType">
+   				<xsd:sequence>
+					<xsd:element maxOccurs="1" minOccurs="1" name="references" type="ReferencesType" />
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	
+	<!--
+		helper type, as xsd:positiveInteger alone does not include zero
+	-->	
+	<xsd:simpleType name="positiveIntegerIncludingZero">
+		<xsd:restriction base="xsd:integer">
+    		<xsd:minInclusive value="0" />
+    	</xsd:restriction>
+	</xsd:simpleType>
+
+	<!--
+		helper type for statistical values
+	-->	
+	<xsd:simpleType name="probabilityValue">
+		<xsd:restriction base="xsd:double">
+    		<xsd:minInclusive value="0" />
+    		<xsd:maxInclusive value="1" />
+    	</xsd:restriction>
+	</xsd:simpleType>
+
+	<!--
+		type for resource hashes
+	-->	
+	<xsd:simpleType name="hashType">
+		<xsd:restriction base="xsd:string">
+    		<xsd:length value="32" />
+    		<xsd:pattern value="([a-z]|[0-9])*" />
+    	</xsd:restriction>
+	</xsd:simpleType>
+
+	<!--
+		type for status message
+	-->	
+	<xsd:simpleType name="statType">
+		<xsd:restriction base="xsd:string">
+      		<xsd:enumeration value="ok" />
+      		<xsd:enumeration value="fail" />
+    	</xsd:restriction>
+	</xsd:simpleType>	
+
+</xsd:schema>
