@@ -1,0 +1,41 @@
+The file
+
+  latex_macro_unicode_char_map.tsv
+  
+was compiled from a unicode / latex macro definition list contained
+in the inputenc latex package (as partially described here [1]). The 
+contained mapping file is called
+  
+  utf8ienc.dtx
+  
+and is available here [2]. It contains definitions in the form
+
+  ..
+  %\DeclareUnicodeCharacter{00EE}{\^\i}
+  %\DeclareUnicodeCharacter{00EF}{\"\i}
+  %\DeclareUnicodeCharacter{00F0}{\dh}
+  %\DeclareUnicodeCharacter{00F1}{\~n}
+  ..
+  
+These definitions were transformed into latex_macro_unicode_char_map.tsv
+by simple replacement rules (first column = content of 1st curly brackets;
+second column = content of 2nd curly brackets).
+
+Two of our existing macros were not present, namely \c{C} and \c{c};
+these were added as \cC and \cc in the list (because we remove all
+curly brackets before doing the regex matching.
+
+In addition, we also added shorthand versions of macros for German
+Umlauts (namely. "a, "u, "o, "O, "U, "A) - these are only available when
+loading 
+
+  \usepackage[ngerman]{babel}
+  
+(see also [3]). 
+
+Dominik, 2011-04-01
+
+
+[1]http://stackoverflow.com/questions/4578912/replace-all-accented-characters-by-their-latex-equivalent
+[2]http://ctan.binkerton.com/ctan.readme.php?filename=macros/latex/base/utf8ienc.dtx
+[3]http://en.wikibooks.org/wiki/LaTeX/Accents
