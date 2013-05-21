@@ -1,0 +1,94 @@
+<!--
+
+
+     BibSonomy-Recommender - Various methods to provide recommendations for BibSonomy
+
+     Copyright (C) 2006 - 2011 Knowledge & Data Engineering Group,
+                               University of Kassel, Germany
+                               http://www.kde.cs.uni-kassel.de/
+
+     This program is free software; you can redistribute it and/or
+     modify it under the terms of the GNU Lesser General Public License
+     as published by the Free Software Foundation; either version 2
+     of the License, or (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU Lesser General Public License for more details.
+
+     You should have received a copy of the GNU Lesser General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+
+-->
+
+<!DOCTYPE sqlMapConfig
+PUBLIC "-//ibatis.apache.org//DTD SQL Map Config 2.0//EN"
+"http://ibatis.apache.org/dtd/sql-map-config-2.dtd">
+<sqlMapConfig>
+	<!--
+		Die folgende Einstellungen spezifizieren Details der SqlMap
+		Konfiguration wie zum Beispiel das Transaktion Management. Sie sind
+		alle optional (Details im Handbuch).
+	-->
+	<!-- 
+	<settings 
+		maxRequests="32" 
+		cacheModelsEnabled="true" 
+		enhancementEnabled="true"
+		lazyLoadingEnabled="true" 
+		maxSessions="10"
+		maxTransactions="5" 
+		useStatementNamespaces="false" />
+	-->
+	<!--
+		Type aliases erlauben ihnen, einen kurzen Namen statt eines langen
+		voll qualifizierten Klassennamen zu definieren.
+	-->
+	
+	<typeAlias alias="byteBuffer"      type="byte[]"/>	
+	<typeAlias alias="timestamp"       type="java.sql.Timestamp"/>
+
+	<typeAlias alias="tag"             type="org.bibsonomy.model.Tag" />
+	<typeAlias alias="rectag"          type="org.bibsonomy.model.RecommendedTag" />
+	<typeAlias alias="recTag"          type="org.bibsonomy.model.RecommendedTag" />
+
+	<typeAlias alias="bookmarkParam"   type="org.bibsonomy.database.params.BookmarkParam" />
+	<typeAlias alias="bibtexParam"     type="org.bibsonomy.database.params.BibTexParam" />
+
+	<typeAlias alias="recLogEntry"     type="org.bibsonomy.recommender.tags.database.params.RecLogEntry" />
+	<typeAlias alias="recSetting"      type="org.bibsonomy.recommender.tags.database.params.RecSettingParam" />
+	<typeAlias alias="recQuerySetting" type="org.bibsonomy.recommender.tags.database.params.RecQuerySettingParam" />
+	<typeAlias alias="recQuery"        type="org.bibsonomy.recommender.tags.database.params.RecQueryParam" />
+	<typeAlias alias="recResponse"     type="org.bibsonomy.recommender.tags.database.params.RecResponseParam" />
+	<typeAlias alias="queryGuess"      type="org.bibsonomy.recommender.tags.database.params.QueryGuess" />
+	<typeAlias alias="postParam"       type="org.bibsonomy.recommender.tags.database.params.PostParam" />
+	<typeAlias alias="tasEntry"        type="org.bibsonomy.recommender.tags.database.params.TasEntry" />
+    <typeAlias alias="postRecParam"    type="org.bibsonomy.recommender.tags.database.params.PostRecParam" />
+    <typeAlias alias="latencyParam"    type="org.bibsonomy.recommender.tags.database.params.LatencyParam" />
+
+	<typeAlias alias="pair"            type="org.bibsonomy.recommender.tags.database.params.Pair" />
+	<typeAlias alias="selectorMap"     type="org.bibsonomy.recommender.tags.database.params.SelectorQueryMapParam" />
+	<typeAlias alias="selectorSetting" type="org.bibsonomy.recommender.tags.database.params.SelectorSettingParam" />
+	<typeAlias alias="selectorResponse" type="org.bibsonomy.recommender.tags.database.params.SelectorTagParam" />
+	
+	<!--
+		Spezifizieren sie eine DataSource für diese SQL Map. Hier nehmen wir
+		eine einfache SimpleDataSource. Beachten sie die Verwendung der
+		properties aus oben angegebener properties-Datei.
+	-->
+	<transactionManager type="JDBC">
+		<dataSource type="JNDI">
+			<property name="DataSource" value="java:comp/env/jdbc/bibsonomy_recommender"/>
+		</dataSource>
+	</transactionManager>
+	<!--
+		Geben sie alle SQL Map XML Dateien an, die in dieser SQL Map geladen
+		werden sollen. Beachten sie das alle Dateien im Classpath liegen. Zur
+		Zeit haben wir nur eine Datei…
+	-->
+	<sqlMap resource="common/RecommendationLogCommon.xml" />
+	<sqlMap resource="RecommendationLog.xml" />
+</sqlMapConfig>
+

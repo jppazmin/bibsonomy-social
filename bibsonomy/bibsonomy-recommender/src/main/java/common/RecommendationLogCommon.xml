@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+
+     BibSonomy-Recommender - Various methods to provide recommendations for BibSonomy
+
+     Copyright (C) 2006 - 2011 Knowledge & Data Engineering Group,
+                               University of Kassel, Germany
+                               http://www.kde.cs.uni-kassel.de/
+
+     This program is free software; you can redistribute it and/or
+     modify it under the terms of the GNU Lesser General Public License
+     as published by the Free Software Foundation; either version 2
+     of the License, or (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU Lesser General Public License for more details.
+
+     You should have received a copy of the GNU Lesser General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+
+-->
+
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="RecommendationLogCommon">
+	<!-- + 
+		 | Result mappings.
+	 	 + -->
+    <resultMap id="pairMap" class="pair">
+        <result property="first"  column="first" javaType="long"/>
+        <result property="second" column="second" javaType="long"/>
+    </resultMap>
+	
+    <parameterMap id="recSetting" class="recSetting">
+        <parameter property="recId"   javaType="string"/>
+        <parameter property="recMeta" jdbcType="BLOB"/>
+    </parameterMap>
+    
+    <resultMap id="recSetting" class="recSetting">
+        <result property="recId"       column="rec_id"     javaType="string"/>
+        <result property="recMeta"     column="rec_meta"   jdbcType="BLOB"/>
+    </resultMap>
+    
+    <resultMap id="recAdminOverview" class="org.bibsonomy.recommender.tags.database.params.RecAdminOverview">
+        <result property="settingID" column="setting_id"  javaType="long" />
+        <result property="recID"     column="rec_id"      javaType="string"  />
+        <result property="latency"   column="rec_latency" javaType="long" />
+    </resultMap>
+    
+    <resultMap id="selectorSetting" class="selectorSetting">
+        <result property="info"        column="selector_name"   javaType="string"/>
+        <result property="meta"        column="selector_meta"   jdbcType="BLOB"/>
+    </resultMap>    
+    
+	<resultMap id="recQuery" class="recQuery">
+		<result property="qid"         column="query_id"   javaType="long" />
+		<result property="pid"         column="post_id"    javaType="integer"/>
+		<result property="userName"    column="user_name"  javaType="string" />
+		<result property="timeStamp"   column="date"       javaType="timestamp"/> 
+	</resultMap>
+
+	<resultMap id="recLogResult"	class="recLogEntry">
+		<result property="qid"          column="query_id"        javaType="string" />
+		<result property="userName"     column="user_name"       javaType="string" />
+		<result property="latency"      column="rec_latency"     javaType="long"/>
+		<result property="preset"       column="{qid=query_id}"  select="selectPresets"/>
+		<result property="tags"         column="{qid=query_id}"  select="selectResults"/>
+	</resultMap>
+	
+	<resultMap id="recResponse"	class="recLogEntry">
+		<result property="tagName"      column="tag"             javaType="string"/>
+		<result property="score"        column="score"           javaType="double"/>
+		<result property="confidence"   column="confidence"      javaType="double"/>
+		<result property="latency"      column="rec_latency"     javaType="long"/>
+		<result property="metaData"     column="rec_meta"         jdbcType="BLOB"/>
+		<result property="userName"     column="user_name"       javaType="string"/>
+		<result property="timeStamp"    column="date"            jdbcType="TIMESTAMP"/>
+	</resultMap>
+	
+	<resultMap id="recTag"	class="recTag">
+		<result property="name"         column="tag"             javaType="string"/>
+		<result property="score"        column="score"           javaType="double"/>
+		<result property="confidence"   column="confidence"      javaType="double"/>
+	</resultMap>
+	
+	<resultMap id="recLog_result" class="rectag">
+		<result property="name"         column="tag"             javaType="string"/>
+		<result property="score"        column="score"           javaType="double"/>
+		<result property="confidence"   column="confidence"      javaType="double"/>
+	</resultMap>
+	
+	<resultMap id="recLog_preset" class="string">
+		<result property="tag"          column="tag"             javaType="string"/>
+	</resultMap>
+	
+	<resultMap id="queryGuess" class="queryGuess">
+		<result property="qid"    column="query_id"   javaType="long" />
+		<result property="diff"   column="diff"       javaType="long" />
+	</resultMap>	
+
+	<resultMap id="postRec" class="postRecParam">
+		<result property="postID"      column="post_id"      javaType="integer" />
+		<result property="userName"    column="user_name"    javaType="string" />
+		<result property="date"        column="date"         jdbcType="DATETIME"/>
+		<result property="contentType" column="content_type" javaType="integer"/>
+		<result property="hash"        column="hash"         javaType="string"/>
+	</resultMap>	
+
+	<statement id="selectResults" resultMap="recLog_result"> <!-- resultClass="java.util.HashMap"> -->
+  		SELECT tag, score, confidence FROM recommender_result 
+  		WHERE query_id = #qid#
+	</statement>
+
+	<statement id="selectPresets" resultClass="java.util.HashMap">
+  		SELECT tag FROM recommender_preset 
+  		WHERE query_id = #qid#
+	</statement>
+	
+	<statement id="selectRecId">
+		SELECT rec_id 
+		FROM recommender_settings
+		WHERE setting_id = #settingId#
+	</statement>
+</sqlMap>

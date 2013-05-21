@@ -1,0 +1,252 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+
+
+     BibSonomy-Recommender - Various methods to provide recommendations for BibSonomy
+
+     Copyright (C) 2006 - 2011 Knowledge & Data Engineering Group,
+                               University of Kassel, Germany
+                               http://www.kde.cs.uni-kassel.de/
+
+     This program is free software; you can redistribute it and/or
+     modify it under the terms of the GNU Lesser General Public License
+     as published by the Free Software Foundation; either version 2
+     of the License, or (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU Lesser General Public License for more details.
+
+     You should have received a copy of the GNU Lesser General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+
+-->
+
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" 
+ "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="RecommendationLog">
+	<!-- +
+		 | Get list newest tas entries
+		 + -->
+	<select id="getNewestEntries" parameterClass="tasParam" resultMap="RecommendationLogCommon.tasResult">
+		SELECT DISTINCT t.user_name, t.date, t.content_id, tag_name 
+		FROM tas t 
+		ORDER BY date DESC 
+		LIMIT #offset#, #range#
+	</select>
+	
+	<!-- +
+		 | Get list of tas entries for given contentid
+		 + -->
+	<select id="getTasEntryForID" parameterClass="integer" resultMap="RecommendationLogCommon.tasResult">
+		SELECT t.user_name, t.date, t.content_id, t.tag_name 
+		FROM tas t 
+		WHERE content_id = #id#
+	</select>
+	
+	<!-- +
+		 | Get list of tag names for given contentid
+		 + -->	
+	<select id="getTagsForCID" parameterClass="integer" resultMap="RecommendationLogCommon.tagName">
+		SELECT tag_name
+		FROM tas
+		WHERE content_id = #id#
+	</select>
+
+	<!-- +
+		 | Get list of tag names for given contentid
+		 + -->	
+	<select id="getTagNamesForCID" parameterClass="integer" resultClass="string">
+		SELECT tag_name
+		FROM tas
+		WHERE content_id = #id#
+	</select>
+
+
+	<!-- +
+		 | Get list of pairs containing given user's most popular tag name and frequency
+		 + --> 
+	<select id="getMostPopularTagsForUser" parameterClass="postParam" resultMap="RecommendationLogCommon.tagFrequency">
+		SELECT t.tag_lower as first, COUNT(tag_lower) as second 
+		FROM tas t
+		WHERE t.user_name = #userName# 
+		GROUP BY tag_lower 
+		ORDER BY COUNT(tag_lower) DESC 
+		LIMIT #range#
+	</select>
+	
+	<!--  +
+		  | Get list of pairs containing given bookmark's most popular tag name and frequency
+		  | - Only take public posts into account!
+		  + -->
+	<select id="getMostPopularTagsForBookmark" parameterClass="postParam" resultMap="RecommendationLogCommon.tagFrequency">
+		SELECT tag_lower as first, COUNT(tag_lower) as second 
+		  FROM tas t 
+		    JOIN bookmark b USING (content_id)
+		  WHERE b.book_url_hash = #intraHash#
+		    AND b.group = 0
+		  GROUP BY tag_lower 
+		  ORDER BY COUNT(tag_lower) DESC 
+		  LIMIT #range#
+	</select>
+	
+	<!--  +
+		  | Get list of pairs containing given publication's most popular tag name and frequency
+		  + -->
+	<select id="getMostPopularTagsForBibTeX" parameterClass="postParam" resultMap="RecommendationLogCommon.tagFrequency">
+		SELECT tag_lower as first, COUNT(tag_lower) as second 
+		  FROM tas t
+		    JOIN bibtex b USING (content_id) 
+		WHERE b.simhash2 = #intraHash#
+		  AND b.group = 0 
+		GROUP BY tag_lower 
+		ORDER BY COUNT(tag_lower) DESC 
+		LIMIT #range#
+	</select>	
+		
+	<!-- +
+		 | Get number of tags used by 
+		 + --> 
+	<select id="getNumberOfTagsForUser" parameterClass="string" resultClass="integer">
+		SELECT COUNT(DISTINCT tag_lower) 
+		FROM tas 
+		WHERE user_name = #userName#
+	</select>
+
+	<!-- +
+		 | Get number of TAS  
+		 + --> 
+	<select id="getNumberOfTasForUser" parameterClass="string" resultClass="integer">
+		SELECT COUNT(*) 
+		FROM tas 
+		WHERE user_name = #userName#
+	</select>	
+
+	<!-- +
+		 | Get number of tags for bookmark 
+		 + --> 
+	<select id="getNumberOfTagsForBookmark" parameterClass="string" resultClass="integer">
+		SELECT COUNT(DISTINCT tag_lower) 
+		  FROM tas 
+		    JOIN bookmark b USING (content_id)  
+		  WHERE b.book_url_hash = #intraHash#
+		    AND b.group = 0
+	</select>
+
+	<!-- +
+		 | Get number of TAS for bookmark 
+		 + --> 
+	<select id="getNumberOfTasForBookmark" parameterClass="string" resultClass="integer">
+		SELECT COUNT(*) 
+		  FROM tas 
+		    JOIN bookmark b USING (content_id)  
+		  WHERE b.book_url_hash = #intraHash#
+		    AND b.group = 0
+	</select>	
+	
+	<!-- +
+		 | Get number of tags used by 
+		 + --> 
+	<select id="getNumberOfTagsForBibTeX" parameterClass="string" resultClass="integer">
+		SELECT COUNT(DISTINCT tag_lower) 
+		  FROM tas
+		    JOIN bibtex b USING (content_id) 
+		  WHERE b.simhash2 = #intraHash#
+		    AND b.group = 0
+	</select>
+	
+	<!-- +
+		 | Get number of TAS 
+		 + --> 
+	<select id="getNumberOfTasForBibTeX" parameterClass="string" resultClass="integer">
+		SELECT COUNT(*) 
+		  FROM tas
+		    JOIN bibtex b USING (content_id) 
+		  WHERE b.simhash2 = #intraHash#
+		    AND b.group = 0
+	</select>	
+
+	<!-- +
+		 | Get user name for given user id 
+		 + --> 
+	<select id="getUserNameByID" parameterClass="integer" resultClass="string">
+		SELECT user_name 
+		  FROM user 
+		  WHERE id = #id#
+	</select>	
+
+	<!-- +
+		 | Get user id for given user name 
+		 + --> 
+	<select id="getUserIDByName" parameterClass="string" resultClass="integer">
+		SELECT id 
+		  FROM user 
+		  WHERE user_name = #name#
+	</select>	
+
+
+	<!--+
+		| Get list of top five query_ids nearest to given post
+		+-->    
+	<select id="getNearestPostsForQuery" parameterClass="postParam" resultMap="RecommendationLogCommon.postGuess">
+		SELECT DISTINCT content_id, ABS(TIMESTAMPDIFF(SECOND, date, #timestamp#)) as diff
+		FROM tas 
+		WHERE user_name= #userName# 
+		   AND ABS(TIMESTAMPDIFF(SECOND, date, #timestamp#)) &lt; 3600 
+		ORDER BY ABS(TIMESTAMPDIFF(SECOND, date, #timestamp#)) ASC
+		LIMIT 5
+	</select>
+	
+	<!--+
+	    | try to get latest content id for given post data
+	    +-->
+	<select id="lookupBookmarkContentID-1" resultClass="integer" parameterClass="postRecParam">
+		SELECT content_id 
+		FROM bookmark
+		WHERE 
+			book_url_hash = #hash# AND
+			user_name = #userName# AND
+			date = #date#
+		LIMIT 1
+	</select>
+	<!--+
+	    | try to get old content id for given post data
+	    +-->
+	<select id="lookupBookmarkContentID-2" resultClass="integer" parameterClass="postRecParam">
+		SELECT content_id 
+		FROM log_bookmark
+		WHERE 
+			book_url_hash = #hash# AND
+			user_name = #userName# AND
+			date = #date#
+		LIMIT 1
+	</select>
+
+	<!--+
+	    | try to get latest content id for given post data
+	    +-->
+	<select id="lookupBibTeXContentID-1" resultClass="integer" parameterClass="postRecParam">
+		SELECT content_id 
+		FROM bibtex
+		WHERE 
+			simhash2 = #hash# AND
+			user_name = #userName# AND
+			date = #date#
+		LIMIT 1
+	</select>
+	<!--+
+	    | try to get old content id for given post data
+	    +-->
+	<select id="lookupBibTeXContentID-2" resultClass="integer" parameterClass="postRecParam">
+		SELECT content_id 
+		FROM log_bibtex
+		WHERE 
+			simhash2 = #hash# AND
+			user_name = #userName# AND
+			date = #date#
+		LIMIT 1
+	</select>
+
+</sqlMap>

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+
+
+     BibSonomy-Recommender - Various methods to provide recommendations for BibSonomy
+
+     Copyright (C) 2006 - 2011 Knowledge & Data Engineering Group,
+                               University of Kassel, Germany
+                               http://www.kde.cs.uni-kassel.de/
+
+     This program is free software; you can redistribute it and/or
+     modify it under the terms of the GNU Lesser General Public License
+     as published by the Free Software Foundation; either version 2
+     of the License, or (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU Lesser General Public License for more details.
+
+     You should have received a copy of the GNU Lesser General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+
+-->
+
+<!DOCTYPE sqlMapConfig PUBLIC "-//iBATIS.com//DTD SQL Map Config 2.0//EN" "http://www.ibatis.com/dtd/sql-map-config-2.dtd">
+<sqlMapConfig>
+
+	<!--
+		These settings control SqlMap configuration details, primarily to do
+		with transaction management. They are all optional (see the Developer
+		Guide for more).
+	-->
+
+
+	<!--
+		Type aliases allow you to use a shorter name for long fully qualified
+		class names.
+	-->
+	<typeAlias alias="pair" type="org.bibsonomy.recommender.tags.database.params.Pair" />
+	<typeAlias alias="tag" type="org.bibsonomy.model.Tag" />
+	<typeAlias alias="postGuess" type="org.bibsonomy.recommender.tags.database.params.PostGuess" />
+	<typeAlias alias="postParam"  type="org.bibsonomy.recommender.tags.database.params.PostParam" />
+	<typeAlias alias="tasParam" type="org.bibsonomy.recommender.tags.database.params.TasParam" />
+	<typeAlias alias="tasEntry"  type="org.bibsonomy.recommender.tags.database.params.TasEntry" />
+	<typeAlias alias="timestamp"  type="java.sql.Timestamp" />
+	<typeAlias alias="postRecParam"    type="org.bibsonomy.recommender.tags.database.params.PostRecParam" />
+	
+	<!--
+		Configure a datasource to use with this SQL Map using
+		SimpleDataSource. Notice the use of the properties from the above
+		resource
+	-->
+	<transactionManager type="JDBC">
+		<dataSource type="JNDI">
+			<property name="DataSource" value="java:comp/env/jdbc/bibsonomy"/>
+		</dataSource>
+	</transactionManager>
+
+	<!--
+		Identify all SQL Map XML files to be loaded by this SQL map. Notice
+		the paths are relative to the classpath. For now, we only have one
+	-->
+	<sqlMap resource="common/RecommendationBibCommon.xml" />	
+	<sqlMap resource="RecommendationResolver.xml" /> 
+
+</sqlMapConfig>

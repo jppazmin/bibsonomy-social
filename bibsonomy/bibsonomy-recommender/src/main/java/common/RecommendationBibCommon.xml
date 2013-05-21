@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+
+     BibSonomy-Recommender - Various methods to provide recommendations for BibSonomy
+
+     Copyright (C) 2006 - 2011 Knowledge & Data Engineering Group,
+                               University of Kassel, Germany
+                               http://www.kde.cs.uni-kassel.de/
+
+     This program is free software; you can redistribute it and/or
+     modify it under the terms of the GNU Lesser General Public License
+     as published by the Free Software Foundation; either version 2
+     of the License, or (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU Lesser General Public License for more details.
+
+     You should have received a copy of the GNU Lesser General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+
+-->
+
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="RecommendationLogCommon">
+	<resultMap id="tasResult" class="tasEntry">
+		<result property="userName"  column="user_name"    javaType="string" />
+		<result property="timeStamp" column="date"         javaType="timeStamp" />
+		<result property="contentID" column="content_id"   javaType="integer"/>
+		<result property="tag"       column="tag_name"     javaType="string"/>
+	</resultMap>    
+
+	<resultMap id="tagName" class="tag">
+		<result property="name"         column="tag_name"        javaType="string"/>
+	</resultMap>	
+	
+	<resultMap id="postGuess" class="postGuess">
+		<result property="contentID"   column="content_id"  javaType="integer" />
+		<result property="diff"        column="diff"        javaType="long" />
+	</resultMap>	
+	
+	<!-- + 
+		 | pair
+	 	 + -->
+    <resultMap id="tagFrequency" class="pair">
+        <result property="first"  column="first"  javaType="string"/>
+        <result property="second" column="second" javaType="integer"/>
+    </resultMap>	
+</sqlMap>

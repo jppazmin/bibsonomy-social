@@ -1,0 +1,557 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+
+
+     BibSonomy-Recommender - Various methods to provide recommendations for BibSonomy
+
+     Copyright (C) 2006 - 2011 Knowledge & Data Engineering Group,
+                               University of Kassel, Germany
+                               http://www.kde.cs.uni-kassel.de/
+
+     This program is free software; you can redistribute it and/or
+     modify it under the terms of the GNU Lesser General Public License
+     as published by the Free Software Foundation; either version 2
+     of the License, or (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU Lesser General Public License for more details.
+
+     You should have received a copy of the GNU Lesser General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+
+-->
+
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" 
+ "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="RecommendationLog">
+
+ 	<!-- +
+		 | Get details for given recommender
+		 + -->  
+	<select id="getRecommenderByID" parameterClass="long" resultMap="RecommendationLogCommon.recSetting">
+		SELECT rec_id, rec_meta
+		FROM recommender_settings
+		WHERE setting_id = #id#
+	</select>
+	
+	<!-- +
+		 | Get list of recommenders which delivered tags in given query
+		 + -->  
+	<select id="getRecommenderIDsForQuery" parameterClass="long" resultClass="long">
+		SELECT DISTINCT r.setting_id 
+		FROM recommender_result r 
+		   JOIN recommender_querymap m ON (m.query_id=#id# AND m.query_id=r.query_id) 
+		WHERE r.query_id = #id#
+	</select>	
+	
+	
+	<!-- +
+		 | Get list of recommenders which delivered tags in given query
+		 + -->  
+	<select id="getActiveRecommenderIDsForQuery" parameterClass="long" resultClass="long">
+		SELECT DISTINCT r.setting_id 
+		FROM log_recommender l
+		   JOIN recommender_querymap m ON (m.query_id=l.query_id)
+		   JOIN recommender_result r ON (r.query_id=m.query_id AND r.rec_latency&lt;=l.timeout)
+		WHERE l.query_id = #id#
+	</select>	
+	
+	<!-- +
+		 | Get list of all recommenders used in given query
+		 + -->  
+	<select id="getAllRecommenderIDsForQuery" parameterClass="long" resultClass="long">
+		SELECT DISTINCT setting_id
+		FROM recommender_querymap 
+		WHERE query_id = #id#
+	</select>	
+	
+	<!-- Get all important recommender-info for the admin statuspage  -->
+	<select id="recAdminOverview" resultMap="RecommendationLogCommon.recAdminOverview" parameterClass="String">
+		SELECT setting_id, rec_id, 0 AS rec_latency FROM recommender_settings 
+		WHERE rec_id = #id#
+	</select>	
+	
+	<select id="getSettingIdsByStatus" resultClass="long" parameterClass="integer">
+	    SELECT setting_id FROM recommender_status
+	    WHERE status = #status#
+	</select>
+	
+	<select id="getSettingIdsByType" resultClass="long" parameterClass="integer">
+	    SELECT setting_id FROM recommender_status
+	    WHERE type = #type#
+	    AND status != 2
+	</select>
+	
+	<select id="getAverageLatencyForSettingID" resultClass="long" parameterClass="latencyParam">
+		SELECT ROUND(AVG(t.rec_latency)) as rec_latency FROM
+			(SELECT rec_latency FROM recommender_querymap q
+			   JOIN recommender_result USING (query_id, setting_id)
+			   WHERE setting_id = #settingID#
+   	           GROUP BY query_id, setting_id
+			   ORDER BY query_id DESC
+			   limit #numberOfQueries#)
+			 as t
+   </select>
+   <update id="deactivateRecommender" parameterClass="long">
+       UPDATE recommender_status SET status=0 WHERE setting_id=#sid#
+   </update>
+   <update id="activateRecommender" parameterClass="long">
+       UPDATE recommender_status SET status=1 WHERE setting_id=#sid#
+   </update>
+   <insert id="unlinkRecommender" parameterClass="String">
+       INSERT INTO recommender_settings_log (SELECT * from recommender_settings where rec_id = #url#)
+   </insert>
+   <delete id="deleteFromRecommenderStatus" parameterClass="String">
+       DELETE FROM recommender_status WHERE url=#url#
+   </delete>
+   <delete id="deleteFromRecommenderSettings" parameterClass="String">
+       DELETE FROM recommender_settings WHERE rec_id=#url#
+   </delete>
+   <update id="updateRecommenderStatusUrl" parameterClass="recSetting">
+       UPDATE recommender_status SET url=#recId# WHERE setting_id=#setting_id#
+   </update>
+   <update id="updateRecommenderSettingUrl">
+       UPDATE recommender_settings SET rec_id=#recId#, rec_meta=#recMeta# WHERE setting_id=#setting_id#
+   </update>
+   <insert id="createStatusForNewLocalRecommender" parameterClass="recSetting">
+       INSERT INTO recommender_status (setting_id, url, status, type)
+            values (#setting_id#, #recId#, 1, 1)
+   </insert>
+   <insert id="createStatusForNewDistantRecommender" parameterClass="recSetting">
+       INSERT INTO recommender_status (setting_id, url, status, type)
+            values (#setting_id#, #recId#, 1, 0)
+   </insert>
+	
+	
+	<!-- +
+		 | Get list of all recommenders used in given query
+		 + -->  
+	<select id="getRecommenderSelectionCount" parameterClass="long" resultMap="RecommendationLogCommon.pairMap">
+		SELECT m.setting_id AS first, COUNT(s.setting_id) AS second
+		FROM log_recommender l
+		 JOIN log_recommender l2
+		   ON l.post_id=l2.post_id
+		  AND l.user_name = l2.user_name
+		  AND TIMESTAMPDIFF(HOUR, l.date, l2.date)&lt;12
+		 JOIN recommender_querymap m
+		   ON m.query_id = l2.query_id
+		 LEFT JOIN recommender_selection s 
+		  ON s.query_id=l2.query_id
+		  AND s.setting_id = m.setting_id
+		WHERE l.query_id = #qid#
+		GROUP BY m.setting_id
+		ORDER BY second ASC
+<!-- 		SELECT s.setting_id AS first, COUNT(l2.query_id) AS second
+		FROM log_recommender l
+		 JOIN log_recommender l2
+		   ON l.post_id=l2.post_id
+		  AND l.user_name = l2.user_name
+		  AND TIMESTAMPDIFF(HOUR, l.date, l2.date)&lt;12
+		 JOIN recommender_selection s 
+		   ON s.query_id = l2.query_id
+		WHERE l.query_id = #qid#
+		GROUP BY s.setting_id
+		ORDER BY second ASC -->
+	</select>	
+	
+	<!-- +
+		 | Get list of all recommenders (id) which where queried and not selected previously 
+	 	 | during given post process.
+		 + -->  
+	<select id="getAllNotSelectedRecommenderIDsForQuery" parameterClass="long" resultClass="long">
+	    SELECT DISTINCT m.setting_id
+		FROM log_recommender l
+		 JOIN log_recommender l2
+		   ON l.post_id=l2.post_id
+		  AND l.user_name = l2.user_name
+		  AND TIMESTAMPDIFF(HOUR, l.date, l2.date)&lt;12
+		 JOIN recommender_querymap m
+		   ON m.query_id = l2.query_id
+		WHERE l.query_id = #qid#
+          AND NOT EXISTS (
+                SELECT s.setting_id
+				FROM log_recommender l3
+				 JOIN log_recommender l4
+				   ON l3.post_id=l4.post_id
+				  AND l3.user_name = l4.user_name
+				  AND TIMESTAMPDIFF(HOUR, l3.date, l4.date)&lt;12
+				 JOIN recommender_selection s
+				   ON s.query_id = l4.query_id
+				WHERE l3.query_id = #qid# AND s.setting_id=m.setting_id
+        )
+	</select>	
+	
+ 	<!-- +
+		 | Get details for given recommender
+		 + -->  
+	<select id="getSelectorByID" parameterClass="long" resultMap="RecommendationLogCommon.selectorSetting">
+		SELECT selector_name, selector_meta
+		FROM recommender_selectors
+		WHERE selector_id = #id#
+	</select>
+	
+
+ 	<!-- +
+		 | Get details for given query
+		 + -->
+ 	<select id="getQueryByID" parameterClass="long" resultMap="RecommendationLogCommon.recQuery">
+ 		SELECT query_id, date, user_name, post_id
+ 		FROM log_recommender
+ 		WHERE query_id = #id#
+ 	</select>
+
+ 	<!-- +
+		 | Get list of all queries for given recommender
+		 + -->
+ 	<select id="getQueriesBySID" parameterClass="long" resultMap="RecommendationLogCommon.recQuery">
+ 		SELECT l.query_id, l.date, l.user_name, l.post_id
+ 		FROM log_recommender l 
+ 		   JOIN recommender_querymap m ON (m.query_id=l.query_id) 
+ 		WHERE m.setting_id=#id#;
+ 	</select>
+ 	
+	<!-- +
+		 | Get list of all recommendations. 
+		 + -->
+	<select id="getAllRecommendations" resultMap="RecommendationLogCommon.recResponse">
+		SELECT l.query_id,
+			   l.user_name,	
+			   l.date,			 
+			   m.setting_id,
+			   s.rec_id, 
+			   s.rec_meta, 
+			   r.score, 
+			   r.confidence, 
+			   r.tag, 
+			   r.rec_latency
+		FROM log_recommender l 
+		   JOIN recommender_querymap m ON (l.query_id = m.query_id) 
+		   JOIN recommender_result r ON (r.query_id=l.query_id and r.setting_id=m.setting_id) 
+		   JOIN recommender_settings s ON (s.setting_id=m.setting_id)
+	</select>
+	<!-- +
+		 | Get list of all recommendations for given query. 
+		 + -->
+	<select id="getRecommendationsByQId" resultMap="RecommendationLogCommon.recResponse" parameterClass="integer">
+		SELECT l.query_id,
+			   l.user_name,	
+			   l.date,			 
+			   m.setting_id,
+			   s.rec_id, 
+			   s.rec_meta, 
+			   r.score, 
+			   r.confidence, 
+			   r.tag, 
+			   r.rec_latency
+		FROM log_recommender l 
+		   JOIN recommender_querymap m ON (l.query_id = m.query_id) 
+		   JOIN recommender_result r ON (r.query_id=l.query_id and r.setting_id=m.setting_id) 
+		   JOIN recommender_settings s ON (s.setting_id=m.setting_id)
+		WHERE l.query_id = #id#
+	</select>
+
+	<!-- +
+		 | Get list of all recommendations for given recommender in a given query. 
+		 + -->
+	<select id="getSpecificRecommendations" resultMap="RecommendationLogCommon.recResponse" parameterClass="recQuerySetting">
+		SELECT l.query_id,
+			   l.user_name,	
+			   l.date,			 
+			   m.setting_id,
+			   s.rec_id, 
+			   s.rec_meta, 
+			   r.score, 
+			   r.confidence, 
+			   r.tag, 
+			   r.rec_latency
+		FROM log_recommender l 
+		   JOIN recommender_querymap m ON (l.query_id = m.query_id) 
+		   JOIN recommender_result r ON (r.query_id=l.query_id and r.setting_id=m.setting_id) 
+		   JOIN recommender_settings s ON (s.setting_id=m.setting_id)
+		WHERE l.query_id = #qid# AND m.setting_id = #sid#
+	</select>
+
+	<!-- +
+		 | Get list of all tag names from given recommender in a given query. 
+		 + -->
+	<select id="getTagNamesForRecQuery" resultClass="string" parameterClass="recQuerySetting">
+		SELECT r.tag 
+		FROM log_recommender l 
+		   JOIN recommender_querymap m ON (l.query_id = m.query_id) 
+		   JOIN recommender_result r ON (r.query_id=l.query_id and r.setting_id=m.setting_id) 
+		   JOIN recommender_settings s ON (s.setting_id=m.setting_id)
+		WHERE l.query_id = #qid# AND m.setting_id = #sid#
+	</select>
+	
+	<!-- +
+		 | Get list of all recommendations for given query. 
+		 + -->
+	<select id="getRecommendationsByQid" resultMap="RecommendationLogCommon.recTag" parameterClass="long">
+		SELECT l.query_id,
+			   l.user_name,	
+			   l.date,			 
+			   m.setting_id,
+			   s.rec_id, 
+			   s.rec_meta, 
+			   r.score, 
+			   r.confidence, 
+			   r.tag, 
+			   r.rec_latency
+		FROM log_recommender l 
+		   JOIN recommender_querymap m ON (l.query_id = m.query_id) 
+		   JOIN recommender_result r ON (r.query_id=l.query_id and r.setting_id=m.setting_id) 
+		   JOIN recommender_settings s ON (s.setting_id=m.setting_id)
+		WHERE l.query_id = #qid#
+	</select>	
+
+	<!-- +
+		 | Get list of selected recommendations for given query. 
+		 + -->
+	<select id="getSelectedRecommendationsByQid" resultMap="RecommendationLogCommon.recTag" parameterClass="long">
+		SELECT l.query_id,
+			   l.user_name,	
+			   l.date,			 
+			   m.selector_id,
+			   s.selector_name, 
+			   s.selector_meta, 
+			   r.score, 
+			   r.confidence, 
+			   r.tag
+		FROM log_recommender l 
+		   JOIN recommender_selectormap m ON (l.query_id = m.query_id) 
+		   JOIN recommender_recommendations r ON (r.query_id=l.query_id) 
+		   JOIN recommender_selectors s ON (s.selector_id=m.selector_id)
+		WHERE l.query_id = #qid#
+	</select>
+	
+	<!-- +
+		 | Get list of all recommendations for given recommender in a given query. 
+		 + -->
+	<select id="getRecommendationsByQidSid" resultMap="RecommendationLogCommon.recTag" parameterClass="recQuerySetting">
+		SELECT l.query_id,
+			   l.user_name,	
+			   l.date,			 
+			   m.setting_id,
+			   s.rec_id, 
+			   s.rec_meta, 
+			   r.score, 
+			   r.confidence, 
+			   r.tag, 
+			   r.rec_latency
+		FROM log_recommender l 
+		   JOIN recommender_querymap m ON (l.query_id = m.query_id) 
+		   JOIN recommender_result r ON (r.query_id=l.query_id and r.setting_id=m.setting_id) 
+		   JOIN recommender_settings s ON (s.setting_id=m.setting_id)
+		WHERE l.query_id = #qid# AND m.setting_id = #sid#
+	</select>
+
+	<!--+ 
+	    | Get recommenders, selected for given query.
+	  	+-->
+	<select id="getQuerySelection" resultClass="long" parameterClass="long">
+		SELECT setting_id
+		FROM recommender_selection
+		WHERE query_id = #qid#
+	</select>
+	
+	<!--+
+	    | Get query for given post 
+	    +-->
+	<select id="getQueryForPost" resultClass="long" parameterClass="postRecParam">
+		SELECT query_id
+		FROM log_recommender
+		WHERE user_name = #userName# 
+		   AND post_id = #postID# 
+		   AND TIMESTAMPDIFF(HOUR, date, #date#) &lt; 12
+		ORDER BY DATE DESC 
+		LIMIT 1
+	</select>
+	
+	<!--+ 
+	    | Get specific recommender setting's id, if it exists 
+	  	+-->
+	<select id="lookupRecommenderSetting" resultClass="long" parameterClass="recSetting">
+		SELECT setting_id
+		FROM recommender_settings
+		WHERE (rec_id = #recId# AND rec_meta = #recMeta#) 
+	</select>
+
+	<!--+ 
+	    | Get specific recommender setting's id with undefined meta_data, if it exists 
+	  	+-->
+	<select id="lookupRecommenderSetting2" resultClass="long" parameterClass="recSetting">
+		SELECT setting_id
+		FROM recommender_settings
+		WHERE (rec_id = #recId# AND rec_meta IS NULL) 
+	</select>
+
+	<!--+ 
+	    | Add recommender setting, returning it's id
+		| WARNING: LAST_INSERT_ID() is not thread-safe, but while iBatis doesn't
+		|          support JDBC 3.0's getGeneratedKeys(), this is the technique of 
+		|          choice (see http://issues.apache.org/jira/browse/IBATIS-142)
+	  	+-->
+	<insert id="addRecommenderSetting" parameterClass="recSetting">
+		INSERT INTO recommender_settings (rec_id,rec_meta,rec_descr)
+		VALUES ( #recId#, #recMeta#, #recDescr# )
+ 		<selectKey resultClass="java.lang.Long" keyProperty="setting_id">
+			SELECT LAST_INSERT_ID() AS value
+	    </selectKey>
+	</insert>
+
+	<!--+ 
+	    | Get specific result selector setting's id, if it exists 
+	  	+-->
+	<select id="lookupSelectorSetting" resultClass="long" parameterClass="selectorSetting">
+		SELECT selector_id
+		FROM recommender_selectors
+		WHERE (selector_name = #info# AND selector_meta = #meta#) 
+	</select>
+
+	<!--+ 
+	    | Get specific result selector setting's id with undefined meta_data, if it exists 
+	  	+-->
+	<select id="lookupSelectorSetting2" resultClass="long" parameterClass="selectorSetting">
+		SELECT selector_id
+		FROM recommender_selectors
+		WHERE (selector_name = #info# AND selector_meta IS NULL) 
+	</select>
+	
+	<!--+
+	    | Get post data for given query_id
+	    -->
+	<select id="lookupPostForQuery" parameterClass="long" resultMap="RecommendationLogCommon.postRec">
+		SELECT l.post_id as post_id,
+		       l.user_name as user_name,
+		       m.date as date,
+		       l.content_type as content_type,
+		       m.hash as hash
+		FROM log_recommender l 
+		   JOIN recommender_postmap m ON (
+		   		m.post_id=l.post_id AND 
+		   		TIMESTAMPDIFF(HOUR, l.date, m.date) &lt; 12
+		   	) 
+		WHERE query_id=#qid#
+		LIMIT 1
+	</select>
+
+	<!--+ 
+	    | Add result selector setting, returning it's id
+		| WARNING: LAST_INSERT_ID() is not thread-safe, but while iBatis doesn't
+		|          support JDBC 3.0's getGeneratedKeys(), this is the technique of 
+		|          choice (see http://issues.apache.org/jira/browse/IBATIS-142)
+	  	+-->
+	<insert id="addSelectorSetting" parameterClass="selectorSetting">
+		INSERT INTO recommender_selectors (selector_name,selector_meta)
+		VALUES ( #info#, #meta# )
+ 		<selectKey resultClass="java.lang.Long" keyProperty="id">
+			SELECT LAST_INSERT_ID() AS value
+	    </selectKey>
+	</insert>
+	
+	<!--+ 
+	    | Map query_id to corresponding selector settings
+	  	+-->
+	<insert id="addSelectorQuerySetting" parameterClass="selectorMap">
+		REPLACE INTO recommender_selectormap (query_id, selector_id)
+		VALUES ( #qid#, #sid# )
+	</insert>
+	
+	<!--+ 
+	    | Map query_id to selected recommender
+	  	+-->
+	<insert id="addQuerySelection" parameterClass="recQuerySetting">
+		REPLACE INTO recommender_selection (query_id, setting_id)
+		VALUES ( #qid#, #sid# )
+	</insert>
+	
+	<!--+ 
+	    | Add recommender query.
+	  	+-->
+	<insert id="addRecommenderQuery" parameterClass="recQuery">
+		INSERT INTO log_recommender (user_name, date, content_type, post_id, timeout)
+		VALUES ( #userName#, #timeStamp#, #contentType#, #pid#, #queryTimeout# )
+ 		<selectKey resultClass="java.lang.Long" keyProperty="qid">
+			SELECT LAST_INSERT_ID() AS value
+	    </selectKey>
+	</insert>
+
+	<!--+ 
+	    | Map query_id to corresponding recommender settings
+	  	+-->
+	<insert id="addRecommenderQuerySetting" parameterClass="recQuerySetting">
+		REPLACE INTO recommender_querymap (query_id, setting_id)
+		VALUES ( #qid#, #sid# )
+	</insert>
+	
+	<!--+ 
+	    | Add recommender response.
+	  	+-->
+	<insert id="addRecommenderResponse" parameterClass="recResponse">
+		INSERT INTO recommender_result 
+		   (query_id, setting_id, rec_latency, score, confidence, tag)
+		VALUES ( #qid#, #sid#, #latency#, #score#, #confidence#, #tagName# )
+	</insert>
+	
+	<!--+ 
+	    | Add selected tag.
+	  	+-->
+	<insert id="addSelectedTag" parameterClass="selectorResponse">
+		REPLACE INTO recommender_recommendations 
+		   (query_id, score, confidence, tag)
+		VALUES ( #qid#, #score#, #confidence#, #tagName# )
+	</insert>
+	
+	<!--+
+	    | Connect postID with recommmendation
+	    +-->
+	<insert id="connectWithPost" parameterClass="postRecParam">
+	    INSERT INTO recommender_postmap
+	       (post_id, user_name, date, hash)
+	    VALUES ( #postID#, #userName#, #date#, #hash# )
+	</insert>
+
+	<!--+
+		| Insert Bookmark 
+	 	+-->
+	<insert id="insertBookmark" parameterClass="bookmarkParam">
+		INSERT INTO recommender_bookmark (content_id, book_url, book_url_hash, book_description, book_extended, `group`, date, user_name)
+		VALUES (#requestedContentId#,#url#,#hash#,#resource.title#,#description#,#groupId#,#date#,#userName#)
+	</insert> 
+
+	<!--+
+		| Insert BibTex 
+	 	+-->
+	<insert id="insertBibTex" parameterClass="bibtexParam">
+		INSERT INTO recommender_bibtex (title, entrytype, author, editor, year, content_id, journal, volume, chapter,
+		                    edition, month, bookTitle, howpublished, institution, organization, publisher,
+		                    address, school, series, bibtexKey, `group`, date, user_name, url, description,
+		                    annote, note, pages, bKey, number, crossref, misc, bibtexAbstract, type, day,
+		                    scraperid, simhash0, simhash1, simhash2, simhash3)
+		VALUES (#resource.title#, #resource.entrytype#, #resource.author#, #resource.editor#, #resource.year#,
+		        #requestedContentId#, #resource.journal#, #resource.volume#, #resource.chapter#, #resource.edition#,
+		        #resource.month#, #resource.booktitle#, #resource.howpublished#, #resource.institution#,
+		        #resource.organization#, #resource.publisher#, #resource.address#, #resource.school#,
+		        #resource.series#, #resource.bibtexKey#, #groupId#, #date#, #userName#,
+		        #resource.url#, #description#, #resource.annote#, #resource.note#, #resource.pages#,
+		        #resource.key#, #resource.number#, #resource.crossref#, #resource.misc#, #resource.bibtexAbstract#,
+		        #resource.type#, #resource.day#, #resource.scraperId#, #resource.simHash0#, #resource.simHash1#,
+		        #resource.simHash2#, #resource.simHash3#)
+	</insert>
+	
+	
+	<!--+
+		| Get list of query_ids nearest to given post
+		+-->
+	<select id="getNearestQueriesForPost" parameterClass="postParam" resultMap="RecommendationLogCommon.queryGuess">
+		SELECT query_id, ABS(TIMESTAMPDIFF(SECOND, date, #timestamp#)) as diff
+		FROM log_recommender 
+		WHERE ABS(YEAR(date)-YEAR(#timestamp#))&lt;2 
+		  AND user_name = #userName# 
+		ORDER BY ABS(TIMESTAMPDIFF(SECOND, date, #timestamp#)) ASC LIMIT 5;
+	</select>
+
+</sqlMap>
