@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<Templates xmlns:bs="http://www.opensocial.org">
+  <Namespace prefix="os" url="http://opensocial.com/#template"/>
+
+  <!--+
+      | render a single person
+      +-->
+  <TemplateDef tag="bs:User">
+    <Template>
+      <span class="person">
+        <span class="personimg">
+	  <a href="http://www.bibsonomy.org/cv/user/${My.user.name}" title="${My.user.name}'s profile page">
+            <img width="64" src="http://www.bibsonomy.org/picture/user/${My.user.name}"/>
+	  </a>
+        </span>
+      </span>
+    </Template>
+    <Style>
+      .personimg {
+        padding-left: 6px;
+        float: right;
+      }
+    </Style>
+  </TemplateDef>
+
+
+  <!--+
+      | render a single publication
+      +-->
+  <TemplateDef tag="bs:Publication">
+    <Template>
+      <bs:User user="${My.post.user}"/> 
+
+      <span class="titleDate" title="changed on ${My.post.postingdate}">${My.post.postingdate}</span>
+      <div class="bmicon_unselected" title="Copy this post.">
+	<a href="http://www.bibsonomy.org/editPublication?hash=${My.post.bibtex.intrahash}&amp;user=${My.post.user.name}&amp;copytag=NOTIMPLEMENTEDNOW" title="">&#160;</a>
+      </div>
+
+      <div class="bmtitle">
+	<a href="http://www.bibsonomy.org/bibtex/2${My.post.bibtex.intrahash}/${My.post.user.name}">${My.post.bibtex.title}</a>
+      </div>
+
+      <div class="bmdesc">
+	<span class="authorEditorList">${My.post.bibtex.author}</span>
+<!--
+	<em>${My.post.bibtex.journal}</em>
+	<em>${My.post.bibtex.journal}(${My.post.bibtex.volume}):${My.post.bibtex.pages}</em>
+	(<em>${My.post.bibtex.month} ${My.post.bibtex.year}</em>)
+-->
+      </div>
+      <span class="bmmeta">
+
+	<bs:Tags tags="${My.post.tag}" user="${My.post.user}"/> by <a name="${My.post.user.name" href="http://www.bibsonomy.org/user/${My.post.user.name}">${My.post.user.name}</a> 
+	<div style="clear: both;"/>
+      </span>
+    </Template>
+    <Style>
+      .titleDate {
+         font-size: 0.8em;
+         color: #555555;
+         font-style: italic;
+      }
+      .bmtitle a {
+         font-size: 1em;
+      }
+    </Style>
+  </TemplateDef>
+
+  <!--+
+      | render a list of tags
+      +-->
+  <TemplateDef tag="bs:Tags">
+    <Template>
+      <span class="bmtags">
+	  <a repeat="${My.tags}">${Cur.name} </a>
+	</span> 
+    </Template>
+  </TemplateDef>
+
+</Templates>
+
+
+<!--
+   <div class="bmfoot"><span class="bmaction"><a onclick="pickUnpickPublication(event);" title="add this publication to your basket" href="/ajax/pickUnpickPost?hash=cf7fb358bf1013422808571ce2ad0b14&amp;user=jaeschke&amp;ckey=e20a0f30e7b4795414fe93c0a54c4e84&amp;action=pick">pick</a> | <a href="/editPublication?hash=cf7fb358bf1013422808571ce2ad0b14&amp;user=jaeschke&amp;copytag=2011+computing+conference+myown+network+rfid+social+ubiquitous" title="copy this publication to your repository">copy</a> | <a href="/editGoldStandardPublication?hash=cf7fb358bf1013422808571ce2ad0b14&amp;user=jaeschke&amp;editBeforeSaving=true" title="gold-standard">gold-standard</a> | <a href="http://www.oldenbourg-link.com/doi/abs/10.1524/itit.2011.0631" title="this publication contains a URL which is linked here">URL</a> | <a href="http://dx.doi.org/10.1524%2Fitit.2011.0631" title="DOI">DOI</a> | <a href="/bib/bibtex/2cf7fb358bf1013422808571ce2ad0b14/jaeschke" title="show this publication in BibTeX format">BibTeX</a> | <abbr class="unapi-id" title="cf7fb358bf1013422808571ce2ad0b14/jaeschke"> </abbr><a id="spam_bib_jaeschke_cf7fb358bf1013422808571ce2ad0b14" href="javascript:;" title="Mark this post as spam">spam</a></span>&nbsp;</div></li>
+-->

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Module>
+  <ModulePrefs title="My Friends">
+    <Require feature="opensocial-0.7"/>
+    <Optional feature="content-rewrite">
+      <Param name="include-tags"></Param>
+    </Optional>
+  </ModulePrefs>
+  <Content type="html">
+    <![CDATA[
+      <!-- Load the bundled code for OpenSocial Templates -->
+      <script type="text/javascript"
+          src="http://ostemplates-demo.appspot.com/ostemplates.js">
+      </script>
+
+       <!-- A simple inline template -->
+       <script type="text/os-template"> 
+        <div style="font-size: 20px">Hello world!</div>
+       </script>    
+
+      <script type="text/javascript">
+        function init() {
+          <!-- Automatically render all inline templates in this gadget --> 
+          os.Container.processDocument();
+        }  
+        
+        gadgets.util.registerOnLoadHandler(init);
+      </script>
+    ]]>
+  </Content>
+</Module> 

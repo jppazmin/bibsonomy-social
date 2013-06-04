@@ -1,0 +1,189 @@
+<Templates xmlns:os="http://www.opensocial.org">
+  <Namespace prefix="os" url="http://opensocial.com/#template"/>
+
+  <TemplateDef tag="os:TestMe">
+    <Template>
+      <span class="test">
+	ABCDEFG
+      </span>
+    </Template>
+    <Style>
+      .personimg {
+        padding-right: 6px;
+      }
+    </Style>
+  </TemplateDef>
+
+  <Template tag="os:Button">
+    <button onclick="${$my.action};return false;" style="-moz-border-radius: 4px; border: 1px solid #888;         background-color: #fff">
+        <os:renderAll/>
+    </button>
+  </Template>
+  <Template tag="os:Image">
+    <img if="$my.key" src="${$my.key}"/>
+  </Template>
+  <TemplateDef tag="os:Tabs">
+    <Template>
+      <div class="tabs">
+        <div class="tabtitles" id="tabtitles-${$uniqueId}">
+          <span repeat="$my.tab" onclick="showTab(this.parentNode.parentNode, 'tab${$index}')" name="tab${$index}" class="item ${$index == 0 ? 'select' : 'deselect'}">
+            <os:renderAll content="title"/>
+          </span>
+        </div>
+        <div class="tabcontents">
+          <div repeat="$my.tab" class="item ${$index == 0 ? 'select' : 'deselect'}" name="tab${$index}">
+            <os:renderAll content="body" context="$top"/>
+          </div>
+        </div>
+      </div>
+    </Template>
+    <JavaScript>
+      function showTab(node, tabId) {
+        var children = node.getElementsByTagName("div");
+        var tabBarNode = children[0];
+        var tabDeckNode = children[1];
+        for (var tab = tabBarNode.firstChild; tab; tab = tab.nextSibling) {
+          if (!tab.getAttribute) continue;
+          tab.className = "item " +
+              ((tab.getAttribute("name") == tabId) ? "select" : "deselect"); 
+        }
+        for (var tab = tabDeckNode.firstChild; tab; tab = tab.nextSibling) {
+          if (!tab.getAttribute) continue;
+          tab.className = "item " +
+              ((tab.getAttribute("name") == tabId) ? "select" : "deselect"); 
+        }
+      }
+    </JavaScript>
+    <Style>
+      .tabtitles {
+        text-align: left;
+        padding: 6px 0px;
+      }
+      .tabtitles .item {
+        border: 1px solid #008;
+        padding: 6px;
+        font-weight: bold;
+        cursor: pointer;
+        text-decoration: none;
+      }
+      .tabtitles .select {
+        color: white;
+        background-color: #008
+      }
+      .tabtitles .deselect {
+        color: #00A;
+      }
+      .tabtitles .deselect:hover {
+        color: #00F;
+        background-color: #DDF
+      }
+      .tabcontents {
+        text-align: left;
+      }
+      .tabcontents .item {
+        padding: 6px;
+        border: 1px solid #008;
+      }
+      .tabcontents .select {
+        display: show
+      }
+      .tabcontents .deselect {
+        display: none
+      }
+    </Style>
+  </TemplateDef>
+  <Template tag="os:Layout">
+    <table if="$my.type == 'vertical'" border="1" width="100%">
+      <tr repeat="$my.item">
+        <td>
+          <os:renderAll/>
+        </td>
+      </tr>
+    </table>
+    <table if="$my.type == 'horizontal'" border="1" width="100%">
+      <tr>
+        <td repeat="$my.item">
+          <os:renderAll/>
+        </td>
+      </tr>
+    </table>
+  </Template>
+  <Template tag="os:List">
+    <ul>
+      <li repeat="$my.item"><os:renderAll/></li>
+    </ul>
+  </Template>
+  <Template tag="os:PersonChooser">
+    <select multiple="${$my.multi ? 'multiple' : false}" size="${$my.multi ? '3' : '1'}">
+      <option repeat="ViewerFriends" value="${$index}">${displayName}</option>
+    </select>
+  </Template>
+  <TemplateDef tag="os:ShowPerson">
+    <Template>
+      <span class="person">
+        <span class="personimg">
+          <img width="32" height="32" if="${$my.person.thumbnailUrl}" src="${$my.person.thumbnailUrl}"/>
+        </span>
+        <a if="${$my.person.profileUrl}" href="${$my.person.profileUrl}">${$my.person.displayName}</a>
+        <span if="!$my.person.profileUrl">${$my.person.displayName}</span>
+      </span>
+    </Template>
+    <Style>
+      .personimg {
+        padding-right: 6px;
+      }
+    </Style>
+  </TemplateDef>
+  <TemplateDef tag="os:NavLink">
+    <Template>
+      <a href="javascript:void(0)" onclick="navigateTo('${$my.view}', '${$my.params}')">
+        <os:renderAll/>
+      </a>
+    </Template>
+    <JavaScript>
+      function navigateTo(view, params) {
+        alert('Would call opensocial.navigate() with\nView  = "' +
+            view + '"\nParams = "' + params + '"');
+      }
+    </JavaScript>
+  </TemplateDef>
+  <TemplateDef tag="os:CollapsibleBox">
+    <Template>
+      <div class="collapsible-titlebox" id="collapser-${$uniqueId}">
+        <div style="float:right">
+          <a href="javascript:void(0)" onclick="toggleCollapser('${$uniqueId}')" id="collapser-show-${$uniqueId}">${$my.collapsed ? "show" : "hide"}</a>
+        </div>
+        <b><os:renderAll content="title"/></b>
+      </div>
+      <div class="collapsible-content" id="collapser-content-${$uniqueId}" style="${$my.collapsed ? 'display:none' : 'display:hidden'}">
+        <os:renderAll content="content"/>
+      </div>
+    </Template>
+    <JavaScript>
+      function toggleCollapser(id) {
+        var content = document.getElementById('collapser-content-' + id);
+        var show = document.getElementById('collapser-show-' + id);
+        var visible = content.style.display != 'none';
+        var newVisible = !visible;
+        if (newVisible) {
+          content.style.display = 'block';
+          show.innerHTML = 'hide';
+        } else {
+          content.style.display = 'none';
+          show.innerHTML = 'show';
+        }
+      }
+    </JavaScript>
+    <Style>
+      .collapsible-titlebox {
+        padding: 5px 8px;
+        background-color: #DDF;
+        border: 1px solid #AAF;
+      }
+      .collapsible-content {
+        padding: 5px 8px;
+        border: 1px solid #AAF;
+      }
+    </Style>    
+  </TemplateDef>
+</Templates>

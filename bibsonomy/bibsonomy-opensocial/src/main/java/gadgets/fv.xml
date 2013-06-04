@@ -1,0 +1,246 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Module>
+<ModulePrefs title="__MSG_title__"
+             author="__MSG_author"
+             author_affiliation="__MSG_authorAffiliation"
+             author_location="__MSG_authorLocation"
+             category="geosocial"
+             category2="social"
+             thumbnail="/ig/modules/friendview/fv_content/latitude-thm.jpg"
+             screenshot="/ig/modules/friendview/fv_content/latitude.jpg"
+             description="__MSG_description__"
+             render_inline="never">
+    <Require feature="views" />
+    <Require feature="dynamic-height" />
+    <Require feature="locked-domain"/>
+    <Require feature="setprefs" />
+    <Optional feature="content-rewrite">
+      <Param name="exclude-urls">.*</Param>
+    </Optional>
+    <Icon>http://www.google.com/images/icons/maps-16.png</Icon>
+    <OAuth>
+      <Service name="google">
+        <Access url="https://www.google.com/accounts/OAuthGetAccessToken" method="GET" />
+        <Request url="https://www.google.com/accounts/OAuthGetRequestToken?scope=http://www.google.com/glm/mmap/" method="GET" />
+        <Authorization url="https://www.google.com/accounts/OAuthAuthorizeToken?oauth_callback=http://oauth.gmodules.com/gadgets/oauthcallback" />
+      </Service>
+    </OAuth>
+    <Locale lang="bg" messages="/ig/modules/friendview/fv_content/bg_ALL.xml"/>
+    <Locale lang="ca" messages="/ig/modules/friendview/fv_content/ca_ALL.xml"/>
+    <Locale lang="cs" messages="/ig/modules/friendview/fv_content/cs_ALL.xml"/>
+    <Locale lang="da" messages="/ig/modules/friendview/fv_content/da_ALL.xml"/>
+    <Locale lang="de" messages="/ig/modules/friendview/fv_content/de_ALL.xml"/>
+    <Locale lang="el" messages="/ig/modules/friendview/fv_content/el_ALL.xml"/>
+    <Locale lang="es" messages="/ig/modules/friendview/fv_content/es_ALL.xml"/>
+    <Locale lang="es-MX" messages="/ig/modules/friendview/fv_content/es-MX_ALL.xml"/>
+    <Locale lang="et" messages="/ig/modules/friendview/fv_content/et_ALL.xml"/>
+    <Locale lang="fi" messages="/ig/modules/friendview/fv_content/fi_ALL.xml"/>
+    <Locale lang="fr" messages="/ig/modules/friendview/fv_content/fr_ALL.xml"/>
+    <Locale lang="fr-CA" messages="/ig/modules/friendview/fv_content/fr-CA_ALL.xml"/>
+    <Locale lang="hi" messages="/ig/modules/friendview/fv_content/hi_ALL.xml"/>
+    <Locale lang="hr" messages="/ig/modules/friendview/fv_content/hr_ALL.xml"/>
+    <Locale lang="hu" messages="/ig/modules/friendview/fv_content/hu_ALL.xml"/>
+    <Locale lang="id" messages="/ig/modules/friendview/fv_content/id_ALL.xml"/>
+    <Locale lang="it" messages="/ig/modules/friendview/fv_content/it_ALL.xml"/>
+    <Locale lang="ja" messages="/ig/modules/friendview/fv_content/ja_ALL.xml"/>
+    <Locale lang="ko" messages="/ig/modules/friendview/fv_content/ko_ALL.xml"/>
+    <Locale lang="lt" messages="/ig/modules/friendview/fv_content/lt_ALL.xml"/>
+    <Locale lang="lv" messages="/ig/modules/friendview/fv_content/lv_ALL.xml"/>
+    <Locale lang="nl" messages="/ig/modules/friendview/fv_content/nl_ALL.xml"/>
+    <Locale lang="no" messages="/ig/modules/friendview/fv_content/no_ALL.xml"/>
+    <Locale lang="pl" messages="/ig/modules/friendview/fv_content/pl_ALL.xml"/>
+    <Locale lang="pt-BR" messages="/ig/modules/friendview/fv_content/pt-BR_ALL.xml"/>
+    <Locale lang="pt-PT" messages="/ig/modules/friendview/fv_content/pt-PT_ALL.xml"/>
+    <Locale lang="ro" messages="/ig/modules/friendview/fv_content/ro_ALL.xml"/>
+    <Locale lang="ru" messages="/ig/modules/friendview/fv_content/ru_ALL.xml"/>
+    <Locale lang="sk" messages="/ig/modules/friendview/fv_content/sk_ALL.xml"/>
+    <Locale lang="sl" messages="/ig/modules/friendview/fv_content/sl_ALL.xml"/>
+    <Locale lang="sr" messages="/ig/modules/friendview/fv_content/sr_ALL.xml"/>
+    <Locale lang="sv" messages="/ig/modules/friendview/fv_content/sv_ALL.xml"/>
+    <Locale lang="th" messages="/ig/modules/friendview/fv_content/th_ALL.xml"/>
+    <Locale lang="tr" messages="/ig/modules/friendview/fv_content/tr_ALL.xml"/>
+    <Locale lang="uk" messages="/ig/modules/friendview/fv_content/uk_ALL.xml"/>
+    <Locale lang="vi" messages="/ig/modules/friendview/fv_content/vi_ALL.xml"/>
+    <Locale lang="zh-TW" messages="/ig/modules/friendview/fv_content/zh-TW_ALL.xml"/>
+    <Locale lang="zh-CN" messages="/ig/modules/friendview/fv_content/zh-CN_ALL.xml"/>
+    <Locale lang="en-GB" messages="/ig/modules/friendview/fv_content/en-GB_ALL.xml"/>
+    <Locale lang="en" messages="/ig/modules/friendview/fv_content/en_ALL.xml"/>
+    <Locale messages="/ig/modules/friendview/fv_content/en_ALL.xml"/>
+</ModulePrefs>
+  <UserPref name="showGmmPromo" display_name="__MSG_showGmmPromo__ (1)" datatype="bool" default_value="true" />
+  <UserPref name="showTempPromo" display_name="__MSG_showGmmPromo__ (2)" datatype="bool" default_value="true" />
+  <UserPref name="showPrivacyPromo" display_name="__MSG_showPrivacyPromo__" datatype="bool" default_value="true" />
+
+  <Content type="html"><![CDATA[
+    <div>__MSG_gadgetNotAvailable__</div>
+  ]]></Content>
+
+  <Content type="html" view="home"><![CDATA[
+<style>
+body {font-family:arial,sans-serif; font-size:.8em;}
+.textStale {color:#6e6e6e;}
+.textBold {font-weight:bold;}
+.info {color:#76a4fb; font-weight:bold;}
+.warning {color:red; font-weight:bold;}
+.promo {font-weight:bold; clear:both; background:#ffb; margin-bottom:3px; padding:2px;}
+.notes {clear:both; background: #ffb; margin-bottom:3px; padding:0 3px;}
+.visible {display:block;}
+.invisible {display:none;}
+.center {display:block; margin:auto}
+.relative {position:relative;}
+img.active {border:2px solid #0041CB;}
+img.stale {border:2px solid #8B8B8B; }
+img.small {float:left; width:40px; height:40px; margin:2px 3px 3px 1px;}
+a.textLink {display:block; text-decoration:underline; color:#00c; line-height:20px; cursor:pointer; cursor:hand;}
+a.smallTextLink {color:#7777cc; text-decoration:underline; font-size:.85em; cursor:pointer; cursor:hand;}
+a.left {float:left;}
+a.right {float:right;}
+.friendprofile {font-size:.8em;}
+#prevProf{cursor:pointer; cursor:hand;}
+#nextProf{cursor:pointer; cursor:hand;}
+#friendsDiv img {vertical-align:text-bottom;}
+#tosDiv {padding:10px 20px;}
+#map {max-width:99%; height:260px; border:1px solid #bbbbbb;}
+#contentDiv {width:100%; clear:both; margin-top:3px; margin-bottom:5px;}
+#secureContentDiv{overflow:hidden;}
+</style>
+
+  <script src="http://gadget-doc-examples.googlecode.com/svn/trunk/opensocial-gadgets/popup.js"></script>
+  <script src="http://maps.google.com/maps?file=api&amp;v=2&amp;client=google-friend-view&amp;sensor=true" type="text/javascript"></script>
+<script type="text/javascript">function fv(){}fv.SERVER_URL="https://www.google.com/glm/mmap/ig?random=";fv.REQUEST_TYPE={GET_FRIENDS:"fs",UPDATE_LOCATION:"ul",SET_PRIVACY_SETTING:"sp",GET_INVITE_GROUPS:"gig",GET_INVITE_CONTACTS:"gic",UPDATE_FRIEND_STATE:"uf",UPDATE_LOC_ACL:"ua",ACCEPT_TOS:"at",GET_PHOTO:"gp",GET_ALERTS_BY:"gb",GET_ALERTS_ON:"go",CREATE_ALERT:"ca",DELETE_ALERT:"da",ACTIVATE_ALERTS:"aa"};fv.FRIEND_STATE={INVITED:0,INVITED_BY:1,BLOCKED:2,MUTUAL:3};fv.NEW_FRIEND_STATE={ACCEPT:0,ACCEPT_HIDE:1,NO_THANKS:2};
+fv.PRIVACY_SETTING={AUTOMATIC_SHARING:0,MANUAL_SHARING:1,HIDDEN:2};fv.MSGE_TYPE={INFO:"info",WARNING:"warning"};fv.PAN_TIME=1E3;fv.REFRESH=180;fv.MAX_UPDATE_FREQUENCY_IN_MILLIS=1E4;fv.MIN_IP_ACCURACY_IN_METERS=5E3;
+fv.init=function(a){fv.map=a;fv.currentFriend={};fv.currentFriendFocused=false;fv.friends=[];fv.groups=[];fv.newFriends=[];fv.friendsTimer=-1;fv.messageTimer=-1;fv.isFirstResultSet=true;fv.isIE=navigator.appName.indexOf("Explorer")>0;fv.needsRefreshFriendsBeforeDisplay=false;fv.lastFreshFriendIdx=0;fv.prefs=new gadgets.Prefs;fv.tempPromoOn=fv.prefs.getCountry()=="us"&&fv.prefs.getLang()=="en";GEvent.addListener(fv.map,"zoomend",fv.recalculateAccuracyCircle);window.onresize=container.onWindowResize;
+fv.userWaitingFor={};document.onmousemove=fvu.mouseMoved;fvp.PREDEF_GROUPS=[fv.prefs.getMsg("allContacts"),fv.prefs.getMsg("myContacts"),fv.prefs.getMsg("mostContacted"),fv.prefs.getMsg("friends"),fv.prefs.getMsg("family"),fv.prefs.getMsg("coworkers"),fv.prefs.getMsg("latitudeUsers")];fvp.CONTENT_DIR="/ig/modules/friendview/fv_content/"};fv.selectCurrentFriend=function(a){fv.changeCurrentFriend(a);fv.currentFriendFocused=false};
+fv.focusCurrentFriend=function(a){fv.changeCurrentFriend(a);fv.currentFriendFocused=true;fvu.panMapToFriend(a)};fv.changeCurrentFriend=function(a){if(fv.currentFriend){var b=fv.currentFriend;fv.currentFriend={};b.marker&&fvu.refreshOverlays(b)}fv.currentFriend=a;a.marker&&fvu.refreshOverlays(a);fv.recalculateAccuracyCircle()};fv.unfocusCurrentFriend=function(){if(fv.currentFriendFocused)fv.currentFriendFocused=false};
+fv.recalculateAccuracyCircle=function(){if(fv.accuracyCircle){fv.map.removeOverlay(fv.accuracyCircle);fv.accuracyCircle=null}if(fv.currentFriend&&fv.currentFriend.marker){fv.accuracyCircle=fvu.createAccuracyCircle(fv.currentFriend.marker.getLatLng(),fv.currentFriend);fv.accuracyCircle&&fv.map.addOverlay(fv.accuracyCircle)}};fv.clearFriends=function(){fvu.clearFriendsDiv();fv.map.clearOverlays();fv.currentFriend={};fv.currentFriendFocused=false;fv.friends=[];fv.newFriends=[]};
+fv.refreshFriends=function(a){var b=true;if(a)b=false;fvu.updateTimestampIfActive();fv.fetchData(fv.REQUEST_TYPE.GET_FRIENDS,null,b,fv.onFriendsReceived);fv.friendsTimer>=0&&clearTimeout(fv.friendsTimer);fv.friendsTimer=setTimeout("fv.refreshFriends(true)",fv.REFRESH*1E3)};
+fv.updateUserLocation=function(a){var b=true;if(a)b=false;a=fv.friends[0];var c=a.marker.getPoint();a="&lat="+c.lat()+"&lng="+c.lng()+"&auto="+!b+"&accuracy="+a.locAccuracy;fv.fetchData(fv.REQUEST_TYPE.UPDATE_LOCATION,a,b,function(d,e){fvp.checkResponseStatus(d)&&fv.refreshFriends(!e)})};
+fv.onFriendsReceived=function(a,b){if(fvp.checkResponseStatus(a)){var c=-1;if(fv.currentFriend&&fv.currentFriend.id)c=fv.currentFriend.id;var d=fv.currentFriendFocused;fv.clearFriends();var e=fv.isFirstResultSet;fvp.parseFriends(a);for(var f=0;f<fv.friends.length;f++){var g=fv.friends[f];if(e&&g.hasLocation||g.id==c){e||d?fv.focusCurrentFriend(g):fv.selectCurrentFriend(g);break}}if(fvv.isCanvasMode()){d=gadgets.views.getParams();if(fv.currentContentDiv)e=fv.currentContentDiv.id;else{e=d.curDivId;
+fv.currentContentDiv=document.getElementById(e)}if(!fv.currentContentDiv){e="friendsDiv";fv.currentContentDiv=document.getElementById(e)}fv.currentFriend=c!=-1?fvu.findFriendById(c):fvu.findFriendById(d.curFriendId);if(!fv.currentFriend)fv.currentFriend=fv.friends[0];if(e=="privacyDiv")fvv.displayPrivacySetting();else if(e=="profileDiv")fvv.showProfile(fv.currentFriend.index);else if(e=="newFriendsDiv"&&fv.newFriends.length>0)fvv.showNotification();else if(e=="cfmDiv")fvv._rmByIdx(fv.currentFriend.index);
+else e!="addFriendsDiv"&&e=="friendsDiv"&&fvv.displayFriends()}else if(b)fv.newFriends.length>0?fvu.gotoCanvas("newFriendsDiv",-1):fvu.gotoCanvas("addFriendsDiv",-1);else fvv.iterFriends(c)}};fv._promoGmm=function(){fvv.gmmPromoClicked();var a=window.open(fv.prefs.getMsg("urlGoogle")+"latitude","_blank");a.focus()};fv._privacyPromo=function(){fv.prefs.set("showPrivacyPromo",false);fvu.hide("privacyPromo");fvv.displayPrivacy()};
+fv.constructUrl=function(a,b){return fv.constructRandomUrl(a,Math.random(),b)};fv.constructRandomUrl=function(a,b,c){return fv.SERVER_URL+b+"&app="+container.APP_ID+"&t="+a+(c?c:"")};fv.fetchData=function(a,b,c,d,e){if(c){fv.userWaitingFor[a]=true;document.body.style.cursor="wait"}b=fv.constructUrl(a,b);fv.makeRequest(b,d,a,e)};
+fv.makeRequest=function(a,b,c,d){var e={};e[gadgets.io.RequestParameters.CONTENT_TYPE]=gadgets.io.ContentType.JSON;e[gadgets.io.RequestParameters.AUTHORIZATION]=gadgets.io.AuthorizationType.OAUTH;e[gadgets.io.RequestParameters.OAUTH_SERVICE_NAME]="google";e[gadgets.io.RequestParameters.OAUTH_USE_TOKEN]="always";e[gadgets.io.RequestParameters.METHOD]=gadgets.io.MethodType.GET;e[gadgets.io.RequestParameters.REFRESH_INTERVAL]=0;if(!fv.prefs)fv.prefs=new gadgets.Prefs;var f=fv.prefs.getLang(),g=fv.prefs.getCountry();
+f=f+"_"+g;e[gadgets.io.RequestParameters.HEADERS]={"Accept-Language":f};gadgets.io.makeRequest(a,function(h){if(h.oauthApprovalUrl)fv.handleAuthorization(h.oauthApprovalUrl,a,b);else if(h.text){if(fv.userWaitingFor[c]){fv.userWaitingFor[c]=false;document.body.style.cursor="auto"}fvu.hide("pickAccountDiv");fvu.show("secureContentDiv");d||d===0?b(h.text,d):b(h.text)}},e)};
+fv.handleAuthorization=function(a,b,c){a=shindig.oauth.popup({destination:a,windowOptions:null,onOpen:function(){fvu.show("authorizingDiv")},onClose:function(){fv.makeRequest(b,c)}});var d=document.getElementById("personalize");d.onclick=a.createOpenerOnClick();a=document.getElementById("pickAccountDiv");a.style.height="275px";a.className="visible";fvu.hide("secureContentDiv");fvv.isCanvasMode()||fvu.adjustHeight("pickAccountDiv")};fv._loadHome=function(a){fv.init(a);fvv.setUpHome();fv.refreshFriends()};function fvv(){}fvv.isCanvasMode=function(){return"canvas"==gadgets.views.getCurrentView().getName()};
+fvv.createFriendDiv=function(a,b,c){var d=document.createElement("div");d.id=a.email;d.index=c;var e=function(){if(fvv.isCanvasMode()){var f=document.getElementById(fv.currentFriend.email);f.className=f.className.replace(/highlight/,"normal");f=document.getElementById(a.email);f.className="highlight friendprofile"}fv.focusCurrentFriend(a)};fvu.addEvent(d,"onclick",e);d.className="normal friendprofile";fvu.calculateLocationFreshness(a);d.innerHTML=container.createContentForFriendDiv(a,b,c);return d};
+fvv.setupGmmPromo=function(){var a=document.getElementById("gmmPromoCloseX");a.src=fvp.CONTENT_DIR+"close_regular.png";fvu.addEvent(a,"onmouseover",function(){a.src=fvp.CONTENT_DIR+"close_hover.png"});fvu.addEvent(a,"onmouseout",function(){a.src=fvp.CONTENT_DIR+"close_regular.png"});fvu.addEvent(a,"onclick",fvv.gmmPromoClicked);fvu.addEvent(document.getElementById("promoText"),"onclick",fv._promoGmm);!fv.tempPromoOn&&!fv.prefs.getBool("showTempPromo")&&fv.prefs.set("showTempPromo",true)};
+fvv.showGmmPromo=function(){var a=document.getElementById("promoText"),b=document.getElementById("promoIcon");if(fv.tempPromoOn&&fv.prefs.getBool("showTempPromo")&&!fv.prefs.getBool("showGmmPromo")){a.innerHTML="New! Latitude for iPhone";b.src=fvp.CONTENT_DIR+"iphone.gif"}else{a.innerHTML=container.getMsg("getLatitudeOnPhone");b.src=fvp.CONTENT_DIR+"cellphone-16.gif"}if(fv.prefs.getBool("showGmmPromo")||fv.tempPromoOn&&fv.prefs.getBool("showTempPromo"))document.getElementById("gmmPromo").className=
+"promo";else fvu.hide("gmmPromo")};fvv.gmmPromoClicked=function(){fv.tempPromoOn&&!fv.prefs.getBool("showGmmPromo")?fv.prefs.set("showTempPromo",false):fv.prefs.set("showGmmPromo",false);fvu.hide("gmmPromo");fvv.isCanvasMode()||fvu.adjustHeight()};
+fvv.showNotes=function(){var a=document.getElementById("locSettingNote"),b=null;if(fv.privacySetting==fv.PRIVACY_SETTING.MANUAL_SHARING)b=fv.prefs.getMsg("locationManuallySet");else if(fv.privacySetting==fv.PRIVACY_SETTING.HIDDEN)b=fv.prefs.getMsg("locationHidden");var c=fv.currentFriend?fv.currentFriend.id:-1;if(b){a.innerHTML=fvv.isCanvasMode()?"<a class='textLink' onclick='fvv.displayPrivacySetting()'>"+b+"</a>":"<a class='textLink' onclick=\"fvu.gotoCanvas('privacyDiv', "+c+'); return false;">'+
+b+"</a>";a.className="notes"}else fvu.hide("locSettingNote");a=document.getElementById("notificationDiv");if(fv.newFriends.length>0){b=fvu.replacePlaceholder(fv.prefs.getMsg("newSharingRequests"),fv.newFriends.length);a.innerHTML=fvv.isCanvasMode()?"<a class='textLink' onclick='fvv.showNotification()'>"+b+"</a>":"<a class='textLink' onclick=\"fvu.gotoCanvas('newFriendsDiv', "+c+'); return false;">'+b+"</a>";a.className="notes"}else fvu.hide("notificationDiv")};
+fvv.iterToCurrentFriend=function(a,b){var c=document.getElementById("friendsDiv"),d=fv.friends[a];if(d){var e=document.getElementById(d.email);if(fvv.isCanvasMode()){if(fv.currentContentDiv.id=="friendsDiv"){e.className="highlight friendProfile";if(b!=-1)if(c=document.getElementById(fv.friends[b].email))c.className="normal friendProfile";document.getElementById("friendsDiv").scrollTop=e.offsetTop-document.getElementById("friendsDiv").offsetTop}}else{if(e)e.className="normal friendProfile";else{e=
+fvv.createFriendDiv(d,a===0,a);c.appendChild(e)}b>-1&&b!=a&&fvu.hide(fv.friends[b].email);fvu.adjustHeight()}fv.focusCurrentFriend(d)}};fvv.leftArrowClicked=function(){var a=fv.currentFriend?fv.currentFriend.index:0,b=a-1;if(b==-1)b=fv.lastFreshFriendIdx;fvv.iterToCurrentFriend(b,a);fvv.showProfileIfRequired(b)};fvv.rightArrowClicked=function(){var a=fv.currentFriend?fv.currentFriend.index:0,b=a+1;if(b==fv.lastFreshFriendIdx+1)b=0;fvv.iterToCurrentFriend(b,a);fvv.showProfileIfRequired(b)};
+fvv.showProfileIfRequired=function(a){fvv.isCanvasMode()&&fvu.isVisible("profileDiv")&&fvv.showProfile(a)};fvv.showVerifyAccount=function(){document.getElementById("verifyAccountDiv").style.height="275px";fvu.show("verifyAccountDiv");fvu.hide("secureContentDiv");fvv.isCanvasMode()||fvu.adjustHeight("verifyAccountDiv")};fvv.setUpHome=function(){var a=document.getElementById("prevProf"),b=document.getElementById("nextProf");fvu.addEvent(a,"onclick",fvv.leftArrowClicked);fvu.addEvent(b,"onclick",fvv.rightArrowClicked);fvv.setupGmmPromo()};fvv.iterFriends=function(a){fvu.hideMessage();fvv.showGmmPromo();fvv.showNotes();a=(a=fvu.findFriendById(a))?a.index:0;fvv.iterToCurrentFriend(a,a)};function fvp(){}fvp.RESPONSE_CODE_FIELD=0;fvp.DEBUG_MESG_FIELD=1;fvp.CONTENT_FIELD=1;fvp.ID_FIELD=1;fvp.FRIEND_ENTRY_FIELD=1;fvp.EMAIL_FIELD=2;fvp.NAME_FIELD=3;fvp.LAT_FIELD=5;fvp.LNG_FIELD=6;fvp.LOCATION_TIME_FIELD=7;fvp.LOCATION_ACCURACEY_FIELD=8;fvp.REV_GEO_FIELD=9;fvp.PHOTO_URL_FIELD=13;fvp.IS_MOVING_FIELD=16;fvp.FRIEND_ENTRY_FRIEND_STATE_FIELD=2;fvp.SHARING_FIELD=3;fvp.SHARING_WITH_FIELD=4;fvp.LOC_BLURRED_FIELD=5;fvp.LOC_BLURRED_BY_FIELD=6;fvp.PRIVACY_SETS_FIELD=1;fvp.PENDING_INVITE=2;
+fvp.PRIVACY_FIELD=1;fvp.REV_GEO=0;fvp.REV_GEO2=1;fvp.SUCCESS=0;fvp.NO_TOS=3;fvp.NON_VERIFIED=11;fvp.ONE_MILLION=1E6;fvp.TEN_MILLION=1E7;fvp.PHOTO_BASE_URL="http://www.google.com/s2";fvp.checkResponseStatus=function(a){a=eval(a);return fvp.checkArrStatus(a)};
+fvp.checkArrStatus=function(a){if(a){var b=a[fvp.RESPONSE_CODE_FIELD];if(b===fvp.NON_VERIFIED){fvv.showVerifyAccount();return false}else if(b===fvp.NO_TOS){tos.showToS();return false}else if(b!=fvp.SUCCESS){fvu.showMessage(a[fvp.DEBUG_MESG_FIELD],fv.MSGE_TYPE.WARNING);return false}return true}else return false};
+fvp.parseFriends=function(a){a=eval(a);if(fvp.checkArrStatus(a)){if(fv.photoRequesterId&&fv.photoRequesterIdTimestamp){var b=new Date,c=b.getTime()-fv.photoRequesterIdTimestamp.getTime();if(c>=18E5){fv.photoRequesterId=a[fvp.CONTENT_FIELD][3];fv.photoRequesterIdTimestamp=b}}else{fv.photoRequesterId=a[fvp.CONTENT_FIELD][3];fv.photoRequesterIdTimestamp=new Date}b=a[fvp.CONTENT_FIELD][1];c=true;for(var d=0,e=0,f=0;f<b.length;f++){var g=fvp.parseFriend(b[f],c);if(g)if(g.state!=fv.FRIEND_STATE.INVITED_BY){g.index=
+d;if(g.fresh)fv.lastFreshFriendIdx=g.index;if(fvv.isCanvasMode()&&g.marker)g.bubbleContent=container.createBubbleContent(g);fv.friends[d++]=g;if(c){if(fv.isFirstResultSet){fv.isFirstResultSet=false;fv.focusCurrentFriend(g)}else fv.selectCurrentFriend(g);c=false}}else{g.index=e;fv.newFriends[e++]=g;g.state=null}}if(a=a[fvp.CONTENT_FIELD][2]){fv.privacySetting=a[fvp.PRIVACY_SETS_FIELD][fvp.PRIVACY_FIELD];fv.privacySetting==fv.PRIVACY_SETTING.AUTOMATIC_SHARING&&fvu.registerLocationUpdater()}}};
+fvp.parseFriend=function(a,b){var c={};c.name=a[fvp.NAME_FIELD];c.email=a[fvp.EMAIL_FIELD];if(!c.email)return null;if(!c.name)c.name=c.email;var d=a[fvp.FRIEND_ENTRY_FIELD];c.state=d[fvp.FRIEND_ENTRY_FRIEND_STATE_FIELD];c.sharing=d[fvp.SHARING_FIELD]==1;c.sharingWith=d[fvp.SHARING_WITH_FIELD]==1;c.isBlurred=d[fvp.LOC_BLURRED_FIELD]==1;c.isBlurredBy=d[fvp.LOC_BLURRED_BY_FIELD]==1;c.id=d[fvp.ID_FIELD];d=a[fvp.PHOTO_URL_FIELD];c.photoUrl=!b&&c.state===fv.FRIEND_STATE.INVITED?fvp.CONTENT_DIR+"not_responded.png":
+d?fv.photoRequesterId?fv.constructRandomUrl(fv.REQUEST_TYPE.GET_PHOTO,0,"&fid="+c.id+"&pri="+fv.photoRequesterId):fvp.CONTENT_DIR+"generic.png":fvp.CONTENT_DIR+"generic.png";c=container.annotateFriend(c);d=a[fvp.LAT_FIELD]/fvp.ONE_MILLION;var e=a[fvp.LNG_FIELD]/fvp.ONE_MILLION;if(d&&e){c.hasLocation=true;c.locationTime=a[fvp.LOCATION_TIME_FIELD];c.locAccuracy=0;if(a[fvp.LOCATION_ACCURACEY_FIELD])c.locAccuracy=a[fvp.LOCATION_ACCURACEY_FIELD];fvu.calculateLocationFreshness(c);c.revGeo="";if(a[fvp.REV_GEO_FIELD]){c.revGeo=
+a[fvp.REV_GEO_FIELD][fvp.REV_GEO];c.revGeo2=a[fvp.REV_GEO_FIELD][fvp.REV_GEO2];if(c.isBlurredBy||!c.revGeo)c.revGeo=c.revGeo2}c.isMoving=a[fvp.IS_MOVING_FIELD]==1;d=new GLatLng(d,e);fvu.setMarker(c,d,b)}else c.hasLocation=false;return c};function tos(){}tos.showToS=function(){fvv.isCanvasMode()&&!container.supportsToSInCanvasMode()&&fvu.gotoHome();var a=document.getElementById("tosDiv");a.style.height="375px";fvu.show("tosDiv");fvu.hideMessage();if(fvv.isCanvasMode())fvu.hide("containerDiv");else{fvu.hide("map");fvu.hide("contentDiv");fvu.adjustHeight()}};tos._acceptToS=function(){fv.fetchData(fv.REQUEST_TYPE.ACCEPT_TOS,"&tv=1",true,tos.onAcceptTos)};
+tos.onAcceptTos=function(a){if(fvp.checkResponseStatus(a)){fvu.hide("tosDiv");fvu.show("map");fvu.showMessage(fv.prefs.getMsg("loadingFriends"),fv.MSGE_TYPE.INFO);fvv.isCanvasMode()?fvu.show("containerDiv"):fvu.show("contentDiv");fv.fetchData(fv.REQUEST_TYPE.GET_FRIENDS,null,true,fv.onFriendsReceived,true)}};tos._rejectToS=function(){var a=document.getElementById("tosDiv");a.innerHTML=container.getMsg("rejectTosMessage")};function fvu(){}fvu.MILLI_PER_MINUTE=6E4;fvu.MILLI_PER_HOUR=fvu.MILLI_PER_MINUTE*60;fvu.MILLI_PER_DAY=fvu.MILLI_PER_HOUR*24;fvu.addEvent=function(a,b,c){if(a.addEventListener)a.addEventListener(b.substr(2),c,false);else if(a.attachEvent){a.detachEvent(b,c);a.attachEvent(b,c)}else a[b]=c};
+fvu.calculateLocationFreshness=function(a){var b=-1;a.active=false;if(a.locationTime){var c=new Date;c=c.getTime();b=c-a.locationTime;a.active=b<fvu.MILLI_PER_HOUR}a.fresh=true;if(b>=0){c=Math.floor(b/fvu.MILLI_PER_MINUTE);var d=Math.floor(b/fvu.MILLI_PER_DAY);b=Math.floor(b/fvu.MILLI_PER_HOUR);a.timeStr=fvu.replacePlaceholder(fv.prefs.getMsg("minuteShort"),c);if(c>1)a.timeStr=fvu.replacePlaceholder(fv.prefs.getMsg("minuteShortPlural"),c);if(d>=1){a.fresh=false;a.timeStr=fvu.replacePlaceholder(fv.prefs.getMsg("dayShort"),
+d);if(d>1)a.timeStr=fvu.replacePlaceholder(fv.prefs.getMsg("dayShortPlural"),d)}else if(b>=1){a.timeStr=fvu.replacePlaceholder(fv.prefs.getMsg("hourShort"),b);if(b>1)a.timeStr=fvu.replacePlaceholder(fv.prefs.getMsg("hourShortPlural"),b)}}};fvu.replacePlaceholder=function(a,b){return a.replace(/\%1\%/g,b)};
+fvu.showMessage=function(a,b){var c=document.getElementById("msgDiv");c.innerHTML=a;c.className=b;fv.messageTimer>=0&&clearTimeout(fv.messageTimer);fv.messageTimer=setTimeout("fvu.hideMessage()",1E4)};fvu.hideMessage=function(){fvu.hide("msgDiv")};
+fvu.createMarker=function(a,b,c){var d=new GIcon;d.image=b.photoUrl;d.iconSize=new GSize(36,37);d.iconAnchor=new GPoint(18,52);d.infoWindowAnchor=new GPoint(18,1);var e={};e.icon=d;e.title=b.name;e.clickable=true;e.zIndexProcess=fvu.getMarkerZIndex;if(c&&fvv.isCanvasMode())e.draggable=true;var f=new GMarker(a,e);f.id=b.id;if(c&&fvv.isCanvasMode()){GEvent.addListener(f,"mouseover",function(g){fv.currentFriend&&fv.currentFriend.id==f.id&&this.closeInfoWindow()});GEvent.addListener(f,"mouseout",function(g){fv.currentFriend&&
+fv.currentFriend.id==f.id&&this.openInfoWindowHtml(fv.currentFriend.bubbleContent)})}return f};
+fvu.createPlacard=function(a,b){var c=new GIcon;c.image=b.active?b.isBlurredBy?fvp.CONTENT_DIR+"placard_fresh_citylevel.png":b.isMoving?fvp.CONTENT_DIR+"placard_moving.png":fvp.CONTENT_DIR+"placard_fresh.png":b.isBlurredBy?fvp.CONTENT_DIR+"placard_old_citylevel.png":fvp.CONTENT_DIR+"placard_old.png";c.iconSize=new GSize(56,60);c.iconAnchor=new GPoint(28,60);var d={};d.icon=c;d.zIndexProcess=fvu.getMarkerZIndex;c=new GMarker(a,d);c.id=b.id;return c};
+fvu.createAccuracyCircle=function(a,b){if(b.locAccuracy&&b.locAccuracy>0){var c=fvp.CONTENT_DIR+"purple_circle.png";if(b.id==fv.friends[0].id)c=fvp.CONTENT_DIR+"blue_circle.png";return fvu.createAccuracyMarker(a,b.locAccuracy,c)}return null};
+fvu.createAccuracyMarker=function(a,b,c,d){var e=fv.map.getBounds().getSouthWest().distanceFrom(fv.map.getBounds().getNorthEast()),f=fv.map.getSize().width,g=fv.map.getSize().height;f=Math.sqrt(f*f+g*g);e=b*(f/e);b=new GIcon;b.image=c;b.iconSize=new GSize(e*2,e*2);b.iconAnchor=new GPoint(e,e);c={};c.icon=b;c.zIndexProcess=function(){return GOverlay.getZIndex(90)};if(d)c.draggable=true;else c.clickable=false;a=new GMarker(a,c);if(d){a.enableDragging();GEvent.addListener(a,"drag",d)}return a};
+fvu.drawFriendOnMap=function(a){fv.map.addOverlay(a.placard);fv.map.addOverlay(a.marker)};fvu.removeFriendFromMap=function(a){fv.map.removeOverlay(a.placard);fv.map.removeOverlay(a.marker)};
+fvu.setMarker=function(a,b,c){a.marker=fvu.createMarker(b,a,c);a.placard=fvu.createPlacard(b,a);b=function(d,e){if(!fvv.isCanvasMode()&&fv.currentFriend==a)fvu.gotoCanvas("profileDiv",a.id);else if(fvv.isCanvasMode()&&document.getElementById("profileDiv").className=="visible"){fv.focusCurrentFriend(a);fvv.showProfile(a.index)}else fvv.iterToCurrentFriend(a.index,fv.currentFriend.index)};GEvent.addListener(a.marker,"click",b);fvu.drawFriendOnMap(a);if(c){a.marker.enableDragging();GEvent.addListener(a.marker,
+"dragstart",function(){fvv.isCanvasMode()?fv.map.removeOverlay(fv.friends[0].placard):fvu.gotoCanvas("privacyDiv",a.id)});GEvent.addListener(a.marker,"dragend",function(){fvv.isCanvasMode()&&fv.manuallyUpdateUserLocation()})}};fvu.refreshOverlays=function(a){var b=a.marker.getLatLng();fvu.removeFriendFromMap(a);fvu.setMarker(a,b,a.index==0)};
+fvu.panMapToFriend=function(a){if(a.marker){var b=a.marker.getLatLng();fv.map.getBounds().contains(b)||fv.map.panTo(b,fv.PAN_TIME);fvv.isCanvasMode()&&a.hasLocation&&a.marker.openInfoWindowHtml(a.bubbleContent)}};fvu.trim=function(a){return a.replace(/(^\s*|\s*$)/,"")};fvu.clearFriendsDiv=function(){for(var a=document.getElementById("friendsDiv"),b=0;b<a.childNodes.length;b++){var c=a.childNodes[b];if(c&&c.isFriendDiv){a.removeChild(c);b--}}};
+fvu.removeAllChildren=function(a){for(var b=a.childNodes.length,c=0;c<b;c++)a.removeChild(a.childNodes[c])};fvu.wrapLine=function(a,b,c){if(a.length<=b)return a;a=a.split(" ");for(var d=0;d<a.length;d++){var e=a[d],f=e.length;if(f>b){for(var g=0,h="";g<f;)if(g+b<f){h+=e.substr(g,b)+"<br>";g+=b}else{h+=e.substr(g,f-g);g=f}if(fvu.isUrl(e)&&c)h='<a href="'+e+'" target="_blank">'+h+"</a>";a[d]=h}}return a.join(" ")};
+fvu.isUrl=function(a){var b=/(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/;return b.test(a)};fvu.getMarkerZIndex=function(a){var b=GOverlay.getZIndex(a.getLatLng().lat());if(a.id===fv.currentFriend.id)b=GOverlay.getZIndex(-90);return b};fvu.hide=function(a){a=document.getElementById(a);a.className="invisible"};fvu.show=function(a){a=document.getElementById(a);a.className="visible"};
+fvu.findFriendById=function(a){if(a==-1)return null;for(var b=fv.friends.length,c=0;c<b;c++){var d=fv.friends[c];if(d.id==a)return d}return null};fvu.gotoCanvas=function(a,b){window.open("https://www.google.com/latitude")};fvu.gotoCanvasWithDefaultParam=function(){fvu.gotoCanvas("friendsDiv",-1)};fvu.gotoHome=function(){var a=gadgets.views.getSupportedViews();gadgets.views.requestNavigateTo(a.home)};
+fvu.gearsSuccessCallback=function(a){if(fv.privacySetting==fv.PRIVACY_SETTING.AUTOMATIC_SHARING){var b=fv.friends[0];if(b)if(!(a.coords.accuracy>fv.MIN_IP_ACCURACY_IN_METERS)){var c=(new Date).getTime();if(!(c<fvu.lastUpdateTime+fv.MAX_UPDATE_FREQUENCY_IN_MILLIS)){b.locAccuracy=a.coords.accuracy;a=new GLatLng(a.coords.latitude,a.coords.longitude);b.marker?b.marker.setLatLng(a):fvu.setMarker(b,a,true);fv.updateUserLocation(true);fvu.lastUpdateTime=c}}}};fvu.gearsErrorCallback=function(a){};
+fvu.registerLocationUpdater=function(){if(!fv.gearsWatchEnabled)if(navigator.geolocation){navigator.geolocation.watchPosition(fvu.gearsSuccessCallback,fvu.gearsErrorCallback,{enableHighAccuracy:true});fv.gearsWatchEnabled=true}else if(window.google&&google.gears)try{var a=google.gears.factory.create("beta.geolocation");if(a.hasPermission||a.getPermission(fv.prefs.getMsg("title"),fvp.CONTENT_DIR+"fvlogo.png",fv.prefs.getMsg("latitudeGears"))){a.watchPosition(fvu.gearsSuccessCallback,fvu.gearsErrorCallback,
+{enableHighAccuracy:true,gearsRequestAddress:false});fv.gearsWatchEnabled=true}}catch(b){}};fvu.mouseMoved=function(a){fvu.currentX=0;fvu.currentY=0;if(window.event){fvu.currentX=window.event.x;fvu.currentY=window.event.y}if(!fvu.currentX&&!fvu.currentY){fvu.currentX=a.pageX;fvu.currentY=a.pageY}if(!fvu.currentX&&!fvu.currentY){fvu.currentX=a.clientX;fvu.currentY=a.clientY}};
+fvu.updateTimestampIfActive=function(){if(fvu.currentX!=fvu.previousX||fvu.currentY!=fvu.previousY)if(navigator.geolocation)navigator.geolocation.getCurrentPosition(fvu.gearsSuccessCallback,fvu.gearsErrorCallback,{enableHighAccuracy:true});else try{var a=google.gears.factory.create("beta.geolocation");a.hasPermission&&a.getCurrentPosition(fvu.gearsSuccessCallback,fvu.gearsErrorCallback,{enableHighAccuracy:true,gearsRequestAddress:false})}catch(b){}fvu.previousX=fvu.currentX;fvu.previousY=fvu.currentY};
+fvu.refreshBubble=function(a){if(fvv.isCanvasMode()&&a.hasLocation){a.bubbleContent=container.createBubbleContent(a);a.marker.openInfoWindowHtml(a.bubbleContent)}};fvu.isVisible=function(a){return document.getElementById(a).className!="invisible"};fvu.adjustHeight=function(a){a=a?a:"secureContentDiv";gadgets.window.adjustHeight(document.getElementById(a).offsetHeight)};(function(){if(!(window.google&&google.gears)){var a=null;if(typeof GearsFactory!="undefined")a=new GearsFactory;else try{a=new ActiveXObject("Gears.Factory");a.getBuildInfo().indexOf("ie_mobile")!=-1&&a.privateSetGlobalObject(this)}catch(b){if(typeof navigator.mimeTypes!="undefined"&&navigator.mimeTypes["application/x-googlegears"]){a=document.createElement("object");a.style.display="none";a.width=0;a.height=0;a.type="application/x-googlegears";document.documentElement.appendChild(a)}}if(a){window.google||
+(google={});if(!google.gears)google.gears={factory:a}}}})();function container(){}container.APP_ID=0;container.annotateContact=function(a){return a};container.renderMembers=function(a,b,c){for(c=0;c<b.length;c++)fvv.appendContElem(a,b[c])};container.annotateFriend=function(a){return a};container.supportsToSInCanvasMode=function(){return false};
+container.onWindowResize=function(){if(fvv.isCanvasMode()){var a=document.getElementById("leftDiv"),b=document.getElementById("rightDiv"),c=0;if(window.innerWidth)c=window.innerWidth;else if(document.documentElement&&document.documentElement.clientWidth)c=document.documentElement.clientWidth;else if(document.body&&document.body.clientWidth)c=document.body.clientWidth;b.style.width=(c-a.offsetWidth)*0.97+"px";b.style.minWidth=b.style.width;c=fvu.findPos(b)[0];var d=document.getElementById("setLocSpan");
+d.style.left=c;d=document.getElementById("iterSpan");d.style.left=c+b.offsetWidth-110;if(fv.isIE){a.style.height="500px";b.style.height="500px";document.getElementById("map").style.height="495px"}}};
+container.makeProfileUpper=function(a,b){var c=document.createElement("div");c.className="profileUpper";var d=(a.active?"active":"stale")+" big";d="<img class='"+d+"' src='"+a.photoUrl+"'>\n";d+="<span class='textBold'>"+a.name+"</span>\n";if(a.state!=fv.FRIEND_STATE.INVITED&&!a.sharingWith)d+=" <img src='"+fvp.CONTENT_DIR+"hide_small.png'/>";if(a.isBlurred&&a.sharingWith)d+=" <img src='"+fvp.CONTENT_DIR+"city_level.png'/>";d+="<br>"+a.email+"<br>";if(a.revGeo)d+=a.revGeo+" <span class='textStale'>"+
+fvu.replacePlaceholder(fv.prefs.getMsg("howLongAgo"),a.timeStr)+"<br></span>";else a.hasLocation||(d+=fv.prefs.getMsg("unknownLocation")+"<br>");c.innerHTML=d;return c};
+container.makeProfileLower=function(a){var b=document.createElement("div");b.className="profileLower";var c=document.createElement("a");c.href="mailto:"+a.email;c.innerHTML=fv.prefs.getMsg("sendAnEmail");c.className="textLink";b.appendChild(c);c=document.createElement("a");var d=function(){fvu.hideMessage();document.getElementById("headerDiv").innerHTML=fvu.replacePlaceholder(fv.prefs.getMsg("removeFriend"),a.name);fvu.toggleContentDiv(document.getElementById("cfmDiv"))};fvu.addEvent(c,"onclick",
+d);c.innerHTML=fv.prefs.getMsg("removeFriendMessage");c.className="textLink";b.appendChild(c);return b};container.createProfile=function(a,b){var c=document.createElement("div");c.id=a.email+"Profile";c.appendChild(container.makeProfileUpper(a,b));b||c.appendChild(container.makeProfileLower(a));return c};
+container.createContentForFriendDiv=function(a,b,c){b=a.state==fv.FRIEND_STATE.INVITED;var d=fvv.isCanvasMode(),e="";e="small";b||(e+=a.active?" active":" stale");e=d?"<img class='"+e+"' src='"+a.photoUrl+"' id='"+a.email+"_photo'>\n":"<img class='"+e+"' src='"+a.photoUrl+"' style='cursor:pointer; cursor:hand;' id='"+a.email+"_photo' onclick=\"fvu.gotoCanvas('profileDiv', "+a.id+'); return false;">\n';var f=a.name?a.name:a.email;e+=b?"<span class='textStale'>"+f+"</span>":fvv.isCanvasMode()?"<a class='textLink1'>"+
+f+"</a>":"<span class='textBold'>"+f+"</span>";if(!b&&!a.sharingWith)e+=" <img src='"+fvp.CONTENT_DIR+"hide_small.png'/>";if(a.isBlurred&&a.sharingWith)e+=" <img src='"+fvp.CONTENT_DIR+"city_level.png'/>";if(d){e+=" - ";e+=b?"<a class='smallTextLink' onclick='fvv._rmByIdx("+c+")'>"+fv.prefs.getMsg("remove")+" &raquo;</a>\n":"<a class='smallTextLink' onclick='fvv.showProfile("+c+")'>"+fv.prefs.getMsg("viewProfile")+" &raquo;</a>\n"}e+="<br>";if(b)e+="<span class='textStale'>"+fv.prefs.getMsg("hasNotYetResponded")+
+"</span>\n";else if(a.revGeo2)e+=a.revGeo2+" <span class='textStale'>"+fvu.replacePlaceholder(fv.prefs.getMsg("howLongAgo"),a.timeStr)+"</span><br>";else a.hasLocation||(e+=fv.prefs.getMsg("unknownLocation")+"<br>");d||(e+=b?"<a class='smallTextLink' onclick=\"fvu.gotoCanvas('cfmDiv', "+a.id+'); return false;">'+fv.prefs.getMsg("remove")+"</a> <img src='"+fvp.CONTENT_DIR+"external.png' />\n":"<a class='smallTextLink' onclick=\"fvu.gotoCanvas('profileDiv', "+a.id+'); return false;">'+fv.prefs.getMsg("viewProfile")+
+"</a> <img src='"+fvp.CONTENT_DIR+"external.png' />\n");return e};
+container.createBubbleContent=function(a){var b="<span class='textBold'>"+a.name+"</span>";if(a.state!=fv.FRIEND_STATE.INVITED&&!a.sharingWith)b+=" <img src='"+fvp.CONTENT_DIR+"hide_small.png' style='vertical-align:text-bottom;'/>";if(a.isBlurred&&a.sharingWith)b+=" <img src='"+fvp.CONTENT_DIR+"city_level.png' style='vertical-align:text-bottom;'/>";b+=" - <a class='smallTextLink' onclick='fvv.showProfile("+a.index+")'>"+fv.prefs.getMsg("viewProfile")+" &raquo;</a><br>";if(a.revGeo2)b+=a.revGeo2+" ";
+b+="<span class='textStale'>"+fvu.replacePlaceholder(fv.prefs.getMsg("howLongAgo"),a.timeStr)+"</span>";return b};container.annotateLabelForContact=function(a,b){return a};container.getMsg=function(a){if(!fv.prefs)fv.prefs=new gadgets.Prefs;return fv.prefs.getMsg(a)};
+</script>
+  <script type="text/javascript">
+    function fvLoad() {
+      if (GBrowserIsCompatible()) {
+        var map = new GMap2(document.getElementById("map"));
+        map.setCenter(new GLatLng(37.4419, -122.1419), 13);
+        map.addControl(new GSmallZoomControl());
+        fv._loadHome(map);
+      };
+    }
+    gadgets.util.registerOnLoadHandler(fvLoad);
+  </script>
+
+  <div id="pickAccountDiv" class="invisible">
+    <div align="center" class="textLarge">__MSG_title__</div><br>
+    <div align="center" class="textStale">__MSG_stayConnected__</div><br>
+    <img class="center" src="/ig/modules/friendview/fv_content/fvlogo.png"><br>
+    <div align="center">__MSG_allowSharing__</div><br>
+    <div align="center">
+      <a href="#" id="personalize">__MSG_pickAccount__</a>
+    </div>
+    <div align="center" id="authorizingDiv" class="invisible">
+      <br>__MSG_pickAccountAuthorizing__
+    </div>
+    <br><br>
+  </div>
+  <div id="verifyAccountDiv" class="invisible">
+    <div align="center" class="textLarge">__MSG_title__</div><br>
+    <div align="center" class="textStale">__MSG_stayConnected__</div><br>
+    <img class="center" src="/ig/modules/friendview/fv_content/fvlogo.png"><br>
+    <div align="center">__MSG_verificationNeeded__</div><br>
+    <div align="center">
+      <a href="https://www.google.com/accounts/ResendVerifyEmail" target="_top">__MSG_clickToVerifyEmail__</a>
+    </div>
+    <br><br>
+  </div>
+  <div id="secureContentDiv">
+    <div id="tosDiv" class="invisible">
+      <p align="center" class="textLarge">__MSG_title__</p>
+      <p align="center" class="textStale">__MSG_stayConnected__</p><br>
+      <img class="center" src="/ig/modules/friendview/fv_content/fvlogo.png"><br>
+      <p>__MSG_allowSharing__</p>
+      <p>__MSG_hideDescribe__<a href="__MSG_urlGoogle__latitude#dc=latgpromo" target="_blank">__MSG_learnMore__.</a></p>
+      <p>__MSG_privacyPolicy__</p>
+      <p align="center">
+        <input id="acceptTos" type="button" onclick="tos._acceptToS();" value="__MSG_agree__">
+        <input id="rejectTos" type="button" onclick="tos._rejectToS();" value="__MSG_decline__">
+      </p>
+    </div>
+    <div id="map"></div>
+    <div id="msgDiv" class="info">__MSG_loadingFriends__</div>
+    <div id="contentDiv">
+      <div id="gmmPromo" class="invisible">
+        <img id="gmmPromoCloseX" style="float:right; cursor:pointer; cursor:hand;margin-top:5px">
+        <a id="promoText" style="cursor:pointer; cursor:hand; line-height:20px;""></a>
+        <img  id="promoIcon" style="margin-right:5px;">
+      </div>
+      <div id="locSettingNote" class="invisible"></div>
+      <div id="notificationDiv" class="invisible"></div>
+      <table width="100%">
+        <tr height="65px">
+          <td width="5%" id="prevProf" onclick="return false;"><img src="/ig/modules/friendview/fv_content/left.gif"/></td>
+          <td width="90%"><div id="friendsDiv"></div></td>
+          <td width="5%" id="nextProf" onclick="return false;"><img src="/ig/modules/friendview/fv_content/right.gif"/></td>
+        </tr>
+      </table>
+    </div>
+  </div>
+]]>
+</Content>
+
+</Module>

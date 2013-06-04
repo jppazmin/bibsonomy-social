@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans 
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd"
+	>
+
+	<!-- factory beans -->
+	<bean id="dbSessionFactory" class="org.bibsonomy.database.util.IbatisDBSessionFactory" />
+
+	<!-- factory bean which takes the security token's viewer id as login user name -->
+	<bean id="shindigLogicFactory" class="org.bibsonomy.database.ShindigDBLogicUserInterfaceFactory">
+		<property name="dbSessionFactory" ref="dbSessionFactory"/>
+	</bean>
+
+	<!--+
+		| OpenSocial Data Provider
+		+-->
+	<bean id="personSpi" class="org.bibsonomy.opensocial.spi.BibSonomyPersonSpi">
+		<property name="dbLogicFactory" ref="shindigLogicFactory"/>
+	</bean>
+	
+	<bean id="mockupPersonSpi" class="org.bibsonomy.opensocial.spi.MockPersonSpi"/>
+	
+	<bean id="oAuthDataStore" class="org.bibsonomy.opensocial.spi.MockOAuthDataStore"/>
+</beans>

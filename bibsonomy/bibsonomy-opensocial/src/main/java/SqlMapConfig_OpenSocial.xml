@@ -1,0 +1,28 @@
+<!DOCTYPE sqlMapConfig
+PUBLIC "-//ibatis.apache.org//DTD SQL Map Config 2.0//EN"
+"http://ibatis.apache.org/dtd/sql-map-config-2.dtd">
+<sqlMapConfig>
+	<!--+
+		| type aliases
+		+-->
+	<typeAlias alias="byteBuffer"            type="byte[]"/>	
+	<typeAlias alias="timestamp"             type="java.sql.Timestamp"/>
+	<typeAlias alias="oAuthConsumer"         type="org.bibsonomy.opensocial.oauth.database.beans.OAuthConsumerInfo"/>
+	<typeAlias alias="tokenIndex"            type="org.bibsonomy.opensocial.oauth.database.beans.OAuthTokenIndex"/>
+	<typeAlias alias="tokenInfo"             type="org.bibsonomy.opensocial.oauth.database.beans.OAuthTokenInfo"/>
+	<typeAlias alias="tokenEntry"            type="org.apache.shindig.social.opensocial.oauth.OAuthEntry"/>
+	<!--+
+		| data source configuration
+		+-->
+	<transactionManager type="JDBC">
+		<dataSource type="JNDI">
+			<property name="DataSource" value="java:comp/env/jdbc/bibsonomy_opensocial"/>
+		</dataSource>
+	</transactionManager>
+
+	<!--+
+		| imports: queries, ...
+		+-->
+	<sqlMap resource="OpenSocialQueries.xml" />
+</sqlMapConfig>
+

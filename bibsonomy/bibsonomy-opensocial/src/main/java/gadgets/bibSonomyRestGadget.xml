@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Module>
+  <ModulePrefs
+     title="BibSonomy REST Client"
+     height="200"
+     scrolling="true"
+     author="Folke Mitzlaff"
+     author_email="mitzlaff@cs.uni-kassel.de"
+     description="This gadget demonstrates how to query BibSonomy&apos;s REST-Api in an OpenSocial Gadget via OAuth" 
+     >
+
+    <Require feature="dynamic-height"/>
+    <OAuth>
+      <Service name="BibSonomy">
+        <Request url="http://folke.biblicious.org/oauth/requestToken" />
+        <Authorization url="http://folke.biblicious.org/oauth/authorize?oauth_callback=http://opensocial.bibsonomy.org/gadgets/oauthcallback" />
+        <Access url="http://folke.biblicious.org/oauth/accessToken" />
+      </Service>
+    </OAuth>
+    <Require feature="oauthpopup" />
+    <Optional feature="content-rewrite">
+      <Param name="include-tags"></Param>
+    </Optional>
+  </ModulePrefs>
+  <Content type="html" xmlns:bs="http://www.bibsonomy.org/">
+    <![CDATA[
+       <!-- gadget styling -->
+       <link rel="stylesheet" type="text/css" href="http://folke.mitzlaff.org/os/osstyle.css"/>
+
+       <!-- bibsonomy styling -->
+       <link rel="stylesheet" type="text/css" href="http://folke.mitzlaff.org/os/opensocial.css"/>
+	 
+       <!-- Load the bundled code for OpenSocial Templates -->
+       <script type="text/javascript" src="http://ostemplates-demo.appspot.com/ostemplates.js"></script>
+
+       <!-- Load the OAuth sample code -->
+       <script type="text/javascript" src="http://gadgetstore/oauth.js?test=jj123333aiiiixyza22aa"></script>
+
+       <!-- Date handling -->
+       <script type="text/javascript" src="http://www.bibsonomy.org/resources/javascript/date.js"></script>
+
+       <div id="gadgetContent"></div>
+
+       <script type="text/os-template" name="bibtexList">
+	 <div id="bibtexList" class="bookbox">
+	 <ul id="bibtex">
+	   <!--<li repeat="friends"><bs:ShowPerson person="${Cur}"/></li>-->
+	   <!--<li repeat="posts.post">${bibtex.title}</li>-->
+	   <li class="bm" repeat="posts.post"><bs:Publication post="${Cur}"/></li>
+	 </ul>
+	 </div>
+       </script>
+
+       <!-- authorization links will be displayed here -->
+       <div id="main" style="display: none">
+	 Query: 
+	 <form class="gadgetInputBox" onSubmit="clearResult(); fetchData(this.gadgetUrl.value); return false;" action="">
+	   <span>
+	     <input size="50" type="text" name="gadgetUrl" id="gadgetUrl" value="/users/folke/posts?resourcetype=bibtex&format=json&start=0&end=4"/>
+	     <input class="navigation" value="Render Gadget" type="submit" name="b1"/>
+	   </span>
+	 </form>
+       </div>
+
+       <div id="approval" style="display: none">
+	 <img src="http://folke.mitzlaff.org/os/key.png">
+	   <a href="#" id="personalize">Personalize this gadget</a>
+	 </div>
+
+	 <div id="waiting" style="display: none">
+	   Please click <a href="#" id="approvaldone">I've approved access</a> once you've approved access to your data.
+	 </div>
+
+
+	 <!-- main -->
+	 <script type="text/javascript">
+	   os.createNamespace('bs', 'http://www.bibsonomy.org');
+	   gadgets.util.registerOnLoadHandler(fetchData);
+	 </script>
+	 ]]>
+  </Content>
+</Module>

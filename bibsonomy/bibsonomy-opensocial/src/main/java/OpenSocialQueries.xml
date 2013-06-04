@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" 
+ "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="OpenSocial">
+ 	<!-- +
+		 | result maps
+		 + -->
+	<resultMap id="consumerKeyAndSecret" class="oAuthConsumer">
+		<result property="consumerKey"      column="consumer_key"      javaType="string" />
+		<result property="consumerSecret"   column="consumer_secret"   javaType="string" />
+		<result property="keyType"          column="key_type"          typeHandler="org.bibsonomy.opensocial.oauth.database.typehandler.KeyTypeHandler"/>
+		<result property="keyName"			column="key_name"		   javaType="string" />
+	</resultMap>
+	
+	<resultMap id="consumer" class="oAuthConsumer" extends="consumerKeyAndSecret">
+		<result property="gadgetUrl"        column="gadget_url"        javaType="string" />
+		<result property="serviceName"      column="server"            javaType="string" />
+	</resultMap>
+	
+	<resultMap id="consumerInfo" class="oAuthConsumer" extends="consumer">
+		<result property="title"            column="title"             javaType="string" />
+		<result property="summary"          column="summary"           javaType="string" />
+		<result property="description"      column="description"       javaType="string" />
+		<result property="thumbnail"        column="thumbnail"         javaType="string" />
+		<result property="icon"             column="icon"              javaType="string" />
+	</resultMap>
+	
+	<resultMap id="tokenInfo" class="tokenInfo">
+		<result property="accessToken"       column="access_token"     javaType="string" />
+		<result property="tokenSecret"       column="token_secret"     javaType="string" />
+		<result property="sessionHandle"     column="session_handle"   javaType="string" />
+		<result property="viewerId"          column="viewer"           javaType="string" />
+		<result property="tokenExpireMillis" column="expiration_date"  javaType="long"/>
+	</resultMap>
+	
+	<resultMap id="tokenEntry" class="tokenEntry">
+		<result property="token"             column="access_token"     javaType="string" />
+		<result property="tokenSecret"       column="token_secret"     javaType="string" />
+		<result property="userId"            column="viewer"           javaType="string" />
+		<result property="consumerKey"       column="consumer_key"     javaType="string" />
+        <result property="issueTime"         column="creation_date"    javaType="date"/>
+		<result property="domain"            column="server"           javaType="string"/>
+		<result property="container"         column="container"        javaType="string"/>
+		<result property="oauthVersion"      column="oauth_version"    javaType="string"/>
+		<result property="appId"             column="gadget_url"       javaType="string"/>
+		<result property="authorized"        column="is_authorized"    typeHandler="org.bibsonomy.opensocial.oauth.database.typehandler.BooleanTypeHandler"/>
+		<result property="type"              column="token_type"       typeHandler="org.bibsonomy.opensocial.oauth.database.typehandler.TokenTypeHandler"/>
+	</resultMap>
+		
+ 	<!-- +
+		 | query for oauth consumer information
+		 + -->  
+	<select id="getAuthentication" parameterClass="oAuthConsumer" resultMap="consumerKeyAndSecret">
+		SELECT *
+		FROM oauth_store
+		WHERE gadget_url  = #gadgetUrl# 
+		  AND server      = #serviceName#
+	</select>
+
+ 	<!-- +
+		 | query for oauth consumer information
+		 + -->  
+	<insert id="setConsumerInfo" parameterClass="oAuthConsumer">
+		INSERT INTO oauth_provider_store (gadget_url, server, consumer_key, consumer_secret, key_type, key_name, title, summary, description, thumbnail, icon)
+		VALUES (#gadgetUrl#, #serviceName#, #consumerKey#, #consumerSecret#, #keyType,handler=org.bibsonomy.opensocial.oauth.database.typehandler.KeyTypeHandler#, #keyName#, #title#, #summary#, #description#, #thumbnail#, #icon#);
+	</insert>
+	
+	<select id="getConsumerInfo" parameterClass="string" resultMap="consumerInfo">
+		SELECT *
+		FROM oauth_provider_store
+		WHERE consumer_key = #consumerKey# 
+	</select>
+	
+	<delete id="removeConsumerInfo" parameterClass="string">
+		DELETE FROM oauth_provider_store
+		WHERE consumer_key = #consumerKey#
+	</delete>
+	
+	<select id="listConsumerInfo" resultMap="consumerInfo">
+		SELECT *
+		FROM oauth_provider_store
+	</select>
+
+	<insert id="setProviderToken" parameterClass="tokenEntry">
+		REPLACE INTO oauth_provider_tokens (gadget_url, server, viewer, access_token, token_secret, consumer_key, container, oauth_version, callback_url, callback_token, is_authorized, token_type)
+		VALUES (#appId#, #domain#, #userId#, #token#, #tokenSecret#, #consumerKey#, #container#, #oauthVersion#, #callbackUrl#, #callbackToken#, #authorized#, #type,handler=org.bibsonomy.opensocial.oauth.database.typehandler.TokenTypeHandler#)
+	</insert>
+
+	<select id="getProviderToken" parameterClass="string" resultMap="tokenEntry">
+		SELECT *
+		FROM oauth_provider_tokens
+		WHERE access_token = #token#
+	</select>
+
+	<insert id="updateProviderToken" parameterClass="tokenEntry">
+		UPDATE oauth_provider_tokens 
+		SET gadget_url     = #appId#,
+			server         = #domain#,
+			viewer         = #userId#,
+			access_token   = #token#, 
+			token_secret   = #tokenSecret#,
+			consumer_key   = #consumerKey#,
+			container      = #container#, 
+			oauth_version  = #oauthVersion#, 
+			callback_url   = #callbackUrl#,
+			callback_token = #callbackToken#,
+			is_authorized  = #authorized,handler=org.bibsonomy.opensocial.oauth.database.typehandler.BooleanTypeHandler#,
+			token_type     = #type,handler=org.bibsonomy.opensocial.oauth.database.typehandler.TokenTypeHandler#
+		WHERE
+			access_token   = #token# 
+	</insert>
+	
+	<delete id="removeProviderToken" parameterClass="string">
+    	DELETE FROM oauth_provider_tokens
+    	WHERE access_token = #token#
+	</delete>
+
+ 	<!-- +
+		 | query for oauth security token
+		 + -->  
+	<select id="getToken" parameterClass="tokenIndex" resultMap="tokenInfo">
+		SELECT *
+		FROM oauth_tokens
+		WHERE gadget_url  = #gadgetUri# 
+		  AND server      = #serviceName# 
+		  AND viewer      = #userId#
+	</select>
+	
+ 	<!-- +
+		 | query for oauth security token
+		 + -->  
+	<insert id="setToken" parameterClass="tokenIndex">
+		REPLACE INTO oauth_tokens (gadget_url, server, viewer, access_token, token_secret, session_handle, expiration_date)
+		VALUES (#gadgetUri#, #serviceName#, #userId#, #accessToken#, #tokenSecret#, #sessionHandle#, #tokenExpireMillis#)
+	</insert>
+	
+ 	<!-- +
+		 | query for removing a oauth security token
+		 + -->  
+	<delete id="removeToken" parameterClass="tokenIndex">
+    	DELETE FROM oauth_tokens
+    	WHERE gagdet_url  = #gadgetUri#
+    	  AND server      = #serviceName#
+    	  AND viewer      = #userId#
+	</delete>
+</sqlMap>

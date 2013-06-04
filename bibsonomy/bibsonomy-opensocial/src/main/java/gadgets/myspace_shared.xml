@@ -1,0 +1,299 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Module>
+<ModulePrefs title="Just me and my MySpace" title_url="__UP_link__" description="Da best gadget in da world!" author="Alexander Butler" author_email="jumpman2312@gmail.com" screenshot="__MSG_dailyme_screenshot__" render_inline="never" author_location="Georgia" thumbnail="/ig/modules/gadgetmaker_content/thumbs/dailyme.png">
+ <Locale messages="/ig/modules/gadgetmaker_content/en_ALL.xml"/>
+ <Locale lang="ar" messages="/ig/modules/gadgetmaker_content/ar_ALL.xml" language_direction="rtl"/>
+ <Locale lang="bg" messages="/ig/modules/gadgetmaker_content/bg_ALL.xml"/>
+ <Locale lang="ca" messages="/ig/modules/gadgetmaker_content/ca_ALL.xml"/>
+ <Locale lang="cs" messages="/ig/modules/gadgetmaker_content/cs_ALL.xml"/>
+ <Locale lang="da" messages="/ig/modules/gadgetmaker_content/da_ALL.xml"/>
+ <Locale lang="de" messages="/ig/modules/gadgetmaker_content/de_ALL.xml"/>
+ <Locale lang="el" messages="/ig/modules/gadgetmaker_content/el_ALL.xml"/>
+ <Locale lang="en-GB" messages="/ig/modules/gadgetmaker_content/en-GB_ALL.xml"/>
+ <Locale lang="es" messages="/ig/modules/gadgetmaker_content/es_ALL.xml"/>
+ <Locale lang="es-419" messages="http://www.google.com/ig/modules/gadgetmaker/gadgetmaker_content/messages/es-419_ALL.xml"/>
+ <Locale lang="et" messages="/ig/modules/gadgetmaker_content/et_ALL.xml"/>
+ <Locale lang="fi" messages="/ig/modules/gadgetmaker_content/fi_ALL.xml"/>
+ <Locale lang="fr" messages="/ig/modules/gadgetmaker_content/fr_ALL.xml"/>
+ <Locale lang="he" messages="/ig/modules/gadgetmaker_content/iw_ALL.xml" language_direction="rtl"/>
+ <Locale lang="hi" messages="/ig/modules/gadgetmaker_content/hi_ALL.xml"/>
+ <Locale lang="hr" messages="/ig/modules/gadgetmaker_content/hr_ALL.xml"/>
+ <Locale lang="hu" messages="/ig/modules/gadgetmaker_content/hu_ALL.xml"/>
+ <Locale lang="hy" messages="/ig/modules/gadgetmaker_content/hy_ALL.xml"/>
+ <Locale lang="id" messages="/ig/modules/gadgetmaker_content/id_ALL.xml"/>
+ <Locale lang="in" messages="/ig/modules/gadgetmaker_content/in_ALL.xml"/>
+ <Locale lang="is" messages="/ig/modules/gadgetmaker_content/is_ALL.xml"/>
+ <Locale lang="it" messages="/ig/modules/gadgetmaker_content/it_ALL.xml"/>
+ <Locale lang="iw" messages="/ig/modules/gadgetmaker_content/iw_ALL.xml" language_direction="rtl"/>
+ <Locale lang="ja" messages="/ig/modules/gadgetmaker_content/ja_ALL.xml"/>
+ <Locale lang="ko" messages="/ig/modules/gadgetmaker_content/ko_ALL.xml"/>
+ <Locale lang="lt" messages="/ig/modules/gadgetmaker_content/lt_ALL.xml"/>
+ <Locale lang="lv" messages="/ig/modules/gadgetmaker_content/lv_ALL.xml"/>
+ <Locale lang="ms" messages="/ig/modules/gadgetmaker_content/ms_ALL.xml"/>
+ <Locale lang="nl" messages="/ig/modules/gadgetmaker_content/nl_ALL.xml"/>
+ <Locale lang="no" messages="/ig/modules/gadgetmaker_content/no_ALL.xml"/>
+ <Locale lang="pl" messages="/ig/modules/gadgetmaker_content/pl_ALL.xml"/>
+ <Locale lang="pt-BR" messages="/ig/modules/gadgetmaker_content/pt-BR_ALL.xml"/>
+ <Locale lang="pt-PT" messages="/ig/modules/gadgetmaker_content/pt-PT_ALL.xml"/>
+ <Locale lang="ro" messages="/ig/modules/gadgetmaker_content/ro_ALL.xml"/>
+ <Locale lang="ru" messages="/ig/modules/gadgetmaker_content/ru_ALL.xml"/>
+ <Locale lang="sk" messages="/ig/modules/gadgetmaker_content/sk_ALL.xml"/>
+ <Locale lang="sl" messages="/ig/modules/gadgetmaker_content/sl_ALL.xml"/>
+ <Locale lang="sr" messages="/ig/modules/gadgetmaker_content/sr_ALL.xml"/>
+ <Locale lang="sv" messages="/ig/modules/gadgetmaker_content/sv_ALL.xml"/>
+ <Locale lang="th" messages="/ig/modules/gadgetmaker_content/th_ALL.xml"/>
+ <Locale lang="tl" messages="/ig/modules/gadgetmaker_content/tl_ALL.xml"/>
+ <Locale lang="tr" messages="/ig/modules/gadgetmaker_content/tr_ALL.xml"/>
+ <Locale lang="uk" messages="/ig/modules/gadgetmaker_content/uk_ALL.xml"/>
+ <Locale lang="vi" messages="/ig/modules/gadgetmaker_content/vi_ALL.xml"/>
+ <Locale lang="zh-CN" messages="/ig/modules/gadgetmaker_content/zh-CN_ALL.xml"/>
+ <Locale lang="zh-HK" messages="http://www.google.com/ig/modules/gadgetmaker/gadgetmaker_content/messages/zh-HK_ALL.xml"/>
+ <Locale lang="zh-TW" messages="/ig/modules/gadgetmaker_content/zh-TW_ALL.xml"/>
+ <Require feature="dynamic-height"/>
+ <Require feature="setprefs"/>
+ <Require feature="views"/>
+ <Require feature="gadgetmaker"/>
+ </ModulePrefs>
+<UserPref name="preview" default_value="false" datatype="hidden"/>
+<UserPref name="title" default_value="Just me and my MySpace" datatype="hidden"/>
+<UserPref name="created" default_value="" datatype="hidden"/>
+<UserPref name="last_modified" default_value="" datatype="hidden"/>
+<UserPref name="author" default_value="Alexander Butler" datatype="hidden"/>
+<UserPref name="location" default_value="Georgia" datatype="hidden"/>
+<UserPref name="email" default_value="jumpman2312@gmail.com" datatype="hidden"/>
+<UserPref name="description" default_value="Da best gadget in da world!" datatype="hidden"/>
+<UserPref name="quote" default_value="" datatype="hidden"/>
+<UserPref name="link" default_value="http://www.myspace.com/alexander_butler23" datatype="hidden"/>
+<UserPref name="color" default_value="b" datatype="hidden"/>
+<UserPref name="pic" default_value="http://lh4.google.com/jumpman2312/R_qPYW70ZBI/AAAAAAAAAAg/bsf3zbg-q4M/s800/Alex%20Pic%202.jpg?imgmax=800" datatype="hidden"/>
+<UserPref name="q1" default_value="Current Status..." datatype="hidden"/>
+<UserPref name="q2" default_value="Currently watching..." datatype="hidden"/>
+<UserPref name="q3" default_value="Currently reading..." datatype="hidden"/>
+<UserPref name="q4" default_value="Shout out to..." datatype="hidden"/>
+<UserPref name="soap_label" default_value="The Soapbox" datatype="hidden"/>
+<UserPref name="a1" default_value="Single" datatype="hidden"/>
+<UserPref name="a2" default_value="the computer screen" datatype="hidden"/>
+<UserPref name="a3" default_value="what's reading?" datatype="hidden"/>
+<UserPref name="a4" default_value="Adesuwa cuz she's hot" datatype="hidden"/>
+<UserPref name="soap" default_value="Wat da hell iz The Soapbox?" datatype="hidden"/>
+<Content type="html" view="home"><![CDATA[
+
+<script>
+var preloadedImage = new Image();
+
+_IG_RegisterOnloadHandler(
+    function() {
+      var prefs = new _IG_Prefs(__MODULE_ID__);
+      _gm = new _GadgetMaker(prefs);
+      var hasPicture = false;
+      var pictureLink = prefs.getString('pic');
+      if (pictureLink.substring(0, 7) != 'http://') {
+        pictureLink = 'http://' + pictureLink;
+      }
+      if (pictureLink != 'http://') {
+        preloadedImage.src = pictureLink;
+        _gel('pic_box').innerHTML = '<img id="pic" src="' +
+                                    _hesc(pictureLink) + '">';
+        _gel('pic_box').style.display = 'block';
+        hasPicture = true;
+      }
+      var pic_elem =_gel('pic');
+      if (pic_elem) {
+        pic_elem.style.border = '1px solid ' + _gm._borderColor;
+      }
+      if (prefs.getString('soap') == '') {
+        _gel('soap').style.display = 'none';
+      } else {
+        _gel('q5').innerHTML = _hesc(prefs.getString('soap_label')) + ':';
+        _gel('q5').style.color = _gm._fontColor;
+        _gel('a5').innerHTML = _hesc(prefs.getString('soap'));
+      }
+      for (var i = 1; i <= 4; i++) {
+        if (prefs.getString('q' + i) == '' || prefs.getString('a' + i) == '') {
+          _gel('' + i).style.display = 'none';
+        } else {
+          _gel('q' + i).innerHTML = _hesc(prefs.getString('q' + i));
+          _gel('q' + i).style.color = _gm._fontColor;
+          _gel('a' + i).innerHTML = _hesc(prefs.getString('a' + i));
+        }
+      }
+      _gm._setBackground();
+      _gm._addFrameIfPreview();
+      _gm._enforceMinimumHeight(hasPicture);
+      _IG_AdjustIFrameHeight();
+    }
+);
+</script>
+<style>
+.a {
+}
+.q {
+  font-style:italic;
+}
+#pic_box {
+  float:__BIDI_START_EDGE__;
+  margin-__BIDI_END_EDGE__:6px;
+  display:none;
+}
+#pic {
+  max-width:125px;
+  max-height:125px;
+  _height:125px;
+}
+#fields {
+}
+.field {
+  padding-bottom:6px;
+}
+#box {
+  font-size:smaller;
+  padding:6px;
+}
+</style>
+<div id="box">
+  <div id="pic_box"></div>
+  <div id="fields">
+    <div class="field" id="1">
+      <span id="q1" class="q"></span>
+      <span id="a1" class="a"></span>
+    </div>
+    <div class="field" id="2">
+      <span id="q2" class="q"></span>
+      <span id="a2" class="a"></span>
+    </div>
+    <div class="field" id="3">
+      <span id="q3" class="q"></span>
+      <span id="a3" class="a"></span>
+    </div>
+    <div class="field" id="4">
+      <span id="q4" class="q"></span>
+      <span id="a4" class="a"></span>
+    </div>
+    <div class="field" id="soap">
+      <span id="q5" class="q"></span>
+      <span id="a5" class="a"></span>
+    </div>
+  </div>
+</div>
+ ]]></Content>
+<Content type="html" view="canvas">
+
+&lt;script&gt;
+var preloadedImage = new Image();
+
+_IG_RegisterOnloadHandler(
+    function() {
+      var prefs = new _IG_Prefs(__MODULE_ID__);
+      _gm = new _GadgetMaker(prefs, __MODULE_ID__);
+      _gm._showInfo('/ig/modules/gadgetmaker_content/thumbs/dailyme.png');
+      var hasPicture = false;
+      var pictureLink = prefs.getString('pic');
+      if (pictureLink.substring(0, 7) != 'http://') {
+        pictureLink = 'http://' + pictureLink;
+      }
+      if (pictureLink != 'http://') {
+        preloadedImage.src = pictureLink;
+        _gel('pic_box').innerHTML = '&lt;img id="pic" src="' +
+                                    _hesc(pictureLink) + '"&gt;';
+        _gel('pic_box').style.display = 'block';
+        hasPicture = true;
+      }
+      var pic_elem =_gel('pic');
+      if (pic_elem) {
+        pic_elem.style.border = '1px solid ' + _gm._borderColor;
+      }
+      if (prefs.getString('soap') == '') {
+        _gel('soap').style.display = 'none';
+      } else {
+        _gel('q5').innerHTML = _hesc(prefs.getString('soap_label')) + ':';
+        _gel('q5').style.color = _gm._fontColor;
+        _gel('a5').innerHTML = _hesc(prefs.getString('soap'));
+      }
+      for (var i = 1; i &lt;= 4; i++) {
+        if (prefs.getString('q' + i) == '' || prefs.getString('a' + i) == '') {
+          _gel('' + i).style.display = 'none';
+        } else {
+          _gel('q' + i).innerHTML = _hesc(prefs.getString('q' + i));
+          _gel('q' + i).style.color = _gm._fontColor;
+          _gel('a' + i).innerHTML = _hesc(prefs.getString('a' + i));
+        }
+      }
+      _gm._setBackground();
+      _gm._addFrameIfPreview();
+      _gm._enforceMinimumHeight(hasPicture);
+      _IG_AdjustIFrameHeight();
+    }
+);
+&lt;/script&gt;
+&lt;style&gt;
+.a {
+}
+.q {
+  font-style:italic;
+}
+#pic_box {
+  float:__BIDI_START_EDGE__;
+  margin-__BIDI_END_EDGE__:6px;
+  display:none;
+}
+#pic {
+  max-width:125px;
+  max-height:125px;
+  _height:125px;
+}
+#fields {
+}
+.field {
+  padding-top:12px;
+  padding-bottom:6px;
+}
+#box {
+  font-size:smaller;
+  padding:6px;
+}
+&lt;/style&gt;
+&lt;table width="100%"&gt;
+  &lt;tr&gt;
+    &lt;td width="70%" valign="top"&gt;
+      &lt;div id="box"&gt;
+        &lt;div id="pic_box"&gt;&lt;/div&gt;
+        &lt;div id="fields"&gt;
+          &lt;div class="field" id="1"&gt;
+            &lt;span id="q1" class="q"&gt;&lt;/span&gt;
+          &lt;/div&gt;
+          &lt;div class="answer"&gt;
+            &lt;span id="a1" class="a"&gt;&lt;/span&gt;
+          &lt;/div&gt;
+          &lt;div class="field" id="2"&gt;
+            &lt;span id="q2" class="q"&gt;&lt;/span&gt;
+          &lt;/div&gt;
+          &lt;div class="answer"&gt;
+            &lt;span id="a2" class="a"&gt;&lt;/span&gt;
+          &lt;/div&gt;
+          &lt;div class="field" id="3"&gt;
+            &lt;span id="q3" class="q"&gt;&lt;/span&gt;
+          &lt;/div&gt;
+          &lt;div class="answer"&gt;
+            &lt;span id="a3" class="a"&gt;&lt;/span&gt;
+          &lt;/div&gt;
+          &lt;div class="field" id="4"&gt;
+            &lt;span id="q4" class="q"&gt;&lt;/span&gt;
+          &lt;/div&gt;
+          &lt;div class="answer"&gt;
+            &lt;span id="a4" class="a"&gt;&lt;/span&gt;
+          &lt;/div&gt;
+          &lt;div class="field" id="soap"&gt;
+            &lt;span id="q5" class="q"&gt;&lt;/span&gt;
+          &lt;/div&gt;
+          &lt;div class="answer"&gt;
+            &lt;span id="a5" class="a"&gt;&lt;/span&gt;
+          &lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+    &lt;td width="30%" valign="top"&gt;
+      &lt;div id="info-box"/&gt;
+    &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/table&gt;
+ </Content>
+</Module>

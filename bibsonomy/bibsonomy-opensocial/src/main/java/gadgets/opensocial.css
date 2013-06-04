@@ -1,0 +1,359 @@
+@CHARSET "UTF-8";
+
+body {
+	padding: 0;
+	margin: 0;
+	font: 0.9em Arial, Helvetica, sans;
+}
+
+h1 {
+	float: left;
+	margin: 0;
+	padding: 0;
+	font-size: 1.2em;
+	margin-top: 0.4em;
+	margin-left: 0.3em;
+}
+
+a {
+	color: #336699;
+	text-decoration: none;
+}
+
+#menu {
+	margin: 0;
+	padding: 0;
+	float: right;
+	list-style: none;
+}
+
+#menu li {
+	float: left;
+	margin-right: 0.2em;
+}
+
+#menu li a {
+	
+	background: #EEEEEE;
+	padding: 5px 10px;
+	display: block;
+	text-decoration: none;
+	margin-top: 0.65em;
+	color: #000000;
+	text-transform: uppercase;
+	border-radius: 5px 5px 0 0;
+	-moz-border-radius: 5px 5px 0 0;
+	-webkit-border-top-left-radius: 5px;
+	-webkit-border-top-right-radius: 5px;
+	font-size: 0.8em;
+	font-weight: bold;
+}
+
+#menu li a.active {
+	
+	background: #336699;
+	color: #FFFFFF;
+}
+
+#menu #nav_search {
+	
+	width: 20px;
+	background: #EEEEEE url('../image/mobile/search_inactive.png') center center no-repeat;
+}
+
+#menu #nav_search.active {
+
+	background: #336699 url('../image/mobile/search_active.png') center center no-repeat;
+}
+
+#toolbar {
+	clear: both;
+	padding: 5px;
+	background: #336699;
+}
+
+#content {
+	clear: both;
+	min-height: 500px;
+}
+
+#resources-toggle a,  #login-bar a, #post-toggle a{
+	
+	display: block;
+	float: left;
+	background: #FFFFFF;
+	border: 2px solid #FFFFFF;
+	padding: 5px;
+	text-decoration: none;
+	font-size: 0.9em;
+	color: #000000;
+}
+
+#resources-toggle a#bookmark-add {
+	border-radius: 5px;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+} 
+
+#resources-toggle a.active, #resources-toggle #bookmark-add, #login-bar a.active, #post-toggle a.active  {
+	
+	background: #142B4B;
+	color: #FFFFFF;
+}
+
+#resources-toggle #bookmark-add {
+	float: right;
+	padding: 0 10px;
+	font-size: 1.5em;
+}
+
+#resources-toggle #toggle-bookmarks, #login-bar #login-method-db, #post-toggle #post-method-isbn {
+	border-radius: 5px 0 0 5px;
+	-moz-border-radius: 5px 0 0 5px;
+	-webkit-border-top-left-radius: 5px;
+	-webkit-border-bottom-left-radius: 5px;
+}
+
+#resources-toggle #toggle-publications, #login-bar #login-method-openid,  #post-toggle #post-method-manual {
+	border-radius: 0 5px 5px 0;
+	-moz-border-radius: 0 5px 5px 0;
+	-webkit-border-top-right-radius: 5px;
+	-webkit-border-bottom-right-radius: 5px;
+}
+
+.container {
+	width: 80%;
+	margin: 0 auto;
+}
+
+#login label {
+	display: block;
+}
+
+#login input[type="text"], #login input[type="password"] {
+	width: 100%;
+	font-size: 1.4em;
+	padding: 5px;
+}
+
+#search-bar input[type="text"] {
+	
+	font-size: 0.8em;
+	padding: 3px;
+	width: 65%;
+	border: 2px solid #EEEEEE;
+	border-radius: 5px;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+}
+
+#search-bar input[type="submit"] {
+	
+	font-size: 0.8em;
+	padding: 3px;
+	width: 25%;
+	border: 2px solid #FFFFFF;
+	background: #142B4B;
+	color: #FFFFFF;
+	border-radius: 5px;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+}
+
+.errmsg, .dissError {
+	font-size: 0.8em;
+	color: #AA0000;
+}
+
+input[type="text"],  input[type="password"], textarea {
+	
+	border: 2px solid #AAAAAA;
+	border-radius: 5px;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	font-size: 1.2em;
+	padding: 3px;
+	width: 99%;
+}
+
+label {
+	display: block;
+	margin-bottom: 4px;
+}
+
+.note {
+	border: 1px solid #e5c37a;
+	background: #fffde5;
+	padding: 10px;
+}
+
+.note h3 {
+	margin-top: 0;
+}
+
+#post-tags-input label {
+	background: url('../image/mobile/arrow_collapsed.png') no-repeat 5px center;
+	padding-left: 20px;
+	-webkit-transition: all 1s ease-in-out; 
+	-moz-transition: all 1s ease-in-out; 
+	-o-transition: all 1s ease-in-out; 
+}
+
+#post-tags-input label.uncollapsed {
+	background: url('../image/mobile/arrow_uncollapsed.png') no-repeat left center;
+}
+
+#fsReloadLink {
+	float: right;
+}
+
+#post-tags-recommends, #post-groups {
+	
+	border: 2px solid #6d91a4;
+	background: #f6fcff;
+	padding: 10px;
+	margin-bottom: 20px;
+	border-radius: 5px;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+}
+
+#tagField {
+	float: left;
+	width: 70%;
+}
+
+#tagField a {
+	
+	text-decoration: none;
+	color: #999999;
+	font-size: 0.8em;
+}
+
+a img {
+	border: none;
+}
+
+#more-bar ul {
+	
+	list-style: square;
+	margin: 0 0 0 10px;
+	padding: 5px;
+	color: #FFFFFF;
+}
+
+#more-bar ul  li {
+	color: #FFFFFF;
+}
+
+#more-bar ul li a {
+	
+	color: #FFFFFF;
+	text-decoration: none;
+	padding-bottom: 5px;
+}
+
+#more-bar ul #groups-submenu {
+	margin-left: 5px;
+	font-size: 0.9em;
+}
+
+.bboxheader, .kiste, .bmaction {
+	display: none;
+}
+
+.bmicon_selected, .bmicon_unselected {
+	float: right;
+	height: 25px;
+	width: 25px;
+}
+
+.bmicon_selected a, .bmicon_unselected a {
+	display: block;
+	text-decoration: none;
+}
+
+.bmicon_selected {
+	background: url('http://www.bibsonomy.org/resources/image/mobile/star_selected.png') no-repeat center center;
+}
+
+.bmicon_unselected {
+	background: url('http://www.bibsonomy.org/resources/image/mobile/star_unselected.png') no-repeat center center;
+}
+
+#bookmark, #bibtex {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+.bm {
+	padding: 5px 10px;
+	border-bottom: 2px solid #DDDDDD;
+}
+
+#bookmark li:nth-of-type(2n-1), #bibtex li:nth-of-type(2n-1) {
+	background: #EEEEEE;
+}
+
+.bmtags a {
+	padding-left: 20px;
+	background: url('http://www.bibsonomy.org/resources/image/mobile/tag.png') center left no-repeat;
+	text-decoration: none;
+	color: #336699;
+}
+
+.bmmeta a {
+	text-decoration: none;
+	color: #336699;
+}
+
+.bmtitle {
+
+	width: 70%;	
+}
+.bmtitle  a {
+	font-size: 100%em;
+	font-weight: bold;
+	text-decoration: none;
+	color: #336699;
+}
+
+.bmdesc {
+	font-size: 0.8em;
+}
+
+.bmdesc .info {
+	display: none;	
+}
+
+#footer {
+	
+	background: #336699;
+	color: #FFFFFF;
+	padding: 5px;
+	font-size: 0.8em;
+}
+
+#footer a {
+	color: #FFFFFF;
+	text-decoration: underline;
+}
+
+#desc p, #abstract p {
+	font-size: 0.9em;
+}
+
+#abstract p {
+	
+	font-style: italic;
+}
+
+.listhButtons a {
+	border: 1px solid #6F6F6F;
+	background-color: #EEEEEE;
+	color: #5F5F5F;
+	padding-left: 2px;
+	padding-right: 2px;
+	margin: 0;
+}

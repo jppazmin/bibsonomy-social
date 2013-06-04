@@ -1,0 +1,412 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Module>
+	<ModulePrefs title="MySpace Gadget" description="The MySpace Gadget gives you access to your MySpace activity stream, your latest messages, status updates from your friends, and much more.  Once you install the gadget, simply login to MySpace by clicking the Login button in the gadget and enjoy instant access to your MySpace data from iGoogle." screenshot="http://x.myspacecdn.com/modules/common/static/img/msgadgetscreenshot.gif" thumbnail="http://x.myspacecdn.com/modules/common/static/img/msgadgetthumbnail.gif" title_url="http://www.myspace.com" author="MySpace" author_email="dgreenwood@myspace.com">
+		<OAuth>
+			<Service name="myspace">
+				<Access url="http://api.myspace.com/access_token"/>
+				<Request url="http://api.myspace.com/request_token"/>
+				<Authorization url="http://api.myspace.com/authorize?oauth_callback=http://x.myspacecdn.com/modules/common/static/html/MySpaceGadgetCallbackPage.html"/>
+			</Service>
+		</OAuth>
+		<Require feature="dynamic-height"/>
+		<Require feature="views"/>
+		<Require feature="opensocial-0.8"/>
+		<Require feature="locked-domain"/>
+		<Require feature="setprefs"/>
+	</ModulePrefs>
+	<Content type="html">
+		<!-- <Content type="html"> -->
+		<![CDATA[
+	<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+
+	<html lang="en">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<title>MySpace Google Gadget</title>
+		<style type="text/css">
+body{font-size:11px;font-family:Verdana,Arial,Helvetica,Sans-Serif;margin:1px;margin-bottom:10px;color:#000;border:0 solid #E2EAF7;}a{text-decoration:none;}a:hover{text-decoration:underline;}#wrap{width:101%;}.login{background:url(http://x.myspacecdn.com/modules/common/static/img/msg_bg_login.gif) 0 0 repeat-x #00349a;text-align:center;float:left;}h1,h2,h3,h4,h5{padding:0;margin:0;font-size:11px;}h1 span,h2 span,h3 span,h4 span,h5 span{display:none;}h1{background:url(http://x.myspacecdn.com/modules/common/static/img/msg_bg_h1.gif) 15px 0 no-repeat;width:254px;height:43px;margin:58px auto 35px auto;}.clear{clear:both;}#header{height:51px;background-color:#245bCF;margin:0 0 12px 0;}#header a{color:#a9cffe;}#updates{padding:3px 0 7px 4px;margin:-12px 0 12px 0;background-color:#fff1ba;border-bottom:1px solid #f7d750;display:none;}#updates img{padding-right:8px;}#updates a{padding-right:10px;}.noDisplay{display:none;}.msg{display:inline;vertical-align:middle;}.friend{display:inline;vertical-align:middle;}.comments{display:inline;vertical-align:middle;}.logo{padding:16px 0 0 11px;float:left;}.welcome{padding:16px 11px 0 0;float:right;color:#b8d5f2;}.welcome a{color:#2d5fa6;font-weight:bold;padding-left:6px;}.medrec{width:300px;margin:auto;}a,a:visited,a:active{color:#2d5fa6;font-weight:bold;}.right{float:right;}.left{float:left;}.more{font-size:13px;padding:8px 8px 8px;}img{border:none;}.small{border:none!important;width:100%!important;}.loadingMessage{color:white;position:absolute;left:130px;top:15px;}.column1{width:48%;display:inline;float:left;margin-right:1%;border-right:1px solid #c6c6c6;}.column2{width:48.5%;display:inline;float:left;}.content{border:1px solid #c5c5c5;background-color:#fff;margin:1em 0;margin-top:0;}#c2{width:66%;}#c3{width:33%;}.content *{position:relative;margin:0;}.one{background:url(http://x.myspacecdn.com/modules/common/static/img/msg_corner.gif) top left no-repeat;left:-1px;top:-1px;}.two{background:url(http://x.myspacecdn.com/modules/common/static/img/msg_corner_tr.gif) top right no-repeat;top:-2px;}.three{background:url(http://x.myspacecdn.com/modules/common/static/img/msg_corner_br.gif) bottom right no-repeat;right:-2px;bottom:-2px;}.four{background:url(http://x.myspacecdn.com/modules/common/static/img/msg_corner_bl.gif) bottom left no-repeat;left:-2px;bottom:-2px;padding:6px 6px 0 8px;min-height:50px;}p{padding:5px;}.todaybar{background-color:#89AACA;width:100%;height:30px;}.today{float:left;padding:6px 0 0 9px;color:#fff;font-weight:bold;}.date{float:right;color:#fff;padding:7px 9px 0 0;font-weight:normal;}.headline{font-weight:bold;font-size:13px;color:#039;}.description{color:#666;}.topPhoto{float:left;padding-right:6px;width:95px;}.todayItem{padding:8px 0 8px 0;border-bottom:1px solid #8cc2fe;}.todayInfo{display:inline;}.noborder{border:none!important;}.viewall{text-align:right;padding-bottom:10px;}.todayItem img{width:90px;}.leftNav{float:left;width:90px;}.itemContent{margin-left:98px;}div#tabs{display:block;float:left;font-size:11px;overflow:hidden;}div#tabs a{background-color:#86ACD3;color:#fff;display:block;padding:4px 5px 5px;}div#tabs ul{list-style-image:none;list-style-position:outside;list-style-type:none;padding:0;margin:0;}div#tabs li{display:inline;float:left;margin-right:5px;padding:0;}div#tabs .active,.ui-tabs-selected{background-color:#fff;}div#tabs .active a{background-color:#fff;padding-top:4px;padding-bottom:3px;border:1px solid #86ACD3;color:#000;font-size:11px;font-weight:bold;text-decoration:none;}div#tabs .inactive a{color:#fff;text-decoration:none;}.ui-tabs-hide{display:none;}.leftArrow,.rightArrow{width:10px;height:20px;border:1px solid #c5c5c5;position:absolute;cursor:pointer;display:none;}.leftArrow{left:0;background:white url(http://x.myspacecdn.com/modules/common/static/img/msg_leftRightNav.gif) no-repeat 1px 4px;}.rightArrow{background:white url(http://x.myspacecdn.com/modules/common/static/img/msg_leftRightNav.gif) no-repeat -17px 4px;}#gadgetTabs{overflow:hidden;padding-right:10px;}.tab{padding-top:2em;}.todaySmall{color:#606060;border-bottom:1px solid #c6c6c6;padding:0 0 4px 0;}.todaySmall span{font-weight:bold;}.activityItem{display:block;margin:10px 0 1px;width:100%;float:left;}.activityImg{display:inline;float:left;padding-right:8px;}.activityMsg{display:block;margin-left:22px;}.photoThumbnail{display:block;margin-top:9px;}.vidsbackSmall{border:2px solid Gray;display:block;float:left;height:42px;margin-right:8px;margin-top:5px;width:56px;}.videoDisplaySmall{height:42px;width:56px;}.bulletin{border-bottom:1px solid #e4e4e4;padding:8px 0 8px;}.user{width:28%;display:inline;float:left;}.subject{display:inline;float:left;width:47%;}.posted{float:right;display:inline;width:22%;text-align:right;}.mood{font-weight:bold;height:8px;margin:0 4px 0 0;}#myStatus,#myStatusUpdate{background-color:#fbf6d0;padding:10px;margin-top:4px;}.profile_photo{float:left;width:22%;}.profile_photo img{width:45px;}.userStatus{float:left;display:inline;width:68%;}.actions ul{float:right;display:inline;margin:3px 0 0 0;padding:0;line-height:6px;}.actions li{list-style:none;.padding-bottom:4px;}.friend_status{margin:10px 0 0 0;border-bottom:1px solid #e4e4e4;padding-bottom:10px;float:left;width:100%;line-height:16px;}.friend_status img{margin-right:6px;vertical-align:middle;}.col1{width:75px;display:inline;float:left;line-height:14px;}.col1 ul{list-style:none;padding:0;margin:0;}.col2{display:inline;float:left;}div.col2 select{width:204px;}div.col2 input{margin:0 15px 5px 0;}.Width{width:200px;margin:0 15px 5px 0;}.col3{display:inline;float:left;margin:4px 0 0 0;}.col3 a{text-decoration:none;}.photoContainerSmall{border:1px solid;display:block;float:left;font-size:0!important;margin:5px 5px 0 0;padding:2px;}.photoDisplaySmall{height:42px;width:56px;margin-right:0;}.star{padding:3px 1px 3px 0;}.nostar{padding:3px 1px 3px 0;}.loginContainer{margin-left:0;margin-right:0;color:#b8d5f2;height:90%;}#loginPage{height:90%;margin-left:0;margin-right:0;}.loginContent{margin:6em 3em 0 3em;background-color:transparent;text-align:center;}.loginContainer a{color:#b8d5e6;}.loginContainer a:hover{text-decoration:none;}label{float:left;display:block;font-size:1.2em;font-weight:bold;line-height:28px;color:#b8d5f2;width:80px;text-align:right;padding-right:10px;}.form{margin:0;padding:0;}.div_texbox{width:195px;height:35px;margin-top:3px;padding:0;float:left;margin-bottom:5px;}.div_checkbox{text-align:right;}.textbox{width:185px;font:normal 18px;color:#999;padding:3px 5px 3px 5px;}.textbox:focus,.textbox:hover{background-color:#d0e8ff;}.username{width:195px;font:normal 18px;color:#000;padding:3px 5px 3px 5px;border:0;}.username:focus,.username:hover{background-color:#d0e8ff;}.password{width:195px;font:normal 18px;color:#000;padding:3px 5px 3px 5px;border:0;}.password:focus,.password:hover{background-color:#d0e8ff;}#container{color:#B8D5F2;margin:auto;width:300px;}#container a{color:#B8D5E6;}#container a:hover{text-decoration:none;}#container p{text-align:left;}.loginbutton{float:right;height:37px;margin:5px 0 20px 0;padding:0;}.loginbutton_l input{border:0;font-weight:bold;padding:7px 5px 0 17px;background:none;font-size:1.3em;line-height:1.3em;cursor:pointer;}.loginbutton_l{height:37px;margin:0;padding:0;float:left;background:url(http://x.myspacecdn.com/modules/common/static/img/msg_bg_btn_signin2.gif) 0 0 no-repeat;}.loginbutton_r{background:url(http://x.myspacecdn.com/modules/common/static/img/msg_bg_btn_signin2.gif) -2px -40px no-repeat;height:37px;float:left;width:18px;margin:0 0 0 -6px;padding:0;}.threeCol1{width:10%;float:left;}.threeCol2{width:80%;float:left;}.threeCol3{width:10%;float:left;}.commonIcon{background:transparent url(http://x.myspacecdn.com/Modules/HomeDisplay/Static/img/commonIcons003.gif) no-repeat scroll left top;}a.sendMessage{background-position:0 -5953px;display:block;height:13px;text-indent:-10000em;width:18px;}a.commentBack{background-position:0 -6017px;display:block;height:13px;text-indent:-10000em;width:18px;}.updates{vertical-align:middle;display:block;line-height:17px;padding:0 0 2px 21px!important;}#messageIndicatorLink{background-position:2px -6373px;}#friendRequestIndicatorLink{background-position:2px -6418px;}#commentIndicatorLink{background-position:2px -6896px;}.activitiesContainer{padding:0;overflow:hidden;}.activitiesContainer ul{list-style-type:none;padding-left:0;}.activitiesContainer .friendCountHeader{text-align:center;padding:5px;}.activitiesContainer .dateHeader{margin:5px 10px 14px;overflow:hidden;width:100%;}.activitiesContainer li{clear:left;}.activitiesContainer h5{font-weight:normal;margin-bottom:0;}.activitiesContainer .activityItem{padding-left:0;margin-bottom:10px;line-height:1.6em;margin-left:0;zoom:1;}.activitiesContainer .activityItem ul{margin:5px 0 0 0;}.activitiesContainer .activityItem ul li{display:inline;margin-right:5px;margin-bottom:5px;padding:0;float:left;clear:none;background:none;}.activitiesContainer .activityMedia a{float:left;}.activitiesContainer .activityItem,.activitiesContainer a.Song{background:transparent url(http://x.myspacecdn.com/Modules/HomeDisplay/Static/img/commonIcons014.gif) no-repeat left top;}.activitiesContainer .activityFooter{float:none;}.activitiesContainer .activityFooter a{float:none;}.activitiesContainer .activityItem .activityFooter{clear:left;}.activitiesContainer .activityItem .activityMedia .activityFooter{clear:none;}.activitiesContainer .activityItem .inline{display:block;margin-top:15px;}.activitiesContainer .activityItem .ActivityTemplatePortrait ul{padding-top:10px;padding-bottom:10px;margin:0;display:block;width:auto;}.activitiesContainer .activityItem .ActivityTemplatePortrait ul li{display:block;margin:0;padding:0;clear:right;width:100%;}.activitiesContainer .activityItem .hasThumbnail ul{padding-left:80px;}.activitiesContainer .activityItem .hasThumbnail ul ul{padding:0;}.activitiesContainer .activityItem .hasThumbnail ul ul li{clear:left;}.activitiesContainer .hasThumbnail .activityFooter{padding-left:80px;}.activitiesContainer a.Song{background-position:0 -7628px;padding:2px 0 5px 20px;display:block;overflow:hidden;clear:right;}.activitiesContainer img.thumbnailImage{width:56px;height:42px;margin:5px 5px 0 0;padding:2px;display:block;}.activitiesContainer li.FriendAdd,.activitiesContainer li.ABIFriendAdd{background-position:0 -925px;}.activitiesContainer li.JoinedGroup{background-position:0 -4068px;}.activitiesContainer li.PhotoAdd{background-position:0 -2189px;}.activitiesContainer li.PhotoTagged{background-position:0 -4377px;}.activitiesContainer li.ProfileUpdate,.activitiesContainer li.RealNameShow{background-position:0 -3125px;}.activitiesContainer li.ProfileSongAdd{background-position:0 -296px;}.activitiesContainer li.SongUpload{background-position:0 -3750px;}.activitiesContainer li.FriendCategoryAdd{background-position:0 -2499px;}.activitiesContainer li.BlogAdd{background-position:0 -614px;}.activitiesContainer li.ApplicationAdd .activitiesContainer li.ApplicationInnerActivity{background-position:0 -1562px;}.activitiesContainer li.BandShow{background-position:0 -4694px;}.activitiesContainer li.ProfileVideoUpdate,.activitiesContainer li.VideoAdd,.activitiesContainer li.FavoriteVideoAdd{background-position:0 -2813px;}.activitiesContainer li.ForumTopicReply,.activitiesContainer li.ForumPosted{background-position:0 -3438px;}.activitiesContainer li.MiniLogAdd{background-position:0 -1876px;}.activitiesContainer li.MobilePhotoUpload{background-position:0 -9118px;}.activitiesContainer li.MobileAppAdd{background-position:0 -10309px;}.activitiesContainer li.MobileIPhoneAppAdd{background-position:0 -9870px;}.activitiesContainer li.MobileBlackBerryAppAdd{background-position:0 -10533px;}.activitiesContainer li.MobileSidekickAppAdd{background-position:0 -10100px;}.activitiesContainer li.MobileAndroidAppAdd{background-position:0 -10100px;}.activitiesContainer li.EventPosting,.activitiesContainer li.EventAttending{background-position:0 -9656px;}.activitiesContainer li.StatusMoodUpdate{background-position:0 -11480px;}.activitiesContainer li.AddLocalPlaceReview,.activitiesContainer li.AddLocalPlaceRating,.activitiesContainer li.AddLocalPlaceToProfile,.activitiesContainer li.BookmarkLocalPlace{background-position:0 -11798px;}.activitiesContainer div.ratingRow{line-height:14px;margin-top:5px;clear:left;}.activitiesContainer div.ratingRow .ratingText{float:left;font-size:11px;padding:3px 5px;background:#fff8d0;border:1px solid #ccc;}.activitiesContainer div.ratingRow .ratingValue{background-color:#fff;border:1px solid #ccc;border-left:0 solid #ccc;font-size:11px;font-weight:bold;padding:3px 5px;text-align:center;width:16px;float:left;*width:35px;}.activitiesContainer .myStuffDesc{float:left;}.activitiesContainer .reviewSnippet a{float:none;}.activitiesContainer .AddLocalPlaceReview ul li,.activitiesContainer .AddLocalPlaceRating ul li,.activitiesContainer .AddLocalPlaceToProfile ul li,.activitiesContainer .BookmarkLocalPlace ul li{width:100%;}.activitiesContainer .playlistSongsBy{font-weight:bold;}.activitiesContainer div.starRatingContainer{clear:left;}.activitiesContainer div.starRatingContainer .filledRatingStar,.activitiesContainer div.starRatingContainer .emptyRatingStar{background-image:url(http://x.myspacecdn.com/Modules/MyStuff/Static/img/ratingstarSmall.gif);}.activitiesContainer div.starRatingContainer .filledRatingStar{background-position:0 0;}.activitiesContainer div.starRatingContainer .emptyRatingStar{background-position:-18px 0;}.activitiesContainer div.starRatingContainer .ratingStar{height:17px;width:18px;float:left;}.activitiesContainer div.starRatingContainer .starRatingLabel{float:left;padding-right:3px;}.activitiesContainer div.reviewSnippet{clear:left;}.activitiesClearfix:after{clear:both;content:".";display:block;height:0;line-height:0;visibility:hidden;}.activitiesClearfix{display:block;}* html .activitiesClearfix{height:1%;}
+		</style>
+		
+	</head>
+	<body>
+		    <div style="display: none" class="loadingMessage" id="loadingMessage"></div>
+		<div id="msgadget" style="display: none">
+		    <div id="header">
+		    	<div class="logo"><a href="http://myspace.com" target="_blank"><img src="http://x.myspacecdn.com/modules/common/static/img/msg_mslogo.gif"/></a></div><div id="welcome" class="welcome"><span id="welcomeDisplayName"></span><a style="display:none" id="logout" href="javascript:logout()"> Logout </a><a style="display:none" onclick="loadUserData();" id="getData" href="javascript:loadUserData()"> Get Data</a><a style="display:none" id="loginTop" href="javascript:login()">Login</a> <span style="display: none" id="notAMember">Not a member?  <a  target="_blank" href="http://signups.myspace.com/modules/signup/pages/createaccount.aspx?fuseaction=signups">Sign Up</a></span></div>
+		    </div>
+
+		    <div class="#noDisplay" id="updates">
+			        <div class="noDisplay" id="messageIndicator"><a id="messageIndicatorLink" class="commonIcon updates" target="_blank" href="#">New Messages!</a></div>
+		            <div class="noDisplay" id="friendRequestIndicator"><a class="commonIcon updates" id="friendRequestIndicatorLink"  target="_blank" href="#">New Friend Requests!</a></div>
+		            <div class="noDisplay" id="commentIndicator"><a class="commonIcon updates" id="commentIndicatorLink"  target="_blank" href="#">New Comments!</a></div>
+		    </div>
+		    <div id="gadgetTabs" style="display: none;" class="column1">
+		            <div id="leftArrow" class="leftArrow" onclick="shiftTabs('left'); return false;"></div>
+			        <div id="rightArrow" class="rightArrow" onclick="shiftTabs('right'); return false;"></div>
+			        <div id="tabs">
+				        <ul id="tabsList">
+					        <li class="active"><a href="#tab_subscriptions"><span>Updates</span></a></li>
+					        <li class=""><a href="#tab_friendStatus"><span>Status</span></a></li>
+					        <li class=""><a href="#tab_bulletins"><span>Bulletins</span></a></li>
+					        <li class=""><a href="#tab_messages"><span>Inbox</span></a></li>
+				        </ul>
+			        </div>
+			        <div>
+				        <div class="tab" id="tab_subscriptions">
+				            <br />
+				            <div id="subscriptionData">
+
+				            </div>
+				            <div class="right" id="subscriptionLinks">
+				                <a  target="_blank" href="http://activities.myspace.com/index.cfm?fuseaction=friendupdates.home&id=3">Edit</a> | 
+				                <a  target="_blank" href="http://activities.myspace.com/index.cfm?fuseaction=friendupdates.home&id=1">View More</a>
+				            </div>
+				            <div class="clear"></div>
+				        </div>
+
+				        <div class="tab" id="tab_friendStatus">
+				            <div class="clear"></div>
+				            <div style="display: none" id="myStatusUpdate" class="viewerStatus">
+				                <div class="col1 mood">
+				                    <ul>
+				                        <li>Status:</li>
+				                        <li>Mood:</li>
+				                    </ul>
+				                </div>
+				                <div class="col2">
+				                    <input id="myStatusInput" type="text" class="Width" />
+				                    <br />
+							            <select class="Width" name="myMoodInput" id="myMoodInput"  id="Select1">
+							                <option value="0">(none)</option>
+		                                    <option value="90">accomplished</option>
+		                                    <option value="135">adored</option>
+		                                    <option value="136">adventurous</option>
+		                                    <option value="1">aggravated</option>
+		                                    <option value="137">amorous</option>
+		                                    <option value="44">amused</option>
+		                                    <option value="2">angry</option>
+		                                    <option value="138">angsty</option>
+		                                    <option value="139">animated</option>
+		                                    <option value="3">annoyed</option>
+		                                    <option value="4">anxious</option>
+		                                    <option value="114">apathetic</option>
+		                                    <option value="140">argumentative</option>
+		                                    <option value="141">aroused</option>
+		                                    <option value="108">artistic</option>
+		                                    <option value="142">ashamed</option>
+		                                    <option value="87">awake</option>
+		                                    <option value="143">betrayed</option>
+		                                    <option value="110">bitchy</option>
+		                                    <option value="92">blah</option>
+		                                    <option value="113">blank</option>
+		                                    <option value="144">blessed</option>
+		                                    <option value="145">blissful</option>
+		                                    <option value="146">blustery</option>
+		                                    <option value="5">bored</option>
+		                                    <option value="59">bouncy</option>
+		                                    <option value="147">breezy</option>
+		                                    <option value="148">bullied</option>
+		                                    <option value="149">bummed</option>
+		                                    <option value="91">busy</option>
+		                                    <option value="68">calm</option>
+		                                    <option value="150">cantankerous</option>
+		                                    <option value="151">catalyzed</option>
+		                                    <option value="125">cheerful</option>
+		                                    <option value="152">chill</option>
+		                                    <option value="99">chipper</option>
+		                                    <option value="84">cold</option>
+		                                    <option value="63">complacent</option>
+		                                    <option value="153">confident</option>
+		                                    <option value="6">confused</option>
+		                                    <option value="101">contemplative</option>
+		                                    <option value="64">content</option>
+		                                    <option value="154">cooky/wacky</option>
+		                                    <option value="8">cranky</option>
+		                                    <option value="7">crappy</option>
+		                                    <option value="106">crazy</option>
+		                                    <option value="107">creative</option>
+		                                    <option value="155">crunk</option>
+		                                    <option value="129">crushed</option>
+		                                    <option value="156">cultured</option>
+		                                    <option value="56">curious</option>
+		                                    <option value="104">cynical</option>
+		                                    <option value="9">depressed</option>
+		                                    <option value="45">determined</option>
+		                                    <option value="130">devious</option>
+		                                    <option value="119">dirty</option>
+		                                    <option value="55">disappointed</option>
+		                                    <option value="10">discontent</option>
+		                                    <option value="157">disgusted</option>
+		                                    <option value="158">distractable</option>
+		                                    <option value="159">distraught</option>
+		                                    <option value="127">distressed</option>
+		                                    <option value="35">ditzy</option>
+		                                    <option value="115">dorky</option>
+		                                    <option value="40">drained</option>
+		                                    <option value="34">drunk</option>
+		                                    <option value="160">eccentric</option>
+		                                    <option value="98">ecstatic</option>
+		                                    <option value="161">electric</option>
+		                                    <option value="79">embarrassed</option>
+		                                    <option value="11">energetic</option>
+		                                    <option value="162">enlightened</option>
+		                                    <option value="12">enraged</option>
+		                                    <option value="13">enthralled</option>
+		                                    <option value="80">envious</option>
+		                                    <option value="163">evil</option>
+		                                    <option value="78">exanimate</option>
+		                                    <option value="41">excited</option>
+		                                    <option value="14">exhausted</option>
+		                                    <option value="164">exotic</option>
+		                                    <option value="165">fabulous</option>
+		                                    <option value="166">fascinated</option>
+		                                    <option value="167">fermented</option>
+		                                    <option value="67">flirty</option>
+		                                    <option value="168">focused</option>
+		                                    <option value="169">forgotten</option>
+		                                    <option value="170">frisky</option>
+		                                    <option value="171">froggy</option>
+		                                    <option value="47">frustrated</option>
+		                                    <option value="93">full</option>
+		                                    <option value="172">gallant</option>
+		                                    <option value="103">geeky</option>
+		                                    <option value="120">giddy</option>
+		                                    <option value="72">giggly</option>
+		                                    <option value="38">gloomy</option>
+		                                    <option value="126">good</option>
+		                                    <option value="132">grateful</option>
+		                                    <option value="51">groggy</option>
+		                                    <option value="95">grumpy</option>
+		                                    <option value="111">guilty</option>
+		                                    <option value="173">handsome</option>
+		                                    <option value="15">happy</option>
+		                                    <option value="16">high</option>
+		                                    <option value="43">hopeful</option>
+		                                    <option value="17">horny</option>
+		                                    <option value="83">hot</option>
+		                                    <option value="174">hungover</option>
+		                                    <option value="18">hungry</option>
+		                                    <option value="52">hyper</option>
+		                                    <option value="175">imaginative</option>
+		                                    <option value="176">impatient</option>
+		                                    <option value="177">impervious</option>
+		                                    <option value="178">implacable</option>
+		                                    <option value="116">impressed</option>
+		                                    <option value="48">indescribable</option>
+		                                    <option value="65">indifferent</option>
+		                                    <option value="179">indignant</option>
+		                                    <option value="19">infuriated</option>
+		                                    <option value="180">inquisitive</option>
+		                                    <option value="181">inspired</option>
+		                                    <option value="182">insubordinate</option>
+		                                    <option value="183">intense</option>
+		                                    <option value="128">intimidated</option>
+		                                    <option value="20">irate</option>
+		                                    <option value="112">irritated</option>
+		                                    <option value="133">jealous</option>
+		                                    <option value="184">jedi</option>
+		                                    <option value="185">jolly</option>
+		                                    <option value="21">jubilant</option>
+		                                    <option value="186">knighted</option>
+		                                    <option value="33">lazy</option>
+		                                    <option value="75">lethargic</option>
+		                                    <option value="76">listless</option>
+		                                    <option value="22">lonely</option>
+		                                    <option value="86">loved</option>
+		                                    <option value="187">luminous</option>
+		                                    <option value="188">mad</option>
+		                                    <option value="39">melancholy</option>
+		                                    <option value="57">mellow</option>
+		                                    <option value="36">mischievous</option>
+		                                    <option value="189">miserable</option>
+		                                    <option value="23">moody</option>
+		                                    <option value="37">morose</option>
+		                                    <option value="117">naughty</option>
+		                                    <option value="97">nauseated</option>
+		                                    <option value="190">neglected</option>
+		                                    <option value="102">nerdy</option>
+		                                    <option value="134">nervous</option>
+		                                    <option value="191">ninja</option>
+		                                    <option value="60">nostalgic</option>
+		                                    <option value="124">numb</option>
+		                                    <option value="192">obsequious</option>
+		                                    <option value="61">okay</option>
+		                                    <option value="70">optimistic</option>
+		                                    <option value="193">overstimulated</option>
+		                                    <option value="58">peaceful</option>
+		                                    <option value="194">peeved</option>
+		                                    <option value="73">pensive</option>
+		                                    <option value="71">pessimistic</option>
+		                                    <option value="195">pirate</option>
+		                                    <option value="24">pissed off</option>
+		                                    <option value="196">pissy</option>
+		                                    <option value="197">played</option>
+		                                    <option value="109">pleased</option>
+		                                    <option value="198">pretty</option>
+		                                    <option value="89">productive</option>
+		                                    <option value="199">pugnacious</option>
+		                                    <option value="200">pure</option>
+		                                    <option value="201">quiet</option>
+		                                    <option value="105">quixotic</option>
+		                                    <option value="202">rebellious</option>
+		                                    <option value="77">recumbent</option>
+		                                    <option value="69">refreshed</option>
+		                                    <option value="123">rejected</option>
+		                                    <option value="62">rejuvenated</option>
+		                                    <option value="53">relaxed</option>
+		                                    <option value="42">relieved</option>
+		                                    <option value="54">restless</option>
+		                                    <option value="203">rockin</option>
+		                                    <option value="204">romantic</option>
+		                                    <option value="100">rushed</option>
+		                                    <option value="25">sad</option>
+		                                    <option value="205">sassy</option>
+		                                    <option value="26">satisfied</option>
+		                                    <option value="118">savage</option>
+		                                    <option value="46">scared</option>
+		                                    <option value="206">selective</option>
+		                                    <option value="122">shocked</option>
+		                                    <option value="82">sick</option>
+		                                    <option value="66">silly</option>
+		                                    <option value="49">sleepy</option>
+		                                    <option value="207">smart</option>
+		                                    <option value="208">smitten</option>
+		                                    <option value="209">sneaky</option>
+		                                    <option value="210">sneezy</option>
+		                                    <option value="27">sore</option>
+		                                    <option value="211">stalked</option>
+		                                    <option value="212">stoked</option>
+		                                    <option value="28">stressed</option>
+		                                    <option value="213">strong</option>
+		                                    <option value="121">surprised</option>
+		                                    <option value="214">sweaty</option>
+		                                    <option value="81">sympathetic</option>
+		                                    <option value="215">talkative</option>
+		                                    <option value="216">tested</option>
+		                                    <option value="131">thankful</option>
+		                                    <option value="29">thirsty</option>
+		                                    <option value="30">thoughtful</option>
+		                                    <option value="31">tired</option>
+		                                    <option value="32">touched</option>
+		                                    <option value="217">triumphant</option>
+		                                    <option value="74">uncomfortable</option>
+		                                    <option value="218">understimulated</option>
+		                                    <option value="219">used</option>
+		                                    <option value="220">validated</option>
+		                                    <option value="221">vehement</option>
+		                                    <option value="222">vexed</option>
+		                                    <option value="223">vibrant</option>
+		                                    <option value="224">virginal</option>
+		                                    <option value="225">vital</option>
+		                                    <option value="226">voluminous</option>
+		                                    <option value="227">wanted</option>
+		                                    <option value="228">warm</option>
+		                                    <option value="96">weird</option>
+		                                    <option value="88">working</option>
+		                                    <option value="85">worried</option>   
+							            </select>
+				                    <br />
+				                    <button onclick="updateStatus(); return false;">Done</button>
+				                </div>
+				                <div class="col3">
+				                    <a href="javascript:toggleUpdateStatusForm()">Clear</a>
+				                </div>
+				                <div class="clear"></div>
+				            </div>
+				            <div id="viewerStatusData"></div>
+				            <div id="friendsStatusData"></div>
+				            <div class="right" id="friendStatusLinks">
+				                <a target="_blank" href="http://friends.myspace.com/index.cfm?fuseaction=profile.friendmoods">View More</a>
+				            </div>
+				            <div class="clear"></div>
+					    </div>
+				        <div class="tab" id="tab_bulletins">
+				            <div id="bulletinData"></div>
+				            <div class="right" id="bulletinLinks">
+				                <a target="_blank" href="http://bulletins.myspace.com/index.cfm?fuseaction=bulletin">View More</a>
+				            </div>
+				            <div class="clear"></div>
+				        </div>
+
+				        <div class="tab" id="tab_messages">
+		        			<div id="messageData"></div>
+				            <div class="right" id="messageLinks">
+				                <a target="_blank" href="http://messaging.myspace.com/index.cfm?fuseaction=mail.inbox">View All</a>
+				            </div>
+				            <div class="clear"></div>
+				        </div>
+			        </div>
+			</div>
+			
+			<div style="display: none" class="column2" id="todayOnMySpace">
+			    <div id="todayOnMySpaceContent" class="content">
+						<div class="one">
+		                	<div class="three">
+		                    	<div class="two">
+		                        	<div class="four">
+
+		                            	<div class="todaybar">
+		                                	<span class="today">Today on MySpace</span><span id="tomMessage" class="date"></span>
+		                            	</div>
+
+		                                <div class="tomDiv" id="tomAll">
+
+		                        	    </div>
+		                        	    <div class="tomDiv" id="tomVideos">
+
+		                        	    </div>
+		                        	    <div class="tomDiv" id="tomBlogs">
+
+		                        	    </div>
+		                        	    <div class="tomDiv" id="tomPeople">
+
+		                        	    </div>
+										<div id="tomViewMoreContainer" style="display: none" class="viewall"><a id="tomViewMore" href="#">View More</a></div>
+		                                <div id="tomLoginButton" class="loginbutton">
+			                                <div class="loginbutton_l">
+			                                    <input id="loginBottom" onclick="login()" type="button" value="Log In" name="Submit"/>
+			                                </div>
+			                                <div class="loginbutton_r"></div>
+			                            </div>
+									</div>                     
+		                        </div>
+		                    </div>
+		                </div>
+					</div>
+				<div style="display: none" id="adProvider">
+				    <center><script type="text/javascript" src="http://fimserve.myspace.com/?context=iGoogle&location=MedRec"></script></center>
+				</div>
+			</div>
+						<div id="errorPage" class="column1">
+				
+			</div>
+			<div style="display: none" id="loginPage" class="column1 login loginContainer">
+			    <center>
+					<div class="loginContent">
+				        <h1><span>MySpace.com a place for friends</span></h1>
+				        <p>Login to MySpace to check out your latest friend notifications, messages, and more!</p
+							<div style="float:right">
+					            <div class="loginbutton">
+					                <div class="loginbutton_l">
+					                    <input id="loginCenter" onclick="login()" type="button" value="Log In" name="Submit"/>
+					                </div>
+					                <div class="loginbutton_r"></div>
+					            </div>
+							</div>
+				    </div>
+				</center>
+			</div>
+		</div>
+		<script type="text/javascript" language="javascript" src="http://x.myspacecdn.com/modules/common/static/js/jquery.js"></script>
+		<script type="text/javascript" language="javascript">
+(function(A){A.ui=A.ui||{};A.fn.tabs=function(){var C=typeof arguments[0]=="string"&&arguments[0];var B=C&&Array.prototype.slice.call(arguments,1)||arguments;return C=="length"?A.data(this[0],"tabs").$tabs.length:this.each(function(){if(C){var D=A.data(this,"tabs");if(D){D[C].apply(D,B)}}else{new A.ui.tabs(this,B[0]||{})}})};A.ui.tabs=function(D,C){var B=this;this.options=A.extend({},A.ui.tabs.defaults,C);this.element=D;if(C.selected===null){this.options.selected=null}this.options.event+=".tabs";A(D).bind("setData.tabs",function(F,E,G){if((/^selected/).test(E)){B.select(G)}else{B.options[E]=G;B.tabify()}}).bind("getData.tabs",function(F,E){return B.options[E]});A.data(D,"tabs",this);this.tabify(true)};A.ui.tabs.defaults={selected:0,unselect:false,event:"click",disabled:[],cookie:null,spinner:"Loading&#8230;",cache:false,idPrefix:"ui-tabs-",ajaxOptions:{},fx:null,tabTemplate:'<li><a href="#{href}"><span>#{label}</span></a></li>',panelTemplate:"<div></div>",navClass:"ui-tabs-nav",selectedClass:"ui-tabs-selected",unselectClass:"ui-tabs-unselect",disabledClass:"ui-tabs-disabled",panelClass:"ui-tabs-panel",hideClass:"ui-tabs-hide",loadingClass:"ui-tabs-loading"};A.extend(A.ui.tabs.prototype,{tabId:function(B){return B.title&&B.title.replace(/\s/g,"_").replace(/[^A-Za-z0-9\-_:\.]/g,"")||this.options.idPrefix+A.data(B)},ui:function(C,B){return{instance:this,options:this.options,tab:C,panel:B}},tabify:function(N){this.$lis=A("li:has(a[href])",this.element);this.$tabs=this.$lis.map(function(){return A("a",this)[0]});this.$panels=A([]);var O=this,E=this.options;this.$tabs.each(function(Q,P){if(P.hash&&P.hash.replace("#","")){O.$panels=O.$panels.add(P.hash)}else{if(A(P).attr("href")!="#"){A.data(P,"href.tabs",P.href);A.data(P,"load.tabs",P.href);var S=O.tabId(P);P.href="#"+S;var R=A("#"+S);if(!R.length){R=A(E.panelTemplate).attr("id",S).addClass(E.panelClass).insertAfter(O.$panels[Q-1]||O.element);R.data("destroy.tabs",true)}O.$panels=O.$panels.add(R)}else{E.disabled.push(Q+1)}}});if(N){A(this.element).hasClass(E.navClass)||A(this.element).addClass(E.navClass);this.$panels.each(function(){var P=A(this);P.hasClass(E.panelClass)||P.addClass(E.panelClass)});this.$tabs.each(function(S,P){if(location.hash){if(P.hash==location.hash){E.selected=S;if(A.browser.msie||A.browser.opera){var R=A(location.hash),T=R.attr("id");R.attr("id","");setTimeout(function(){R.attr("id",T)},500)}scrollTo(0,0);return false}}else{if(E.cookie){var Q=parseInt(A.cookie("ui-tabs"+A.data(O.element)),10);if(Q&&O.$tabs[Q]){E.selected=Q;return false}}else{if(O.$lis.eq(S).hasClass(E.selectedClass)){E.selected=S;return false}}}});this.$panels.addClass(E.hideClass);this.$lis.removeClass(E.selectedClass);if(E.selected!==null){this.$panels.eq(E.selected).show().removeClass(E.hideClass);this.$lis.eq(E.selected).addClass(E.selectedClass)}var D=E.selected!==null&&A.data(this.$tabs[E.selected],"load.tabs");if(D){this.load(E.selected)}E.disabled=A.unique(E.disabled.concat(A.map(this.$lis.filter("."+E.disabledClass),function(Q,P){return O.$lis.index(Q)}))).sort();A(window).bind("unload",function(){O.$tabs.unbind(".tabs");O.$lis=O.$tabs=O.$panels=null})}for(var H=0,M;M=this.$lis[H];H++){A(M)[A.inArray(H,E.disabled)!=-1&&!A(M).hasClass(E.selectedClass)?"addClass":"removeClass"](E.disabledClass)}if(E.cache===false){this.$tabs.removeData("cache.tabs")}var C,J,B={"min-width":0,duration:1},F="normal";if(E.fx&&E.fx.constructor==Array){C=E.fx[0]||B,J=E.fx[1]||B}else{C=J=E.fx||B}var I={display:"",overflow:"",height:""};if(!A.browser.msie){I.opacity=""}function L(Q,P,R){P.animate(C,C.duration||F,function(){P.addClass(E.hideClass).css(I);if(A.browser.msie&&C.opacity){P[0].style.filter=""}if(R){K(Q,R,P)}})}function K(Q,R,P){if(J===B){R.css("display","block")}R.animate(J,J.duration||F,function(){R.removeClass(E.hideClass).css(I);if(A.browser.msie&&J.opacity){R[0].style.filter=""}A(O.element).triggerHandler("tabsshow",[O.ui(Q,R[0])],E.show)})}function G(Q,S,P,R){S.addClass(E.selectedClass).siblings().removeClass(E.selectedClass);L(Q,P,R)}this.$tabs.unbind(".tabs").bind(E.event,function(){var S=A(this).parents("li:eq(0)"),P=O.$panels.filter(":visible"),R=A(this.hash);if((S.hasClass(E.selectedClass)&&!E.unselect)||S.hasClass(E.disabledClass)||A(this).hasClass(E.loadingClass)||A(O.element).triggerHandler("tabsselect",[O.ui(this,R[0])],E.select)===false){this.blur();return false}O.options.selected=O.$tabs.index(this);if(E.unselect){if(S.hasClass(E.selectedClass)){O.options.selected=null;S.removeClass(E.selectedClass);O.$panels.stop();L(this,P);this.blur();return false}else{if(!P.length){O.$panels.stop();var Q=this;O.load(O.$tabs.index(this),function(){S.addClass(E.selectedClass).addClass(E.unselectClass);K(Q,R)});this.blur();return false}}}if(E.cookie){A.cookie("ui-tabs"+A.data(O.element),O.options.selected,E.cookie)}O.$panels.stop();if(R.length){var Q=this;O.load(O.$tabs.index(this),P.length?function(){G(Q,S,P,R)}:function(){S.addClass(E.selectedClass);K(Q,R)})}else{throw"jQuery UI Tabs: Mismatching fragment identifier."}if(A.browser.msie){this.blur()}return false});if(!(/^click/).test(E.event)){this.$tabs.bind("click.tabs",function(){return false})}},add:function(E,D,C){if(C==undefined){C=this.$tabs.length}var G=this.options;var I=A(G.tabTemplate.replace(/#\{href\}/,E).replace(/#\{label\}/,D));I.data("destroy.tabs",true);var H=E.indexOf("#")==0?E.replace("#",""):this.tabId(A("a:first-child",I)[0]);var F=A("#"+H);if(!F.length){F=A(G.panelTemplate).attr("id",H).addClass(G.panelClass).addClass(G.hideClass);F.data("destroy.tabs",true)}if(C>=this.$lis.length){I.appendTo(this.element);F.appendTo(this.element.parentNode)}else{I.insertBefore(this.$lis[C]);F.insertBefore(this.$panels[C])}G.disabled=A.map(G.disabled,function(K,J){return K>=C?++K:K});this.tabify();if(this.$tabs.length==1){I.addClass(G.selectedClass);F.removeClass(G.hideClass);var B=A.data(this.$tabs[0],"load.tabs");if(B){this.load(C,B)}}A(this.element).triggerHandler("tabsadd",[this.ui(this.$tabs[C],this.$panels[C])],G.add)},remove:function(B){var D=this.options,E=this.$lis.eq(B).remove(),C=this.$panels.eq(B).remove();if(E.hasClass(D.selectedClass)&&this.$tabs.length>1){this.select(B+(B+1<this.$tabs.length?1:-1))}D.disabled=A.map(A.grep(D.disabled,function(G,F){return G!=B}),function(G,F){return G>=B?--G:G});this.tabify();A(this.element).triggerHandler("tabsremove",[this.ui(E.find("a")[0],C[0])],D.remove)},enable:function(B){var C=this.options;if(A.inArray(B,C.disabled)==-1){return }var D=this.$lis.eq(B).removeClass(C.disabledClass);if(A.browser.safari){D.css("display","inline-block");setTimeout(function(){D.css("display","block")},0)}C.disabled=A.grep(C.disabled,function(F,E){return F!=B});A(this.element).triggerHandler("tabsenable",[this.ui(this.$tabs[B],this.$panels[B])],C.enable)},disable:function(C){var B=this,D=this.options;if(C!=D.selected){this.$lis.eq(C).addClass(D.disabledClass);D.disabled.push(C);D.disabled.sort();A(this.element).triggerHandler("tabsdisable",[this.ui(this.$tabs[C],this.$panels[C])],D.disable)}},select:function(B){if(typeof B=="string"){B=this.$tabs.index(this.$tabs.filter("[href$="+B+"]")[0])}this.$tabs.eq(B).trigger(this.options.event)},load:function(F,K){var L=this,C=this.options,D=this.$tabs.eq(F),J=D[0],G=K==undefined||K===false,B=D.data("load.tabs");K=K||function(){};if(!B||(A.data(J,"cache.tabs")&&!G)){K();return }if(C.spinner){var H=A("span",J);H.data("label.tabs",H.html()).html("<em>"+C.spinner+"</em>")}var I=function(){L.$tabs.filter("."+C.loadingClass).each(function(){A(this).removeClass(C.loadingClass);if(C.spinner){var M=A("span",this);M.html(M.data("label.tabs")).removeData("label.tabs")}});L.xhr=null};var E=A.extend({},C.ajaxOptions,{url:B,success:function(N,M){A(J.hash).html(N);I();K();if(C.cache){A.data(J,"cache.tabs",true)}A(L.element).triggerHandler("tabsload",[L.ui(L.$tabs[F],L.$panels[F])],C.load);C.ajaxOptions.success&&C.ajaxOptions.success(N,M)}});if(this.xhr){this.xhr.abort();I()}D.addClass(C.loadingClass);setTimeout(function(){L.xhr=A.ajax(E)},0)},url:function(C,B){this.$tabs.eq(C).removeData("cache.tabs").data("load.tabs",B)},destroy:function(){var B=this.options;A(this.element).unbind(".tabs").removeClass(B.navClass).removeData("tabs");this.$tabs.each(function(){var C=A.data(this,"href.tabs");if(C){this.href=C}var D=A(this).unbind(".tabs");A.each(["href","load","cache"],function(E,F){D.removeData(F+".tabs")})});this.$lis.add(this.$panels).each(function(){if(A.data(this,"destroy.tabs")){A(this).remove()}else{A(this).removeClass([B.selectedClass,B.unselectClass,B.disabledClass,B.panelClass,B.hideClass].join(" "))}})}})})(jQuery);
+
+var CONSTANTS={timeClass:"timeBul",myspaceURL:"http://www.myspace.com",messageURL:"http://messaging.myspace.com/index.cfm?fuseaction=mail.message&friendID=",commentURL:"http://comment.myspace.com/index.cfm?fuseaction=user.viewProfile_commentForm&friendID=",videoURL:"http://vids.myspace.com/index.cfm?fuseaction=vids.individual&videoid=",bulletinsURL:"http://bulletins.myspace.com/index.cfm?fuseaction=bulletin.read",maxBodyLength:55};var LocStr={hello:"Hello ",mood:"Mood",update:"Update",album:"album",by:"by",from:"From",defaultStatus:"none",prettyTime:{justNow:"Just Now",oneMinAgo:"1 min ago",xMinsAgo:" mins ago",oneHourAgo:"1 hr ago",xHoursAgo:" hrs ago",today:"Today",yesterday:"Yesterday",xDaysAgo:" days ago",xWeeksAgo:" weeks ago"},dayOfWeek:["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"],month:["January","February","March","April","May","June","July","August","September","November","October","December"],genericDataError:"We are unable to access your information at this time. Please try again later.",comments:"Comments",totalViews:"Total Views",views:"Plays",peopleYouLike:"People You Might Like",topBlogs:"Top Blogs",topVideos:"Top Videos",topBlog:"Top Blog",topVideo:"Top Video",coolNewPerson:"Cool New Person",postedBy:"Posted By",notAvailable:"Sorry, iGoogle does not support a feature we need in this country yet.  Stay tuned.",notLoggedIn:"Sorry, you are not signed in.  Please sign in to iGoogle to start using the MySpace Gadget."};var Log={info:function(a){if(typeof console!="undefined"&&typeof console.log=="function"){console.log(a)}},error:function(a){if(typeof console!="undefined"&&typeof console.error=="function"){console.error(a)}}};var DataEnum={VIEWER_STATUS:"VIEWER_STATUS",FRIENDS_STATUS:"FRIENDS_STATUS",MESSAGES:"MESSAGES",BULLETINS:"BULLETINS",SUBSCRIPTIONS:"SUBSCRIPTIONS",TOP_BLOGS:"TOP_BLOGS",TOP_VIDEOS:"TOP_VIDEOS",COOL_NEW_PEOPLE:"COOL_NEW_PEOPLE"};function DataAPI2(o,i,f){var i=i;var k={canvas:1,home:1};var e={_userID:o,_restPath:i,_viewType:typeof f!="undefined"&&f!=null&&k[f]?f:"home"};var m=[0,1,4,5,9,13,6,17];var b=function(){return{VIEWER_STATUS:{construct:function(p){return new ViewerStatus(p)},uri:"users/"+e._userID+"/status.json",responseType:"json",containerDivID:"viewerStatusData",getItemCollection:function(p){return p},fullPageViewCount:1,dashboardViewCount:1},FRIENDS_STATUS:{construct:function(p){return new FriendsStatus(p)},uri:"users/"+e._userID+"/friends/status.json",responseType:"json",containerDivID:"friendsStatusData",getItemCollection:function(p){return p.FriendsStatus},fullPageViewCount:8,dashboardViewCount:3,emptyMessage:"There are no Friend Updates at this time."},MESSAGES:{construct:function(p){return new Message(p)},uri:"users/"+e._userID+"/messages/inbox.json",responseType:"json",containerDivID:"messageData",getItemCollection:function(p){return p},fullPageViewCount:10,dashboardViewCount:4,emptyMessage:"There are no messages at this time."},BULLETINS:{construct:function(p){return new Bulletin(p)},uri:"users/"+e._userID+"/bulletins.json",responseType:"json",containerDivID:"bulletinData",getItemCollection:function(p){return p.bulletins},fullPageViewCount:10,dashboardViewCount:5,emptyMessage:"There are no bulletins at this time.",forEach:function(s,p){for(var q=0;q<s.length;q++){var r=new Bulletin(s[q]);if(r.title.search(/This bulletin has been deleted/)==-1){a.BULLETINS.data.push(r)}}}},SUBSCRIPTIONS:{construct:function(p){return new Subscription(p)},uri:"users/"+e._userID+"/friends/activities.atom?culture=en-US&composite=true",responseType:"atom",containerDivID:"subscriptionData",getItemCollection:function(p){return p.getElementsByTagName("entry")},fullPageViewCount:7,dashboardViewCount:4,showData:function(v){if(a[v].injected){return}var r={};var q=function(y){var x=new Date();x.setHours(0);x.setMinutes(0);x.setSeconds(0);x.setMilliseconds(0);var w="<span>";if(x.getTime()==r.getTime()){w+=LocStr.prettyTime.today+"</span> "}else{if(x.getTime()-r.getTime()==1000*60*60*24){w+=LocStr.prettyTime.yesterday+"</span> "}else{w+=LocStr.dayOfWeek[r.getDay()]+"</span> "}}w+=r.getDate()<10?"0"+r.getDate():r.getDate();w+=" "+LocStr.month[r.getMonth()]+", "+(r.getYear()>2000?r.getYear():r.getYear()+1900);var z=new domNode("div",{"class":"clear"}).addChild("div",{"class":"todaySmall",style:!!y?"padding-top: 0px":""},w);$("#"+d.SUBSCRIPTIONS.containerDivID).append(z.toString())};var u=a[v].data;$("#"+d.SUBSCRIPTIONS.containerDivID).addClass("activitiesContainer");var p=(e._viewType=="home")?4:7;if(u.length==0){$("#"+d.SUBSCRIPTIONS.containerDivID).html(new domNode("div",{"class":"error"},d.SUBSCRIPTIONS.emptyMessage).toString());return}var t=u[0];r=t.date;q(true);$("#"+d.SUBSCRIPTIONS.containerDivID).append(t.getHTML());for(var s=1;s<u.length&&s<p;s++){var t=u[s];if(!r.getTime||t.date.getTime()!=r.getTime()){r=t.date;q()}$("#"+d.SUBSCRIPTIONS.containerDivID).append(t.getHTML())}a[v].injected=true},emptyMessage:"There are no Friend Subscriptions at this time."},TOP_BLOGS:{construct:function(p){return new TopBlog(p)},uri:"blogs.json?culture=en&list=top",responseType:"json",containerDivID:"tomBlogs",getItemCollection:function(p){return p.blogs},fullPageViewCount:4,dashboardViewCount:4,forEach:function(s,p){for(var q=0;q<s.length;q++){var r=new TopBlog(s[q]);if(r.blogID!="385740206"&&a[DataEnum.TOP_BLOGS].data.length<3){a[DataEnum.TOP_BLOGS].data.push(r)}}},emptyMessage:"There are no Blogs at this time."},TOP_VIDEOS:{construct:function(p){return new TopVideo(p)},uri:"videos.json?language=en&list=top&category="+m[Math.floor((Math.random()*m.length))],responseType:"json",containerDivID:"tomVideos",getItemCollection:function(p){return p.videos},fullPageViewCount:3,dashboardViewCount:3},COOL_NEW_PEOPLE:{construct:function(p){return new CoolNewPerson(p)},uri:"coolnewpeople.json?culture=en-US",responseType:"json",containerDivID:"tomPeople",getItemCollection:function(p){return p.coolnewpeople},fullPageViewCount:3,dashboardViewCount:3}}};var n=function(t){var s=d[t];var p=(e._viewType=="canvas")?s.fullPageViewCount:s.dashboardViewCount;if(!a[t].injected){var r=a[t].data;if(r.constructor==Array){if(r.length==0){$("#"+s.containerDivID).html(new domNode("div",{"class":"error"},s.emptyMessage).toString());a[t].injected=true;return}for(var q=0;q<p&&q<r.length;q++){$("#"+s.containerDivID).append(r[q].getHTML())}}else{$("#"+s.containerDivID).append(r.getHTML())}a[t].injected=true}};var d=b();var l=function(q){for(var p in DataEnum){if(!q[p].showData){q[p].showData=n}}};l(d);var a={};for(var c in DataEnum){a[c]={injected:false,data:[]}}var g=new Date();var j=LocStr.dayOfWeek[g.getDay()]+", "+LocStr.month[g.getMonth()].substring(0,3);j+=" "+g.getDate()+", "+(g.getYear()>2000?g.getYear():g.getYear()+1900);var h=(g.getMonth()+1)+"/"+g.getDate()+"/"+g.getYear().toString().substring(1,g.getYear().toString().length);return{getData:function(t,v){if(a[t].data.length>0){return}var s=d[t];if(s){var p=(e._viewType=="home")?s.dashboardViewCount:s.fullPageViewCount;var r="page_size="+p;var q=(s.uri.search(/http:\/\//i)==-1?e._restPath:"")+s.uri+((s.uri.search(/\?/)==-1)?"?":"&")+r;var u=function(A){if(A.errorMessage){Log.error(t+" error: "+A.errorMessage)}else{var y=s.getItemCollection(A);try{if(y.constructor==Array||typeof y.length=="number"){if(y.length==0){$("#"+s.containerDivID).html(s.emptyMessage)}if(s.forEach){s.forEach(y,p)}else{for(var w=0;w<p&&w<y.length;w++){var x=s.construct(y[w]);a[t].data.push(x)}}}else{var x=s.construct(y);a[t].data=x}}catch(z){Log.error("Error creating "+t)}}if(typeof v=="function"){v()}};makeRequest({url:q,contentType:s.responseType,callback:u,unSignedRequest:s.unSignedRequest})}else{Log.error("Data handler could not be found.  DataEnum: "+t)}},getIndicators:function(){var t="friendsrequesturl";var p="commenturl";var q="mailurl";var r=apiroot+"users/"+e._userID+"/indicators.json";var s=function(v){if(v.errorMessage){Log.error("getIndicators "+v.errorMessage)}else{var u=false;if(v[q]!=null){$("#messageIndicatorLink").attr("href",v[q]);$("#messageIndicator").show();u=true}if(v[p]!=null){$("#commentIndicatorLink").attr("href",v[p]);$("#commentIndicator").show();u=true}if(v[t]!=null){$("#friendRequestIndicatorLink").attr("href",v[t]);$("#friendRequestIndicator").show();u=true}if(u){$("#updates").show()}}};makeRequest({callback:s,url:r,contentType:"json",method:"GET"})},showData:function(s,q){if(a[s]&&!a[s].injected){d[s].showData(s)}var p;if(e._viewType=="canvas"||(typeof q!="undefined"&&q==true)){var r=function(t){p=$("#tomAll");if(p.html().search(/\w+/)==-1){for(var u in {TOP_VIDEOS:LocStr.topVideos,TOP_BLOGS:LocStr.topBlog,COOL_NEW_PEOPLE:LocStr.coolNewPerson}){var u=a[u].data[0];if(u){p.append(u.getHTML(true))}}}$("#tomMessage").html(e._viewType=="home"?h:j);$(".tomDiv").hide();p.show()};switch(s){case"SUBSCRIPTIONS":r();$("#tomViewMore").hide();break;case"TOM_ALL":r();$("#tomViewMore").hide();break;case"FRIENDS_STATUS":p=$("#tomPeople");!a[DataEnum.COOL_NEW_PEOPLE].injected?d[DataEnum.COOL_NEW_PEOPLE].showData(DataEnum.COOL_NEW_PEOPLE):"";$("#tomMessage").html(LocStr.peopleYouLike);$(".tomDiv").hide();$("#tomViewMore").hide();p.show();break;case"BULLETINS":p=$("#tomBlogs");!a[DataEnum.TOP_BLOGS].injected?d[DataEnum.TOP_BLOGS].showData(DataEnum.TOP_BLOGS):"";$("#tomMessage").html(LocStr.topBlogs);$(".tomDiv").hide();p.show();$("#tomViewMore").show().attr("href","http://profile.myspace.com/index.cfm?fuseaction=music");break;case"MESSAGES":p=$("#tomVideos");!a[DataEnum.TOP_VIDEOS].injected?d[DataEnum.TOP_VIDEOS].showData(DataEnum.TOP_VIDEOS):"";$("#tomMessage").html(LocStr.topVideos);$(".tomDiv").hide();p.show();$("#tomViewMore").show().attr("href","http://vids.myspace.com/index.cfm?fuseaction=vids.charts");break}$(p).ready(function(){var t=$(".todayItem",p);if(t.length){t[t.length-1].style.borderBottom="none"}})}},updateViewerStatus:function(p,v,t){var r=0;var u=e._restPath+"users/"+e._userID+"/status";var q=e._restPath+"users/"+e._userID+"/mood";var s=function(w){r++;if(r==2){if(typeof t=="function"){t()}}};makeRequest({callback:s,data:{mood:v},url:q,method:"PUT"});makeRequest({callback:s,data:{status:p},url:u,method:"PUT"})},setUserData:function(p){e._userID=p;d=b();l(d)},getDH:function(){return d}}}function makeRequest(b){if(typeof b=="object"){if(typeof gadgets!="undefined"&&typeof gadgets.io!="undefined"&&typeof gadgets.io.makeRequest=="function"){var a={};a[gadgets.io.RequestParameters.CONTENT_TYPE]=b.contentType=="json"?gadgets.io.ContentType.JSON:gadgets.io.ContentType.DOM;a[gadgets.io.RequestParameters.METHOD]=b.method?b.method:gadgets.io.MethodType.GET;if(!b.unSignedRequest){a[gadgets.io.RequestParameters.AUTHORIZATION]=gadgets.io.AuthorizationType.OAUTH;a[gadgets.io.RequestParameters.OAUTH_SERVICE_NAME]="myspace"}if(b.data){a[gadgets.io.RequestParameters.POST_DATA]=b.data}var c=function(d){if(b.callback&&d.data){b.callback(d.data)}if(!d.data){Log.error("No response data sent back.")}};gadgets.io.makeRequest(b.url,c,a)}else{$.ajax({type:b.method?b.method:"GET",complete:b.callback,url:b.url,data:b.data,dataType:b.contentType=="json"?"json":"xml"})}}}function ViewerStatus(a){this.profile={name:a.user.name,profileURL:a.user.webUri};this.status=a.status?a.status:LocStr.defaultStatus;this.mood=a.mood;this.moodImgURL=a.moodImageUrl;this.time="";if(a.moodLastUpdated!=null&&a.moodLastUpdated!=""){var b=getPrettyDate(new Date(a.moodLastUpdated));if(typeof b!="undefined"&&b!=null){this.time=b}}}ViewerStatus.prototype.getHTML=function(){var b=new domNode("div",{id:"myStatus"});b.addChild("a",{href:this.profile.profileURL,target:"_blank"},this.profile.name).addChild("span",{id:"statusValue"}," "+this.status).addChild("span",{"class":"description"}," "+this.time+" ");b.addChild("a",{href:"javascript:updateStatus()",style:"display: none"},LocStr.update);var a=new domNode("div").addChild("span",{"class":"mood"},LocStr.mood+": ").addChild("span",{id:"moodValue"},this.mood+" ");b.addChild(a);if(this.moodImgURL!=null){a.addChild("img",{src:this.moodImgURL})}return new domNode("div",{"class":"clear"}).toString()+b.addChild("div",{"class":"clear"}).toString()};function FriendsStatus(a){if(a.user){this.profile={profileURL:a.user.webUri,name:a.user.name,thumbnailURL:a.user.image}}else{this.profile={profileURL:"",name:"",thumbnailURL:""}}this.mood=a.mood;this.moodImgURL=a.moodimageurl;this.status=a.status?a.status:LocStr.defaultStatus;this.time="";if(a.moodlastupdated!=null&&a.moodlastupdated!=""){this.time=getPrettyDate(new Date(a.moodlastupdated))}this.messageURL=CONSTANTS.messageURL+a.user.userId;this.commentURL=CONSTANTS.commentURL+a.user.userId}FriendsStatus.prototype.getHTML=function(){var a=new domNode("div",{"class":"friend_status"});a.addChild(new domNode("div",{"class":"profile_photo",style:""}).addChild("a",{href:this.profile.profileURL,target:"_blank"},new domNode("img",{src:this.profile.thumbnailURL})));var d=new domNode("span",{"class":"userStatus"}).addChild("a",{href:this.profile.profileURL,target:"_blank"},this.profile.name);d.addChild(" "+this.status).addChild(new domNode("span",{"class":"description"}," "+this.time)).addBR();d.addChild("span",{"class":"mood"},LocStr.mood+": ").addChild(this.mood+" ");if(this.moodImgURL!=null){d.addChild("img",{src:this.moodImgURL})}a.addChild(d);var c=new domNode("div",{"class":"actions",style:""});var b=$("base").attr("href");c.addChild(new domNode("ul").addChild(new domNode("li").addChild("a",{href:this.messageURL,target:"_blank",target:"_blank","class":"sendMessage commonIcon",title:"Send Message"}).addBR()).addChild(new domNode("li").addChild("a",{href:this.commentURL,target:"_blank",target:"_blank","class":"commentBack commonIcon",title:"Add Comment"}).addBR()));return a.addChild(c).toString()+new domNode("div",{"class":"clear"})};function Subscription(g){this.html=g.getElementsByTagName("content")[0].childNodes[0].innerHTML;if(this.html==null||typeof this.html=="undefined"){var f=g.getElementsByTagName("content")[0].firstChild.xml;f=f.replace('xmlns="http://www.w3.org/1999/xhtml"',"");this.html=f}this.html=this.html.replace(/<(a.*?)>/g,"<$1 target=_blank>");var a=g.getElementsByTagName("published")[0].firstChild.nodeValue.match(/(\d{4})-(\d{2})-(\d{2})/);this.date=new Date(a[1],a[2]-1,a[3]);var c=g.getElementsByTagName("link");var b=false;for(var e=0;e<c.length&&!b;e++){for(var d=0;d<c[e].attributes.length;d++){if(c[e].attributes[d].nodeName=="rel"&&c[e].attributes[d].nodeValue=="icon"){b=true}if(b&&c[e].attributes[d].nodeName=="href"){this.activityImageURL=c[e].attributes[d].nodeValue}}}}Subscription.prototype.getHTML=function(){var a=new domNode("div",{"class":"activityItem"}).addChild("div",{"class":"activityImg"},new domNode("img",{src:this.activityImageURL}));a.addChild("div",{"class":"activityMsg"},this.html);return a.toString()};function Bulletin(c){this.body=c.body;var a;if((a=c.postedby)!=null||(a=c.user)!=null){this.authorName=a.name;this.authorURI=a.webUri}if(c.postedby){this.bulletinURL=CONSTANTS.bulletinsURL+"&authorID="+c.postedby.userId+"&messageID="+c.bulletinid}else{this.bulletinURL=CONSTANTS.bulletinsURL}var e=/(\d{4})-(\d{2})-(\d{2})\w+(\d{2}):(\d{2}):(\d{2})/;if(e.test(c.postdate)){var b=e.exec(c.postdate);var d=new Date(b[2]+"/"+b[3]+"/"+b[1]+" "+b[4]+":"+b[5]+":"+b[6]);this.time=getPrettyDate(d)}else{this.time=""}this.title=c.title}Bulletin.prototype.getHTML=function(){var a=new domNode("div",{"class":"bulletin"},new domNode("div",{"class":"user"}).addChild("a",{href:this.authorURI,target:"_blank"},this.authorName));a.addChild("a",{target:"_blank",href:this.bulletinURL,"class":"subject"},this.title);a.addChild("div",{"class":"posted"},this.time).addChild("div",{"class":"clear"});return a.toString()};function Message(b){this.authorImageURL=b.authorImageUrl;this.authorURI=CONSTANTS.myspaceURL+"/"+b.authorId;this.authorName=b.authorName;var a=new Date(b.createdDate);this.createdDate=LocStr.month[a.getMonth()].substring(0,3)+" "+a.getDate()+", ";this.createdDate+=(a.getYear()<2000?a.getYear()+1900:a.getYear())+" ";this.createdDate+=((a.getHours()%12)+1)+":"+(a.getMinutes()<10?"0"+a.getMinutes():a.getMinutes())+" "+((a.getHours()<12)?"AM":"PM");this.status=b.status;this.title=b.title;this.uri=b.webUri}Message.prototype.getHTML=function(){var a=new domNode("div",{"class":"friend_status"});var b=new domNode("div",{"class":"profile_photo leftNav",style:"width: 45px; margin-top: 4px"}).addChild(new domNode("a",{href:this.authorURI,target:"_blank"},new domNode("img",{src:this.authorImageURL})));a.addChild(b);var c=new domNode("span",{"class":"userStatus"});c.addChild(LocStr.from+": ").addChild("a",{href:this.authorURI,target:"_blank"},this.authorName).addBR();c.addChild("a",{"class":"mood",href:this.uri,target:"_blank"},this.title).addBR().addChild(this.createdDate);a.addChild(new domNode("div",{"class":"",style:"margin-left: 50px"}).addChild(c));return a.toString()+new domNode("div",{"class":"clear"}).toString()};function TopBlog(a){this.data=a;this.profile={profileURL:a.postedby.webUri,name:a.postedby.name,thumbnailURL:a.postedby.image};this.subject=a.subject;this.body=a.body?a.body.replace(/<.*?>/g,""):"";if(this.body.length>CONSTANTS.maxBodyLength){this.body=this.body.substring(0,CONSTANTS.maxBodyLength)+"..."}this.blogID=a.blogid;this.blogURI=a.weburi;this.commentCount=a.numcomments}TopBlog.prototype.getHTML=function(c){c=!!c;var a=new domNode("div",{"class":"todayItem"});var e=new domNode("div",{"class":"topPhoto leftNav"}).addChild("a",{href:this.blogURI,target:"_blank"},new domNode("img",{src:this.profile.thumbnailURL},null,true));a.addChild(e);var b=new domNode("div",{"class":"itemContent"});var d=new domNode("span",{"class":"todayInfo"}).addChild("a",{href:this.blogURI,target:"_blank"},(c?LocStr.topBlog+": ":"")+this.subject);d.addBR().addChild("span",{"class":"description"},this.body).addBR().addBR();d.addChild(LocStr.postedBy+": ").addChild("a",{href:this.profile.profileURL,target:"_blank",style:"font-weight:normal"},this.profile.name);a.addChild(new domNode("div",{"class":"itemContent"}).addChild(d)).addChild("div",{"class":"clear"});return a.toString()};function TopVideo(a){this.data=a;this.videoURL=CONSTANTS.videoURL+a.id;this.imgURL=a.thumbnail;this.title=a.title;this.totalViews=a.totalviews;this.totalComments=a.totalcomments;this.description=a.description;if(this.description.length>CONSTANTS.maxBodyLength){this.description=this.description.substring(0,CONSTANTS.maxBodyLength)+"..."}if(a.user){this.profile={name:a.user.name,profileURL:a.user.webUri}}this.totalViews=a.totalviews}TopVideo.prototype.getHTML=function(c){c=!!c;var b=new domNode("div",{"class":"todayItem"});var e=new domNode("div",{"class":"topPhoto leftNav"}).addChild("a",{href:this.videoURL,target:"_blank"},new domNode("img",{src:this.imgURL},null,true));b.addChild(e);var a=new domNode("div",{"class":"itemContent"});var d=new domNode("div",{"class":"videoInfo"}).addChild("a",{href:this.videoURL,target:"_blank"},(c?LocStr.topVideo+": ":"")+this.title).addBR();a.addChild(d);a.addChild("span",{"class":"description"},this.description).addBR().addBR();if(this.profile){a.addChild("a",{href:this.profile.profileURL,target:"_blank"},this.profile.name).addChild(" | ")}a.addChild(this.totalViews+" "+LocStr.views);b.addChild(a);b.addChild("div",{"class":"clear"});return b.toString()};function CoolNewPerson(a){this.data=a;this.locality=a.city&&a.region?a.city+", "+a.region:"";this.descrip=a.gender&&a.age?a.gender+", "+a.age:"";this.profile={name:a.name,profileURL:a.weburi,thumbnailURL:a.image}}CoolNewPerson.prototype.getHTML=function(c){c=!!c;var d=new domNode("div",{"class":"todayItem"});var e=new domNode("div",{"class":"topPhoto leftNav"}).addChild("a",{href:this.profile.profileURL,target:"_blank"},new domNode("img",{src:this.profile.thumbnailURL}));d.addChild(e);var b=new domNode("span",{"class":"todayInfo"}).addChild("a",{href:this.profile.profileURL,target:"_blank"},(c?LocStr.coolNewPerson+": ":"")+this.profile.name).addBR();var a=new domNode("span",{"class":"description"}).addChild(this.descrip).addBR().addChild(this.locality);b.addChild(a);d.addChild(new domNode("div",{"class":"itemContent"}).addChild(b)).addChild("div",{"class":"clear"});return d.toString()};function getPrettyDate(b){if(b.constructor==Date){var c=((new Date().getTime())-b.getTime())/1000;var a=Math.floor(c/86400);if(isNaN(a)||a<0||a>=31){return}return a==0&&(c<60&&LocStr.prettyTime.justNow||c<120&&LocStr.prettyTime.oneMinAgo||c<3600&&Math.floor(c/60)+LocStr.prettyTime.xMinsAgo||c<7200&&LocStr.prettyTime.oneHourAgo||c<86400&&Math.floor(c/3600)+LocStr.prettyTime.xHoursAgo)||a==1&&LocStr.prettyTime.yesterday||a<7&&a+LocStr.prettyTime.xDaysAgo||a<31&&Math.ceil(a/7)+LocStr.prettyTime.xWeeksAgo}}function domNode(d,a,c,b){c=typeof c=="undefined"||c==null?[]:c;a=typeof a=="undefined"||a==null?{}:a;return{toString:function(){var e=[];e.push("<",d);for(var f in a){e.push(" ",f,'="',a[f],'"')}if(b){e.push("/>");return e.join("")}e.push(">");if(c.join){e=e.concat(c)}else{e.push(c)}e.push("</",d,">");return e.join("")},className:"domNode",constructor:domNode,nodeName:d,addChild:function(e){if(typeof e=="undefined"||e==null||e===this){return this}if(e.constructor!=domNode&&arguments.length>1){e=domNode.apply(null,arguments)}if(c.push){c.push(e)}else{c=[c,e]}return this},addBR:function(){this.addChild("br",null,null,true);return this},setAttribute:function(e,f){a[e]=f;return this}}}var dp2,oauth_token,userid,displayName,tabs,currentViewName="canvas",eventsRegistered=false,tomDone=false,loadingDataMessage="Loading data",loadingDataInterval;var loginURL,apiroot="http://api.myspace.com/v1/",userData;if(gadgets&&gadgets.views&&gadgets.views.getCurrentView()){currentViewName=exists("gadgets.views")?gadgets.views.getCurrentView().getName().toLowerCase():"canvas"}var renewalRequested=false;function loadUserData(){var b=apiroot+"user.json";var c=function(d){if(d.oauthApprovalUrl){loginURL=d.oauthApprovalUrl;init()}else{if(d.oauthError){Log.error("oAuth Error["+d.oauthError+"]:"+d.oauthErrorText);$("#errorPage").css({color:"#ff0000",width:"70%",border:"none"}).html(LocStr.genericDataError).show()}else{if(d.data&&d.data.statusCode>400){$("#errorPage").css({color:"#ff0000",width:"70%",border:"none"}).html(LocStr.genericDataError).show()}else{if(d.data){userData=d.data;storeSession(d.data.userId,d.data.name)}else{$("#loadMessage").css("color","red").html(LocStr.genericDataError)}}}}};var a={};a[gadgets.io.RequestParameters.CONTENT_TYPE]=gadgets.io.ContentType.JSON;a[gadgets.io.RequestParameters.AUTHORIZATION]=gadgets.io.AuthorizationType.OAUTH;a[gadgets.io.RequestParameters.OAUTH_SERVICE_NAME]="myspace";a[gadgets.io.RequestParameters.METHOD]=gadgets.io.MethodType.GET;gadgets.io.makeRequest(b,c,a)}var ViewStates={LOGGED_OUT_HOME:"LOGGED_OUT_HOME",LOGGED_IN_HOME:"LOGGED_IN_HOME",LOGGED_OUT_CANVAS:"LOGGED_OUT_CANVAS",LOGGED_IN_CANVAS:"LOGGED_IN_CANVAS"};function exists(b){var a=b.split(".");var d=window;for(var c=0;c<a.length;c++){if(d[a[c]]==null){return false}d=d[a[c]]}return true}var hTimeout;function setHeight(){if(exists("gadgets.window.adjustHeight")){clearTimeout(hTimeout);var a=$("#header").height()+$("#gadgetTabs").height()+$("#updates").height()+15;gadgets.window.adjustHeight();hTimeout=setTimeout(function(){if(isLoggedIn()){var b=$("#header").height()+$("#gadgetTabs").height()+$("#updates").height()+15}else{var b=$("#header").height()+$("#loginPage").height()}$("#msgadget").height(b);gadgets.window.adjustHeight()},500)}}function storeSession(a,b){if(a!=""&&a!=null){userDataSet=true;userid=a;dp2.setUserData(userid);displayName=b;$("#tomLoginButton").hide();$("#tomViewMoreContainer").show();init()}}dp2=new DataAPI2(userid,apiroot,currentViewName);var prefs;var tabOrder={SUBSCRIPTIONS:0,FRIENDS_STATUS:1,BULLETINS:2,MESSAGES:3};function init(){if(!gadgets.Prefs){$("body").html("Sorry, iGoogle does not support a feature we need in this country yet.  Stay tuned.");return}if(!prefs){prefs=new gadgets.Prefs()}tabs=$("#tabs > ul").tabs();addEventHandlers();var b=0;var a=function(){b++;if(b==3){dp2.showData("TOM_ALL",true);setHeight();tomDone=true}};if(isLoggedIn()){var e=DataEnum.SUBSCRIPTIONS;showLoadingState();if(!tomDone&&currentViewName=="canvas"){dp2.getData(DataEnum.COOL_NEW_PEOPLE,a);dp2.getData(DataEnum.TOP_BLOGS,a);dp2.getData(DataEnum.TOP_VIDEOS,a)}showLoadingState();dp2.getIndicators();var d=[DataEnum.SUBSCRIPTIONS,DataEnum.VIEWER_STATUS,DataEnum.FRIENDS_STATUS,DataEnum.BULLETINS,DataEnum.MESSAGES];for(var c=0;c<d.length;c++){if(d[c]==e){dp2.getData(e,function(){dp2.showData(e);setHeight();tabs.tabs("select",tabOrder[e]);hideLoadingState()})}else{dp2.getData(d[c])}}$("#welcomeDisplayName").html(LocStr.hello+" "+displayName);if(currentViewName=="home"){showViewState(ViewStates.LOGGED_IN_HOME)}else{showViewState(ViewStates.LOGGED_IN_CANVAS)}}else{dp2.showData("TOM_ALL",true);if(currentViewName=="canvas"){showViewState(ViewStates.LOGGED_OUT_CANVAS)}else{showViewState(ViewStates.LOGGED_OUT_HOME)}}setHeight();onWinResize()}var winWidth;function addEventHandlers(){if(eventsRegistered){return}$("li>a","#tabs>ul").click(function(){var a=this.href;if(a.indexOf("subscriptions")!=-1){if(dp2!=null){dp2.showData(DataEnum.SUBSCRIPTIONS);prefs.set("selected",DataEnum.SUBSCRIPTIONS)}}else{if(a.indexOf("friendStatus")!=-1){if(dp2!=null){dp2.showData(DataEnum.VIEWER_STATUS);dp2.showData(DataEnum.FRIENDS_STATUS);prefs.set("selected",DataEnum.FRIENDS_STATUS)}}else{if(a.indexOf("bulletins")!=-1){if(dp2!=null){dp2.showData(DataEnum.BULLETINS);prefs.set("selected",DataEnum.BULLETINS)}}else{if(a.indexOf("messages")!=-1){if(dp2!=null){dp2.showData(DataEnum.MESSAGES);prefs.set("selected",DataEnum.MESSAGES)}}}}}$("li","#tabs>ul").removeClass("active");$(this).parent().addClass("active");setHeight()});window.onresize=onWinResize;eventsRegistered=true}var winWidth,tabsWidth,currentDirection;function shiftTabs(b){var a=$("#gadgetTabs").width()-minWidth;switch(b){case"right":$("#leftArrow").show();$("#rightArrow").hide();$("#tabs").animate({marginLeft:a},300);break;case"left":$("#rightArrow").show();$("#leftArrow").hide();$("#tabs").animate({marginLeft:0},300);break}currentDirection=b}var tabAnchors=$("#tabs a");var tabTextWidth=0;var minWidth=210;function onWinResize(){for(var b=0;b<tabAnchors.size()&&tabTextWidth==0;b++){tabTextWidth+=$(tabAnchors[b]).width()}winWidth=$("#gadgetTabs").width()+20;tabsWidth=winWidth<minWidth?minWidth:winWidth;$("#tabs").width(winWidth<minWidth?minWidth:winWidth);var c=winWidth-tabTextWidth;var d=c<=0||tabsWidth==minWidth?0:(c/4)-45;$(tabAnchors).css({paddingLeft:d/2,paddingRight:d/2});var a=winWidth<getTabsWidth();if(a){$("#rightArrow").css("left",$("#gadgetTabs").width());$("#rightArrow").show()}else{$("#rightArrow,#leftArrow").hide();$("#tabs").css("marginLeft",0);currentDirection="left"}}function getTabsWidth(){var a=$("#tabs li");var b=0;for(var c=0;c<a.length;c++){b+=$(a[c]).width()}return b}function updateStatus(){if($("#myStatusUpdate").css("display")!="none"){var c=$("#myStatusInput").val();var f=$("#myMoodInput > option")[$("#myMoodInput").attr("selectedIndex")];var h=f.value;dp2.updateViewerStatus(c,h);$("#moodValue").html($(f).html());$("#statusValue").html(" "+c+" ");$("#description").html("")}else{var b=$("#statusValue").html().replace(/\s+/,"");$("#myStatusInput").val(b);var g=$("#moodValue").html().replace(/\s+/g,"");var d=$("#myMoodInput > option");var a=0;for(var e=0;e<d.length&&a==0;e++){if(d[e].innerHTML==g){a=e}}$("#myMoodInput").attr("selectedIndex",a)}toggleUpdateStatusForm()}function toggleUpdateStatusForm(){$("#myStatus,#myStatusUpdate").toggle()}var callbackPageInterval;function login(){if(loginURL){var a=1080;var b=565;var c="width= "+a+", height= "+b+", scrollbars=1";var e;var f=/oauth_callback=(.*?)&/;if(f.test(loginURL)){e=f.exec(loginURL)[1]}e+="&randNum="+Math.ceil(Math.random()*1000);loginURL=loginURL.replace(f,"oauth_callback="+e+"&");var d=window.open(loginURL,"_blank",c);callbackPageInterval=setInterval(function(){if((!d)||d.closed){clearInterval(callbackPageInterval);loadUserData()}},100)}}function isLoggedIn(){return userData!=null}function showViewState(a){$("#logout, #loginPage, #loginTop, #notAMember, #gadgetTabs, #adProvider, #todayOnMySpace, #tomLoginButton, #tomViewMoreContainer, #loginButtonHeader, #todayOnMySpaceContent, #errorPage").hide();$("#msgadget").css("height","100%");switch(a){case"LOGGED_OUT_HOME":$("#loginPage").css("width","100%");$("#loginPage").css("height","225px");$("#msgadget").css("height","24em");$(".loginContent",$("#loginPage")).css({marginLeft:"auto",marginRight:"auto",width:"20em"});$("#loginTop").css("marginRight","1em");$("#loginTop, #loginPage").show();$(".loginContent").css("margin","0");$("h1",$(".loginContent")).css({backgroundImage:"url(http://x.myspacecdn.com/modules/common/static/img/msg_mslogo.gif)",height:"25px",width:"150px"});break;case"LOGGED_IN_HOME":$("#gadgetTabs, #tomViewMoreContainer").show();$("#gadgetTabs").css({width:"99.6%",borderRight:"none"});break;case"LOGGED_OUT_CANVAS":$("#loginPage").css("width","100%");$("#loginPage").css("height","360px");$("#msgadget").css("height","30em");$(".loginContent",$("#loginPage")).css({marginLeft:"auto",marginRight:"auto",width:"26em"});$("#loginTop, #loginPage").show();break;case"LOGGED_IN_CANVAS":$("#todayOnMySpace, #todayOnMySpaceContent, #adProvider, #gadgetTabs, #tomViewMoreContainer").show();break}setTimeout(setHeight,800)}function showLoadingState(){$("#loadingMessage").html(loadingDataMessage).show();loadingDataInterval=setInterval(function(){if($("#loadingMessage").width()>20){clearInterval(loadingDataInterval);return}$("#loadingMessage").html($("#loadingMessage").html()+".")},500)}function hideLoadingState(){clearInterval(loadingDataInterval);$("#loadingMessage").hide()}if(location.href.search("parentWindow=myspace")==-1){if(!gadgets.Prefs){$("#msgadget").css({color:"#ff0000",width:"70%",border:"none"}).html(LocStr.notAvailable);setHeight()}else{var viewer=gadgets.util.getUrlParameters().gadgetViewer;if(!viewer||viewer=="105250506097979753968"){$("#msgadget").css({color:"#ff0000",width:"70%",border:"none"}).html(LocStr.notLoggedIn)}else{gadgets.util.registerOnLoadHandler(loadUserData)}}$("#msgadget").show()}else{if(window.parent.opener){var dataG;if(navigator.userAgent.search(/msie/i)!=-1){dataG=$("#getData",window.parent.opener.document)[0]}else{dataG=$("#getData",window.parent.opener.document)}dataG.click()}else{Log.error("window.parent.opener not defined.")}};
+
+		</script>
+
+	</body>
+	</html>
+	]]>
+	</Content>
+</Module>

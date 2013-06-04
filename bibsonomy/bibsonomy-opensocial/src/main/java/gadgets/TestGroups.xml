@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Module>
+  <ModulePrefs title="opensocial-test" author_email="folke@your.domain">
+    <Require feature="opensocial-0.9" />
+    <Require feature="dynamic-height" />
+    <Require feature="osapi" />
+  </ModulePrefs>
+  <Content type="html"><![CDATA[
+
+<!-- Fetch a person and friends code for OpenSocial 0.9 -->
+<div>
+  <button onclick='fetchPeople();'>Fetch people and friends</button>
+  <div>
+    <span id='viewer'></span>
+    <ul id='friends'></ul>
+  </div>
+</div>
+<script type='text/javascript'>
+function fetchPeople() {
+  var batch = osapi.newBatch().
+      add('viewer', osapi.people.getViewer()).
+      add('friends', osapi.people.get({userId: '@viewer', groupId: 'follower'}));
+  batch.execute(function(result) {
+    document.getElementById('viewer').innerHTML = result.viewer.id;
+    var friends = result.friends.list;
+    for (var i = 0; i < friends.length; i++) {
+      document.getElementById('friends').innerHTML += '<li>' + friends[i].id + '</li>';
+    }
+    gadgets.window.adjustHeight();
+  });
+}
+</script>
+  ]]></Content>
+</Module>
