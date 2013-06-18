@@ -1,0 +1,119 @@
+<?xml version="1.0" ?>
+<!--
+
+
+     BibSonomy-Webapp - The webapplication for Bibsonomy.
+
+     Copyright (C) 2006 - 2011 Knowledge & Data Engineering Group,
+                               University of Kassel, Germany
+                               http://www.kde.cs.uni-kassel.de/
+
+     This program is free software; you can redistribute it and/or
+     modify it under the terms of the GNU General Public License
+     as published by the Free Software Foundation; either version 2
+     of the License, or (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+
+     You should have received a copy of the GNU General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+
+-->
+
+<jsp:root version="2.0"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
+	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/tags"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"> 
+	
+<jsp:directive.page contentType="text/plain; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
+<!-- TODO: response.setHeader("Content-Disposition","inline; filename=bibsonomy.endnote"); -->
+
+<c:forEach var="post" items="${command.bibtex.list}">
+  <c:set var="bib" value="${post.resource}"/> 
+
+<jsp:text>
+
+%0 ${mtl:getRISEntryType(bib.entrytype)}
+</jsp:text>
+    
+<c:if test="${not empty bib.authorList}"><c:forEach var="person" varStatus="status" items="${bib.authorList}">
+%A ${person.name}
+</c:forEach></c:if>    
+    
+<c:if test="${not empty bib.booktitle}"><jsp:text>
+%B ${bib.booktitle}
+</jsp:text></c:if>
+
+<c:if test="${not empty bib.address}"><jsp:text>
+%C ${bib.address}
+</jsp:text></c:if>
+  
+<c:if test="${not empty bib.year}"><jsp:text>
+%D ${bib.year}
+</jsp:text></c:if>
+
+<c:if test="${not empty bib.editorList}"><c:forEach var="person" varStatus="status" items="${bib.editorList}">
+%E ${person.name}
+</c:forEach></c:if>    
+
+<c:if test="${not empty bib.publisher}"><jsp:text>
+%I ${bib.publisher}
+</jsp:text></c:if>
+
+<c:if test="${not empty bib.journal}"><jsp:text>
+%J ${bib.journal}
+</jsp:text></c:if>
+
+<jsp:text>
+%K ${mtl:toTagString(post.tags)}
+</jsp:text>
+
+<c:if test="${not empty bib.number}"><jsp:text>
+%N ${bib.number}
+</jsp:text></c:if>
+
+<c:if test="${not empty bib.pages}"><jsp:text>
+%P ${bib.pages}
+</jsp:text></c:if>
+
+<c:if test="${not empty bib.title}"><jsp:text>
+%T ${bib.title}
+</jsp:text></c:if>
+
+<c:if test="${not empty bib.url}"><jsp:text>
+%U ${bib.url}
+</jsp:text></c:if>
+
+<c:if test="${not empty bib.volume}"><jsp:text>
+%V ${bib.volume}
+</jsp:text></c:if>
+
+<c:if test="${not empty bib.abstract}"><jsp:text>
+%X ${bib.abstract}
+</jsp:text></c:if>
+
+<c:if test="${not empty bib.annote}"><jsp:text>
+%Z ${bib.annote}
+</jsp:text></c:if>
+
+<c:if test="${not empty bib.edition}"><jsp:text>
+%7 ${bib.edition}
+</jsp:text></c:if>
+
+<c:if test="${not empty bib.chapter}"><jsp:text>
+%&amp; ${bib.chapter}
+</jsp:text></c:if>
+  
+
+</c:forEach>
+
+</jsp:root>

@@ -1,0 +1,24 @@
+<jsp:root version="2.0" 
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+    xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:bib="urn:jsptagdir:/WEB-INF/tags/resources/bibtex"	
+	xmlns:jsp="http://java.sun.com/JSP/Page">
+	
+	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true" />
+	
+    <!-- show only short descriptions completely -->
+    <!-- TODO: make max description length a configurable constant -->
+    <c:choose>
+      <c:when test="${fn:length(post.description) lt 155}">
+	    <c:out value="${post.description}" />
+      </c:when>
+      <c:otherwise>
+        <c:out value="${fn:substring(post.description, 0, 155)}" />
+        <span class="info">...<div><c:out value='${post.description}'/></div></span>
+      </c:otherwise>
+    </c:choose>
+  
+	
+</jsp:root>

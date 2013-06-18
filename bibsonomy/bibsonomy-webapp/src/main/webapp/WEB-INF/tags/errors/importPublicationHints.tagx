@@ -1,0 +1,27 @@
+<jsp:root version="2.0"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+    xmlns:spring="http://www.springframework.org/tags"
+	xmlns:menuparts="urn:jsptagdir:/WEB-INF/tags/menu/parts"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/buttons" >
+	
+	<p>
+	  <h3><fmt:message key="importPublicationHints.header"/></h3> 
+	  <ul class="help">
+	    <li><fmt:message key="importPublicationHints.postBibtexPage"/></li>
+	    <li><fmt:message key="importPublicationHints.postBibtexSnippet"/></li>
+	    <li><fmt:message key="importPublicationHints.postBibtexButton"/>
+	    	<buttons:postPublication/> <fmt:message key="importPublicationHints.postBibtexButton2"/>
+	        <ul class="help">
+	        <li><fmt:message key="importPublicationHints.postBibtexButton.alternative1"/><br/>
+	            <img src="/resources/image/snippet_import.png"/></li>
+	        <li><fmt:message key="importPublicationHints.postBibtexButton.alternative2"/></li>
+	        </ul>
+	    </li>
+	  </ul> 
+	</p>
+ </jsp:root>

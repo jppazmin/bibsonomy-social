@@ -1,0 +1,39 @@
+<jsp:root version="2.0" 
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
+	xmlns:form="http://www.springframework.org/tags/form">
+
+
+    <!-- 
+
+        shows a list of groups this post might be relevant for  
+    
+    -->
+
+
+	<jsp:directive.attribute name="groups" type="java.util.Collection" required="true" description="The groups the user is a member of."/>
+  
+  
+	<div id="groupBoxright">
+		<parts:fieldset maximized="${not command.context.loginUser.settings.simpleInterface}" legendKey="post.resource.relevantfor">
+		<!-- fieldset id="fsgroupBoxright"-->
+			<jsp:attribute name="content">
+
+            	<!-- select box for "other" groups -->
+            	<form:select cssStyle="float:left; margin-right: 1ex;" path="relevantGroups" size="5" onchange="showTagSets(this)" tabindex="2">
+              		<fmt:message var="pleaseselect" key="form.input.select"/>
+              		<form:option value="" label="${pleaseselect}"/>
+           	  		<form:options items="${groups}" itemLabel="${fn:escapeXml('name')}" itemValue="${fn:escapeXml('name')}"/>
+            	</form:select>
+			
+            	<span class="expl_s">
+              		<fmt:message key="post.resource.relevant"/>
+            	</span>
+			</jsp:attribute>	
+		</parts:fieldset>
+	</div>
+</jsp:root>

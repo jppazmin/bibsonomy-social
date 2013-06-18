@@ -1,0 +1,109 @@
+<jsp:root version="2.0" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:form="http://www.springframework.org/tags/form"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:spring="http://www.springframework.org/tags">
+	
+	<jsp:directive.attribute name="requPath" type="java.lang.String" required="true"/>
+	
+	<spring:theme code="image.login.base" var="image_login_base" text="${resdir}/image/login_logo_"/>
+
+
+	<script type="text/javascript">
+		var authMethodsCount = ${fn:length(authConfig.authOrder)};
+		<![CDATA[
+			$(document).ready(function(e) {try {$("#loginSelect").msDropDown();} catch(e) {}});
+			function quickSelectAuthMethod(authIndex) {
+				for (var i = 1; i <= authMethodsCount; i++) {
+					if (authIndex == i) {
+						$('#headLogin' + i).removeClass('loginInvisible').addClass('loginVisible');
+					} else {
+						$('#headLogin' + i).removeClass('loginVisible').addClass('loginInvisible');
+					}
+				}
+			}
+		]]>
+	</script>
+	
+	<!--+
+		| includes for image drop down list
+		+-->
+	<script type="text/javascript" src="${resdir}/jquery/plugins/msDropDown/jquery.dd.js">&amp;nbsp;</script>
+	
+	<!--+
+	    | set message strings
+	    +-->
+	<fmt:message key="navi.login" var="login"/>
+
+	<!--+
+	    | create a specialized login form for each authentication method
+	    +-->
+	<div id="loginParts" class="login">
+		<c:forEach var="authMethod" items="${authConfig.authOrder}" varStatus="status">
+			<c:set var="authMethodName" value="${fn:toLowerCase(authMethod)}" />
+			
+			<c:set var="visibility" value="${status.first ? 'loginVisible' : 'loginInvisible'}" />
+    		<div id="loginParts_${authMethod}">
+    			<!--+
+    				| database login method 
+    				+-->
+    			<c:if test="${authMethod == 'INTERNAL'}">
+					<div class="headlogin ${visibility}" id="headLogin${status.count}">
+						<form:form method="POST" action="/login_${authMethodName}">
+							<input type="text" size="15" name="username" id="un"  tabindex="1"/>&amp;nbsp;<span style="font-weight: bold; font-size:150%">&amp;nbsp;:&amp;nbsp;</span>
+							<input type="password" size="15" class="hiddenElement" name="password" style="width:150px;" id="pw" autocomplete="off" tabindex="2"/>
+							<input type="text" id="pw_form_copy" name="" autocomplete="off"/>
+							<input type="hidden" name="rememberMe" value="true" />
+							<input type="hidden" name="referer" value="${requPath}" />
+							<input type="image" src="${resdir}/image/grey.png" alt="${login}" />
+						</form:form>
+					</div>    			
+      			</c:if>
+
+    			<!--+
+    				| ldap login method 
+    				+-->
+      			<c:if test="${authMethod == 'LDAP'}">
+      				<div class="headlogin ${visibility}" id="headLogin${status.count}">
+						<form:form method="POST" action="/login_${authMethodName}">
+							<input type="text" size="15" name="username" id="unldap" />&amp;nbsp;<span style="font-weight: bold; font-size:150%">:&amp;nbsp;</span>
+							<input type="password" size="15" class="hiddenElement" name="password" style="width:100px;" id="pwldap" autocomplete="off"/>
+							<input type="text" id="pwldap_form_copy" name="" autocomplete="off"/>
+							<input type="hidden" name="rememberMe" value="true" />
+							<input type="hidden" name="referer" value="${requPath}" />
+							<input type="image" src="${resdir}/image/grey.png" alt="${login}" />
+						</form:form>
+					</div>
+      			</c:if>
+
+    			<!--+
+    				| openid login method 
+    				+-->
+      			<c:if test="${authMethod == 'OPENID'}">
+      				<div class="headlogin ${visibility}" id="headLogin${status.count}">
+						<form:form action="/login_${authMethodName}" method="POST">
+							<input type="text" id="openID" class="openid" size="32" value="" name="openID"/>
+							<input type="hidden" name="rememberMe" value="true" />
+							<input type="hidden" name="referer" value="${requPath}" />
+		            	</form:form>
+	            	</div>
+      			</c:if>
+			</div>
+    	</c:forEach>
+	</div>
+
+	<!--+
+	    | dropdown selection list for chosing authentication method
+	    +-->
+	<select name="loginSelect" id="loginSelect" onchange="quickSelectAuthMethod(this.value);">
+		<c:forEach var="authMethod" items="${authConfig.authOrder}" varStatus="status">
+			<fmt:message key="login.${authMethodName}.label" var="loginMessage"/>
+			<c:set var="authMethodName" value="${fn:toLowerCase(authMethod)}" />
+			<option value="${status.count}" title="${image_login_base}${authMethod}.png">${status.count}&amp;nbsp;&amp;nbsp;</option>
+		</c:forEach>
+	</select>
+
+</jsp:root>

@@ -1,0 +1,19 @@
+<jsp:root version="2.0" 
+	xmlns:c="http://java.sun.com/jsp/jstl/core"	
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt">
+	
+	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true"/>
+	<jsp:directive.attribute name="includeFilename" type="java.lang.Boolean" required="true"/>	
+
+	<c:if test='${not empty post.resource.documents}'>
+		<fmt:message var="downloadPrivDocTitle" key="bibtex.actions.private_document.download"/>
+		<a href="/documents/${post.resource.intraHash}/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(post.resource.documents[0].fileName)}" title="${downloadPrivDocTitle}"> 
+		  <img alt="${downloadPrivDocTitle}" src="${resdir}/image/document-txt-blue.png" style="float: left;"/>
+		  <c:if test="${includeFilename}">
+			<c:out value="${post.resource.documents[0].fileName}"/>
+		  </c:if>											
+		</a>
+	</c:if>
+</jsp:root>

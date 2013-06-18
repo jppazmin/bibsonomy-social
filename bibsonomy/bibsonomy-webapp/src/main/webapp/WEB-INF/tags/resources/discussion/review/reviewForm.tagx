@@ -1,0 +1,53 @@
+<jsp:root version="2.0" xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/buttons"
+	xmlns:discussionItem="urn:jsptagdir:/WEB-INF/tags/resources/discussion/discussionItem"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts">
+    
+    <jsp:directive.attribute name="review" type="org.bibsonomy.model.Review" required="false" />
+    <jsp:directive.attribute name="resource" type="org.bibsonomy.model.Resource" required="true" />
+   	<jsp:directive.attribute name="userName" type="java.lang.String" required="true" />
+	
+	<c:set var="action" value="create" />
+	
+	<c:if test="${not empty review}">
+		<c:set var="action" value="edit" />
+	</c:if>
+	
+	<discussionItem:discussionItemForm resource="${resource}" discussionItem="${review}" action="${action}" discussionItemClass="review" userName="${userName}">
+		<jsp:attribute name="additionalInputs">
+			<span style="float:left"><fmt:message key="post.resource.review.actions.post"/></span>
+			<span class="reviewrating" style="float:right">
+
+				<!-- TODO: REVIEW: titles for rating steps? -->
+				<c:forEach var="i" begin="1" end="10">
+					<c:set var="ratingStep" value="${i / 2}" />
+					<c:choose>
+						<c:when test="${not empty review and review.rating eq ratingStep}">
+							<input name="discussionItem.rating" type="radio" value="${ratingStep}" checked="checked"/>
+						</c:when>
+						<c:otherwise>
+							<input name="discussionItem.rating" type="radio" value="${ratingStep}"/>
+						</c:otherwise>
+					</c:choose>
+				</c:forEach>	
+			</span>
+			<buttons:help message="post.resource.review.help">
+				<jsp:attribute name="helpText">
+			        <ul style="list-style:circle inside none">
+			        	<li> <fmt:message key="post.resource.rating.help"/></li>
+			        	<li> <fmt:message key="post.resource.discussion.anonymous.help"/></li>
+			        	<li> <fmt:message key="post.resource.discussion.visibility.help"/></li>
+			       	</ul>
+			       	<fmt:message key="post.resource.review.${fn:toLowerCase(resource.class.simpleName)}.onlyOne"/>
+	        	</jsp:attribute>
+	        </buttons:help>
+			
+			<div class="fsRow reviewTextBox" style="margin-right:6px">
+				<textarea class="reqinput" rows="3" name="discussionItem.text"><!-- text --> <c:if test="${not empty review}"><c:out value="${review.text}" /></c:if></textarea>
+			</div>
+		</jsp:attribute>
+	</discussionItem:discussionItemForm>
+</jsp:root>

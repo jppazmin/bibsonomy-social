@@ -1,0 +1,26 @@
+<jsp:root version="2.0" xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions">
+
+	<jsp:directive.attribute name="users" type="java.util.List" required="true" />
+	<jsp:directive.attribute name="requPath" type="java.lang.String" required="true" />
+
+	<c:if test="${not empty users}">	
+		<li>
+			<span class="sidebar_h">
+				<fmt:message key="members"/>${mtl:ch('nbsp')}	
+			</span>
+	
+			<ul id="groupmembers">
+				<c:forEach var="member" items="${users}">
+					<li>
+				      <a href="/user/${fn:escapeXml(member.name)}">${member.name}</a>
+				      <c:out value=" "/>
+				    </li>
+				</c:forEach>
+			</ul>		
+		</li> 
+	</c:if>	
+</jsp:root>

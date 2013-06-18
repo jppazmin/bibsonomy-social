@@ -1,0 +1,167 @@
+<?xml version="1.0" ?>
+<!--
+
+
+     BibSonomy-Webapp - The webapplication for Bibsonomy.
+
+     Copyright (C) 2006 - 2011 Knowledge & Data Engineering Group,
+                               University of Kassel, Germany
+                               http://www.kde.cs.uni-kassel.de/
+
+     This program is free software; you can redistribute it and/or
+     modify it under the terms of the GNU General Public License
+     as published by the Free Software Foundation; either version 2
+     of the License, or (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+
+     You should have received a copy of the GNU General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+
+-->
+
+<jsp:root version="2.0"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
+	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/tags"
+	xmlns:rc="urn:jsptagdir:/WEB-INF/tags/resources/common"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"> 
+	
+	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
+
+    <layout:groupsLayout 
+    	requPath="${requPath}" 
+    	command="${command}" 
+    	pageTitle="${command.pageTitle}"
+        selectedNaviTab="nav_groups"
+      >
+    	<!--+
+    	 	| html header extension: page specific stylesheet
+    	 	-->
+		<jsp:attribute name="headerExt">
+	    	<link rel="stylesheet" type="text/css" href="${resdir}/css/groups.css" />
+	    </jsp:attribute>
+    	<!--+
+    	 	| heading
+    	 	-->
+    	<jsp:attribute name="heading">
+			<a rel="path_menu" href="/groups">
+				<img src="${resdir}/image/box_arrow.png"/>${mtl:ch('nbsp')}<fmt:message key="navi.groups"/>
+			</a> :: 
+			<form action="/group/" method="GET" class="smallform">
+  				<input type="text" size="20" name="group" id="inpf"/>
+			</form>
+    	</jsp:attribute>
+    	<!--+
+    	 	| sidebar: disabled
+    	 	-->
+    	<!--<jsp:attribute name="sidebar"></jsp:attribute>-->
+    	<!--+
+    	 	| content
+    	 	-->
+		<jsp:attribute name="content">
+          <div id="general_100">
+            <!--+ 
+                | explain what groups are good for
+                +-->
+			<p id="groupIntro">
+               <fmt:message key="system.groups"/>
+			</p> 
+			<!--+
+				| show alphabet for direct links to groups
+			    -->
+			<p id="linkedAlphabet">
+			   <c:forEach var="letter" items="${command.alphabet}">
+                   <a href="#${letter}"><c:out value="${letter}"/></a>
+               </c:forEach>
+            </p>
+            
+            <!--+
+				| list all registered groups, ordered alphabetically
+			    -->
+            <!--+ track whether new letter in alphabet is reached,
+                | grouping all special characters by '#'
+                +-->
+            <c:set var="lastChar" value=""/>
+			<table id="groupsList">
+		    <c:forEach var="entry" items="${command.list}">
+		    	<!-- current group name's first character -->
+		    	<!-- remark: diacritic are removed by normalizing the string -->
+		    	<c:set var="currChar" value="${fn:toUpperCase(fn:substring(mtl:normalize(fn:substring(entry.name,0,1), 'NFKD'),0,1))}"/>
+		    	<!-- treat special characters -->
+		    	<c:choose>
+		    		<c:when test="${((lastChar == '') or (lastChar == fn:substring(command.strAlphabet,0,1))) and (not fn:contains(command.strAlphabet, currChar))}">
+						<c:set var="currChar" value="${fn:substring(command.strAlphabet,0,1)}"/>
+		    		</c:when>
+		    		<c:when test="${((lastChar ne '') and (lastChar ne fn:substring(command.strAlphabet,0,1))) and (not fn:contains(command.strAlphabet, currChar))}">
+						<c:set var="currChar" value="${fn:substring(command.strAlphabet,fn:length(command.strAlphabet)-1,fn:length(command.strAlphabet))}"/>
+		    		</c:when>
+		    	</c:choose>
+  		        <!-- show anchor if new letter is reached -->
+				<c:choose>
+			        <c:when test="${lastChar ne currChar}">
+				    	<c:set var="lastChar" value="${currChar}"/>
+				    	<tr class="groupsNewChar"><td>
+			            	<a name="${mtl:encodeURI(lastChar)}">
+			              		<c:out value="${lastChar}"/>
+			           		</a>
+			    		</td><td/><td/><td/></tr>
+			        </c:when>
+				</c:choose>
+				<tr>
+				    <td>
+				    </td>
+				    <!-- show group name -->
+				    <td class="groupName">
+				    	<a href="/group/${mtl:encodeURI(entry.name)}">
+				    	<c:out value="${entry.name}"/>
+				    	</a>
+				    </td>
+				    <!-- show group description -->
+				    <td class="groupDescription">
+				        <!--+ we have to consider the case when a hompage is set,
+				        	| but no group description
+				         	-->
+				        <c:set var="description" value=""/>
+				        <c:choose>
+				        	<c:when test="${(empty entry.realname) and (not empty entry.homepage)}">
+				        		<c:set var="description" value="${entry.homepage}"/>
+				        	</c:when>
+				        	<c:when test="${not empty entry.realname}">
+				        		<c:set var="description" value="${entry.realname}"/>
+				        	</c:when>
+				        </c:choose>
+				    	<c:choose>
+				    		<c:when test="${not empty entry.homepage}">
+				    			<a href="${fn:escapeXml(entry.homepage)}">
+				    				<c:out value="${description}"/>
+				    			</a>
+				    		</c:when>
+				    		<c:otherwise>
+				    			<c:out value="${description}"/>
+				    		</c:otherwise>
+				    	</c:choose>
+				    </td>
+			        <!-- show 'join', if user is registered  -->
+			        <td>
+                    	<c:if test="${not empty command.context.loginUser.name}">
+			            <span class="groupsButtons">
+	                    	<a href="/join_group?group=${fn:escapeXml(entry.name)}">join</a>
+                    	</span>
+                    	</c:if>
+                    </td>
+            	</tr>
+			</c:forEach>
+            </table>
+            </div>
+		</jsp:attribute>
+    </layout:groupsLayout>
+</jsp:root>

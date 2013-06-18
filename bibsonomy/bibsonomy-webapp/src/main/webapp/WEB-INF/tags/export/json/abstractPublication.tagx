@@ -1,0 +1,45 @@
+<jsp:root version="2.0" 
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
+
+	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true" />
+		 "intraHash" : "${post.resource.intraHash}",
+         "interHash" : "${post.resource.interHash}",
+         "label" : "${mtl:quoteJSONcleanBibTeX(post.resource.title)}",
+         "user" : "${mtl:quoteJSON(post.user.name)}",
+         "description" : "${mtl:quoteJSON(post.description)}",
+         "date" : "<fmt:formatDate value='${post.date}' pattern="yyyy-MM-dd hh:mm:ss"/>",
+         "changeDate" : "<fmt:formatDate value='${post.changeDate}' pattern="yyyy-MM-dd HH:mm:ss"/>",
+         "count" : ${post.resource.count},
+         "pub-type": "${post.resource.entrytype}",
+         <c:if test="${!empty post.resource.journal}">"journal": "${mtl:quoteJSONcleanBibTeX(post.resource.journal)}",</c:if>
+         <c:if test="${!empty post.resource.booktitle}">"booktitle": "${mtl:quoteJSONcleanBibTeX(post.resource.booktitle)}",</c:if>
+         <c:if test="${!empty post.resource.series}">"series": "${mtl:quoteJSONcleanBibTeX(post.resource.series)}",</c:if>
+         <c:if test="${!empty post.resource.publisher}">"publisher":"${mtl:quoteJSONcleanBibTeX(post.resource.publisher)}",</c:if>
+         <c:if test="${!empty post.resource.address}">"address":"${mtl:quoteJSONcleanBibTeX(post.resource.address)}",</c:if>
+         "year": "${mtl:quoteJSON(post.resource.year)}", 
+         "url": "${mtl:quoteJSON(post.resource.url)}", 
+         <c:if test="${! empty post.resource.authorList}">
+         "author": [ 
+            <c:forEach var="author" varStatus="authorStatus" items="${post.resource.authorList}">"${mtl:quoteJSONcleanBibTeX(author.name)}"<c:if test="${not authorStatus.last}">,</c:if></c:forEach>
+         ],
+         </c:if>
+         <c:if test="${! empty post.resource.editorList}">
+         "editor": [ 
+            <c:forEach var="editor" varStatus="editorStatus" items="${post.resource.editorList}">"${mtl:quoteJSONcleanBibTeX(editor.name)}"<c:if test="${not editorStatus.last}">,</c:if></c:forEach>
+         ],
+         </c:if>
+         <c:if test="${!empty post.resource.volume}">"volume": "${mtl:quoteJSONcleanBibTeX(post.resource.volume)}",</c:if>  
+         <c:if test="${!empty post.resource.number}">"number": "${mtl:quoteJSONcleanBibTeX(post.resource.number)}",</c:if>
+         <c:if test="${!empty post.resource.pages}">"pages": "${mtl:quoteJSONcleanBibTeX(post.resource.pages)}",</c:if>
+         <c:if test="${!empty post.resource.note}">"note": "${mtl:quoteJSONcleanBibTeX(post.resource.note)}",</c:if>
+         <c:if test="${!empty post.resource.abstract}">"abstract": "${mtl:quoteJSONcleanBibTeX(post.resource.abstract)}",</c:if>
+         <c:forEach var="miscEntry" varStatus="miscStatus" items="${post.resource.miscFields}">
+         "${mtl:quoteJSON(miscEntry.key)}" : "${mtl:quoteJSONcleanBibTeX(miscEntry.value)}",
+         </c:forEach>
+         "bibtexKey": "${mtl:quoteJSONcleanBibTeX(post.resource.bibtexKey)}"
+</jsp:root>

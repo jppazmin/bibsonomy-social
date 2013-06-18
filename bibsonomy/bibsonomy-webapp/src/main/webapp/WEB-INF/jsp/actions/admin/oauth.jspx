@@ -1,0 +1,253 @@
+<?xml version="1.0" ?>
+<!--
+
+
+     BibSonomy-Webapp - The webapplication for Bibsonomy.
+
+     Copyright (C) 2006 - 2011 Knowledge & Data Engineering Group,
+                               University of Kassel, Germany
+                               http://www.kde.cs.uni-kassel.de/
+
+     This program is free software; you can redistribute it and/or
+     modify it under the terms of the GNU General Public License
+     as published by the Free Software Foundation; either version 2
+     of the License, or (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+
+     You should have received a copy of the GNU General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+
+-->
+
+<jsp:root version="2.0" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
+	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/users"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:menu="urn:jsptagdir:/WEB-INF/tags/menu"
+	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
+	xmlns:form="http://www.springframework.org/tags/form"
+	xmlns:errors="urn:jsptagdir:/WEB-INF/tags/errors"
+	xmlns:spring="urn:http://www.springframework.org/tags"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
+
+	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
+	
+	<fmt:message key="navi.admin" var="adminPageTitle" />
+	
+	<layout:layout pageTitle="${adminPageTitle} :: OAuth" loginUser="${command.context.loginUser}" requPath="${requPath}">
+		<jsp:attribute name="heading">
+		    <a href="/admin"><c:out value="${adminPageTitle}" /></a> ::
+			<a rel="path_menu" href="/admin/oauth">OAuth</a>
+		</jsp:attribute>
+		
+		<jsp:attribute name="headerExt">
+			<link rel="stylesheet" type="text/css" href="${resdir}/css/fsform.css" />
+		
+			<style type="text/css">
+				#oauthConsumerList {
+				    border-collapse: collapse;
+				    empty-cells: show;
+				    font-size: 60%;
+				    margin-top: 15px;
+				    width: 100%;
+				} 
+				#oauthConsumerList th {
+				    background-color: #EEEEEE;
+				    border: 1px solid #CCCCCC;
+				    font-size: 100%;
+				    font-weight: bold;
+				    padding: 2px;
+				    text-align: center;
+				}
+				.consumerEntry td {
+				    border: 1px solid #CCCCCC;
+				    padding: 2px;
+				    text-align: justify;
+				}
+				#outerBox {
+					margin: 8px;
+				}
+			</style>
+		</jsp:attribute>
+		
+		<jsp:attribute name="beforeBodyClose">
+          <script type="text/javascript">
+             //<mtl:cdata>
+             <![CDATA[
+                // vanishing error boxes
+                $(document).ready(function() {
+                	prepareErrorBoxes('dissError');
+                });
+             ]]> 
+             //</mtl:cdata>
+          </script>
+      </jsp:attribute> 
+		
+		<jsp:attribute name="content">
+			<div id="outerBox">
+				<h2><fmt:message key="admin.actions.oauth"/></h2>
+				
+				<!--+
+					| list all registered consumers
+					+-->
+				<h3><fmt:message key="admin.actions.consumer.list"/></h3>
+				
+				<table id="oauthConsumerList">
+					<thead>
+						<tr>
+							<th><fmt:message key="admin.oauth.consumer.key"/></th>
+							<th><fmt:message key="admin.oauth.consumer.keyType"/></th>
+							<th><fmt:message key="admin.oauth.consumer.keyName"/></th>
+							<th><fmt:message key="admin.oauth.consumer.serviceName"/></th>
+							<th><fmt:message key="admin.oauth.consumer.callbackUrl"/></th>
+							<th><fmt:message key="admin.oauth.consumer.gadgetUrl"/></th>
+							<th><fmt:message key="admin.oauth.consumer.title"/></th>
+							<th><fmt:message key="admin.oauth.consumer.summary"/></th>
+							<th><fmt:message key="admin.oauth.consumer.description"/></th>
+							<th><fmt:message key="admin.oauth.consumer.thumbnail"/></th>
+							<th><fmt:message key="admin.oauth.consumer.icon"/></th>
+						</tr>
+					</thead>
+					
+		    		<c:forEach var="entry" items="${command.consumers}">
+		    			<tr class="consumerEntry">
+		    				<td><c:out value="${entry.consumerKey}"/></td>
+		    				<td><c:out value="${entry.keyType}"/></td>
+		    				<td><c:out value="${entry.keyName}"/></td>
+		    				<td><c:out value="${entry.serviceName}"/></td>
+		    				<td><c:out value="${entry.callbackUrl}"/></td>
+		    				<td><c:out value="${entry.gadgetUrl}"/></td>
+		    				<td><c:out value="${entry.title}"/></td>
+		    				<td><c:out value="${entry.summary}"/></td>
+		    				<td><c:out value="${entry.description}"/></td>
+		    				<td><c:if test="${not empty entry.thumbnail}">
+		    				<a href="${entry.thumbnail}"><img src ="${entry.thumbnail}" /></a>
+		    				</c:if></td>
+		    				<td><c:if test="${not empty entry.icon}">
+		    				<a href="${entry.icon}"><img src ="${entry.icon}" /></a>
+		    				</c:if></td>
+		    			</tr>
+					</c:forEach>
+        	    </table>
+        	    
+        	    
+				<!--+
+					| register new consumer
+					+-->
+				<h3><fmt:message key="admin.actions.consumer.register"/></h3>
+				
+        	    <form:form action="/admin/oauth" method="POST">
+		        	<errors:global errors="${errors}"/>             
+
+						<fieldset class="fsInner">
+							<legend><fmt:message key="admin.oauth.consumer.details"/></legend>
+						
+							<!-- consumer key -->
+							<div class="fsRow">
+			  					<form:label cssClass="fsLabel" path="consumerInfo.consumerKey" ><fmt:message key="admin.oauth.consumer.key"/>*</form:label>
+			  					<form:input maxlength="255" cssClass="fsInput reqinput" path="consumerInfo.consumerKey" tabindex="1"/>
+			  					<div class="dissError"><form:errors path="consumerInfo.consumerKey" /></div>
+            				</div>
+            				
+							<!-- consumer secret -->
+							<div class="fsRow">
+			  					<form:label cssClass="fsLabel" path="consumerInfo.consumerSecret" ><fmt:message key="admin.oauth.consumer.secret"/>*</form:label>
+			  					<form:textarea cssClass="fsInput reqinput" path="consumerInfo.consumerSecret" tabindex="2" rows="8"/>
+			  					<div class="dissError"><form:errors path="consumerInfo.consumerSecret" /></div>
+			  					<div class="fsSuggestion" id="suggestion.consumerInfo.consumerSecret"><!-- This comment is needed, otherwise this will result in an self-closing element --></div>
+            				</div>
+							
+							<!-- service name -->
+							<div class="fsRow">
+			  					<form:label cssClass="fsLabel" path="consumerInfo.serviceName" ><fmt:message key="admin.oauth.consumer.serviceName"/>*</form:label>
+			  					<form:input maxlength="15" cssClass="fsInput reqinput" path="consumerInfo.serviceName" tabindex="3"/>
+			  					<div class="dissError"><form:errors path="consumerInfo.serviceName" /></div>
+            				</div>
+							
+							<!-- key type -->
+							<div class="fsRow">
+			  					<form:label cssClass="fsLabel" path="consumerInfo.keyType" ><fmt:message key="admin.oauth.consumer.keyType"/>*</form:label>
+					      		<form:select cssClass="fsInput reqinput" tabindex="4" path="consumerInfo.keyType" size="1" multiple="false">
+									<c:forEach var="entry" items="${command.keyTypes}">
+										<form:option value="${entry}" label="${entry}" />
+									</c:forEach>
+								</form:select>
+			  					<div class="dissError"><form:errors path="consumerInfo.keyType" /></div>
+            				</div>
+            				
+							<!-- key name -->
+							<div class="fsRow">
+			  					<form:label cssClass="fsLabel" path="consumerInfo.keyName" ><fmt:message key="admin.oauth.consumer.keyName"/>*</form:label>
+			  					<form:input maxlength="15" cssClass="fsInput reqinput" path="consumerInfo.keyName" tabindex="4"/>
+			  					<div class="dissError"><form:errors path="consumerInfo.keyName" /></div>
+            				</div>
+            				
+							<!-- callback url -->
+							<div class="fsRow">
+			  					<form:label cssClass="fsLabel" path="consumerInfo.callbackUrl" ><fmt:message key="admin.oauth.consumer.callbackUrl"/></form:label>
+			  					<form:input maxlength="15" cssClass="fsInput reqinput" path="consumerInfo.callbackUrl" tabindex="5"/>
+			  					<div class="dissError"><form:errors path="consumerInfo.callbackUrl" /></div>
+            				</div>
+            				
+							<!-- gadget url -->
+							<div class="fsRow">
+			  					<form:label cssClass="fsLabel" path="consumerInfo.gadgetUrl" ><fmt:message key="admin.oauth.consumer.gadgetUrl"/></form:label>
+			  					<form:input maxlength="15" cssClass="fsInput reqinput" path="consumerInfo.gadgetUrl" tabindex="6"/>
+			  					<div class="dissError"><form:errors path="consumerInfo.gadgetUrl" /></div>
+            				</div>
+            				
+							<!-- title -->
+							<div class="fsRow">
+			  					<form:label cssClass="fsLabel" path="consumerInfo.title" ><fmt:message key="admin.oauth.consumer.title"/>*</form:label>
+			  					<form:input maxlength="15" cssClass="fsInput reqinput" path="consumerInfo.title" tabindex="7"/>
+			  					<div class="dissError"><form:errors path="consumerInfo.title" /></div>
+            				</div>
+
+							<!-- summary -->
+							<div class="fsRow">
+			  					<form:label cssClass="fsLabel" path="consumerInfo.summary" ><fmt:message key="admin.oauth.consumer.summary"/>*</form:label>
+			  					<form:input maxlength="15" cssClass="fsInput reqinput" path="consumerInfo.summary" tabindex="8"/>
+			  					<div class="dissError"><form:errors path="consumerInfo.summary" /></div>
+            				</div>
+
+							<!-- description -->
+							<div class="fsRow">
+			  					<form:label cssClass="fsLabel" path="consumerInfo.description" ><fmt:message key="admin.oauth.consumer.description"/>*</form:label>
+			  					<form:input maxlength="15" cssClass="fsInput reqinput" path="consumerInfo.description" tabindex="9"/>
+			  					<div class="dissError"><form:errors path="consumerInfo.description" /></div>
+            				</div>
+            				
+							<!-- thumbnail url -->
+							<div class="fsRow">
+			  					<form:label cssClass="fsLabel" path="consumerInfo.thumbnail" ><fmt:message key="admin.oauth.consumer.thumbnail"/></form:label>
+			  					<form:input maxlength="15" cssClass="fsInput reqinput" path="consumerInfo.thumbnail" tabindex="10"/>
+			  					<div class="dissError"><form:errors path="consumerInfo.thumbnail" /></div>
+            				</div>
+
+							<!-- icon url -->
+							<div class="fsRow">
+			  					<form:label cssClass="fsLabel" path="consumerInfo.icon" ><fmt:message key="admin.oauth.consumer.icon"/></form:label>
+			  					<form:input maxlength="15" cssClass="fsInput reqinput" path="consumerInfo.icon" tabindex="11"/>
+			  					<div class="dissError"><form:errors path="consumerInfo.icon" /></div>
+            				</div>
+
+             				<div class="clearfloat p">
+             					<input type="hidden" name="adminAction" value="Register"/>	
+             					<input type="hidden" name="ckey" value="${command.context.ckey}"/>	
+		                    	<fmt:message key="register.send" var="submit"/>
+        		            	<input type="submit" value="${submit}" />
+	             			</div>
+	             		</fieldset>	
+            	</form:form>
+			</div>
+		</jsp:attribute>				
+	</layout:layout>
+</jsp:root>

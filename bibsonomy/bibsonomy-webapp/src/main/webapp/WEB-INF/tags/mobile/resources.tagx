@@ -1,0 +1,42 @@
+<jsp:root version="2.0"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:mobile="urn:jsptagdir:/WEB-INF/tags/mobile"
+	xmlns:resources="urn:jsptagdir:/WEB-INF/tags/resources">
+
+	<!-- Layout for sites displaying resources -->
+	<jsp:directive.attribute name="command" type="org.bibsonomy.webapp.command.SimpleResourceViewCommand" required="true"/>	
+	<jsp:directive.attribute name="headerExt" fragment="true" required="false"/>	
+	<jsp:directive.attribute name="selected" type="java.lang.String" required="false"/>
+	<jsp:directive.attribute name="requPath" required="true"/>
+	
+	<mobile:layout loginUser="${command.context.loginUser}" resources="true" selected="${selected}" requestedUser="${command.requestedUser}">
+		<jsp:attribute name="headerExt">
+			<script type="text/javascript" src="${resdir}/javascript/jquery.fadebox.js">&amp;nbsp;</script> 
+			<script type="text/javascript">
+			<![CDATA[
+				$(document).ready(function() {
+					
+					/* get the selected resourceType from sessionStorage */
+					if(sessionStorage.getItem("resourceType") == 'bibtex') {
+						$("#bookmarkList").hide();
+						$("#bibtexList").show();	
+					} else {
+						
+						$("#bookmarkList").show();
+						$("#bibtexList").hide();
+					}
+					sysTagFadeBox(self);
+				});
+				]]>
+			</script>
+			
+		</jsp:attribute>
+		<jsp:attribute name="content">
+			<resources:bookmarks listView="${command.bookmark}" loginUserName="${command.context.loginUser.name}" disableActions="true" disableListNavigation="true" requPath="${requPath}"/>
+			<resources:bibtexs listView="${command.bibtex}" loginUserName="${command.context.loginUser.name}" disableActions="true" disableListNavigation="true" requPath="${requPath}"/>
+		</jsp:attribute>
+	</mobile:layout>	
+</jsp:root>

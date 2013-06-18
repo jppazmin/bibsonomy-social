@@ -1,0 +1,96 @@
+<jsp:root version="2.0" 
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:rc="urn:jsptagdir:/WEB-INF/tags/resources/common"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:bib="urn:jsptagdir:/WEB-INF/tags/resources/bibtex"
+	xmlns:form="http://www.springframework.org/tags/form"
+	xmlns:export="urn:jsptagdir:/WEB-INF/tags/export/bibtex"
+	xmlns:resource="urn:jsptagdir:/WEB-INF/tags/resources"
+	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/tags"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:spring="http://www.springframework.org/tags"
+    xmlns:editpub="urn:jsptagdir:/WEB-INF/tags/actions/edit/publication">
+	
+	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true" description="The publication post that should be rendered."/>
+	<jsp:directive.attribute name="referer" type="java.lang.String" required="true" description="The referer to the scraped site"/>
+	
+	<c:set var="publication" value="${post.resource}"/>
+	<c:set var="isOwnEntry" value="${post.user.name eq command.context.loginUser.name}"/>
+	
+	<spring:theme code="javascript.openaccess" var="jsOpenAccess" text=""/>
+
+	<c:if test="${not empty jsOpenAccess}">
+		<script type="text/javascript" src="${jsOpenAccess}"><!--  --></script>
+	</c:if>
+  	
+
+	
+	
+	<div id="license">
+
+		<div id="license_header">
+			<fmt:message var="logopath" key="post.resource.openaccess.license.logo"/>
+			<img id="license_logo" src="${logopath}"/>
+			<h1 id="license_headline0"><fmt:message key="post.resource.openaccess.license.headline0"/></h1>
+		</div>	
+
+ 		<hr/>
+
+
+		<div id="license_data">
+			<div class="license_headline"><fmt:message key="post.resource.openaccess.license.headline1"/></div>		
+			<div class="lfdesc"><fmt:message key="post.resource.openaccess.license.name"/>, <fmt:message key="post.resource.openaccess.license.firstname"/>:</div>
+			<div class="lfval"><input type="text" value="${command.context.loginUser.realname}"></input></div>
+				
+			<div class="lfdesc"><fmt:message key="post.resource.openaccess.license.email"/>:</div>
+			<div class="lfval"><c:out value="${command.context.loginUser.email}"></c:out></div>
+
+			<div class="lfdesc"><fmt:message key="post.resource.openaccess.license.institution"/>:</div>
+			<div class="lfval"><input type="text" value="${command.additonalMetadata['post.resource.openaccess.additionalfields.institution'][0]}"></input></div>
+
+			<div class="lfdesc"><fmt:message key="post.resource.openaccess.license.title"/>:</div>
+			<div class="lfval"><c:out value="${publication.title}" escapeXml="false"></c:out></div>
+
+			<c:if test="${post.resource.entrytype eq 'phdthesis'}" >
+
+				<div class="lfdesc"><fmt:message key="post.resource.openaccess.license.date.examination"/>:</div>
+				<div class="lfval"><c:out value="${command.additonalMetadata['post.resource.openaccess.additionalfields.phdoralexam'][0]}"></c:out></div>
+			
+				<div class="lfdesc"><c:out value="1. "></c:out><fmt:message key="post.resource.openaccess.license.referee"/>:</div>
+				<div class="lfval"><c:out value="${command.additonalMetadata['post.resource.openaccess.additionalfields.phdreferee'][0]}"></c:out></div>
+	
+				<div class="lfdesc"><c:out value="2. "></c:out><fmt:message key="post.resource.openaccess.license.referee"/>:</div>
+				<div class="lfval"><c:out value="${command.additonalMetadata['post.resource.openaccess.additionalfields.phdreferee2'][0]}"></c:out></div>
+	
+			</c:if>
+
+		</div>
+
+		<div>
+			<fmt:message key="post.resource.openaccess.license.text"/>		
+		</div>
+
+		<div id="license_signature">
+			<div class="signatureline">
+				<fmt:message key="post.resource.openaccess.license.citydate"/>		
+			</div>
+			<div class="signatureline">
+				<fmt:message key="post.resource.openaccess.license.signature"/>		
+			</div>
+		</div>
+
+
+		<div id="license_print">
+			<button title="Drucken" onclick="javascript:window.print();"><fmt:message key="post.resource.openaccess.license.print"/></button>
+		</div>
+		
+		<div id="license_sendinfo">
+			<fmt:message key="post.resource.openaccess.license.sendinfo"/>		
+		</div>
+		
+		
+	</div>
+	
+</jsp:root>

@@ -1,0 +1,88 @@
+<jsp:root version="2.0" xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/buttons"
+	xmlns:review="urn:jsptagdir:/WEB-INF/tags/resources/discussion/review"
+	xmlns:comment="urn:jsptagdir:/WEB-INF/tags/resources/discussion/comment"
+	xmlns:discussionItem="urn:jsptagdir:/WEB-INF/tags/resources/discussion/discussionItem">
+    
+    <jsp:directive.attribute name="resource" type="org.bibsonomy.model.Resource" required="true" />
+    <jsp:directive.attribute name="loginUser" type="org.bibsonomy.model.User" required="true"/>
+    <jsp:directive.attribute name="discussionItems" type="java.util.List" required="false" />
+    
+   	<!-- create new review / comment for create review / comment form -->
+   	<jsp:useBean id="newDate" class="java.util.Date" />
+    <jsp:useBean id="newReview" class="org.bibsonomy.model.Review">
+    	<jsp:setProperty name="newReview" property="date" value="${newDate}"/>
+    	<jsp:setProperty name="newReview" property="user" value="${loginUser}" />
+    </jsp:useBean>
+    
+    <jsp:useBean id="newComment" class="org.bibsonomy.model.Comment">
+    	<jsp:setProperty name="newComment" property="date" value="${newDate}" />
+    	<jsp:setProperty name="newComment" property="user" value="${loginUser}" />
+    </jsp:useBean>
+    
+    <c:if test="${empty discussionItems}">
+   		<c:set var="discussionItems" value="${resource.discussionItems}" />
+   	</c:if>
+   	
+ 	<div class="discussion_all">  	
+   		
+   		<!-- The three Buttons -->
+   		<ul id="discussionMainMenu" class="newMenu">
+			<li>
+				<a href="#discussion" id="toggleDiscussion"><fmt:message key="post.resource.discussion.actions.hide" /></a>
+			</li>
+			<!-- TODO: use spring security tags -->
+			<c:if test="${command.context.userLoggedIn}">
+				<li><a href="#createreview" class="createReview"><fmt:message key="post.resource.review.actions.create" /></a></li>
+				<li><a href="#createcomment" class="reply"><fmt:message key="post.resource.comment.actions.create" /></a></li>
+			</c:if>
+		
+			<!--
+				<li><a href="#showOnlyReviews" id="toggleReviews"><fmt:message key="post.resource.discussion.actions.showReviews" /></a></li>
+				<li><a href="#collapseAllThreads" id="collapseAllThreads"><fmt:message key="post.resource.discussion.actions.collapseAllThreads" /></a></li>
+			-->
+		</ul>
+   		
+   		<!-- Headline -->
+	   	<h3><fmt:message key="post.resource.discussion.headline" /></h3>
+		
+		<!-- Aggregated RatingInfo -->
+    	<review:reviewRatingsInfo resource="${resource}" />
+	
+ 	  	<!-- The input forms -->
+ 	  	<div id="discussion" data-interHash="${resource.interHash}">
+	    	<!-- TODO: use spring security tags -->
+		    <c:if test="${command.context.userLoggedIn}">
+		    	<!-- review and comment forms -->
+	    		<div id="createReview" class="createReview">
+		    		<review:reviewForm resource="${resource}" userName="${loginUser.name}"/>
+		    		<!-- TODO: add tips for reviewing a resource -->
+	    		</div>
+		    
+			    <div id="createComment" class="initiallyHidden">
+			    	<comment:commentForm resource="${resource}" userName="${loginUser.name}"/>
+			    </div>
+			</c:if>
+			<discussionItem:subDiscussionItems discussionItems="${discussionItems}" loginUser="${loginUser}" resource="${resource}" />
+		</div>
+
+		<!-- TODO: use spring security tags -->
+		<c:if test="${command.context.userLoggedIn}">
+			<div id="discussionTemplates" class="initiallyHidden">
+				<!-- create comment div structure -->
+				<div id="commentTemplate">
+				   	<comment:comment comment="${newComment}" loginUser="${loginUser}" resource="${resource}" />
+				</div>
+			    
+				<ul>
+					<!-- create li, div structure for new review -->
+					<li id="newReview">
+						<review:review review="${newReview}" resource="${resource}" loginUser="${loginUser}" />
+					</li>
+		    	</ul>
+			</div>
+		</c:if>
+	</div>
+</jsp:root>

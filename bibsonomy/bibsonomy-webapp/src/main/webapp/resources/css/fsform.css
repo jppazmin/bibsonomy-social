@@ -1,0 +1,165 @@
+/**
+ *
+ *  BibSonomy-Webapp - The webapplication for Bibsonomy.
+ *
+ *  Copyright (C) 2006 - 2011 Knowledge & Data Engineering Group,
+ *                            University of Kassel, Germany
+ *                            http://www.kde.cs.uni-kassel.de/
+ *
+ *  This program is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU General Public License
+ *  as published by the Free Software Foundation; either version 2
+ *  of the License, or (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ */
+
+@CHARSET "UTF-8";
+
+#fsform {
+    width:100%;
+}
+
+.fsHelp {
+	margin-left: 10px;	
+}
+
+.fsLegend {
+    text-align:left;
+    width:auto;
+    font-weight:normal;
+}
+.fsOuter, .fsInner, .fsVisible {
+    position: relative;
+}
+.fsOuter, .fsInner{
+	min-width: 650px;
+}
+.fsOuter {
+    padding: 0 10px 10px 10px;
+}
+
+.fsContainerRight {
+	float:right;
+	width:50%;
+}
+
+.fsContainerLeft {
+	width:50%;
+	margin-right:50%;
+}
+
+.fsRight, .fsLeft {
+	margin:10px;
+}
+
+.fsInner, .fsHidden, .fsVisible {
+    margin: 8px 0 0 0;
+}
+
+.fsHidden {
+	border: none;
+    margin-left: 1px;
+}
+
+.fsHidden > div {
+	display: none;
+}
+
+.fsLabel {
+    text-align: right;
+}
+
+.fsFloatLabel, .fsLabel {
+    font-weight: bold;
+    font-size: 80%;
+}
+
+.fsFloatInput {
+	margin-left: 10px;
+    margin-right: 5px;
+}
+
+.fsInput, #inpf, .fsFloatInput {
+    margin-bottom: 2px;
+}
+
+.fsRow {
+   position: relative; 
+   clear: both;
+}
+
+.fsLabel {
+  padding-right: 5px;
+  width: 20%;
+  float: left;
+}
+#copytags, .fsSuggestion, .fsInput, .tagInput, #suggested {
+  float: left;
+  width: 73%;
+}
+
+.fsSmall {
+  max-width: 15em;
+}
+
+#tagField {
+  float: left;
+  width: 73%; /* 2% space for reload button */   
+}
+
+.fsSuggestion {
+    font-size: 80%;
+    margin-left: 20%;
+    padding-left: 1em;
+    margin-top: 0px;
+    padding-top: 0px;
+}
+
+#fsReloadButton {
+    float: right;
+	width: 20px;
+	height: 20px;
+}
+
+.fsConfirm {
+}
+
+.fsWaitingText {
+	font-style: italic;
+}
+
+.ui-autocomplete-subtext{
+	font-size:10px;
+}
+
+.ui-menu-item{
+	font-size:11px;
+}
+
+.ui-state-hover{
+	font-weight:bold;
+}
+
+.dissError{
+	display:none;
+}
+ul.documents {
+	 display:inline-block;
+}
+ul.documents > li {
+  list-style: inside url("/resources/image/document-txt-blue.png");	
+}
+ul.documents > li.loading {
+  list-style-image: url("/resources/image/ajax_loader.gif");
+}
+ul.documents > li.fileError {
+  list-style-image: url("/resources/image/file_status_error.png");
+}

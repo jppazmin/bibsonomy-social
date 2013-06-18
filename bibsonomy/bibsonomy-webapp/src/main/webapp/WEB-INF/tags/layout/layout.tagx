@@ -1,0 +1,321 @@
+<jsp:root version="2.0"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:menu="urn:jsptagdir:/WEB-INF/tags/menu"
+	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:spring="http://www.springframework.org/tags">
+	
+	<jsp:useBean id="hash" class="org.bibsonomy.util.wrapper.HashIDBean" scope="application"/>
+
+	<jsp:directive.attribute name="loginUser" type="org.bibsonomy.model.User" required="true"/>
+	<jsp:directive.attribute name="requestedUser" type="java.lang.String" required="false"/>	
+	<jsp:directive.attribute name="pageTitle" type="java.lang.String" required="true"/>	
+	<jsp:directive.attribute name="fullscreen" type="java.lang.Boolean" required="false"/>	
+	<jsp:directive.attribute name="requPath" type="java.lang.String" required="true"/>	
+	<jsp:directive.attribute name="heading" fragment="true" required="true"/>
+	<jsp:directive.attribute name="content" fragment="true" required="true"/>	
+    <jsp:directive.attribute name="beforeBodyClose" fragment="true"/>
+	<jsp:directive.attribute name="headerExt" fragment="true" />
+	<jsp:directive.attribute name="sidebar" fragment="true" />
+	<jsp:directive.attribute name="selectedNaviTab" type="java.lang.String" required="false"/>
+	<jsp:directive.attribute name="personalized" type="java.lang.Boolean" required="false"/>
+	<jsp:directive.attribute name="noLoginBox" type="java.lang.Boolean" required="false"/>
+	
+
+    <!-- 
+      set theme variables    
+     -->
+    <spring:theme code="stylesheet.main" var="stylesheet_main" text="${resdir}/css/style.css"/>
+	<spring:theme code="stylesheet.additional" var="additionalCSS" text=""/> 
+	<spring:theme code="stylesheet.additional.print" var="additionalPrintCSS" text=""/> 
+	<spring:theme code="image.head.logo" var="headerLogo" text=""/>
+	<spring:theme code="javascript.additional" var="additionalJS" text=""/>
+
+    <!-- 
+      document starts here
+     -->
+	<jsp:output doctype-root-element="html"	doctype-public="-//W3C//DTD XHTML 1.0 Transitional//EN" doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd" />
+  
+	<jsp:element name="html">
+		<jsp:attribute name="xmlns">http://www.w3.org/1999/xhtml</jsp:attribute>
+		<jsp:body>
+			<head>
+				<!--+ 
+					| To have the locale available on all pages we set the scope to "request".
+					| see http://stackoverflow.com/questions/333729/how-do-i-access-locale-from-a-jsp 
+					|-->
+				<c:set var="locale" scope="request" value="${pageContext.response.locale}"/>
+				
+				<meta http-equiv="content-Type" content="text/html; charset=UTF-8" />
+				<link rel="stylesheet" type="text/css" href="${stylesheet_main}" />
+				<c:if test="${not empty personalized and personalized == true}">
+					<link rel="stylesheet" type="text/css" href="${resdir}/css/personalized.css" />
+				</c:if>
+							
+				<link rel="icon" href="${resdir}/image/favicon.png" type="image/png" />
+				<!--+
+					|
+					| JavaScript files 
+					| 
+				 	+-->
+				<!-- localized JavaScript messages -->
+				<script type="text/javascript" src="${resdir}/javascript/localized_strings_${locale.language}.js">&amp;nbsp;</script>
+				<!--+ 
+				 	| merged jquery.js, functions.js, style.js, chrome.js
+				 	| and jQuery plugins jquery.textarearesizer.js, jquery.corner.js, jquery.sidebarresizer.js
+					| 
+					| To add other files, add a line to ${resdir}/javascript/merged/global.js and 
+				 	| include it in the "aggregate" section of the yuicompressor-maven-plugin in the pom.xml.
+				 	+-->
+				<script type="text/javascript" src="${resdir}/javascript/merged/global.js">&amp;nbsp;</script>
+				<script type="text/javascript" src="${resdir}/javascript/systemmessage.js">&amp;nbsp;</script>
+				<!-- include tooltip JavaScript only for users that have tooltips enabled -->
+				<c:if test="${loginUser.settings.tagboxTooltip == 1}">	
+					<script type="text/javascript" src="${resdir}/javascript/tooltip.js">&amp;nbsp;</script>
+				</c:if>
+				<!-- enable logging with user permission -->
+				<c:if test="${loginUser.settings.logLevel != 1}">
+				  <script type="text/javascript" src="${resdir}/javascript/logging.js">&amp;nbsp;</script>
+	              <script type="text/javascript">
+	              <![CDATA[
+						log_setUsername("${loginUser.name}");
+				  ]]>
+				  </script>				  
+				</c:if>
+				<!-- enable on-site spammer killing when user is admin -->
+				<c:if test="${loginUser.role eq 'ADMIN'}">
+				  <script type="text/javascript" src="${resdir}/javascript/spammer.js">&amp;nbsp;</script>
+				</c:if>
+
+				<c:if test="${not empty additionalJS}">
+					<script type="text/javascript" src="${additionalJS}">&amp;nbsp;</script>
+				</c:if>
+
+
+				<meta name="email" content="${projectEmail}"/>
+				<parts:meta fieldName="author"/>
+				<parts:meta fieldName="copyright"/>
+				<parts:meta fieldName="keywords"/>
+				<parts:meta fieldName="description"/>
+				<link rel="alternate" type="application/atom+xml" title="${systemName} Blog - Atom" href="http://blog.bibsonomy.org/feeds/posts/default" />
+				<link rel="alternate" type="application/rss+xml"  title="${systemName} Blog - RSS"  href="http://blog.bibsonomy.org/feeds/posts/default?alt=rss" />
+				<title>${projectName} <c:if test="${not empty pageTitle}"> :: </c:if><c:out value="${mtl:cleanBibtex(pageTitle)}"/></title><!-- TODO: localize page titles! -->
+				<jsp:invoke fragment="headerExt"/>
+
+				<c:if test="${not empty additionalCSS}">
+					<link rel="stylesheet" type="text/css" href="${additionalCSS}" />
+				</c:if>
+				<c:if test="${not empty additionalPrintCSS}">
+					<link rel="stylesheet" type="text/css" media="print" href="${additionalPrintCSS}" />
+				</c:if>
+
+			</head>
+			<body>
+			
+			<div id="topNavBar">
+				<c:choose>
+					<c:when test="${not empty loginUser.name}">
+						<fmt:message key="navi.loggedInAs"/>&amp;nbsp;
+						<c:url var="userUrl" value="/user/${mtl:encodeURI(loginUser.name)}" context="${projectContext}"/>
+						<a href="${userUrl}"><c:out value="${mtl:encodeURI(loginUser.name)}" /></a>
+						<c:out value=" "/>${mtl:ch('menu.delim')}<c:out value=" "/>
+						<c:url var="settingsUrl" value="/settings" context="${projectContext}"/>        
+						<a href="${settingsUrl}"><fmt:message key="navi.settings"/></a>
+						<c:out value=" "/>${mtl:ch('menu.delim')}<c:out value=" "/>
+						<c:url var="logoutUrl" value="/logout" context="${projectContext}"/>
+						<a href="${logoutUrl}"><fmt:message key="navi.logout"/>
+						<c:out value=" "/></a>${mtl:ch('menu.delim')}<c:out value=" "/>	
+					</c:when>
+					<c:otherwise>
+						<c:url var="loginUrl" value="/login" context="${projectContext}"/>
+						<a href="${loginUrl}"><fmt:message key="navi.login"/></a>
+						<c:out value=" "/>${mtl:ch('menu.delim')}<c:out value=" "/>
+					</c:otherwise>
+				</c:choose>
+				
+				<fmt:message key="navi.helpUrl" var="helpLangUrl" />
+				<c:url var="helpUrl" value="${helpLangUrl}" context="${projectContext}"/>
+				<a href="${helpUrl}"><fmt:message key="navi.help"/></a>
+				<c:out value=" "/>${mtl:ch('menu.delim')}<c:out value=" "/>				
+				<a href="${projectBlog}"><fmt:message key="navi.news"/></a><!-- FIXME: How to use project.blog? -->
+				<c:out value=" "/>${mtl:ch('menu.delim')}<c:out value=" "/>
+				<c:url var="aboutUrl" value="${helpLangUrl}/contact" context="${projectContext}"/>
+				<a href="${aboutUrl}"><fmt:message key="navi.about"/></a>	
+				<c:out value=" "/>${mtl:ch('menu.delim')}<c:out value=" "/>
+				<!-- requPath + query -->
+				<c:set var="requPathAndQuery" value="${requPath}${requQueryString}"/>
+				<c:url var="langUrlDe" value="/${mtl:setParam(requPathAndQuery, 'lang', 'de')}" context="${projectContext}"/>
+				<a href="${langUrlDe}"><img alt="de" src="${resdir}/image/lang_de.png"/></a>
+				<c:url var="langUrlEn" value="/${mtl:setParam(requPathAndQuery, 'lang', 'en')}" context="${projectContext}"/>					
+				<a href="${langUrlEn}"><img alt="en" src="${resdir}/image/lang_en.png"/></a>					
+			</div>
+			
+			
+			<div id="main">
+
+				<c:if test="${not empty headerLogo}">
+					<img id="headerlogoimage" src="${headerLogo}"/>
+				</c:if>
+			
+				<div id="main_header">
+				
+					<!--+
+					 	|
+					 	| show inbox, basket, edit tags links
+					 	|
+					 	+-->
+					<div id="mainHeaderRightBox">
+						<c:choose>
+							<c:when test="${not empty loginUser.name}">
+								<c:url var="inboxUrl" value="/inbox" context="${projectContext}"/>
+								<a href="${inboxUrl}">
+									<span id="inboxctr">${loginUser.inbox.numPosts}</span><c:out value=" "/>
+									<fmt:message key="navi.inInbox"/><c:out value=" "/>
+									<fmt:message key="navi.inbox"/>
+								</a>
+								<br/>
+								<c:url var="basketUrl" value="/basket" context="${projectContext}"/>
+								<a href="${basketUrl}">
+									<span id="pickctr">${loginUser.basket.numPosts}</span><c:out value=" "/>
+									<fmt:message key="navi.pickedIn"/><c:out value=" "/>
+									<fmt:message key="navi.basket"/>
+								</a>
+								<br/>
+								<a href="/edit_tags"><fmt:message key="navi.editTags"/></a>
+							</c:when>
+							<c:otherwise>
+								<c:if test="${empty noLoginBox}">
+									<parts:login requPath="${requPath}"/>
+								</c:if>
+							</c:otherwise>
+						</c:choose>
+					</div>
+				
+				
+					<!--+
+						|
+						| heading
+						|
+						+-->
+					<h1 id="heading">
+							<c:url var="root" value="/" context="${projectContext}"/>
+							<a href="${root}">${projectName}</a> :: <jsp:invoke fragment="heading"/>
+					</h1>
+									
+					<!-- dropdown menu for BibSonomy Path -->  
+					<div id="path_menu" class="dropmenudiv">
+						<a onclick="naviSwitchSpecial('tag')" style="cursor:pointer"><fmt:message key="navi.tag"/></a>
+						<a onclick="naviSwitchSpecial('user')" style="cursor:pointer"><fmt:message key="navi.user"/></a>
+						<a onclick="naviSwitchSpecial('group')" style="cursor:pointer"><fmt:message key="navi.group"/></a>
+						<a onclick="naviSwitchSpecial('author')" style="cursor:pointer"><fmt:message key="navi.author"/></a>
+						<a onclick="naviSwitchSpecial('concept/tag')" style="cursor:pointer"><fmt:message key="navi.concept"/></a>
+						<a onclick="naviSwitchSpecial('bibtexkey')" style="cursor:pointer"><fmt:message key="navi.bibtexkey"/></a>
+						<a onclick="naviSwitchSpecial('search')" style="cursor:pointer"><fmt:message key="navi.search"/>:<fmt:message key="navi.all"/></a>
+						<c:if test="${not empty requestedUser}">
+							<a onclick="naviSwitchSpecial('explicit_user')" style="cursor:pointer"><fmt:message key="navi.search"/>:<c:out value='${requestedUser}'/></a>
+							<c:set var="mode" value="requUser" />
+						</c:if>
+						<c:if test="${command.context.userLoggedIn and empty requestedUser}">
+							<a onclick="naviSwitchSpecial('explicit_user')" style="cursor:pointer"><fmt:message key="navi.search"/>:<c:out value='${loginUser.name}'/></a>
+							<c:set var="mode" value="requUser" />
+						</c:if>
+						<c:if test="${command.context.userLoggedIn}">
+						    <!-- <a onclick="naviSwitchSpecial('followers')" style="cursor:pointer"><fmt:message key="navi.followedUsers"/></a>  -->
+							<a style="color:black"><fmt:message key="navi.search"/> in group:</a>
+							<c:forEach var="grp" items="${loginUser.groups}">
+								<script type="text/javascript">
+									gOptions.push('${grp.name}');
+								</script>
+								<a onclick="naviSwitchSpecial('${grp.name}')" style="cursor:pointer; padding-left:50px;">- <c:out value='${fn:escapeXml(grp.name)}'/></a>
+							</c:forEach>
+						</c:if>
+					</div>	
+					
+					<!-- init dropdown menu -->
+					<script type="text/javascript">
+					  cssdropdown.startchrome("heading");
+					</script>
+					
+					<div id="welcomeTop"><fmt:message key="system.desc"/></div>
+				</div>
+				
+				<!-- Navigation -->
+				<menu:navi selectedNaviTab="${selectedNaviTab}" loginUser="${loginUser}" />
+				
+				<!-- main content pane -->
+				<div id="outer">
+					<jsp:invoke fragment="content"/>
+				</div>
+				
+				<!-- sidebar -->
+				<c:if test="${sidebar != null}">
+					<div id="sidebarroundcorner" >
+						<img id="sidebarGrip" border="0" src="/resources/image/grip.png"/>
+						<div class="sidebarBoxOuter" id="sidebox">
+							<div class="sidebarBoxInner" >
+								<jsp:invoke fragment="sidebar"/>
+							</div>
+						</div>
+					</div>
+				</c:if>
+				<c:if test="${fullscreen}">
+					<script type="text/javascript">
+		              <![CDATA[
+						document.getElementById('outer').style.width = "100%";
+					  ]]>
+					</script>
+				</c:if>
+				
+				<!-- page footer -->
+				<div id="footer">
+					<fmt:message key="system.offeredBy">
+						<fmt:param value="${projectName}"/><!-- FIXME: How to use project.name? -->
+						<fmt:param value="${kdeHome}"/><!-- FIXME: How to use project.kdeHome? -->
+					</fmt:message>
+					<c:out value=" "/>
+					<fmt:message key="system.contact"/>
+					<c:out value=" "/>
+					<parts:email address="${projectEmail}"/> - <!-- FIXME: How to use project.email? --> 
+					<fmt:message key="system.termsOfUse"/>
+					
+					<c:if test="${cookie.mobile.value == 'false' or param.mobile == 'false'}">
+						<c:out value=" "/><a href="?mobile=true"><fmt:message key="mobile.switchMobile" /></a>
+					</c:if>
+					
+					<script type="text/javascript">
+		              <![CDATA[
+					    $(function() {
+			    			$('textarea').TextAreaResizer();
+						    $("#sidebarroundcorner")
+						    .corner("round bottom 15px")
+							.corner("round tl 15px")
+							.SideBarResizer('#sidebarGrip');
+			    			init(${loginUser.settings.tagboxStyle}, ${loginUser.settings.tagboxSort}, ${loginUser.settings.tagboxMinfreq}, "${fn:escapeXml(requestedUser)}", "${loginUser.name}", "${ckey}", "${projectName}");
+					    });					    
+					  ]]>
+					</script>
+				</div>
+				</div>
+        
+                <jsp:invoke fragment="beforeBodyClose"/>
+
+				<!-- Piwik --> 
+				<!-- TODO: Discuss where to store the piwik id and adress 
+					+ current: in theme files the whole piwik code ist stored
+					+ should (probably): code here/some js + id in config file
+					+-->
+				<spring:theme code="javascriptcode.piwik" var="piwikJS" text=""/> 
+				<c:if test="${not empty piwikJS}">
+					<c:out escapeXml="false" value="${piwikJS}" />
+				</c:if>
+				<!-- End Piwik Tracking Code --> 
+				
+			</body>
+		</jsp:body>
+	</jsp:element>
+
+</jsp:root>

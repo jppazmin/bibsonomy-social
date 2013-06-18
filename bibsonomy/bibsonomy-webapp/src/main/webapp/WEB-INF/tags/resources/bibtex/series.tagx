@@ -1,0 +1,11 @@
+<jsp:root version="2.0" 
+	xmlns:c="http://java.sun.com/jsp/jstl/core"	
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:jsp="http://java.sun.com/JSP/Page">
+	
+	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true"/>	
+	
+	<c:if test="${not empty post.resource.series}">		
+		<em>${mtl:cleanBibtex(post.resource.series)}<c:out value=" "/></em>		
+	</c:if>
+</jsp:root>

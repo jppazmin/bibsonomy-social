@@ -1,0 +1,111 @@
+<jsp:root version="2.0" xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:user="urn:jsptagdir:/WEB-INF/tags/resources/user"
+	xmlns:button="urn:jsptagdir:/WEB-INF/tags/buttons"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions">
+
+	<!--+ 
+	 	|
+	 	| If the login user looks at a page of the requested user, we show him
+	 	| "social" information, e.g., if the two users are friends or if they
+	 	| are in the same group, if the user follows the other user, and so on.
+	 	| If so, we provide further links, if not, we allow them to "get together".
+	 	|
+	 	| TODO: 
+	 	| - integrate "common groups"
+	 	| - show, if requUser is following login user (privacy?)
+	 	| - TODO: show image/full name, if profile allows it
+	 	| - don't use image map but two separate images and then CSS to show :hover effects
+	 	|
+	 	+-->
+
+	<jsp:directive.attribute name="loginUser" type="org.bibsonomy.model.User" required="true"/>
+	<jsp:directive.attribute name="requestedUser" type="java.lang.String" required="true" />
+	<jsp:directive.attribute name="isFriendOfUser" type="java.lang.Boolean" required="true" description="Has the requestedUser the loginUser in his friend list?"/>
+	<jsp:directive.attribute name="isOfFriendUser" type="java.lang.Boolean" required="true" description="Has the loginUser the requestedUser in his friend list?"/>
+	<jsp:directive.attribute name="isFollowerOfUser" type="java.lang.Boolean" required="true" description="Does the loginUser follow the requestedUser?"/>
+	<jsp:directive.attribute name="commonGroups" type="java.util.List" required="false"/>
+
+	<div class="socializer">
+			
+		<!--+ 
+		 	|
+		 	| friendship with icons ...
+		 	|
+		 	| FIXME: implement this using AJAX or at least some "return false;" magic.
+		 	|
+		 	+-->
+   		<c:choose>
+			<c:when test="${isOfFriendUser}">
+				<!-- remove user from login user's friend list -->
+				<fmt:message key="friends.actions.delete.title" var="delFriend">
+					<fmt:param value="${command.user.name}"/>
+				</fmt:message>
+				<button:linkButton href="/SettingsHandler?ckey=${ckey}&amp;del_friend=${mtl:encodeURI(requestedUser)}" title="${delFriend}" image="${resdir}/image/starblue_selected.png">
+					<jsp:attribute name="text">
+						<fmt:message key="navi.friend"/>
+					</jsp:attribute>
+				</button:linkButton>
+			</c:when>
+			<c:otherwise>
+				<!-- add user from login user's friend list -->
+				<fmt:message key="friends.actions.add.title" var="addFriend">
+					<fmt:param value="${command.user.name}"/>
+				</fmt:message>
+				<button:linkButton href="/SettingsHandler?ckey=${ckey}&amp;add_friend=${mtl:encodeURI(requestedUser)}" image="${resdir}/image/starblue_unselected.png" title="${addFriend}">
+					<jsp:attribute name="text">
+						<fmt:message key="navi.friend"/>
+					</jsp:attribute>
+				</button:linkButton>
+				
+			</c:otherwise>
+		</c:choose>
+		
+		<!--+
+			|
+			| Does loginUser follow requestedUser?
+			|
+		 	-->
+		<script type="text/javascript" src="${resdir}/javascript/follower.js">&amp;nbsp;</script>
+		<!-- we need to switch between the add/remove link if the user already follows this user or not -->
+		<span id="removeLink" style="${isFollowerOfUser ? '' : 'display:none'}">
+			<fmt:message key="follow.link.text.removeLong" var="removeFollower"/>
+			<button:linkButton onclick="javascript:removeFollower('${fn:escapeXml(requestedUser)}', '${ckey}');return false;"
+			   title="${removeFollower}"
+			   href="/ajax/handleFollower?requestedUserName=${fn:escapeXml(requestedUser)}&amp;action=removeFollower&amp;ckey=${ckey}&amp;forward=user/${fn:escapeXml(requestedUser)}"
+			   image="${resdir}/image/starblue_selected.png"
+			   >
+				<jsp:attribute name="text">
+					<fmt:message key="follow"/>
+				</jsp:attribute>
+			</button:linkButton>
+		</span>
+		<span id="followLink" style="${isFollowerOfUser ? 'display:none' : ''}">
+			<fmt:message key="follow.link.text.followLong" var="addFollower"/>
+			<button:linkButton onclick="javascript:addFollower('${fn:escapeXml(requestedUser)}', '${ckey}');return false;"
+			   title="${addFollower}"
+			   href="/ajax/handleFollower?requestedUserName=${fn:escapeXml(requestedUser)}&amp;action=addFollower&amp;ckey=${ckey}&amp;forward=user/${fn:escapeXml(requestedUser)}"
+			   image="${resdir}/image/starblue_unselected.png"
+			   >
+				<jsp:attribute name="text">
+					<fmt:message key="follow"/>
+				</jsp:attribute>
+			</button:linkButton>
+		</span>
+		
+		
+		<!--+
+			|
+			| Show "socialize" link with yellow border.
+			|
+			+-->
+			<fmt:message key="personalized.info" var="personalized"/>
+			<button:linkButton href="/personalized/user/${fn:escapeXml(command.requestedUser)}" title="${personalized}">
+				<jsp:attribute name="text">
+					<fmt:message key="personalize"/>
+				</jsp:attribute>
+			</button:linkButton>	
+	</div>
+</jsp:root>

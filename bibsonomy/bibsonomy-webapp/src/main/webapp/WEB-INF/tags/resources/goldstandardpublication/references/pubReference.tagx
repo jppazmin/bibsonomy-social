@@ -1,0 +1,12 @@
+<jsp:root version="2.0" 
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+    xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"		
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:pub="urn:jsptagdir:/WEB-INF/tags/resources/bibtex">
+	
+	<jsp:directive.attribute name="publication" type="org.bibsonomy.model.BibTex" required="true" />
+	<pub:author publication="${publication}" />:<br />
+	<a href="/bibtex/${publication.interHash}" class="publicationLink">${mtl:cleanBibtex(publication.title)}</a>. <span class="year"><c:out value="${publication.year}"/></span>
+</jsp:root>

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+
+     BibSonomy-Webapp - The webapplication for Bibsonomy.
+
+     Copyright (C) 2006 - 2011 Knowledge & Data Engineering Group,
+                               University of Kassel, Germany
+                               http://www.kde.cs.uni-kassel.de/
+
+     This program is free software; you can redistribute it and/or
+     modify it under the terms of the GNU General Public License
+     as published by the Free Software Foundation; either version 2
+     of the License, or (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+
+     You should have received a copy of the GNU General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+
+-->
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+	                    http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+
+	<!--+ 
+	 	|
+	 	| That does the trick: depending on ${project.theme}, the correct 
+	 	| SwordService implementation is instantiated.
+	 	| NOTE: this is a hack ... we need to find ways to conditionally load
+	 	| bean definition files. 
+	 	|
+	 	+-->
+	<alias name="swordService_${project.theme}" alias="swordService"/>
+
+	<!--+ 
+		|
+		| Beans that PUMA needs but BibSonomy not should be set to NULL here 
+		| using the NullFactoryBean
+		|
+	 	+-->
+	<bean id="swordService_bibsonomy" class="org.bibsonomy.webapp.util.spring.factorybeans.NullFactoryBean"/>
+	
+</beans>
+

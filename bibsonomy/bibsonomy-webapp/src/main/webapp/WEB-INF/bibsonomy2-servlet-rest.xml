@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+
+     BibSonomy-Webapp - The webapplication for Bibsonomy.
+
+     Copyright (C) 2006 - 2011 Knowledge & Data Engineering Group,
+                               University of Kassel, Germany
+                               http://www.kde.cs.uni-kassel.de/
+
+     This program is free software; you can redistribute it and/or
+     modify it under the terms of the GNU General Public License
+     as published by the Free Software Foundation; either version 2
+     of the License, or (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+
+     You should have received a copy of the GNU General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+
+-->
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+	                    http://www.springframework.org/schema/beans/spring-beans.xsd
+	                    http://www.springframework.org/schema/util 
+	                    http://www.springframework.org/schema/util/spring-util-2.5.xsd">
+
+	<!--+
+		|
+		| REST servlet config
+		|
+		+-->
+	<bean id="restUrlMapping" parent="urlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+		<property name="urlMap">
+			<map merge="true">
+				<entry key="/api/**">
+					<bean id="ApiServlet" class="org.bibsonomy.webapp.util.spring.controller.ServletWrappingController">
+						<property name="servletInstance" ref="restServletInstance"/>
+						<property name="requireSession" value="false"/>
+						<property name="supportedMethods">
+							<array>
+								<value>GET</value>
+								<value>PUT</value>
+								<value>POST</value>
+								<value>DELETE</value>
+							</array>
+						</property>
+					</bean>
+				</entry>
+			</map>
+		</property>
+	</bean>
+	
+	<!-- provides access to the database REST servlet -->
+	<bean id="restLogicFactory" class="org.bibsonomy.database.DBLogicApiInterfaceFactory">
+		<property name="dbSessionFactory" ref="dbSessionFactory"/>
+	</bean>
+	
+	<!-- renders all API URLs -->
+	<bean id="restUrlRenderer" class="org.bibsonomy.rest.renderer.UrlRenderer">
+		<constructor-arg name="apiUrl" value="${project.home}api/"/>
+	</bean>
+	
+	<bean id="restServletInstance" class="org.bibsonomy.rest.RestServlet">
+		<property name="projectHome" value="${project.home}"/>
+		<property name="documentPath" value="${project.document.path}"/>
+		<property name="logicInterfaceFactory" ref="restLogicFactory"/>
+		<property name="urlRenderer" ref="restUrlRenderer"/>
+	</bean>
+	
+</beans>

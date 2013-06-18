@@ -1,0 +1,153 @@
+<?xml version="1.0" ?>
+<!--
+
+
+     BibSonomy-Webapp - The webapplication for Bibsonomy.
+
+     Copyright (C) 2006 - 2011 Knowledge & Data Engineering Group,
+                               University of Kassel, Germany
+                               http://www.kde.cs.uni-kassel.de/
+
+     This program is free software; you can redistribute it and/or
+     modify it under the terms of the GNU General Public License
+     as published by the Free Software Foundation; either version 2
+     of the License, or (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+
+     You should have received a copy of the GNU General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+
+-->
+
+<jsp:root version="2.0"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
+    xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+    xmlns:user="urn:jsptagdir:/WEB-INF/tags/resources/user"
+	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/tags"
+    xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/buttons"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
+	
+  <jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
+
+    <layout:layout loginUser="${command.context.loginUser}" pageTitle="${command.pageTitle}" requPath="${requPath}">
+      	
+    <jsp:attribute name="heading">
+      <a rel="path_menu" href="#"><img alt=""
+				src="${resdir}/image/box_arrow.png" />${mtl:ch('nbsp')}<fmt:message
+				key="navi.export" /></a>
+			<a href="/user/${fn:escapeXml(command.requestedUser)}"><c:out
+				value='${command.requestedUser}' /></a> ::
+			<form action="/user/${fn:escapeXml(command.requestedUser)}"
+				method="get" class="smallform">
+				<input type="text" size="20" name="tag" id="inpf" />
+			</form>		
+    </jsp:attribute>
+      
+        
+    <jsp:attribute name="content">
+        
+      <div id="general">
+
+        <h2><fmt:message key="export.header"/></h2>
+
+
+        <c:url var="bibtex"  value="/bib/${requPath}${requQueryString}" context="${projectContext}"/>
+        <c:url var="publ"    value="/publ/${requPath}${requQueryString}" context="${projectContext}"/>
+        <c:url var="publrss" value="/publrss/${requPath}${requQueryString}" context="${projectContext}"/>
+        <c:url var="aparss"  value="/aparss/${requPath}${requQueryString}" context="${projectContext}"/>
+        <c:url var="burst"   value="/burst/${requPath}${requQueryString}" context="${projectContext}"/>
+        <c:url var="swrc"    value="/swrc/${requPath}${requQueryString}" context="${projectContext}"/>
+        <c:url var="json"    value="/json/${requPath}${requQueryString}" context="${projectContext}"/>
+        <c:url var="custom"  value="/layout/custom/${requPath}${requQueryString} " context="${projectContext}"/>
+
+        <div>
+          <fmt:message key="export.format"/>:${mtl:ch('nbsp')}
+          <select id="selectlink" onchange="self.location=this.value" size="1">
+            <option value=""><fmt:message key="form.input.select"/></option>
+		    <option value="${fn:escapeXml(bibtex)}">BibTeX</option>
+			<option value="${fn:escapeXml(publ)}">HTML</option>
+			<option value="${fn:escapeXml(publrss)}">RSS</option>
+			<option value="${fn:escapeXml(aparss)}">RSS (APA 5th Style)</option>
+			<option value="${fn:escapeXml(burst)}">BuRST</option>						
+			<option value="${fn:escapeXml(swrc)}">SWRC</option>
+			<option value="${fn:escapeXml(json)}">JSON</option>				
+			<option value="${fn:escapeXml(custom)}">Custom</option>					
+						
+			<c:forEach var="entry" items="${command.layoutMap}">
+              <c:if test="${entry.value.publicLayout}">			
+				<c:url var="url" value="/layout/${entry.value.name}/${requPath}${requQueryString}" context="${projectContext}"/>
+				<option value="${fn:escapeXml(url)}"><c:out value="${entry.value.displayName}"/></option>
+			  </c:if>
+			</c:forEach>
+          </select>
+
+          <c:url var="currURL" value="/${requPath}${requQueryString}" context="${projectContext}"/>
+          <p><fmt:message key="export.info"><fmt:param><a href="${fn:escapeXml(currURL)}">${fn:escapeXml(currURL)}</a></fmt:param></fmt:message></p>
+        </div>
+        
+        <hr/>
+
+			
+      	<dl class="faq">
+		  <dt><a href="${fn:escapeXml(bibtex)}">BibTeX</a></dt>
+		  <dd><fmt:message key="export.bibtex.faq"/></dd>
+						
+   		  <dt><a href="${fn:escapeXml(publ)}">HTML</a></dt>
+    	  <dd><fmt:message key="export.html.faq"/></dd>
+    										
+    	  <dt><a href="${fn:escapeXml(publrss)}">RSS</a></dt>
+  		  <dd><fmt:message key="export.rss.faq"/></dd>
+  					 	 
+  		  <dt><a href="${fn:escapeXml(aparss)}">RSS (APA 5th Style)</a></dt>
+  		  <dd><fmt:message key="export.rss.faq"/></dd>
+  					 	 
+ 		  <dt><a href="${fn:escapeXml(burst)}">BuRST</a></dt>
+  		  <dd><fmt:message key="export.burst.faq"/></dd>
+
+          <dt><a href="${fn:escapeXml(swrc)}">SWRC</a></dt>
+          <dd><fmt:message key="export.swrc.faq"/></dd>
+          
+          <dt><a href="${fn:escapeXml(json)}">JSON</a></dt>
+          <dd><fmt:message key="export.json.faq"/></dd>
+
+    	  <dt><a href="${fn:escapeXml(custom)}">Custom</a></dt>	
+    	  <dd><fmt:message key="export.custom.faq"/></dd>
+    											
+		  <c:forEach var="mapEntry" items="${command.layoutMap}">
+		    <c:if test="${mapEntry.value.publicLayout}">			
+			  <c:url var="url" value="/layout/${mapEntry.value.name}/${requPath}" context="${projectContext}"/>
+			    <dt>
+                  <a href="${fn:escapeXml(url)}"><c:out value="${mapEntry.value.displayName}"/></a>&#160;<a href="#jabref">*</a>
+                </dt>
+				<dd>
+	 			  <c:out value="${mapEntry.value.description[command.lang]}"/>
+				</dd>
+			  </c:if>
+			</c:forEach>
+		</dl>
+					
+		
+        <h3><a name="jabref">JabRef</a></h3>
+ 		<p>
+  		  <fmt:message key="export.jabref.explain">
+  			<fmt:param>${projectName}</fmt:param>
+  		  </fmt:message>
+ 		</p>
+
+
+
+      </div>
+
+
+    </jsp:attribute>
+  </layout:layout>
+</jsp:root>

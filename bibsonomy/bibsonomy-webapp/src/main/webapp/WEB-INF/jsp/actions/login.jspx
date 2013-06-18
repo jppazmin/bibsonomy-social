@@ -1,0 +1,125 @@
+<?xml version="1.0" ?>
+<!--
+
+
+     BibSonomy-Webapp - The webapplication for Bibsonomy.
+
+     Copyright (C) 2006 - 2011 Knowledge & Data Engineering Group,
+                               University of Kassel, Germany
+                               http://www.kde.cs.uni-kassel.de/
+
+     This program is free software; you can redistribute it and/or
+     modify it under the terms of the GNU General Public License
+     as published by the Free Software Foundation; either version 2
+     of the License, or (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+
+     You should have received a copy of the GNU General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+
+-->
+
+<jsp:root version="2.0" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:form="http://www.springframework.org/tags/form"
+	xmlns:spring="http://www.springframework.org/tags"
+	xmlns:errors="urn:jsptagdir:/WEB-INF/tags/errors"
+	xmlns:user="urn:jsptagdir:/WEB-INF/tags/actions/user"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
+
+	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
+	
+	<fmt:message key="navi.login" var="loginTitle" />
+	
+	<layout:layout loginUser="${command.context.loginUser}" pageTitle="${loginTitle}" requPath="${requPath}" noLoginBox="true">
+
+		<jsp:attribute name="headerExt">
+			<link rel="stylesheet" type="text/css" href="${resdir}/css/fsform.css" />
+  			<link rel="stylesheet" type="text/css" href="${resdir}/jquery/plugins/ui/jquery.ui.tabs.css" />
+			<script type="text/javascript" src="${resdir}/jquery/plugins/ui/jquery-ui.js">&amp;nbsp;</script>
+  			<script type="text/javascript">
+				<![CDATA[
+						$(function() {
+							$('#logins').tabs();
+						});
+		  		]]>
+		  	</script>	
+  		</jsp:attribute>
+
+		<jsp:attribute name="heading">
+       		<c:out value="${loginTitle}" />
+    	</jsp:attribute>
+		
+		<jsp:attribute name="content">
+			<div id="general_fixed">
+          		<mtl:exists path="command.notice">
+            		<c:if test="${not empty command.notice}">
+              			<div style="border: 1px solid #006699; padding: 1em; margin-bottom: 1em;">
+                			<fmt:message key="login.notice.welcome_1" /> <a style="font-weight: bold;" href="/">${projectName}</a>, <fmt:message key="login.notice.welcome_2" />
+                			<br />
+                			<br />
+                			<b><fmt:message key="${fn:escapeXml(command.notice)}" /></b>
+                			<br />
+                			<br />
+                			<fmt:message key="login.notice.welcome_3">
+                				<fmt:param value="${fn:escapeXml('/register')}" />
+                				<fmt:param value="${fn:escapeXml(command.referer)}" />
+                			</fmt:message>
+        	      		</div>
+            		</c:if>
+            	</mtl:exists>
+
+				<!-- show global error messages -->
+           		<errors:global errors="${errors}" />
+           
+ 		    	<c:if test="${not empty command.message}">
+ 		    		<div class="errorcontainer">
+                    	<h3><fmt:message key="error"/></h3>
+ 		    			<div class="error">
+ 		    				<fmt:message key="error.login.${command.message}"/>
+ 		    			</div>
+ 		    		</div>
+ 		    	</c:if>
+ 		    
+ 		     
+ 		    	<div id="logins">
+          			<ul>
+						<c:forEach var="authMethod" items="${authConfig.authOrder}">
+			  				<c:set var="authMethodName" value="${fn:toLowerCase(authMethod)}" />
+              				<li><a href="#login_${authMethodName}"><fmt:message key="login.method.${authMethodName}" /></a></li>
+            			</c:forEach>
+          			</ul>
+          
+		  			<c:forEach var="authMethod" items="${authConfig.authOrder}">
+            			<c:set var="authMethodName" value="${fn:toLowerCase(authMethod)}" />
+            			<div id="login_${authMethodName}">           
+           					<form:form action="/login_${authMethodName}" method="POST">
+              					<c:if test="${authMethod == 'INTERNAL'}"><user:login_internal/></c:if>
+      							<c:if test="${authMethod == 'LDAP'}">    <user:login_ldap/></c:if>
+      							<c:if test="${authMethod == 'OPENID'}">  <user:login_openid/></c:if>
+      						</form:form>
+						</div>
+          			</c:forEach>
+          			<script type="text/javascript">
+		             	//<mtl:cdata>
+        		     	<![CDATA[
+		                $(document).ready( function(){prepareErrorBoxes('dissError');});
+		             	]]>
+                    	//</mtl:cdata>
+                  	</script>
+          		</div>
+          	</div>    
+      	</jsp:attribute>
+      	
+      	
+	</layout:layout>
+</jsp:root>

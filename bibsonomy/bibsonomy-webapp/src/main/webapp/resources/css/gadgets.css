@@ -1,0 +1,70 @@
+/**
+ *
+ *  BibSonomy-Webapp - The webapplication for Bibsonomy.
+ *
+ *  Copyright (C) 2006 - 2011 Knowledge & Data Engineering Group,
+ *                            University of Kassel, Germany
+ *                            http://www.kde.cs.uni-kassel.de/
+ *
+ *  This program is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU General Public License
+ *  as published by the Free Software Foundation; either version 2
+ *  of the License, or (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ */
+
+.gadgets-gadget-chrome {
+  float: left;
+  margin: 4px;
+  border: 1px solid #7aa5d6;
+}
+
+.gadgets-gadget {
+  border: none;
+}
+
+.gadgets-gadget-title-bar {
+  padding: 2px 4px;
+  background-color: #e5ecf9;
+}
+
+.gadgets-gadget-title {
+  font-weight: bold;
+  color: #3366cc;
+}
+
+.gadgets-gadget-title-button-bar {
+  font-size: smaller;
+}
+
+.gadgets-gadget-user-prefs-dialog {
+  background-color: #e5ecf9;
+}
+
+.gadgets-gadget-user-prefs-dialog-action-bar {
+  text-align: center;
+  padding-bottom: 4px;
+}
+
+.gadgets-gadget-title-button {
+}
+
+.gadgets-gadget-content {
+  padding: 4px;
+}
+
+.gadgets-log-entry {
+}
+
+/* Used to style messages produced during rewriting by CajaContentRewriter */
+.gadgets-messages {
+	
+}

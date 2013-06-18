@@ -1,0 +1,21 @@
+<jsp:root version="2.0" 
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
+
+	<jsp:directive.attribute name="command" type="org.bibsonomy.webapp.command.ResourceViewCommand" required="true"/>	
+
+	<c:if test="${command.bookmarkCount > 0}">
+		<a href="/${requPath}?filter=myGroupPosts">
+			<c:out value="${command.bookmarkCount}"/>${mtl:ch('nbsp')}<fmt:message key="additional"/>${mtl:ch('nbsp')}<fmt:message key="bookmarks"/>${mtl:ch('nbsp')}<fmt:message key="available"/>		
+		</a><br/>	
+	</c:if>
+	<c:if test="${command.bibtexCount > 0}">
+		<a href="/${requPath}?filter=myGroupPosts">
+			<c:out value="${command.bibtexCount}"/>${mtl:ch('nbsp')}<fmt:message key="additional"/>${mtl:ch('nbsp')}<fmt:message key="publications"/>${mtl:ch('nbsp')}<fmt:message key="available"/>		
+		</a>	
+	</c:if>
+
+</jsp:root>

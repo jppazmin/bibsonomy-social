@@ -1,0 +1,45 @@
+<jsp:root version="2.0"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:resources="urn:jsptagdir:/WEB-INF/tags/resources"
+	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
+	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
+	
+	<jsp:directive.attribute name="command" type="org.bibsonomy.webapp.command.TabsCommandInterface" required="true"/>
+	<jsp:directive.attribute name="topcontent" fragment="true" required="false"/>			
+	<jsp:directive.attribute name="tabcontent" fragment="true" required="true"/>	
+	<jsp:directive.attribute name="requPath" type="java.lang.String" required="true"/>
+	<jsp:directive.attribute name="pageTitle" type="java.lang.String" required="true"/>
+	<jsp:directive.attribute name="disableActions" type="java.lang.Boolean" required="false"/>
+	<jsp:directive.attribute name="disableListNavigation" type="java.lang.Boolean" required="false"/>
+	<jsp:directive.attribute name="heading" fragment="true" required="true"/>
+	<jsp:directive.attribute name="sidebar" fragment="true" required="false"/>
+	<jsp:directive.attribute name="headerExt" fragment="true" required="false"/>
+    <jsp:directive.attribute name="beforeBodyClose" fragment="true"/>
+	<jsp:directive.attribute name="selectedNaviTab" type="java.lang.String" required="false"/>	
+				
+		
+	<layout:layout loginUser="${command.context.loginUser}" pageTitle="${pageTitle}" heading="${heading}" sidebar="${sidebar}" requPath="${requPath}" headerExt="${headerExt}" selectedNaviTab="${selectedNaviTab}" beforeBodyClose="${beforeBodyClose}">
+		<jsp:attribute name="content">
+			<div id="fullscreen">			
+			
+				<!-- Top Content if available -->
+				<c:if test="${!empty topcontent}">
+					<jsp:invoke fragment="topcontent"/>				
+				</c:if>	
+										
+				<!-- Tabs -->			
+				<parts:tabheader tabView="${command}" tabURL="${command.tabURL}"/>				
+				<div id="tab_content">					
+					<c:if test="${!empty tabcontent}">
+						<jsp:invoke fragment="tabcontent"/>				
+					</c:if>	
+				</div>				
+			</div>
+		</jsp:attribute>			
+	</layout:layout>
+	
+</jsp:root>

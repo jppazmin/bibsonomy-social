@@ -1,0 +1,147 @@
+<!--
+
+
+     BibSonomy-Webapp - The webapplication for Bibsonomy.
+
+     Copyright (C) 2006 - 2011 Knowledge & Data Engineering Group,
+                               University of Kassel, Germany
+                               http://www.kde.cs.uni-kassel.de/
+
+     This program is free software; you can redistribute it and/or
+     modify it under the terms of the GNU General Public License
+     as published by the Free Software Foundation; either version 2
+     of the License, or (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+
+     You should have received a copy of the GNU General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+
+-->
+
+<jsp:root version="2.0" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:mobile="urn:jsptagdir:/WEB-INF/tags/mobile"
+	xmlns:errors="urn:jsptagdir:/WEB-INF/tags/errors"
+	xmlns:form="http://www.springframework.org/tags/form"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
+
+	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
+	<script type="text/javascript" src="${resdir}/javascript/localized_strings_${locale.language}.js">&amp;nbsp;</script>
+
+	<mobile:simple command="${command}" selected="nav_more">
+		<jsp:attribute name="headerExt">
+			<script type="text/javascript" src="${resdir}/javascript/editPost.js">&amp;nbsp;</script>
+		</jsp:attribute>
+		<jsp:attribute name="content">
+			<div class="container">
+				<div id="post-manually">
+					<form:form method="POST" action="/editPublication" id="postForm">
+						<p>
+							<form:label path="post.resource.entrytype" ><fmt:message key="post.resource.entrytype"/>* </form:label>
+	            			<form:select multiple="false" path="post.resource.entrytype" cssClass="reqinput" tabindex="2" size="1" id="post.resource.entrytype" items="${mtl:getBibTeXEntryTypes()}" onchange="changeView();"/>
+	            			<div class="dissError"><form:errors path="post.resource.entrytype" /></div>
+						</p>
+						<p>
+			  				<form:label cssStyle="float: left; width: 70%;" path="post.resource.bibtexKey" ><fmt:message key="post.resource.bibtexKey"/>* </form:label>
+			  				<fmt:message var="generateBibtexKey" key="post.resource.generateBibtexKey"/>
+	            			<a style="cursor:pointer; float: right;">
+	              				<img src="${resdir}/image/button_reload.png" alt="${generateBibtexKey}" title="${generateBibtexKey}" onclick="javascript:generateBibTexKey(this)" />
+	            			</a>
+	            			<div style="clear: both; height: 0;">&amp;nbsp;</div>
+			  				<form:input path="post.resource.bibtexKey" tabindex="2"/>
+			  				<!-- reload button for BibTeX key -->
+	           	 			
+	            			<div class="dissError"><form:errors path="post.resource.bibtexKey" /></div>
+			  			</p>
+			  			<p>
+			  				<form:label path="post.resource.title" ><fmt:message key="post.resource.title"/>* </form:label>
+	            			<form:textarea path="post.resource.title" tabindex="2" rows="2"/>
+			  				<div class="dissError"><form:errors path="post.resource.title" /></div>
+	         			</p>
+	         			<p>
+	            			<form:label path="post.resource.author" ><fmt:message key="post.resource.author"/>* </form:label>
+	            			<form:textarea path="post.resource.author" tabindex="2" rows="2"/>
+	            			<div class="dissError"><form:errors path="post.resource.author" /></div>
+	          			</p>
+	          			<p>
+	            			<form:label path="post.resource.editor" ><fmt:message key="post.resource.editor"/>* </form:label>
+	            			<form:textarea path="post.resource.editor" tabindex="2" rows="2"/>
+	            			<div class="dissError"><form:errors path="post.resource.editor" /></div>
+	          			</p>
+	          
+			  			<p>
+	            			<form:label path="post.resource.year" ><fmt:message key="post.resource.year"/>* </form:label>
+	            			<form:input path="post.resource.year" tabindex="2"/>
+	            			<div class="dissError"><form:errors path="post.resource.year" /></div>    
+	          			</p>
+	          			
+	          			<p>
+	          				<fmt:message var="post_button" key="post_bibtex.button_label_post" />
+							<input type="submit" style="clear:both;" name="submit" value="${post_button}" />
+	          			</p>
+	          		</form:form>
+          		</div>
+				
+				<div id="post-isbn">
+					<div class="container">
+						<form name="upload" method="post" action="/editPublication" id="postForm">
+							<input type="hidden" name="selTab" value="3" />
+							<input type="hidden" name="ckey" value="${ckey}"/>
+							<p>
+								<label class="fsLabel"><fmt:message key="post_bibtex.doi_isbn.isbn" /></label>
+								<input type="text" class="fsInput" name="selection"/>
+							</p>
+							<p>
+								<fmt:message var="post_button" key="post_bibtex.button_label_post" />
+								<input type="submit" style="clear:both;" class="fsFormSubmit" name="submit" value="${post_button}" />
+							</p>
+						</form>
+					</div>
+				</div>
+				<c:if test="${autocompletion}">
+					<script type="text/javascript">
+            			//<mtl:cdata>
+            			<![CDATA[
+							$(document).ready(
+	    	     				function(){
+									$('#post\\.resource\\.title').keyup(function (e) {getKey(e);});
+									$('body').append($('<div id="title_window" style="position:absolute;display:none;"></div>'));
+				     			}
+	   						);
+							
+	     				]]> 
+            			//</mtl:cdata>
+     				</script>
+				</c:if>
+				<script type="text/javascript">
+					//<mtl:cdata>
+    				<![CDATA[
+						$(function() {
+							appendToToolbar();
+							
+							$("#nav_more").unbind("click");
+							$("#post-manually").hide();
+							
+							$("#post-toggle a").live("click", function() {
+								$("#post-method-isbn").toggleClass("active");
+								$("#post-method-manual").toggleClass("active");
+								$("#post-manually").toggle();
+								$("#post-isbn").toggle();
+								return false;
+							});
+						});
+					]]> 
+        			//</mtl:cdata>
+				</script>
+			</div>
+		</jsp:attribute>
+	</mobile:simple>
+</jsp:root>

@@ -1,0 +1,108 @@
+<!--
+
+
+     BibSonomy-Webapp - The webapplication for Bibsonomy.
+
+     Copyright (C) 2006 - 2011 Knowledge & Data Engineering Group,
+                               University of Kassel, Germany
+                               http://www.kde.cs.uni-kassel.de/
+
+     This program is free software; you can redistribute it and/or
+     modify it under the terms of the GNU General Public License
+     as published by the Free Software Foundation; either version 2
+     of the License, or (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+
+     You should have received a copy of the GNU General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+
+-->
+
+<jsp:root version="2.0" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:mobile="urn:jsptagdir:/WEB-INF/tags/mobile"
+	xmlns:errors="urn:jsptagdir:/WEB-INF/tags/errors"
+	xmlns:form="http://www.springframework.org/tags/form"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
+
+	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
+
+	<mobile:simple command="${command}" selected="nav_login">
+		<jsp:attribute name="content">
+			<div class="container">
+	            <errors:global errors="${errors}" /> 
+	            
+	            <c:forEach var="authMethod" items="${authConfig.authOrder}">
+           			<c:set var="authMethodName" value="${fn:toLowerCase(authMethod)}" />
+           			<div id="login_${authMethodName}" class="loginForm" style="display:none;">           
+          				<form:form action="/login_${authMethodName}" method="POST">
+           					<c:if test="${authMethod == 'INTERNAL'}">
+           						<p>
+									<form:label path="username"><fmt:message key="navi.username" /></form:label>
+									<form:input path="username" /><form:errors cssClass="errmsg" path="username" />
+								</p>
+								<p>
+									<form:label path="password"><fmt:message key="navi.password" /></form:label>
+									<form:password path="password" /><form:errors cssClass="errmsg" path="password" />
+								</p>
+								<p>
+									<form:label path="rememberMe"><fmt:message key="login.rememberMe" />:</form:label>
+									<form:checkbox path="rememberMe" /><form:errors	cssClass="errmsg" path="rememberMe" />
+		                  		</p>
+		                  		<p>
+		                    		<form:hidden path="referer" />
+		                    		<fmt:message key="navi.login" var="submit" />
+		                    		<input type="submit" value="${submit}" />
+		                  		</p>
+           					</c:if>
+  							<c:if test="${authMethod == 'LDAP'}">
+  								<p>
+									<form:label path="username"><fmt:message key="navi.username" /></form:label>
+									<form:input path="username" /><form:errors cssClass="errmsg" path="username" />
+								</p>
+								<p>
+									<form:label path="password"><fmt:message key="navi.password" /></form:label>
+									<form:password path="password" /><form:errors cssClass="errmsg" path="password" />
+								</p>
+								<p>
+									<form:label path="rememberMe"><fmt:message key="login.rememberMe" />:</form:label>
+									<form:checkbox path="rememberMe" /><form:errors	cssClass="errmsg" path="rememberMe" />
+		                  		</p>
+		                  		<p>
+		                    		<form:hidden path="referer" />
+		                    		<fmt:message key="navi.login" var="submit" />
+		                    		<input type="submit" value="${submit}" />
+		                  		</p>
+  							</c:if>
+   							<c:if test="${authMethod == 'OPENID'}">
+   								<div style="text-align: center;"><img src="${resdir}/image/openid-logo-small.png"/></div>
+	            				<p>
+	            					<form:label path="openID">OpenID</form:label>
+	            					<form:input path="openID" cssClass="openid" size="30"/>
+	            					<form:errors cssClass="errmsg" path="openID" />
+	            				</p>
+	            				<p>
+									<form:label path="rememberMe"><fmt:message key="login.rememberMe" />:</form:label>
+									<form:checkbox path="rememberMe" /><form:errors	cssClass="errmsg" path="rememberMe" />
+		                  		</p>
+	            				<p>
+			                    	<form:hidden path="referer"/>
+			                   		<fmt:message key="navi.login" var="submit"/>
+			                    	<input type="submit" value="${submit}" />
+			                	</p>
+   							</c:if>
+     					</form:form>
+					</div>
+       			</c:forEach>
+		  	</div>	
+		</jsp:attribute>
+	</mobile:simple>
+</jsp:root>

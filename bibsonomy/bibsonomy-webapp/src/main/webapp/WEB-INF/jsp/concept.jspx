@@ -1,0 +1,112 @@
+<?xml version="1.0" ?>
+<!--
+
+
+     BibSonomy-Webapp - The webapplication for Bibsonomy.
+
+     Copyright (C) 2006 - 2011 Knowledge & Data Engineering Group,
+                               University of Kassel, Germany
+                               http://www.kde.cs.uni-kassel.de/
+
+     This program is free software; you can redistribute it and/or
+     modify it under the terms of the GNU General Public License
+     as published by the Free Software Foundation; either version 2
+     of the License, or (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+
+     You should have received a copy of the GNU General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+
+-->
+
+<jsp:root version="2.0"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
+	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/tags"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts">
+	
+	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
+	
+	<layout:resourceLayout pageTitle="${command.pageTitle}" command="${command}" requPath="${requPath}">
+	
+		<jsp:attribute name="heading">		
+			<a rel="path_menu" href="#"><img alt="" src="${resdir}/image/box_arrow.png"/>${mtl:ch('nbsp')}<fmt:message key="navi.concept"/></a> ::
+            <c:choose>
+              <c:when test="${not empty command.requestedUser}">
+                <fmt:message key="navi.user"/> :: <a href="/user/${fn:escapeXml(command.requestedUser)}"><c:out value='${fn:escapeXml(command.requestedUser)}'/></a> ::
+                <c:set var="formAction">/concept/user/<c:out value='${fn:escapeXml(command.requestedUser)}'/></c:set>
+              </c:when> 
+    		  <c:when test="${not empty command.requestedGroup}">
+                <fmt:message key="navi.group"/> :: <a href="/group/${fn:escapeXml(command.requestedGroup)}"><c:out value='${fn:escapeXml(command.requestedGroup)}'/></a> ::
+                <c:set var="formAction">/concept/group/<c:out value='${fn:escapeXml(command.requestedGroup)}'/></c:set> 
+              </c:when>
+              <c:otherwise>
+                <c:set var="formAction">/concept/tag</c:set>
+              </c:otherwise>
+            </c:choose>
+            
+			<form action="${formAction}" method="GET" class="smallform">
+			  <input type="text" size="20" name="tag" id="inpf" value="${fn:escapeXml(command.requestedTags)}"/>
+			</form>										
+		</jsp:attribute>
+		
+		<jsp:attribute name="sidebar">
+		<ul id="sidebar">
+			<!--  links to tag / concept pages -->
+			<div class="smalltext">
+				<parts:tagsAndConceptsForSidebar/>
+			</div>			
+			
+			<!-- display user's tag relations -->			
+			<li>
+				<c:choose>
+					<c:when test="${not empty command.requestedUser}">
+						<c:set var="tagRelationsTitle"><fmt:message key="tagrelations.user.title"/></c:set>
+						<c:url var="relationsUrl" value="/relations/${command.requestedUser}" context="${projectContext}"/>
+					</c:when>
+					<c:when test="${not empty command.requestedGroup}">
+						<c:set var="tagRelationsTitle"><fmt:message key="tagrelations.group.title"/></c:set>
+						<c:url var="relationsUrl" value="/relations/${command.requestedGroup}" context="${projectContext}"/>
+					</c:when>						
+					<c:otherwise>
+						<c:set var="tagRelationsTitle"><fmt:message key="tagrelations.all.title"/></c:set>
+						<c:url var="relationsUrl" value="/relations" context="${projectContext}"/>
+					</c:otherwise>
+				</c:choose>
+				<span class="sidebar_h">				
+					<a href="${relationsUrl}" title="${tagRelationsTitle}">
+						<fmt:message key="tagrelations"/>
+					</a>
+				</span>	
+				<tags:concepts cmd="${command.concepts}" usersOwnRelations="${command.context.loginUser.name eq command.requestedUser}" requestedUserName="${command.requestedUser}" requestedConcepts="${command.requestedTagsList}"/>
+			</li>
+
+			<!-- if requestedUser is set, show the tag cloud -->			
+			<c:if test="${(not empty command.requestedUser) or (not empty command.requestedGroup)}">
+				<c:if test="${not empty command.requestedUser}">
+					<c:set var="requPathTagCloud" value="user/${fn:escapeXml(command.requestedUser)}"/>
+				</c:if>
+				<c:if test="${not empty command.requestedGroup}">
+					<c:set var="requPathTagCloud" value="group/${fn:escapeXml(command.requestedGroup)}"/>
+				</c:if>				
+				<!-- display tags -->
+				<li>
+					<span class="sidebar_h"><fmt:message key="tags"/></span>
+					<tags:cloud requPath="${requPathTagCloud}" cmd="${command.tagcloud}" tagboxMinfreqStyle="user"/>
+				</li>
+			</c:if>
+		</ul>	
+		</jsp:attribute>
+		
+	</layout:resourceLayout>
+</jsp:root>

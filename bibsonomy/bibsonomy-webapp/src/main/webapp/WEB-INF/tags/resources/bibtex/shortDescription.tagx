@@ -1,0 +1,26 @@
+<jsp:root version="2.0" 
+	xmlns:c="http://java.sun.com/jsp/jstl/core"	
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:rc="urn:jsptagdir:/WEB-INF/tags/resources/common"
+    xmlns:bib="urn:jsptagdir:/WEB-INF/tags/resources/bibtex"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt">
+	
+	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true"/>	
+	
+    <!-- shows a short description of a post - only title, author, year - the complete data in a hover-box -->
+  
+    ${mtl:cleanBibtex(mtl:shortPublicationDescription(post))}
+    <c:out value=" "/>
+    <span class="info">...
+      <div>
+        <div class="bmtitle"><bib:title post="${post}"/></div>
+        <div class="bmdesc"> <bib:desc post="${post}"/></div>
+        <span class="bmmeta">
+          <rc:meta post="${post}" otherPostsUrlPrefix="/bib/"/>
+        </span>
+      </div>
+    </span>
+    
+	
+</jsp:root>

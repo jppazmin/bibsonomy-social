@@ -1,0 +1,49 @@
+<jsp:root version="2.0" 
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:post="urn:jsptagdir:/WEB-INF/tags/post"
+	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/buttons"
+	xmlns:form="http://www.springframework.org/tags/form">
+
+    <!-- 
+    	the form for snippet posting on /postPublication
+     -->
+     
+	<h2><fmt:message key="post_bibtex.pub_snippet.heading" /></h2>
+	<p class="smalltext"><fmt:message key="post_bibtex.pub_snippet.description" /></p>
+    
+    
+    <form:form method="post" action="/import/publications">
+		<div id="fsform">
+			<fieldset class="fsOuter">
+           		<input type="hidden" name="selTab" value="1" />
+				<input type="hidden" name="ckey" value="${ckey}"/>
+           				
+				<div class="fsRow">
+			    	<form:label path="selection" cssClass="fsLabel"><fmt:message key="post_bibtex.pub_snippet.snippet" />*</form:label>
+			    	<form:textarea path="selection" cssClass="fsInput" rows="10"/>
+				</div>
+				             
+  				<div class="fsLabel"><!--  --></div>
+    			<post:groupBox groups="${command.context.loginUser.groups}"/>
+
+				<div class="fsRow">
+					<fmt:message var="post_button" key="post_bibtex.button_label_post" />
+					<input type="submit" class="fsFormSubmit" name="submit" value="${post_button}" />
+				</div>	    		
+
+				<!-- 
+					options (overwrite, charset, tag separator, etc.)
+				 -->
+				<fieldset class="fsInner">
+					<legend><fmt:message key="post_bibtex.upload.options" /></legend>
+					<post:postPublicationOptions/>
+				</fieldset>	    		
+			</fieldset>
+		</div>    
+    </form:form>
+
+</jsp:root>

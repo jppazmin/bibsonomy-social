@@ -1,0 +1,126 @@
+<jsp:root version="2.0" 
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:bib="urn:jsptagdir:/WEB-INF/tags/resources/bibtex"	
+	xmlns:jsp="http://java.sun.com/JSP/Page">
+	
+	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true" />
+	
+	<c:choose>
+		<c:when test="${post.resource.entrytype eq 'article'}">
+			<bib:author publication="${post.resource}"/>
+			<bib:journal post="${post}"/><c:out value=" "/>
+			<bib:volumeNumberPages post="${post}"/><c:out value=" "/>
+			<bib:year publication="${post.resource}" braces="true"/>
+			<bib:note post="${post}"/>			
+		</c:when>
+		
+		<c:when test="${post.resource.entrytype eq 'book'}">
+			<bib:author publication="${post.resource}"/>
+			<bib:series post="${post}"/>
+			<bib:publisher post="${post}"/>
+			<bib:address post="${post}"/>
+			<bib:edition post="${post}"/>
+			<bib:year publication="${post.resource}" braces="true"/>
+			<bib:note post="${post}"/>	
+		</c:when>
+		
+		<c:when test="${post.resource.entrytype eq 'inbook'}">
+			<bib:author publication="${post.resource}"/>
+			<bib:volumeOfSeries post="${post}"/>
+			<bib:chapter post="${post}"/>
+			<bib:page post="${post}"/>
+			<bib:publisher post="${post}"/>
+			<bib:address post="${post}"/>
+			<bib:edition post="${post}"/>
+			<bib:year publication="${post.resource}" braces="true"/>
+			<bib:note post="${post}"/>	
+		</c:when>
+		
+		<c:when test="${post.resource.entrytype eq 'booklet'}">
+			<bib:author publication="${post.resource}"/>
+			<bib:howpublished post="${post}"/>
+			<bib:address post="${post}"/>			
+			<bib:year publication="${post.resource}" braces="true"/>
+			<bib:note post="${post}"/>	
+		</c:when>
+		
+		<c:when test="${post.resource.entrytype eq 'incollection'}">
+			<bib:author publication="${post.resource}"/>
+			<bib:booktitle post="${post}"/>
+			<bib:volumeOfSeries post="${post}"/>
+			<bib:chapter post="${post}"/>
+			<bib:publisher post="${post}"/>
+			<bib:address post="${post}"/>
+			<bib:edition post="${post}"/>
+			<bib:note post="${post}"/>	
+			<bib:year publication="${post.resource}" braces="true"/>
+		</c:when>
+		
+		<c:when test="${post.resource.entrytype eq 'inproceedings'}">
+			<bib:author publication="${post.resource}"/>
+			<bib:booktitle post="${post}"/>
+			<bib:volumeOfSeries post="${post}"/>
+			<bib:page post="${post}"/>			
+			<bib:address post="${post}"/>
+			<bib:organization post="${post}"/>
+			<bib:publisher post="${post}"/>
+			<bib:year publication="${post.resource}" braces="true"/>
+			<bib:note post="${post}"/>
+		</c:when>
+		
+		<c:when test="${post.resource.entrytype eq 'manual'}">
+			<bib:author publication="${post.resource}"/>
+			<bib:organization post="${post}"/>
+			<bib:address post="${post}"/>
+			<bib:edition post="${post}"/>
+			<bib:year publication="${post.resource}" braces="true"/>
+			<bib:note post="${post}"/>
+		</c:when>
+	
+		<c:when test="${post.resource.entrytype eq 'mastersthesis' or post.resource.entrytype eq 'phdthesis'}">
+			<bib:author publication="${post.resource}"/>
+			<bib:school post="${post}"/>
+			<bib:address post="${post}"/>
+			<bib:type post="${post}"/>			
+			<bib:year publication="${post.resource}" braces="true"/>
+			<bib:note post="${post}"/>
+		</c:when>
+		
+		<c:when test="${post.resource.entrytype eq 'proceedings'}">				
+			<bib:author publication="${post.resource}"/>
+			<bib:volumeOfSeries post="${post}"/>
+			<bib:address post="${post}"/>
+			<bib:organization post="${post}"/>
+			<bib:publisher post="${post}"/>
+			<bib:year publication="${post.resource}" braces="true"/>
+			<bib:note post="${post}"/>
+		</c:when>
+		
+		<c:when test="${post.resource.entrytype eq 'techreport'}">			
+			<bib:author publication="${post.resource}"/>			
+			<bib:type post="${post}"/>	
+			<bib:volume post="${post}"/>		
+			<bib:institution post="${post}"/>
+			<bib:address post="${post}"/>
+			<bib:year publication="${post.resource}" braces="true"/>					
+		</c:when>
+		
+		<c:when test="${post.resource.entrytype eq 'unpublished'}">			
+			<bib:author publication="${post.resource}"/>
+			<bib:year publication="${post.resource}" braces="true"/>
+			<bib:note post="${post}"/>
+		</c:when>	
+		
+		<!-- Misc and others -->
+		<c:otherwise>
+			<bib:author publication="${post.resource}"/>	
+			<bib:howpublished post="${post}"/>
+			<bib:year publication="${post.resource}" braces="true"/>
+			<bib:note post="${post}"/>
+		</c:otherwise>	
+	
+	</c:choose>	
+	
+</jsp:root>

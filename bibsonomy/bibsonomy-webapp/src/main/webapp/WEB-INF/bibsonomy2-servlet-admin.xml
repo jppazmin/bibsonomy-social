@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+
+     BibSonomy-Webapp - The webapplication for Bibsonomy.
+
+     Copyright (C) 2006 - 2011 Knowledge & Data Engineering Group,
+                               University of Kassel, Germany
+                               http://www.kde.cs.uni-kassel.de/
+
+     This program is free software; you can redistribute it and/or
+     modify it under the terms of the GNU General Public License
+     as published by the Free Software Foundation; either version 2
+     of the License, or (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+
+     You should have received a copy of the GNU General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+
+-->
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+	                    http://www.springframework.org/schema/beans/spring-beans.xsd
+	                    http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-2.5.xsd">
+
+
+
+	<!--  #################### url mapping #################### -->
+	<!--+
+		| url mapping for admin requests
+		+-->
+	<bean id="adminUrlMapping" parent="urlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+		<property name="urlMap">
+			<map merge="true">
+				<entry key="/admin">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName"	value="adminPageController" />
+						<property name="allowedFields">
+							<list>
+								<value>aclUserInfo</value>
+								<value>requestedGroupName</value>
+								<value>selPrivlevel</value>
+								<value>action</value>
+							</list>
+						</property>
+					</bean>
+				</entry>
+				<entry key="/admin/spam">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName"	value="spamPageController" />
+						<property name="allowedFields">
+							<list>
+								<value>selTab</value>
+								<value>interval</value>
+								<value>limit</value>
+								<value>aclUserInfo</value>
+								<value>action</value>
+							</list>
+						</property>
+					</bean>
+				</entry>
+				<!--+
+					| TODO check user info functionality
+				+-->
+				<entry key="/admin/userinfo">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName"	value="spamPageController" />
+						<property name="allowedFields">
+							<list>
+								<value>userinfo</value>
+							</list>
+						</property>
+					</bean>
+				</entry>
+				<entry key="/admin/lucene">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName"	value="adminLuceneController" />
+						<property name="allowedFields">
+							<list>
+								<value>action</value>
+								<value>resource</value>
+							</list>
+						</property>
+					</bean>
+				</entry>
+				
+				<entry key="/admin/ajax">
+				    <!-- 
+				    	TODO: this is admin stuff and the URL really not good - 
+				    	      rename it to /admin/ajax/* or the like
+				     -->
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="adminAjaxController"/>
+						 <property name="allowedFields">
+                            <list>
+                                <value>action</value>
+								<value>userName</value>
+								<value>value</value>
+								<value>key</value>
+								<value>evaluator</value>
+							</list>
+						</property>
+					</bean>
+				</entry>		
+							
+				<entry key="/admin/recommender">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName"	value="adminRecommenderController" />
+					 	<property name="allowedFields">
+							<list>
+								<value>action</value>
+								<value>queriesPerLatency</value>
+								<value>newrecurl</value>
+								<value>editSid</value>
+								<value>deleteRecIds</value>
+								<value>activeRecs</value>
+								<value>disabledRecs</value>
+								<value>tab</value>
+							</list>
+						</property>
+					</bean>
+				</entry>			
+				<entry key="/admin/group">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName"	value="adminGroupController" />
+					 	<property name="allowedFields">
+							<list>
+								<value>action</value>
+								<value>group.name</value>
+								<value>group.privlevel</value>
+								<value>group.sharedDocuments</value>
+							</list>
+						</property>
+					</bean>
+				</entry>
+				<entry key="/admin/oauth">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName"	value="adminOAuthController" />
+					 	<property name="allowedFields">
+							<list>
+								<value>adminAction</value>
+								<value>consumerInfo.consumerKey</value>
+								<value>consumerInfo.consumerSecret</value>
+								<value>consumerInfo.serviceName</value>
+								<value>consumerInfo.gadgetUrl</value>
+								<value>consumerInfo.keyType</value>
+								<value>consumerInfo.keyName</value>
+								<value>consumerInfo.callbackUrl</value>
+								<value>consumerInfo.title</value>
+								<value>consumerInfo.summary</value>
+								<value>consumerInfo.description</value>
+								<value>consumerInfo.thumbnail</value>
+								<value>consumerInfo.icon</value>
+							</list>
+						</property>
+					</bean>
+				</entry>		
+			</map>
+		</property>
+	</bean>
+
+
+
+	<!--  #################### controller #################### -->
+	
+	<bean id="adminPageController" class="org.bibsonomy.webapp.controller.admin.AdminPageController" scope="request">
+		<property name="logic" ref="logic"/>
+	</bean>
+	
+	<bean id="spamPageController" class="org.bibsonomy.webapp.controller.admin.SpamPageController" scope="request">
+		<property name="logic" ref="logic"/>
+	</bean>
+
+	<bean id="adminLuceneController" class="org.bibsonomy.webapp.controller.admin.AdminLuceneController" scope="request">
+		<property name="luceneResourceManagers">
+		    <list>
+				<ref bean="luceneBibTexManager" />
+				<ref bean="luceneBookmarkManager" />
+				<ref bean="luceneGoldStandardPublicationManager" />
+		    </list>
+		</property>
+	</bean>
+
+	<bean id="adminAjaxController" class="org.bibsonomy.webapp.controller.admin.AdminAjaxController" scope="request">
+		<property name="logic" ref="logic"/>
+	</bean>
+	
+	<bean id="adminRecommenderController" class="org.bibsonomy.webapp.controller.admin.AdminRecommenderController" init-method="init" scope="singleton">
+	    <property name="multiplexingTagRecommender" ref="multiplexingTagRecommender" />
+	</bean>
+	
+	<bean id="adminGroupController" class="org.bibsonomy.webapp.controller.admin.AdminGroupController" scope="request">
+		<property name="logic" ref="logic"/>
+	</bean>
+	
+	<bean id="adminOAuthController" class="org.bibsonomy.webapp.controller.admin.AdminOAuthController" scope="request">
+		<property name="oauthLogic" ref="oauthLogic"/>
+	</bean>
+	
+	<bean id="oauthLogic" class="org.bibsonomy.opensocial.oauth.database.IbatisOAuthLogic" scope="singleton" factory-method="getInstance"/>
+		
+</beans>

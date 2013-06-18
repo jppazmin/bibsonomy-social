@@ -1,0 +1,156 @@
+ <jsp:root version="2.0"
+  xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:jsp="http://java.sun.com/JSP/Page"
+  xmlns:c="http://java.sun.com/jsp/jstl/core"
+  xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+  xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
+  xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+  xmlns:form="http://www.springframework.org/tags/form"
+  xmlns:spring="http://www.springframework.org/tags"
+  xmlns:errors="urn:jsptagdir:/WEB-INF/tags/errors"
+  xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/buttons"
+  xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
+  
+	<jsp:directive.attribute name="command"  type="org.bibsonomy.webapp.command.BaseCommand" required="true"/>
+
+
+	<c:choose>
+		<!-- check if user is logged in with wrong account -->
+		<c:when test="${empty param.user or empty param.requGroup or param.requGroup eq user.name}">
+
+  			<!-- GRANT OR DENY JOIN REQUESTS, ADD USERS -->
+			<c:set var="showDeny" value="${not empty param.user and not empty param.requGroup and param.requGroup eq user.name}"/>
+
+			<div id="groups" class="${showDeny?'highlightBox':''}">
+	
+				<h2><fmt:message key="settings.group.addUser"/></h2>
+				<form:form name="groupusers" method="post" action="/SettingsHandler">
+					<div id="fsform">
+						<fieldset class="fsInner">
+
+							<div class="fsRow">
+		    					<label for="laddgu" class="fsLabel"><fmt:message key="user.name"/></label>
+		    					<buttons:help message="settings.group.addUser.help"/>
+		    					<c:set var="userEmpty" value="${empty param.user}"/>
+		    					<input type="text" class="fsInput fsSmall" name="add_group_user" value="${userEmpty?'':fn:escapeXml(param.user)}"/>
+							</div>
+						
+							<div class="fsRow">
+		    					<input type="hidden" name="ckey" value="${ckey}"/>
+  								<fmt:message var="adduser" key="settings.group.addUser.button"/>
+		   						<input type="submit" value="${adduser}" />
+		   					</div>
+		
+						</fieldset>
+					</div>
+				</form:form>
+
+				<h2><fmt:message key="settings.group.delUser"/></h2>
+				<div id="fsform">
+				<!-- TODO: when there are no members, show a coresponding message-->
+					<fieldset class="fsInner">
+						<!-- FIXME: I18N (title attribute) -->
+						<fmt:message var="deluser" key="settings.group.delUser.button"/>
+						<fmt:message var="deluserTitle" key="settings.group.delUser.button.title"/>
+						
+						<!-- show group member list -->
+						<c:forEach items="${command.group.users}" var="member">
+							<c:if test="${member.name ne command.context.loginUser.name}">
+								<a href="/user/${mtl:encodeURI(member.name)}"><c:out value="${member.name}"/></a> 
+								<span class="smalltext">(<a href="/SettingsHandler?del_group_user=${mtl:encodeURI(member.name)}&amp;ckey=${ckey}" title="${deluserTitle}">${deluser}</a>)</span>
+								<c:out value=" "/>
+							</c:if>
+						</c:forEach>
+					</fieldset>
+				</div>
+				
+				<c:if test="${showDeny}">
+					<!-- TODO move to controller -->
+					<!-- User clicked link in email and wants to add (or cancel) user -->	  
+					<!-- cancel request only if right params existing -->
+				  	<h2>
+				  		<fmt:message key="settings.group.deny">
+		  					<fmt:param><a href="/user/${mtl:encodeURI(param.user)}"><c:out value="${param.user}"/></a></fmt:param>
+		  				</fmt:message>
+		  			</h2>
+		  			<form:form id="groupAddDenyUser" method="post" action="/join_group">
+						<div id="fsform">
+							<fieldset class="fsInner">
+
+								<div class="fsRow">
+									<input type="hidden" neme="ckey" value="${command.context.ckey }"/>
+		    						<input type="hidden" name="deniedUser" value="${fn:escapeXml(param.user)}" />
+		    						<input type="hidden" name="group" value="${command.context.loginUser.name}" />
+		    						<label for="inputreason" class="fsLabel"><fmt:message key="settings.group.denyReason"/></label>
+		    						<buttons:help message="settings.group.denyReason.help"/>
+		    						<input type="text" class="fsInput fsSmall" name="reason" id="inputreason"/>
+								</div>
+						
+								<div class="fsRow">
+ 									<fmt:message var="denyButton" key="settings.group.deny.button"/>
+ 		    						<input type="submit" value="${denyButton}" />
+		    					</div>
+
+				    		</fieldset>
+		    			</div>
+					</form:form>
+				</c:if>
+
+			</div>
+
+	
+			<!-- GROUP SETTINGS -->
+			<h2><fmt:message key="settings.group.settings"/></h2>
+			<form:form id="groupSettings" method="post" action="/updateGroupSettings">
+				<div id="fsform">
+					<fieldset class="fsInner">
+
+						<div class="fsRow">
+							<form:label cssClass="fsLabel" path="privlevel">
+								<fmt:message key="settings.group.memberList"/>
+							</form:label>
+							<buttons:help message="settings.group.memberList.help"/>
+							<form:select cssClass="fsInput fsSmall" path="privlevel">
+								<form:option value="0"><fmt:message key="settings.public"/></form:option>
+								<form:option value="1"><fmt:message key="settings.private"/></form:option>
+								<form:option value="2"><fmt:message key="settings.publicForMembers"/></form:option>
+							</form:select>
+						</div>
+
+						<div class="fsRow">
+							<form:label cssClass="fsLabel" path="sharedDocuments">
+								<fmt:message key="settings.group.sharedDocuments"/>
+							</form:label>
+							<buttons:help message="settings.group.sharedDocuments.help"/>
+							<form:select cssClass="fsInput fsSmall" path="sharedDocuments">
+		      					<form:option value="0"><fmt:message key="settings.disabled"/></form:option>
+		      					<form:option value="1"><fmt:message key="settings.enabled"/></form:option>
+		    				</form:select>
+						</div>
+					
+						<div class="fsRow">
+		    				<input type="hidden" name="ckey" value="${ckey}"/>
+  							<fmt:message var="updatesettings" key="settings.updatesettings"/>
+							<input type="submit" value="${updatesettings}"/>
+							<!-- input type="hidden" name="ckey" value="${ckey}" /-->
+		    				<!-- input type="submit" value="${change}" /-->
+		    			</div>
+	
+				    </fieldset>
+				</div>
+			</form:form>		  
+
+		</c:when>
+		<c:otherwise>	
+
+			<!-- user is logged in with wrong account -->
+			<div id="groups" class="highlightBox">
+				<fmt:message key="settings.group.login">
+					<fmt:param value="${fn:escapeXml(param.requGroup)}"/>
+				</fmt:message>
+			</div>
+
+		 </c:otherwise>
+ 	</c:choose>
+ 
+ </jsp:root>

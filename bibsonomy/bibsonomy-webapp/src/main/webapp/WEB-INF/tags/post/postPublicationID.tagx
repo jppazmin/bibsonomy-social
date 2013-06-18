@@ -1,0 +1,46 @@
+<jsp:root version="2.0" 
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:post="urn:jsptagdir:/WEB-INF/tags/post"
+	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/buttons"
+	xmlns:form="http://www.springframework.org/tags/form">
+
+    <!-- 
+    	the form for posting using an ISBN/ISSN/DOI on /postPublication
+     -->
+
+	<h2><fmt:message key="post_bibtex.doi_isbn.title" /></h2>
+	<p class="smalltext"><fmt:message key="post_bibtex.doi_isbn.description" /></p>
+
+	<form name="upload" method="post" action="/editPublication">
+		<div id="fsform">
+			<fieldset class="fsOuter">
+				<input type="hidden" name="selTab" value="3" />
+				<input type="hidden" name="ckey" value="${ckey}"/>
+						
+		
+					<div class="fsRow">
+						<label class="fsLabel"><fmt:message key="post_bibtex.doi_isbn.isbn" /></label>
+						<input type="text" class="fsInput" name="selection"/>
+					</div>
+		                                        
+					<div class="fsRow">
+						<label class="fsLabel"><fmt:message key="post_bibtex.doi_isbn.issn" /></label>
+						<input type="text" name="selection" class="fsInput" />
+					</div>
+		
+					<div class="fsRow">
+						<label class="fsLabel"><fmt:message key="post_bibtex.doi_isbn.doi" /></label>
+						<input type="text" name="selection" class="fsInput" />
+					</div>
+		
+					<fmt:message var="post_button" key="post_bibtex.button_label_post" />
+					<input type="submit" style="clear:both;" class="fsFormSubmit" name="submit" value="${post_button}" />
+							     
+			</fieldset>
+		</div>
+	</form>
+</jsp:root>

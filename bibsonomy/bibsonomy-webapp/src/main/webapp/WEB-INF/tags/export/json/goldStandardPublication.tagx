@@ -1,0 +1,16 @@
+<jsp:root version="2.0" 
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:json="urn:jsptagdir:/WEB-INF/tags/export/json">
+
+	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true" />
+      {
+         "type" : "GoldStandardPublication",
+         "id"   : "${projectHome}bibtex/1${post.resource.intraHash}",
+         <json:abstractPublication post="${post}" />
+      }
+</jsp:root>

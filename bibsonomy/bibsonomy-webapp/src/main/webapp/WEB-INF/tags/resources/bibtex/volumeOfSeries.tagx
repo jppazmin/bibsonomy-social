@@ -1,0 +1,22 @@
+<jsp:root version="2.0" 
+	xmlns:c="http://java.sun.com/jsp/jstl/core"	
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
+	
+	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true"/>	
+	
+	<c:choose>
+		<c:when test="${not empty post.resource.volume and not empty post.resource.series}">		
+			<em><fmt:message key="bibtex.volume"/><c:out value=" "/>${mtl:cleanBibtex(post.resource.volume)}<c:out value=" "/><fmt:message key="bibtex.volumeOf"/><c:out value=" "/>${mtl:cleanBibtex(post.resource.series)},<c:out value=" "/></em>		
+		</c:when>
+		<c:when test="${not empty post.resource.volume}">		
+			<em><c:out value=" "/>${mtl:cleanBibtex(post.resource.volume)},<c:out value=" "/></em>		
+		</c:when>
+		<c:otherwise>
+			<c:if test="${not empty post.resource.number}">
+				<em><c:out value=" "/>${mtl:cleanBibtex(post.resource.number)},<c:out value=" "/></em>
+			</c:if>
+		</c:otherwise>
+	</c:choose>
+</jsp:root>

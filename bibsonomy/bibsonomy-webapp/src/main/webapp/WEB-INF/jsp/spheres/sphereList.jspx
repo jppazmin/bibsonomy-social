@@ -1,0 +1,221 @@
+<?xml version="1.0" ?>
+<!--
+
+
+     BibSonomy-Webapp - The webapplication for Bibsonomy.
+
+     Copyright (C) 2006 - 2011 Knowledge & Data Engineering Group,
+                               University of Kassel, Germany
+                               http://www.kde.cs.uni-kassel.de/
+
+     This program is free software; you can redistribute it and/or
+     modify it under the terms of the GNU General Public License
+     as published by the Free Software Foundation; either version 2
+     of the License, or (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+
+     You should have received a copy of the GNU General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+
+-->
+
+<jsp:root version="2.0"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
+	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/tags"
+	xmlns:json="urn:jsptagdir:/WEB-INF/tags/export/json"
+	xmlns:users="urn:jsptagdir:/WEB-INF/tags/users"
+	xmlns:spheres="urn:jsptagdir:/WEB-INF/tags/spheres"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:resources="urn:jsptagdir:/WEB-INF/tags/resources"
+	xmlns:button="urn:jsptagdir:/WEB-INF/tags/buttons"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
+	
+	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
+	
+	<layout:layout loginUser="${command.context.loginUser}" pageTitle="${pageTitle}" heading="${heading}" requestedUser="${command.requestedUser}" sidebar="${sidebar}" requPath="${requPath}" selectedNaviTab="${selectedNaviTab}" personalized="${command.personalized}" beforeBodyClose="${beforeBodyClose}">		
+		<jsp:attribute name="headerExt">
+			<script type="text/javascript" src="${resdir}/javascript/resourceList.js">&amp;nbsp;</script>
+			<script type="text/javascript" src="${resdir}/javascript/jquery.fadebox.js">&amp;nbsp;</script> 
+			<c:set var="bookRssUrl" value="/rss/${requPath}"/>
+			<link rel="alternate" type="application/rss+xml" title="${bookmarkRssFeed} /${requPath}" href="${bookRssUrl}" />
+			<c:set var="bibRssUrl" value="/publrss/${requPath}"/>
+			<link rel="alternate" type="application/rss+xml" title="${publicationRssFeed} /${requPath}" href="${bibRssUrl}" />
+			<c:set var="burstUrl" value="/burst/${requPath}"/>
+			<link rel="alternate" type="application/rss+xml" title="${burstRssFeed} /${requPath}" href="${burstUrl}" />
+            <c:set var="swrcUrl" value="/swrc/${requPath}"/>
+            <link rel="alternate" type="application/rdf+xml" title="${swrcFeed} /${requPath}" href="${swrcUrl}" />
+            <!-- UnAPI service -->
+            <link rel="unapi-server" type="application/xml" title="unAPI" href="${projectHome}unapi"/>
+            	<c:if test="${command.context.loginUser.settings.showBookmark and command.context.loginUser.settings.showBibtex}">
+            		<c:set var="optionShowBoth"><c:out value="hiddenElement"/></c:set>
+            	</c:if>
+            	<script type="Text/JavaScript">
+					<![CDATA[
+					$(document).ready(function() {
+						sysTagFadeBox(self);
+					});
+					]]>
+				</script>
+        	<!-- set by url parameter -->
+	        <c:set var="showPublication" value="${mtl:containsResourceClass(command.resourcetype, 'publication')}" />
+        	<c:set var="showBookmark" value="${mtl:containsResourceClass(command.resourcetype, 'bookmark')}" />
+        
+	        <!-- if not set by url parameter use usersettings -->
+			<c:if test="${not showPublication and not showBookmark}">
+				<c:set var="showPublication" value="${command.context.loginUser.settings.showBibtex}" />
+				<c:set var="showBookmark" value="${command.context.loginUser.settings.showBookmark}" />
+			</c:if>
+    	    <c:if test="${showBookmark and not showPublication }">
+        		<style>
+						#bibtexList {
+							display:none;
+						}
+						#bookmarkList {
+							width:97%;
+						}
+				</style>
+				<c:set var="optionShowBoth"><c:out value=""/></c:set>
+				<c:set var="optionExpandBookmark"><c:out value="hiddenElement"/></c:set>
+        	</c:if>
+			<c:if test="${showPublication and not showBookmark}">
+				<style>
+					#bookmarkList {
+						display:none;
+					}
+					#bibtexList {
+						width:97%;
+					}
+				</style>
+				<c:set var="optionShowBoth"><c:out value=""/></c:set>
+				<c:set var="optionExpandBibtex"><c:out value="hiddenElement"/></c:set>
+			</c:if>
+		</jsp:attribute>
+		
+		<jsp:attribute name="content">
+		
+	    	<style type="text/css">
+	    		.sphere {
+	    			margin: 1%;
+	    		}
+	    		
+	    		.sphere_header {
+	    			font-size: 120%;
+	    			font-weight: bold;
+	    			color: #006699;
+	    			width: 70%;
+	    			float: left;
+	    		}
+	    		
+	    		.sphere_separator {
+	    			margin-top: 0.25em;
+	    			margin-bottom: 1em;
+	    			width: 70%;
+	    			float: left;
+	    		}
+	    		
+	    		.sphere_users {
+	    			margin-left: 2em;
+	    			width: 40%;
+	    			float: left;
+	    		}
+	    		
+	    		.sphere_tag_cloud {
+	    			width: 25%;
+	    			float: left;
+	    		}
+	    		
+	    		.sphere_control {
+	    			width: 65%;
+	    			text-align: right;
+	    			margin-left: 2em;
+	    			margin-bottom: 1em;
+	    			margin-top: 0em;
+	    		}
+	    		
+	    		.sphere_resources {
+	    			display: none;
+	    		}
+	    	
+	    		.sphere_user_list{
+					list-style: none outside none;
+					margin: 0;
+					padding: 0;
+				}
+				.sphere_user_list li {
+					display: inline;
+    				line-height: 1.5em;
+    				padding: 0 0.1em;
+				}
+				.sphere_image_container {
+					width: 55px;
+					height: 42px;
+					float: left;
+					text-align: center;
+					margin-bottom: 2px;
+					margin-right: 5px;
+				}
+				.sphere_image_container * img {
+					height: 40px;
+				}
+			</style>
+				
+		<div class="sphere">
+			<c:forEach items="${command.spheres}" var="entry">
+	    		<span class="sphere_header"><c:out value="${entry.key}"/></span>
+	    		<hr class="sphere_separator"/>
+	    		
+	    		<!--+
+	    			| display buddies
+	    			+-->
+	    		<div class="sphere_users">
+	    			<ul class="sphere_user_list">
+	    				<c:forEach items="${entry.value}" var="item" varStatus="loop">
+	    					<li>
+		    					<spheres:userLink user="${item}"/>
+			    			</li>
+				    		<!-- <h3><c:out value="${item}"/></h3> -->    	
+					    </c:forEach>
+					</ul>    
+			    </div>
+			    
+			    <div class="sphere_tag_cloud">
+			    	<tags:cloud requPath="${requPath}" cmd="${command.spheresTagClouds[entry.key]}" showTooltips="${command.context.loginUser.settings.tagboxTooltip}"/>
+			    </div>
+
+			    <div class="sphere_control">
+			    	<button:linkButton href="#" title="show publication">
+						<jsp:attribute name="text">
+							Show Posts
+							<!--<fmt:message key="navi.friend"/>-->
+						</jsp:attribute>
+					</button:linkButton>
+			    	<button:linkButton href="#" title="manage this sphere">
+						<jsp:attribute name="text">
+							Manage Sphere
+							<!--<fmt:message key="navi.friend"/>-->
+						</jsp:attribute>
+					</button:linkButton>
+			    </div>
+			    
+			    <div class="sphere_resources">
+        			<resources:bookmarks listView="${command.spheresBMPosts[entry.key]}" loginUserName="${command.context.loginUser}" disableActions="${true}" disableListNavigation="${true}" requPath="${requPath}"/>
+        			<resources:bibtexs listView="${command.spheresPBPosts[entry.key]}" loginUserName="${command.context.loginUser}" disableActions="${true}" disableListNavigation="${true}" requPath="${requPath}"/>
+        		</div>
+        		
+        		<div style="clear: both;"><!--  --></div>
+        		
+			</c:forEach>
+		</div>
+		</jsp:attribute>
+	</layout:layout>
+	
+</jsp:root>

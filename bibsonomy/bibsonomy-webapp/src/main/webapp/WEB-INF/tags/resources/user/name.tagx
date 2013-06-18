@@ -1,0 +1,32 @@
+<jsp:root version="2.0" 
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+    xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:jsp="http://java.sun.com/JSP/Page">
+
+    <!--+
+    	|
+    	| show real name of user + homepage (if exists)
+    	|
+    	+-->
+
+	
+	<jsp:directive.attribute name="user" type="org.bibsonomy.model.User" required="true" />
+    <jsp:directive.attribute name="prefix" type="java.lang.String" required="false" />
+
+    <c:if test="${not empty user.realname}">
+    	<span class="realname">
+	        (<c:choose>
+	          <c:when test="${not empty user.homepage}">
+	             <a href="${fn:escapeXml(user.homepage)}"><c:out value="${user.realname}"/></a>
+	          </c:when>
+	          <c:otherwise>
+	             <c:out value="${user.realname}"/>          
+	          </c:otherwise>
+	        </c:choose>)
+        </span>
+    </c:if>
+      
+	
+</jsp:root>

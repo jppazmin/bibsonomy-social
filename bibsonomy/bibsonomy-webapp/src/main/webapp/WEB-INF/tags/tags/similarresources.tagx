@@ -1,0 +1,91 @@
+<jsp:root version="2.0" 
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:rc="urn:jsptagdir:/WEB-INF/tags/resources/common"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:bib="urn:jsptagdir:/WEB-INF/tags/resources/bibtex"
+	xmlns:form="http://www.springframework.org/tags/form"
+	xmlns:export="urn:jsptagdir:/WEB-INF/tags/export/bibtex"
+	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/tags"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions">
+	
+	
+	<!-- 
+	
+		Shows similar resources in the sidebar. Currently disabled, since the 
+		PIA webservice does not work.
+	
+	 -->
+	
+	<jsp:directive.attribute name="url" type="java.lang.String" required="true"/>
+	<jsp:directive.attribute name="method" type="java.lang.String" required="true"/>
+	
+	<fmt:message key="resources.similar" var="resources_title"/>
+	
+	<!--+
+		|
+		| JavaScript to call PIA
+		| 
+	 	+-->
+	<script type="text/javascript" src="${resdir}/javascript/jqSOAPClient.js"><!--  --></script>
+  	<script type="text/javascript" src="${resdir}/javascript/x2j.js"><!--  --></script>
+  	<script type="text/javascript" src="${resdir}/javascript/callPia.js"><!--  --></script>	
+	
+	 
+	<script type="text/javascript">
+    <![CDATA[
+             $(document).ready(
+                     function () {
+						var request = new PIARequest("${method}", "${url}");
+							request.callback = 'processRsp';
+							request.count = 10;
+							request.makeRequest();
+              });
+			
+             function processRsp(obj) {
+                     var pNode = obj.Body[0].findSimilarUrlsResponse[0].publication;
+                     if(PIAObject.method == 'findSimilarUrls') {
+                    	 var elem = document.createElement("li")
+                         var span = document.createElement("span");
+                         var ul = document.createElement("ul");
+                         
+                         ul.className = 'taglist';
+                         
+                         span.className = 'sidebar_h';
+                         span.innerHTML = '${resources_title}';
+                         span.insertBefore(getToggler(), span.firstChild);
+                         elem.appendChild(span);
+                         elem.appendChild(ul);
+
+                         for(var k = 0; pNode.length > k; k++) {
+							var li = document.createElement("LI");
+							var a = document.createElement("A");
+							var outerdiv = document.createElement("DIV");
+							var innerdiv = document.createElement("DIV");
+
+							a.title = pNode[k].title[0].Text;
+							a.href = pNode[k].location[0].Text;
+							
+							li.style.display = "block";
+							outerdiv.className = "help";
+
+							innerdiv.style.left = "-120px";
+							innerdiv.innerHTML = a.title;
+							
+							//a.onmouseover = function() {this.innerHTML = this.title;};
+							//a.onmouseout = function() {this.innerHTML = (this.title.length > 25)? this.title.substr(0, 25) + '... ':this.title;};
+							
+							a.appendChild(document.createTextNode((a.title.length > 25)? a.title.substr(0, 25) + '... ':a.title));
+							outerdiv.appendChild(a);
+							outerdiv.appendChild(innerdiv);
+							
+							li.appendChild(outerdiv);
+							$(ul).append(li);
+                         }  
+                         $("#sidebar").append(elem);
+					}
+             }              
+     ]]>
+     </script>
+</jsp:root>

@@ -1,0 +1,111 @@
+<jsp:root version="2.0" xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:jspx="urn:jsptld:/WEB-INF/taglibs/jspx.tld"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions">
+
+	<jsp:directive.attribute name="cmd"	type="org.bibsonomy.webapp.command.TagCloudCommand" required="true" />
+	<jsp:directive.attribute name="requPath" type="java.lang.String" required="true" />
+	<jsp:directive.attribute name="tagboxMinfreqStyle" type="java.lang.String" required="false"/>
+	<jsp:directive.attribute name="tagSizeMode" type="java.lang.String" required="false"/>
+	<jsp:directive.attribute name="showPlain" type="java.lang.Boolean" required="false"/>
+	<!-- 
+		highlighTags is a space-separated string of tags; each one will be highlighted
+		in the tagcloud (if present)
+	-->
+	<jsp:directive.attribute name="highlightTags" type="java.lang.String" required="false"/>
+	<jsp:directive.attribute name="showTooltips" type="java.lang.Integer" required="false"/>
+	<jsp:directive.attribute name="copytag" type="java.lang.Boolean" required="false"/>
+	<jsp:directive.attribute name="targetId" type="java.lang.String" required="false"/>
+	<jsp:directive.attribute name="suppressTitle" type="java.lang.Boolean" required="false"/>
+
+	<!-- tagcloud styles: 0 cloud, 1 list (see org.bibsonomy.common.enums.TagCloudStyle) -->
+	<c:choose>
+		<c:when test="${cmd.style.id == 0}">
+			<c:set var="style" value="tagcloud" />
+		</c:when>
+		<c:otherwise>
+			<c:set var="style" value="taglist" />
+		</c:otherwise>
+	</c:choose>
+
+	<!-- disable tagbox minfreq links, if not specified -->
+	<c:if test="${empty tagboxMinfreqStyle}">
+    	<c:set var="tagboxMinfreqStyle" value="none"/>
+    </c:if>
+
+	<!-- preprocess tags to be highlighted (add space at beginning + end) -->
+	<c:if test="${not empty highlightTags}">
+    	<c:set var="highlightTags" value="${' '}${highlightTags}${' '}"/>
+    </c:if>
+			
+	<!-- display of tag tooltips is disabled by default -->
+    <c:set var="showTooltips" value="${not (empty showTooltips or showTooltips == 0)}"/>
+
+
+	<c:if test="${empty showPlain or showPlain eq 'false'}">
+		<script type="text/javascript">tagbox_minfreq_style = '${tagboxMinfreqStyle}';</script>
+	</c:if>
+	
+
+	<ul class="${style}" id="tagbox">
+	
+		<!-- loop over tags -->
+		<c:forEach var="tag" items="${cmd.tags}">
+		    
+
+			<fmt:message var="posts" key="posts" /> <!-- plural -->		
+			<!-- determine tag css depending on its frequency -->
+			<c:if test="${tag.usercount == 1}">
+				<fmt:message var="posts" key="post" /> <!-- singular -->
+			</c:if>	
+			
+			<c:choose>	
+				<c:when test="${tagSizeMode eq 'user'}">	
+					<c:set var="tagclass" value="${mtl:getTagSize(tag.usercount, cmd.maxUserTagCount)}" />
+				</c:when>
+				<c:otherwise>
+					<c:set var="tagclass" value="${mtl:getTagSize(tag.usercount, cmd.maxTagCount)}" />
+				</c:otherwise>
+			</c:choose>
+			
+			<!-- display the tag -->						
+			<c:if test="${tag.usercount >= cmd.minFreq or tagboxMinfreqStyle == 'none'}">
+				<li class="${tagclass}">
+					<jspx:element name="a">
+						<jspx:attribute name="href">
+							<c:choose>
+								<!-- add the tag to a field -->
+								<c:when test="${copytag == true and not empty targetId}">javascript:copytag('${targetId}','${tag.name}')</c:when>
+								<!-- use the tag as a link to a page -->
+								<c:otherwise>/${mtl:getPath(requPath)}/${fn:escapeXml(tag.name)}</c:otherwise>
+							</c:choose>
+						</jspx:attribute>
+						<jspx:attribute name="title"><c:if test="${empty suppressTitle or suppressTitle == false }">${tag.usercount}<c:out value=" "/>${posts}</c:if></jspx:attribute>
+						<c:if test="${tagSizeMode eq 'home'}">				
+							<jspx:attribute name="style">font-size:${mtl:computeTagFontsize(tag.usercount, cmd.maxFreq, tagSizeMode)}%</jspx:attribute>
+						</c:if>
+						<c:set var="tagNameWithSpaces" value="${' '}${tag.name}${' '}"/>
+						<c:if test="${not empty highlightTags and fn:contains(highlightTags,tagNameWithSpaces)}">				
+							<jspx:attribute name="style">border-bottom:1px dotted black;</jspx:attribute>
+						</c:if>						
+						<c:if test="${showTooltips}">
+							<jspx:attribute name="onmouseover">javascript:preDoTooltip(event)</jspx:attribute>
+							<jspx:attribute name="onmouseout">javascript:hideTip()</jspx:attribute>					
+						</c:if>	
+						<jspx:body>${fn:escapeXml(tag.name)}</jspx:body>
+					</jspx:element>
+				</li>
+				<c:out value=" "/>						
+			</c:if>			
+		</c:forEach>		
+	</ul>
+
+	<!-- this is just a hack to expose the maximum number of tags for "old" ajax components 
+	<script type="text/javascript">
+		var tagMaxFreq = ${cmd.maxFreq};
+	</script>
+	-->
+
+</jsp:root>

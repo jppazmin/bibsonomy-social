@@ -1,0 +1,136 @@
+<?xml version="1.0" ?>
+<!--
+
+
+     BibSonomy-Webapp - The webapplication for Bibsonomy.
+
+     Copyright (C) 2006 - 2011 Knowledge & Data Engineering Group,
+                               University of Kassel, Germany
+                               http://www.kde.cs.uni-kassel.de/
+
+     This program is free software; you can redistribute it and/or
+     modify it under the terms of the GNU General Public License
+     as published by the Free Software Foundation; either version 2
+     of the License, or (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+
+     You should have received a copy of the GNU General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+
+-->
+
+<jsp:root version="2.0"
+  xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:jsp="http://java.sun.com/JSP/Page"
+  xmlns:c="http://java.sun.com/jsp/jstl/core"
+  xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+  xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
+  xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+  xmlns:form="http://www.springframework.org/tags/form"
+  xmlns:spring="http://www.springframework.org/tags"
+  xmlns:errors="urn:jsptagdir:/WEB-INF/tags/errors"
+  xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
+  
+  <jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
+
+  <fmt:message key="navi.register" var="pageTitle" />
+  <layout:layout loginUser="${command.context.loginUser}" pageTitle="${pageTitle}" requPath="${requPath}">
+  
+        <jsp:attribute name="heading">
+          <c:out value="${pageTitle}" />
+        </jsp:attribute>
+      
+        
+        <jsp:attribute name="content">
+
+	      <div id="general">
+			
+			<p>			           
+            <form:form action="/registerLDAP" method="POST">
+
+				<errors:global errors="${errors}"/>      
+              
+              	<h3><fmt:message key="register.ldap.step2"/></h3>       
+
+				<fmt:message key="register.ldap.step2.description"/>
+
+				<h3><fmt:message key="register.ldap.required"/></h3>  
+
+              	<table>
+                	<tr>
+	                  <td width="200px"><form:label path="registerUser.name" ><fmt:message key="navi.username"/>:</form:label></td>
+	                  <td><form:input path="registerUser.name" cssStyle="width:30em;" /><form:errors cssClass="errmsg" path="registerUser.name" /></td>
+	                </tr>
+	
+	                <tr>
+	                  <td><form:label path="registerUser.email" ><fmt:message key="user.settings.email"/>:</form:label></td>
+	                  <td><form:input path="registerUser.email" cssStyle="width:30em;" /><form:errors cssClass="errmsg" path="registerUser.email" /></td>
+	                </tr>
+	                
+	                <tr>
+	                  <td><form:label path="registerUser.ldapId" ><fmt:message key="user.settings.ldapid"/>:</form:label></td>
+	                  <td><c:out value="${command.registerUser.ldapId}"/><form:errors cssClass="errmsg" path="registerUser.ldapId" /></td>
+	                </tr>
+				</table>
+				
+				<br/>
+				<h3><fmt:message key="register.ldap.optional"/></h3> 
+				
+				<table>
+	                <tr>
+	                  <td width="200px"><form:label path="registerUser.realname" ><fmt:message key="user.settings.realname"/>:</form:label></td>
+	                  <td><form:input path="registerUser.realname" cssStyle="width:30em;" /><form:errors cssClass="errmsg" path="registerUser.realname" /></td>
+	                </tr>	
+	                
+	                <tr>
+	                  <td><form:label path="registerUser.gender" ><fmt:message key="navi.gender"/>:</form:label></td>
+	                  <td>
+	                  	<form:radiobutton path="registerUser.gender" value="F" label="female"/>
+	                  	<form:radiobutton path="registerUser.gender" value="M" label="male"/>
+	                  	
+<!-- 	                  
+	                  	<form:select path="registerUser.gender">
+	                  		<form:option value="F" label="female"/>
+	                  		<form:option value="M" label="male"/>
+	                  	</form:select>
+ -->	                  	
+	                 	<form:errors cssClass="errmsg" path="registerUser.gender" />
+	                  </td>
+	                </tr>
+	                
+	                <tr>
+	                  <td><form:label path="registerUser.place" ><fmt:message key="navi.place"/>:</form:label></td>
+	                  <td><form:input path="registerUser.place" cssStyle="width:30em;" /><form:errors cssClass="errmsg" path="registerUser.place" /></td>
+	                </tr>
+	                
+	                <tr>
+                 	  <td><form:label path="registerUser.homepage" ><fmt:message key="user.settings.homepage"/>:</form:label></td>
+                  	  <td><form:input path="registerUser.homepage" cssStyle="width:30em;" /><form:errors cssClass="errmsg" path="registerUser.homepage" /></td>
+                	</tr>
+	                	                    
+	                <tr>
+	                  <td colspan="3">
+	                    <input type="hidden" name="ckey" value="${command.context.ckey}"/>
+	                    <input type="hidden" name="step" value="3"/>
+	                    <input type="hidden" name="rememberMe" value="${command.rememberMe}"/>
+	                    
+	                    <fmt:message key="register.send" var="submit"/>
+	                    <input type="submit" value="${submit}" />
+	                  </td>
+	                </tr>
+	        	</table>
+			</form:form>
+
+            </p>			
+          </div>
+      
+      </jsp:attribute>
+      
+  </layout:layout>
+  
+</jsp:root>

@@ -1,0 +1,24 @@
+<jsp:root version="2.0" 
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:jsp="http://java.sun.com/JSP/Page">
+
+	<!--+ 
+		|
+		| Uses the crossref to link the linktext to /bibtexkey/crossref.
+		| If no crossref is given, no link is produced and only the linktext
+		| printed.
+		|
+	 	-->
+	
+	<jsp:directive.attribute name="crossref" type="java.lang.String" required="true" description="The bibtex key to be referenced."/>
+	<jsp:directive.attribute name="linktext" type="java.lang.String" required="true" description="The text for the link."/>
+		
+	<!-- all in one line to avoid leading spaces -->
+	<c:choose>
+		<c:when test="${not empty crossref}"><a href="/bibtexkey/${fn:escapeXml(crossref)}">${mtl:cleanBibtex(linktext)}</a></c:when>
+		<c:otherwise>${mtl:cleanBibtex(linktext)}</c:otherwise>
+	</c:choose>
+	
+</jsp:root>

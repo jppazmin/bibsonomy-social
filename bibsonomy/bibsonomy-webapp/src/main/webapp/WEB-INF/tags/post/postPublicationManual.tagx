@@ -1,0 +1,40 @@
+<jsp:root version="2.0" 
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:post="urn:jsptagdir:/WEB-INF/tags/post"
+	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/buttons"
+	xmlns:editpub="urn:jsptagdir:/WEB-INF/tags/actions/edit/publication"
+	xmlns:form="http://www.springframework.org/tags/form">
+
+    <!-- 
+    	the form for manual posting on /postPublication
+     -->
+    <jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true"/>
+
+
+	<!-- 
+		shows suggested publications, when user types title
+	 -->
+	<div id="suggestionBox" style="position:absolute; display:none;"><!--  --></div>        
+	
+
+	<h2><fmt:message key="post_bibtex.manual.heading"/></h2>
+	<p class="smalltext"><fmt:message key="post_bibtex.manual.description" /></p>
+      			
+	<form:form id="postForm" action="/editPublication" method="post">
+		<input type="hidden" name="selTab" value="0" />
+       	<input type="hidden" name="ckey" value="${ckey}"/>	
+
+		<div id="fsform">
+			<fieldset class="fsOuter" >
+				<editpub:required post="${post}" autocompletion="${true}"/>
+				<fmt:message var="post_button" key="post_bibtex.button_label_post" />
+				<input type="submit" class="fsFormSubmit" style="clear:both; float:left;" name="submit" value="${post_button}"/>
+			</fieldset>
+		</div>
+	</form:form>
+
+</jsp:root>

@@ -1,0 +1,136 @@
+<jsp:root version="2.0"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:menuparts="urn:jsptagdir:/WEB-INF/tags/menu/parts"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
+	
+	<jsp:directive.attribute name="loginUser" type="org.bibsonomy.model.User" required="true"/>
+	<jsp:directive.attribute name="selectedNaviTab" type="java.lang.String" required="false"/>	
+	
+	<c:set var="loginUserName" value="${loginUser.name}" />
+	
+	<div id="nice_tnav">
+	<ul>
+		<li>
+			<c:url var="root" value="/" context="${projectContext}"/><a id="nav_home" href="${root}">Home</a>
+		</li>
+		<c:choose>
+			<c:when test="${not empty loginUserName}">
+				<li>
+					<!--+ 
+					 	|
+					 	| dropdown menu for myBibSonomy
+					 	|
+					 	+-->
+					<c:url var="userUrl" value="/user/${mtl:encodeURI(loginUserName)}" context="${projectContext}"/>
+					<a id="nav_my" href="${userUrl}" rel="my_menu"><img src="${resdir}/image/nice_box_arrow.png" alt="" /> <fmt:message key="navi.my"/>${projectName}</a>
+
+					  <div id="my_menu" class="nicedropmenudiv">
+					    <a href="/friends">
+					    	<fmt:message key="navi.my.plural"/>
+					    	<fmt:message key="navi.friends.cap"/>
+					    </a>
+						<a href="/relations/${fn:escapeXml(user.name)}">
+							<fmt:message key="navi.my.plural"/>
+							<fmt:message key="navi.relations.cap"/>
+						</a>
+						<a href="/mySearch">
+				        	<fmt:message key="navi.my.plural"/>
+				        	<fmt:message key="navi.search.cap"/>						
+						</a>
+				        <a href="/user/${fn:escapeXml(user.name)}?filter=myPDF">
+				        	<fmt:message key="navi.my.plural"/>
+				        	<fmt:message key="navi.pdfs"/>
+				        </a>
+				        <a href="/user/${fn:escapeXml(user.name)}?filter=myDuplicates">
+				        	<fmt:message key="navi.my.plural"/>
+				        	<fmt:message key="navi.duplicates.cap"/>
+				        </a>
+				        <a href="/bib/user/${fn:escapeXml(user.name)}?items=1000">
+				        	<fmt:message key="navi.my"/>
+				        	<fmt:message key="navi.bibtex.cap"/>
+				        </a>
+				        <a href="/followers">
+				        	<fmt:message key="navi.my.plural"/>
+				        	<fmt:message key="navi.followedUsers.my"/>
+				        </a>
+				        <a href="/cv/user/${fn:escapeXml(user.name)}">
+				        	<fmt:message key="navi.my"/>
+				        	<fmt:message key="navi.cv"/>						
+						</a>
+						<a href="/viewable/private">
+				        	<fmt:message key="navi.my.plural"/>
+				        	<fmt:message key="navi.privatePosts"/>						
+						</a>		        
+					  </div>						
+				</li>
+				<li>
+					<a id="nav_postBook" href="/postBookmark"><fmt:message key="navi.postBookmark"/></a>
+				</li>
+				<li>
+					<a id="nav_postPub" href="/postPublication"><fmt:message key="navi.postPublication"/></a>
+				</li>
+			</c:when>
+		</c:choose>	
+		<li>
+			<c:url var="tagsUrl" value="/tags" context="${projectContext}"/><a id="nav_tags" href="${tagsUrl}"><fmt:message key="navi.tags"/></a>
+		</li>
+		<li>
+			<c:url var="authorsUrl" value="/authors" context="${projectContext}"/><a id="nav_authors" href="${authorsUrl}"><fmt:message key="navi.authors"/></a>
+		</li>		
+		<li>
+			<c:url var="relationsUrl" value="/relations" context="${projectContext}"/>
+			<a id="nav_relations" href="${relationsUrl}"><fmt:message key="navi.relations"/></a>								
+		</li>
+		<li>
+			<c:url var="groupsUrl" value="/groups" context="${projectContext}"/>
+			<a id="nav_groups" href="${groupsUrl}" rel="grp_menu"><c:if test="${not empty loginUser.groups}"><img src="${resdir}/image/nice_box_arrow.png" alt="" /> </c:if><fmt:message key="navi.groups"/></a>
+		</li>
+  
+        <!-- dropdown menu for groups -->
+        <c:if test="${not empty loginUser.groups}">
+		  <li>
+		  	<div id="grp_menu" class="nicedropmenudiv">
+                
+                <table class="tnav_group">
+				  <c:forEach var="grp" items="${loginUser.groups}">
+                    <tr>
+					   <td><a href="/group/${fn:escapeXml(grp.name)}"><c:out value='${grp.name}'/></a></td>
+                       <td><a href="/relevantfor/group/${fn:escapeXml(grp.name)}"><fmt:message key="navi.relevantFor"/></a></td>
+                       <td><a href="/viewable/${fn:escapeXml(grp.name)}"><fmt:message key="navi.viewable"/></a></td>
+                       <td>
+                         <c:if test="${grp.sharedDocuments}">
+                           <a href="/group/${fn:escapeXml(grp.name)}?filter=myGroupPDF">
+                             <fmt:message key="navi.groups"/>                   
+                             <fmt:message key="navi.pdfs"/>
+                           </a>
+                         </c:if>
+                       </td>
+                    </tr>
+				  </c:forEach>
+                </table>  	
+			</div>											
+	 	 </li>
+        </c:if>
+        
+		<li>
+			<c:url var="popularUrl" value="/popular" context="${projectContext}"/>
+			<a id="nav_popular" href="${popularUrl}"><fmt:message key="navi.popular"/></a>
+		</li>
+	</ul>
+	</div>
+
+    <!-- selects the correct navigation tab -->
+	<script type="text/javascript">
+		<![CDATA[
+	  		cssdropdown.startchrome("nice_tnav");
+			if ("${selectedNaviTab}" != "" ) {
+				document.getElementById("${selectedNaviTab}").className = "checked";
+			}
+	  	]]>
+	</script>
+    
+</jsp:root>

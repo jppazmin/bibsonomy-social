@@ -1,0 +1,193 @@
+<jsp:root version="2.0"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:form="http://www.springframework.org/tags/form"
+	xmlns:export="urn:jsptagdir:/WEB-INF/tags/export/bibtex"
+	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/tags"
+    xmlns:pub="urn:jsptagdir:/WEB-INF/tags/resources/bibtex"
+    xmlns:gpub="urn:jsptagdir:/WEB-INF/tags/resources/goldstandardpublication"
+    xmlns:ref="urn:jsptagdir:/WEB-INF/tags/resources/goldstandardpublication/references"
+    xmlns:discussion="urn:jsptagdir:/WEB-INF/tags/resources/discussion"
+    xmlns:review="urn:jsptagdir:/WEB-INF/tags/resources/discussion/review"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
+	
+	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true"/>
+	<jsp:directive.attribute name="otherPosts" type="java.util.List" required="true"/>
+	<jsp:directive.attribute name="loginUser" type="org.bibsonomy.model.User" required="true"/>
+	<jsp:useBean id="mockReference" class="org.bibsonomy.model.BibTex" />
+	
+	<c:set var="goldstandard" value="${post.resource}" />
+	<div id="goldstandard">
+		<ul id="gold_menu" data-ckey="${ckey}">
+			<gpub:actions post="${post}" />
+		</ul>
+		
+		<!-- title of the publication -->
+		<h2 id="gold_title" data-interhash="${goldstandard.interHash}">
+			<a href="/bibtex/${goldstandard.interHash}">${mtl:cleanBibtex(goldstandard.title)}</a>
+		</h2>
+		<div id="gold_authorsEditors"><fmt:message key="by"/><c:out value=": "/><pub:author publication="${goldstandard}"/></div>
+		
+		<!-- exports -->
+		<div id="gold_exports">
+			<ul>
+<!--			<c:if test="${(not empty goldstandard.url and !mtl:isLinkToDocument(goldstandard.url)) or (not empty goldstandard.miscFields['doi']) or not empty goldstandard.documents or mtl:isLinkToDocument(goldstandard.url)}">-->
+					<li><a href="#gold_exports_0"><fmt:message key="bibtex.links"/></a></li>
+<!--			</c:if>-->
+				<li><a href="#gold_exports_1"><fmt:message key="bibtex.abstract"/></a></li>
+				<li><a href="#gold_exports_2"><fmt:message key="export.layout"/></a></li>
+				<li><a href="#gold_exports_3"><fmt:message key="export.bibtex.record"/></a></li>
+				<li><a href="#gold_exports_4"><fmt:message key="export.endnote.record"/></a></li>
+			</ul>
+
+			<div id="gold_exports_0">
+<!--		<div id="gold_resources">		-->
+				<c:if test="${not((not empty goldstandard.url and !mtl:isLinkToDocument(goldstandard.url)) or (not empty goldstandard.miscFields['doi']) or not empty goldstandard.documents or mtl:isLinkToDocument(goldstandard.url))}">
+						<!-- If there are neither links nor documents -->
+						<fmt:message key="goldstandard.resource.info.noLinks"/>
+				</c:if>			
+				<c:if test="${(not empty goldstandard.url and !mtl:isLinkToDocument(goldstandard.url)) or (not empty goldstandard.miscFields['doi'])}">
+					<div id="gold_resources_links">
+<!--						<h3><fmt:message key="goldStandard.resource.info.links" /></h3>-->
+						<ul>
+							<c:if test="${not empty goldstandard.miscFields['doi']}">
+								<fmt:message key="post_bibtex.doi_isbn.doi" var="urlTitle"/>
+								<c:set var="doi" value="${mtl:extractDOI(goldstandard.miscFields['doi'])}"/>
+								<li><c:out value="${urlTitle}: " /><a href="http://dx.doi.org/${mtl:encodeURI(doi)}" title="${urlTitle}"><c:out value="${doi}" /></a></li>
+							</c:if>
+							<c:if test="${not empty goldstandard.url and !mtl:isLinkToDocument(goldstandard.url)}">
+								<li><span class="gold_info"><a href="${fn:escapeXml(goldstandard.url)}">${fn:escapeXml(goldstandard.url)}</a></span></li>
+							</c:if>
+						</ul>
+					</div>
+				</c:if>
+			
+				<c:if test="${not empty goldstandard.documents or mtl:isLinkToDocument(goldstandard.url)}">
+					<div id="gold_resources_pdf">
+<!--						<h3><fmt:message key="goldStandard.resource.info.pdfps" /></h3>-->
+						<ul>
+							<c:if test="${mtl:isLinkToDocument(goldstandard.url)}">
+								<li>
+									<fmt:message var="downloadPrivDocTitle" key="bibtex.actions.private_document.download"/>
+									<a href="${goldstandard.url}" title="${downloadPrivDocTitle}"> 
+						  				<img alt="${downloadPrivDocTitle}" src="${resdir}/image/document-txt-blue.png" style="float: left; margin-right: 10px;"/>
+						  <c:out value="${ goldstandard.url }" />											
+									</a>
+								</li>
+							</c:if>
+						</ul>
+					</div>
+				</c:if>
+<!--		</div>-->
+			</div>
+			<div id="gold_exports_1">
+<!--				<h3><fmt:message key="bibtex.abstract"/></h3>-->
+				<c:choose>
+					<c:when test="${not empty goldstandard.abstract}">
+						<div id="gold_abstract">${mtl:cleanBibtex(goldstandard.abstract)}</div>
+					</c:when>
+					<c:otherwise>
+						<fmt:message key="goldstandard.resource.info.noAbstract"/>
+					</c:otherwise>
+				</c:choose>
+			</div>
+			<div id="gold_exports_2">
+<!--				<h3><fmt:message key="export.layout"/></h3>-->
+				<c:choose>
+					<c:when test="${not empty command.layout and not (command.layout eq '') and not (command.layout eq 'plain')}">
+						<mtl:renderJabRefLayout layout="${command.layout}" post="${post}" />
+					</c:when>
+					<c:otherwise>
+						<export:plain bib="${goldstandard}"/>
+				 	</c:otherwise>		  
+				</c:choose>
+				
+				<!-- TODO: extract (bibtexdetails) -->
+				<form name="citation_format_form" action="" style="font-size:80%;">
+					
+					<fmt:message key="bibtex.citation_format"/><c:out value=": "/>
+					<!-- TODO: add support for this site -->
+					<!-- <fmt:message key="bibtex.all_exports.title" var="allExportsTitle" /> -->
+					<!-- <a href="/export/bibtex/1${goldstandard.interHash}/" title="${allExportsTitle}"><fmt:message key="bibtex.all_exports"/></a><c:out value="): "/> -->
+					
+					<form:select path="command.layout" onchange="citation_format_form.submit()" size="1">
+						<form:option value="plain"><fmt:message key="plain"/></form:option>
+						<form:option value="harvardhtml">Harvard</form:option>
+						<form:option value="din1505">DIN1505</form:option>
+						<form:option value="simplehtml">simple HTML</form:option>
+					</form:select>
+				    <c:out value=" "/>
+				    <input type="image"  src="/resources/image/nice_box_arrow_right.png"/>		    
+				</form>
+			</div>
+			<div id="gold_exports_3">
+<!--				<h3><fmt:message key="export.bibtex.record"/></h3>-->
+		  		<form>	  	
+			  		<textarea name="bibtex_textarea" rows="20"><export:bibtex post="${post}" escapeXml="${true}" /></textarea>
+			  	</form>	
+		  	</div>
+		  	<div id="gold_exports_4">
+<!--		  		<h3><fmt:message key="export.endnote.record"/></h3>-->
+	  			<form>
+	  				<c:set var="endnoteExport"><export:endnote bib="${goldstandard}"/></c:set>	  	
+		  			<textarea name="endnote_textarea" rows="20">${fn:escapeXml(endnoteExport)}</textarea>
+		  		</form>			
+			</div>
+		</div>
+		<div id="gold_refs">
+			<div id="gold_references">
+				<h3><fmt:message key="goldStandard.resource.info.references" /></h3>
+				<ol>
+					<c:forEach var="reference" items="${goldstandard.references}">
+						<li data-interhash="${reference.interHash}" class="reference"><ref:pubReference publication="${reference}" /></li>
+					</c:forEach>
+					
+					<!-- for javascript rending -->
+					<li class="reference initiallyHidden" id="referenceTemplate"><ref:pubReference publication="${mockReference}" /></li>
+				</ol>
+			</div>
+			<c:if test="${fn:length(goldstandard.referencedBy) != 0}">
+				<div id="gold_referencedBy">
+					<h3><fmt:message key="goldStandard.resource.info.referencedBy" /></h3>
+					<ol>
+						<c:forEach var="reference" items="${goldstandard.referencedBy}">
+							<li data-interhash="${reference.interHash}" class="referencedBy"><ref:pubReference publication="${reference}" /></li>
+						</c:forEach>
+					</ol>
+				</div>
+			</c:if>
+		</div>
+				
+<!--		<c:if test="${fn:length(otherPosts) != 0}">-->
+<!--			<div id="postUsers">-->
+<!--				<h3><fmt:message key="goldStandard.users"/></h3>-->
+<!--				 TODO: related users -->
+<!--				<ul>-->
+<!--				<c:forEach var="otherPost" items="${otherPosts}">-->
+<!--					  TODO: remove 2 -->
+<!--					<li><a href="2${otherPost.resource.intraHash}/${mtl:encodeURI(otherPost.user.name)}"><span class="user"><c:out value="${otherPost.user.name}" /></span></a></li>-->
+<!--				</c:forEach>-->
+<!--				-->
+<!--				<c:set var="remainingPosts" value="${otherPosts[0].resource.count - fn:length(otherPosts) }" />-->
+<!--				-->
+<!--				<c:if test="${remainingPosts == 1 }">-->
+<!--					<li>1<c:out value= " "/><c:out value= " "/><fmt:message key="post.meta.otherPerson"/></li>-->
+<!--				</c:if>-->
+<!--				-->
+<!--				<c:if test="${remainingPosts > 1 }">-->
+<!--					<li>${remainingPosts}<c:out value= " "/><fmt:message key="post.meta.otherPeople"/></li>-->
+<!--				</c:if>-->
+<!--							-->
+<!--				</ul>-->
+<!--			</div>-->
+<!--		</c:if>-->
+		
+		<!-- discussion -->
+		<discussion:discussion resource="${goldstandard}" loginUser="${loginUser}" />
+		
+		
+	</div>
+</jsp:root>

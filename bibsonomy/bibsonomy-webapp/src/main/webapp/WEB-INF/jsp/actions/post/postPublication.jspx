@@ -1,0 +1,218 @@
+<?xml version="1.0" ?>
+<!--
+
+
+     BibSonomy-Webapp - The webapplication for Bibsonomy.
+
+     Copyright (C) 2006 - 2011 Knowledge & Data Engineering Group,
+                               University of Kassel, Germany
+                               http://www.kde.cs.uni-kassel.de/
+
+     This program is free software; you can redistribute it and/or
+     modify it under the terms of the GNU General Public License
+     as published by the Free Software Foundation; either version 2
+     of the License, or (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+
+     You should have received a copy of the GNU General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+
+-->
+
+<jsp:root version="2.0"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:form="http://www.springframework.org/tags/form"
+	xmlns:spring="http://www.springframework.org/tags"
+	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/tags"
+    xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:errors="urn:jsptagdir:/WEB-INF/tags/errors"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:post="urn:jsptagdir:/WEB-INF/tags/post"
+	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/buttons"
+	xmlns:batch="urn:jsptagdir:/WEB-INF/tags/actions/edit/batch"
+	xmlns:bib="urn:jsptagdir:/WEB-INF/tags/resources/bibtex"
+>
+    
+	
+    <jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />	
+	<fmt:message key="post_bibtex.heading" var="msgPostPublication"/>
+	
+	<layout:tabLayout command="${command}" pageTitle="${msgPostPublication}" requPath="${requPath}" selectedNaviTab="nav_postPub">
+			 
+		<jsp:attribute name="heading">
+			<a rel="path_menu" href="#"><img alt="" src="${resdir}/image/box_arrow.png" />${mtl:ch('nbsp')}<c:out value="${msgPostPublication}"/></a>
+		</jsp:attribute>
+			
+		<jsp:attribute name="headerExt">
+            <script type="text/javascript" src="${resdir}/javascript/editPublication.js">&amp;nbsp;</script>
+			<link rel="stylesheet" type="text/css" href="${resdir}/css/fsform.css" />
+			<spring:theme code="stylesheet.additional.fsform" var="additionalFsformCSS" text=""/> 
+			<c:if test="${not empty additionalFsformCSS}">
+				<link rel="stylesheet" type="text/css" href="${additionalFsformCSS}" />
+			</c:if>
+	    </jsp:attribute>
+
+			
+	  <jsp:attribute name="tabcontent">
+
+      <c:set var="post" value="${command.post}"/>
+      
+		<div style="float left;width:97%;margin-left:10px; padding-bottom: 13px;">
+			<c:choose>
+				<c:when test="${command.selTab == 0}">
+					<!-- 
+						manual posting
+					 -->
+					 <post:postPublicationManual post="${command.post}"/>
+				</c:when>
+
+				<c:when test="${command.selTab == 1}">
+					<!-- 
+						a snippet of BibTeX / EndNote
+					 -->
+					<post:postPublicationSnippet/>
+				</c:when>
+
+				<c:when test="${command.selTab == 2}">
+					<!-- 
+						upload a file with BibTeX / EndNote
+					 -->
+					<post:postPublicationUpload/>
+				</c:when>
+
+				<c:when test="${command.selTab == 3}">
+					<!-- 
+						given an ISSN/ISBN/DOI ...
+					 -->
+					<post:postPublicationID/>
+				</c:when>
+			</c:choose>
+
+
+			<!-- 
+			
+				error handling, etc.
+			
+			 -->
+
+
+			<!-- 
+			
+				TODO: we should show line parsing errors in a custom form and not using the global error output.
+				(Nevertheless, we very probably need the global error tag for other errors.) 
+			
+			 -->
+
+			<errors:global errors="${errors}"/>      
+      
+      
+		
+			<c:if test="${not empty command.bibtex and not empty command.bibtex.list}">
+				<div style="margin-top:2em">
+					<a onclick="toggleImage('toggleParsedPostViewButton', '${resdir}/image/nice_box_arrow_right.png', '${resdir}/image/nice_box_arrow.png', 'parsedPostView')"><img id="toggleParsedPostViewButton" style="float:left; height:10pt; padding:5pt" src="${resdir}/image/nice_box_arrow.png" alt=""/><h3><fmt:message key="import.error.parse_or_incomplete_bibtex"/></h3></a>
+				</div>
+
+				<div id="parsedPostView">
+						<p class="smalltext" style="margin-top:1em; margin-bottom:1em"><fmt:message key="import.error.parse_or_incomplete_bibtex.description"/></p>
+						<fieldset class="fsOuter">
+								<batch:content	resourceType="bibtex"
+					        					listView="${command.bibtex}" 
+					        					otherPostsUrlPrefix="bla" 
+					        					listViewStartParamName="bibtex.start"
+		      									overwrite="${command.overwrite}"
+		      									deleteCheckedPosts="${command.deleteCheckedPosts}" >
+				        					 		
+									<jsp:attribute name="shortPostDescription">
+										<bib:shortDescription post="${post}"/>
+									</jsp:attribute>
+									
+									<jsp:attribute name="title">  
+										<bib:title post="${post}"/>
+									</jsp:attribute>
+										
+						   			<jsp:attribute name="desc">
+						   				<bib:desc post="${post}"/>
+						   			</jsp:attribute>
+						      		
+						      		<jsp:attribute name="bmicon"> 
+						      			<bib:bmicon post="${post}"/>
+						      		</jsp:attribute>
+						      		
+						      		<jsp:attribute name="actions">
+						      			<actions post="${post}" loginUserName="${command.context.loginUser.name}" disableResourceLinks="${false}"/>
+						      		</jsp:attribute>
+					        </batch:content>
+				        </fieldset>
+					</div> 
+				</c:if>            
+			</div>	
+		</jsp:attribute>
+		
+		
+		<!-- 
+			the sidebar shows the "postPublication" buttons
+		 -->
+		<jsp:attribute name="sidebar">
+			<div class="boxcontent">
+				<h3>
+					<fmt:message key="buttons.bookmarklet">
+						<fmt:param value="${projectName}"></fmt:param>
+					</fmt:message>
+				</h3>
+				<p>
+					<fmt:message key="post.resource.hint"/>
+				</p>
+				<ul>
+					<li><buttons:postPublication/></li>
+					<li><buttons:postPublicationPopUp/></li>
+				</ul>
+				<p>
+					<fmt:message key="post.resource.hint1"/>
+				</p>
+			</div>
+		</jsp:attribute>
+    	
+    	
+    
+		    
+    
+    
+        <jsp:attribute name="beforeBodyClose">
+         
+          <script type="text/javascript">
+             //<mtl:cdata>
+             <![CDATA[
+                // vanishing error boxes
+                $(document).ready(function() {
+                	prepareErrorBoxes('.dissError');
+                });
+
+                function toggleImage(pictureId, pictureActive, pictureInactive, divId) {
+					$(document.getElementById(divId)).slideToggle("slow"); 
+					var  imageSource= $(document.getElementById(pictureId)).attr("src");
+					if(imageSource==pictureActive) {
+						$('#'+pictureId).attr('src',pictureInactive);
+					} else {
+						$('#'+pictureId).attr('src',pictureActive);
+					}
+				}
+
+                ]]> 
+             //</mtl:cdata>
+          </script>
+       
+       </jsp:attribute>
+    
+	</layout:tabLayout>
+	
+	
+</jsp:root>

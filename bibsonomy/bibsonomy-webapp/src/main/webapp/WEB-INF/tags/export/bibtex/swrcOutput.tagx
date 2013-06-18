@@ -1,0 +1,23 @@
+<jsp:root version="2.0" 
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"	
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+  	xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:swrctags="urn:jsptagdir:/WEB-INF/tags/export/bibtex"
+    xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+    xmlns:owl=" http://www.w3.org/2002/07/owl#"
+	xmlns:swrc="http://swrc.ontoware.org/ontology#">
+	
+
+	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true" />
+	
+	<c:set var="swrc" value="http://swrc.ontoware.org/ontology#"/>
+
+    <rdf:Description rdf:about="${projectHome}bibtex/${hash.intra.id}${post.resource.intraHash}/${fn:escapeXml(post.user.name)}">
+      <owl:sameAs rdf:resource="${projectHome}uri/bibtex/${hash.intra.id}${post.resource.intraHash}/${fn:escapeXml(post.user.name)}"/>
+      <rdf:type rdf:resource="${swrc}${mtl:getSWRCEntryType(post.resource.entrytype)}"/>
+      <swrctags:swrcAttributes post="${post}"/>
+    </rdf:Description>
+
+</jsp:root>

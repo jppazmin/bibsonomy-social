@@ -1,0 +1,1003 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+
+     BibSonomy-Webapp - The webapplication for Bibsonomy.
+
+     Copyright (C) 2006 - 2011 Knowledge & Data Engineering Group,
+                               University of Kassel, Germany
+                               http://www.kde.cs.uni-kassel.de/
+
+     This program is free software; you can redistribute it and/or
+     modify it under the terms of the GNU General Public License
+     as published by the Free Software Foundation; either version 2
+     of the License, or (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+
+     You should have received a copy of the GNU General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+
+-->
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+	                    http://www.springframework.org/schema/beans/spring-beans.xsd
+	                    http://www.springframework.org/schema/util
+	                    http://www.springframework.org/schema/util/spring-util-3.0.xsd">
+
+	<!--  #################### url mapping #################### -->
+    <bean id="actionsUrlMapping" parent="urlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+		<property name="urlMap">
+			<map merge="true">
+			    <!-- 
+			        | ############################### registration ###############################
+			        -->
+			  	<entry key="/register">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="userRegistrationController"/>
+						<property name="allowedFields">	
+							<list>
+								<value>registerUser.name</value>
+								<value>registerUser.email</value>
+								<value>registerUser.password</value>
+								<value>registerUser.homepage</value>
+								<value>registerUser.realname</value>
+								<value>passwordCheck</value>
+								<!-- for admins which want to register a new user -->
+								<value>ckey</value>
+								<!-- for recaptcha -->
+								<value>recaptcha_response_field</value>
+								<value>recaptcha_challenge_field</value>
+								<value>acceptPrivacy</value>
+							</list>
+						</property>
+					</bean>
+				</entry>
+				<entry key="/activate">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="userActivationController"/>
+						<property name="allowedFields">	
+							<list>
+								<value>activationCode</value> <!-- user activationcode -->
+							</list>
+						</property>
+					</bean>
+				</entry>
+				<entry key="/join_group">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="joinGroupController"/>
+						<property name="allowedFields">
+							<list>
+								<value>ckey</value>
+								<value>group</value>
+								<value>reason</value>
+								<value>deniedUser</value>
+								<!-- for recaptcha -->
+								<value>recaptcha_response_field</value>
+								<value>recaptcha_challenge_field</value>
+							</list>
+						</property>
+					</bean>
+				</entry>	
+				<entry key="/activate_success">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="userActivationSuccessController"/>
+					</bean>
+				</entry>
+				<entry key="/register_success">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="userRegistrationSuccessController"/>
+					</bean>
+				</entry>
+				<entry key="/register_openid_success">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="userOpenIDLdapRegistrationSuccessController"/>
+					</bean>
+				</entry>			
+				<entry key="/registerOpenID">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="userOpenIDRegistrationController"/>
+						<property name="allowedFields">	
+							<list>		
+								<value>step</value>
+								<value>registerUser.name</value>
+								<value>registerUser.email</value>
+								<value>registerUser.homepage</value>
+								<value>registerUser.realname</value>
+								<value>registerUser.gender</value>
+								<value>registerUser.place</value>
+								<value>rememberMe</value>											
+							</list>
+						</property>
+					</bean>
+				</entry>
+				<entry key="/registerLDAP">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="userLDAPRegistrationController"/>
+						<property name="allowedFields">	
+							<list>		
+								<value>step</value>
+								<value>registerUser.name</value>
+								<value>registerUser.email</value>
+								<value>registerUser.homepage</value>
+								<value>registerUser.realname</value>
+								<value>registerUser.gender</value>
+								<value>registerUser.place</value>
+								<value>rememberMe</value>										
+							</list>
+						</property>
+					</bean>
+				</entry>
+				<entry key="/register_ldap_success">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="userOpenIDLdapRegistrationSuccessController"/>
+					</bean>
+				</entry>
+				<entry key="/reminder">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="passwordReminderController"/>
+						<property name="allowedFields">
+							<list>
+								<value>userName</value>
+								<value>userEmail</value>
+								<value>recaptcha_response_field</value>
+								<value>recaptcha_challenge_field</value>
+							</list>
+						</property>
+					</bean>
+				</entry>
+				<entry key="/reminder/change_password">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="passwordChangeOnRemindController"/>
+						<property name="allowedFields">
+							<list>
+								<value>userName</value>
+								<value>newPassword</value>
+								<value>passwordCheck</value>
+								<value>reminderHash</value>
+							</list>
+						</property>
+					</bean>
+				</entry>
+				<!--  delete user account  -->
+				<entry key="/actions/goodBye">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="deleteUserController"/>
+						<property name="allowedFields">
+							<list>
+								<value>delete</value>
+								<value>selTab</value>
+							</list>
+						</property>
+					</bean>
+				</entry>
+				
+				<!--  change password of a user  -->
+				<entry key="/actions/changePassword">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="changePasswordController"/>
+						<property name="allowedFields">
+							<list>
+								<value>ckey</value>
+								<value>oldPassword</value>
+								<value>newPassword</value>
+								<value>newPasswordRetype</value>
+								<value>selTab</value>
+							</list>
+						</property>
+					</bean>
+			    </entry>			
+				
+			    <!-- 
+			        | ############################### login ###############################
+			        -->
+				<entry key="/login">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="userLoginController"/>
+						<property name="allowedFields">
+							<list>
+								<value>username</value>
+								<value>password</value>
+								<value>referer</value>
+								<value>notice</value>
+								<value>openID</value>	
+								<value>rememberMe</value>						
+							</list>
+						</property>
+					</bean>
+				</entry>
+				
+			    <!-- 
+			        | ############################### upload/import ###############################
+			        -->
+				<entry key="/downloadFile">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="downloadFileController"/>
+						<property name="allowedFields">
+							<list>
+								<value>intrahash</value>
+								<value>requestedUser</value>
+								<value>filename</value>
+								<value>ckey</value>
+								<value>action</value>
+							</list>
+						</property>
+					</bean>
+				</entry>
+				
+				<entry key="/picture">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="pictureController"/>
+						<property name="allowedFields">
+							<list>
+								<value>requestedUser</value>
+								<value>file</value>
+								<value>ckey</value>
+							</list>
+						</property>
+					</bean>
+				</entry>
+				
+				<!-- 
+				   | /import/delicious
+				   | /import/firefox
+				   -->
+				<entry key="/import/bookmarks">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="bookmarkImportController"/>
+						<property name="allowedFields">
+							<list>
+								<value>file</value>
+								<value>group</value>
+								<value>type</value>
+								<value>overwrite</value>
+								<value>userName</value>
+								<value>passWord</value>
+								<value>importData</value>
+								<value>importType</value>
+								<value>oauth_token</value>
+								<value>oauth_verifier</value>
+								<value>ckey</value>
+							</list>
+						</property>
+					</bean>
+				</entry>
+				<entry key="/import/delicious/v2/post">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="importDeliciousV2Controller"/>
+						<property name="allowedFields">
+							<list>
+								<value>overwriteV2</value>
+								<value>importDataV2</value>
+								<value>importType</value>
+								<value>ckey</value>
+							</list>
+						</property>
+					</bean>
+				</entry>
+				<entry key="/import/delicious/v1/post">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="importDeliciousV1Controller"/>
+						<property name="allowedFields">
+							<list>
+								<value>overwriteV1</value>
+								<value>importDataV1</value>
+								<value>importType</value>
+								<value>userName</value>
+								<value>passWord</value>
+								<value>ckey</value>
+							</list>
+						</property>
+					</bean>
+				</entry>
+				<entry key="/import/jabref">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="importJabRefLayout"/>
+						<property name="allowedFields">
+							<list>
+								<value>fileBegin</value>
+								<value>fileItem</value>
+								<value>fileEnd</value>
+								<value>action</value>
+								<value>ckey</value>
+								<value>hash</value>
+							</list>
+						</property>
+					</bean>
+				</entry>
+				<entry key="/import/publications">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="postPublicationController"/>
+						<property name="allowedFields">
+							<list>
+								<value>selTab</value>
+								<value>taskName</value>
+								<!-- snippet -->
+								<value>selection</value>
+								<!-- upload -->
+								<value>overwrite</value>
+								<value>editBeforeImport</value>
+								<value>file</value>
+								<value>encoding</value>
+								<value>delimiter</value>
+								<value>whitespace</value>
+								<!-- common properties -->
+								<value>description</value>
+								<value>abstractGrouping</value>
+								<value>groups</value>
+								<value>ckey</value>
+							</list>
+						</property>
+					</bean>
+				</entry>		
+
+				
+			    <!-- 
+			        | ############################### posting ###############################
+			        -->
+				<entry key="/editBookmark">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="editBookmarkController"/>
+						<property name="allowedFields" ref="bookmarkRequestParameters"/>
+					</bean>
+				</entry>
+				<entry key="/editPublication">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="editPublicationController"/>
+						<property name="allowedFields" ref="publicationRequestParameters"/>
+
+					</bean>
+				</entry> 
+				<entry key="/editGoldStandardPublication">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="editGoldStandardPublicationController"/>
+						<property name="allowedFields" ref="publicationRequestParameters"/>
+					</bean>
+				</entry> 
+				<entry key="/postBookmark">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="postBookmarkController"/>
+					</bean>
+				</entry>
+				<entry key="/postPublication">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="postPublicationController"/>
+						<property name="allowedFields">
+							<list>
+								<value>selTab</value>
+							</list>
+						</property>
+					</bean>
+				</entry>
+
+			    <!-- 
+			        | ############################### edit tags
+			        -->
+				<entry key="/batchEdit">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="batchEditController"/>
+						<property name="allowedFields">
+							<list>
+								<value>ckey</value>
+								<value>oldTags[*]</value>
+								<value>newTags[*]</value>
+								<value>tags</value>
+								<value>delete[*]</value>
+								<value>referer</value>
+								<!-- retaining postPublication options -->
+								<value>deleteCheckedPosts</value>
+								<value>overwrite</value>
+								<value>resourcetype</value>
+								<value>format</value>
+							</list>
+						</property>
+					</bean>
+				</entry>
+				<entry key="/edit_tags">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="editTagsPageViewController"/>
+						<property name="allowedFields">
+							<list>
+								<value>forcedAction</value>
+								<value>editTags.addTags</value>
+								<value>editTags.delTags</value>
+								<value>editTags.updateRelations</value>
+								<value>relationsEdit.upper</value>
+								<value>relationsEdit.lower</value>
+								<value>relationsEdit.forcedAction</value>
+							</list>		
+						</property>	
+					</bean>
+				</entry>	
+				
+			    <!-- 
+			        | ############################### delete post
+			        -->
+				<entry key="/deletePost">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="deletePostController"/>
+						<property name="allowedFields">
+							<list>
+								<value>resourceHash</value>
+								<value>ckey</value>
+							</list>
+						</property>
+					</bean>
+				</entry>
+				
+				<entry key="/removeMessage">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="removeMessageController"/>
+						<property name="allowedFields">
+							<list>
+								<value>user</value>
+								<value>hash</value>
+								<value>ckey</value>
+								<value>clear</value>
+							</list>
+						</property>
+					</bean>
+				</entry>
+				
+				  <!-- 
+			         ############################### updates the user settings from the settings tab of the settings page
+			      -->
+				
+				<entry key="/updateUserSettings">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="updateUserSettingsController"/>
+						<property name="allowedFields">
+							<list>
+								<value>logLevel</value>								
+								<value>action</value>
+								<value>ckey</value>
+								<value>confirmDelete</value>
+								<value>selTab</value>
+								<value>changeTo</value>
+								<value>user.settings.isMaxCount</value>
+								<value>user.settings.logLevel</value>
+								<value>user.settings.confirmDelete</value>
+								<value>user.settings.tagboxSort</value>
+								<value>user.settings.tagboxStyle</value>
+								<value>user.settings.tagboxMinfreq</value>
+								<value>user.settings.tagboxMaxCount</value>
+								<value>user.settings.tagboxTooltip</value>
+								<value>user.settings.listItemcount</value>
+								<value>user.settings.defaultLanguage</value>
+								<value>user.settings.showBookmark</value>
+								<value>user.settings.showBibtex</value>
+								<value>user.settings.simpleInterface</value>
+							</list>
+						</property>
+					</bean>
+				</entry>
+				
+				<!--  update the profile of a user  -->
+				<entry key="/updateUserProfile">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="updateUserController"/>
+						<property name="allowedFields">
+							<list>
+								<value>ckey</value>
+								<value>user.name</value>
+								<value>user.realname</value>
+								<value>user.gender</value>
+								<value>user.birthday</value>
+								<value>user.place</value>
+								<value>group</value>
+								<value>profilePrivlevel</value>
+								<value>user.email</value>
+								<value>user.homepage</value>
+								<value>user.openURL</value>
+								<value>user.profession</value>
+								<value>user.institution</value>
+								<value>user.interests</value>
+								<value>user.hobbies</value>
+								<value>user.friends</value>
+								<value>wikiText</value>
+								<value>selTab</value>
+							</list>
+						</property>
+					</bean>
+			    </entry>
+			    
+				<!--  update the profile of a user  -->
+				<entry key="/updateGroupSettings">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="updateGroupSettingsController"/>
+						<property name="allowedFields">
+							<list>
+								<value>ckey</value>
+								<value>userGroup.*</value>
+								<value>privlevel</value>
+								<value>sharedDocuments</value>
+							</list>
+						</property>
+					</bean>
+			    </entry>
+            </map>
+        </property>
+    </bean>
+	
+	
+		
+    <!--  #################### request parameter lists #################### -->
+	<!-- bookmark request parameters -->
+	<util:list id="bookmarkRequestParameters">
+		<value>post.resource.url</value>
+		<value>post.resource.title</value>
+		<value>post.description</value>
+		<value>post.date</value> <!-- only allowed for DBLP and used by DBLP updater -->
+		<value>tags</value>
+		<value>url</value>
+		<value>description</value>
+		<value>extended</value>
+		<value>copytag</value>
+		<value>abstractGrouping</value>
+		<value>groups</value>
+		<value>intraHashToUpdate</value>
+		<value>referer</value>
+		<value>relevantGroups</value>
+		<value>acceptComma</value>
+		<value>postID</value>
+		<value>hash</value>
+		<value>user</value>	
+		<!-- used to block spammers -->
+		<value>recaptcha_response_field</value>
+		<value>recaptcha_challenge_field</value>
+	</util:list>
+
+	<!-- publication request parameters -->
+	<util:list id="publicationRequestParameters">
+	  <value>post.description</value>
+	  <value>post.date</value> <!-- only allowed for DBLP and used by DBLP updater -->
+	  <value>post.resource.url</value>
+	  <value>post.resource.title</value>
+	  <value>post.resource.author</value>
+	  <value>post.resource.editor</value>
+	  <value>post.resource.entrytype</value>
+	  <value>post.resource.bibtexKey</value>
+	  <value>post.resource.year</value>
+	  <value>post.resource.booktitle</value>
+	  <value>post.resource.journal</value>
+	  <value>post.resource.volume</value>
+	  <value>post.resource.number</value>
+	  <value>post.resource.series</value>
+	  <value>post.resource.pages</value>
+	  <value>post.resource.month</value>
+	  <value>post.resource.day</value>
+	  <value>post.resource.publisher</value>
+	  <value>post.resource.edition</value>
+	  <value>post.resource.chapter</value>
+	  <value>post.resource.bKey</value>
+	  <value>post.resource.type</value>
+	  <value>post.resource.howpublished</value>
+	  <value>post.resource.institution</value>
+	  <value>post.resource.organization</value>
+	  <value>post.resource.school</value>
+	  <value>post.resource.crossref</value>
+	  <value>post.resource.misc</value>
+	  <value>post.resource.abstract</value>
+	  <value>post.resource.privnote</value>
+	  <value>post.resource.note</value>
+	  <value>post.resource.annote</value>
+  	  <value>post.resource.address</value>
+      <value>post.resource.key</value>	  
+	  <value>tags</value>
+	  <value>url</value>
+	  <value>description</value>
+	  <value>selection</value>
+	  <value>extended</value>
+	  <value>copytag</value>
+	  <value>abstractGrouping</value>
+	  <value>groups</value>
+	  <value>intraHashToUpdate</value>
+	  <value>referer</value>
+	  <value>relevantGroups</value>
+	  <value>acceptComma</value>
+	  <value>postID</value>
+  	  <value>hash</value>
+	  <value>user</value>
+	  <!-- used for fileHandling -->
+	  <value>fileName</value>
+	  <!-- used to block spammers -->
+	  <value>recaptcha_response_field</value>
+	  <value>recaptcha_challenge_field</value>
+	  <value>editBeforeSaving</value>				
+	</util:list>
+
+	<!--  #################### controller #################### -->
+
+	<bean id="editPostController" class="org.bibsonomy.webapp.controller.actions.EditPostController" scope="request" abstract="true">
+		<property name="logic" ref="logic" />
+		<property name="captcha" ref="captcha"/>
+		<property name="urlGenerator" ref="urlGenerator"/>
+		<property name="requestLogic" ref="requestLogic"/>
+		<property name="userSettings" ref="userSettings"/>
+		<property name="pingback" ref="pingback"/>
+	</bean>
+
+	<!-- Handles the edit bookmark process -->
+	<bean id="editBookmarkController" class="org.bibsonomy.webapp.controller.actions.EditBookmarkController" scope="request" parent="editPostController">
+		<property name="tagRecommender" ref="multiplexingTagRecommender"/>
+	</bean>
+
+	<bean id="editPublicationController" class="org.bibsonomy.webapp.controller.actions.EditPublicationController" scope="request" parent="editPostController">
+		<property name="tagRecommender" ref="multiplexingTagRecommender"/>
+		<property name="docPath" value="${project.document.path}"/>
+		<property name="tempPath" value="${project.document.temp}"/>
+		<property name="scraper" ref="kdeScraperChain"/>
+		<property name="swordService" ref="swordService"/>
+	</bean>
+	
+	<bean id="editGoldStandardPublicationController" class="org.bibsonomy.webapp.controller.actions.EditGoldStandardPublicationController" scope="request" parent="editPostController">
+		<property name="scraper" ref="kdeScraperChain"/>
+	</bean>
+	
+	<bean id="postPublicationController" class="org.bibsonomy.webapp.controller.actions.PostPublicationController" scope="request">
+		<property name="logic" ref="logic"/>
+		<property name="userSettings" ref="userSettings"/>
+		<property name="tagRecommender" ref="multiplexingTagRecommender"/>
+		<property name="captcha" ref="captcha"/>
+		<property name="requestLogic" ref="requestLogic"/>
+		<property name="scraper" ref="kdeScraperChain"/>
+		<property name="uploadFactory" ref="tmpUploadFactory"/>
+		<property name="urlGenerator" ref="urlGenerator"/>
+	</bean>
+	
+	<!--
+	   | The scrapers ... in the future they should be configured via Spring, too. 
+	   -->
+	<bean id="kdeScraperFactory" class="org.bibsonomy.scraper.KDEScraperFactory"/>
+	<bean id="kdeScraperChain" factory-bean="kdeScraperFactory" factory-method="getScraper"/>
+	
+	<!-- Handles delete post process -->
+	<bean id="deletePostController" class="org.bibsonomy.webapp.controller.actions.DeletePostController" scope="request">
+		<property name="logic" ref="logic"/>
+		<property name="requestLogic" ref="requestLogic"/>
+		<property name="urlGenerator" ref="urlGenerator"/>
+	</bean>
+	
+	<!-- Handles remove message process -->
+	<bean id="removeMessageController" class="org.bibsonomy.webapp.controller.actions.RemoveMessageController" scope="request">
+		<property name="logic" ref="logic"/>
+		<property name="requestLogic" ref="requestLogic"/>
+	</bean>
+	
+	<!--
+		Amazon scraper configuration 
+		TODO: intermediate configuration ... this will be obsolete, when 
+		scrapers are configured using Spring.
+	 -->
+	<bean id="scraperConfig" class="org.bibsonomy.scraper.util.ScraperConfigurator">
+		<property name="amazonAccessKey" value="${org.bibsonomy.scraper.url.kde.amazon.AmazonScraper.accessKey}"/>
+		<property name="amazonSecretKey" value="${org.bibsonomy.scraper.url.kde.amazon.AmazonScraper.secretKey}"/>
+	</bean>
+	
+	<!-- Handles delete user process  -->
+	<bean id="deleteUserController" class="org.bibsonomy.webapp.controller.actions.DeleteUserController" scope="request">
+		<property name="logic" ref="logic"/>
+	</bean>
+
+	<!-- Handles registration of users. -->
+	<bean id="userRegistrationController" class="org.bibsonomy.webapp.controller.actions.UserRegistrationController" scope="request">
+		<property name="logic" ref="logic" />
+		<!-- 
+		    If the user is not logged in, we need an instance of the LogicInterface
+		    which has admin rights. 
+		 -->
+		<property name="adminLogic" ref="adminLogic"/>
+		
+		<!-- To check registration for human beings ... -->
+		<property name="captcha" ref="captcha"></property>
+		
+		<!-- reCaptcha needs access to some HTTP headers, so we need the requestLogic -->
+		<property name="requestLogic" ref="requestLogic"/>
+		
+		<!-- to access cookies -->
+		<property name="cookieLogic" ref="cookieLogic"/>
+		
+		<!-- to send registration success mails -->
+		<property name="mailUtils" ref="mailUtils"/>
+		
+		<!-- After successful registration, the user is redirected to this page.  -->
+		<property name="successRedirect" value="/register_success"/>
+	</bean>
+	
+	<!-- Handles registration of users. -->
+	<bean id="userOpenIDRegistrationController" class="org.bibsonomy.webapp.controller.actions.UserOpenIDRegistrationController" scope="request">
+		<!-- If the user is not logged in, we need an instance of the LogicInterface
+		    which has admin rights.  -->
+		<property name="adminLogic" ref="adminLogic"/>		
+		
+		<!-- reCaptcha needs access to some HTTP headers, so we need the requestLogic -->
+		<property name="requestLogic" ref="requestLogic"/>
+		
+		<!-- to access cookies -->
+		<property name="cookieLogic" ref="cookieLogic"/>			
+		
+		<property name="registrationFormView" value="REGISTER_USER_OPENID_PROVIDER_FORM"/>
+		
+		<!-- After successful registration, the user is redirected to this page.  -->
+		<property name="successRedirect" value="/register_openid_success"/>
+		
+		<property name="rememberMeServices" ref="openidRememberMeServices"/>
+		<property name="authenticationManager" ref="openidAuthenticationManager"/>
+	</bean>
+	
+	<bean id="joinGroupController" class="org.bibsonomy.webapp.controller.actions.JoinGroupController" scope="request">
+		<property name="logic" ref="logic" />
+		
+		<property name="denieUserRedirectURI" value="/settings?selTab=3"/>
+		<property name="reasonMaxLen" value="200"/>
+		
+		<!-- To check registration for human beings ... -->
+		<property name="captcha" ref="captcha" />
+		
+		<!-- reCaptcha needs access to some HTTP headers, so we need the requestLogic -->
+		<property name="requestLogic" ref="requestLogic"/>
+		<!-- 
+		    If the group admin wants to deny a join group request, we need an instance of the LogicInterface
+		    which has admin rights to get the mail address of the denied user
+		 -->
+		<property name="adminLogic" ref="adminLogic"/>
+		
+		<!-- to send registration success mails -->
+		<property name="mailUtils" ref="mailUtils"/>
+	</bean>
+
+
+	<!-- Handles registration of users. -->
+	<bean id="userLDAPRegistrationController" class="org.bibsonomy.webapp.controller.actions.UserLDAPRegistrationController" scope="request">
+		<!-- 
+		    If the user is not logged in, we need an instance of the LogicInterface
+		    which has admin rights. 
+		 -->
+		<property name="adminLogic" ref="adminLogic"/>		
+		
+		<!-- reCaptcha needs access to some HTTP headers, so we need the requestLogic -->
+		<property name="requestLogic" ref="requestLogic"/>
+		
+		<!-- to access cookies  -->
+		<property name="cookieLogic" ref="cookieLogic"/>
+		
+		<property name="registrationFormView" value="REGISTER_USER_LDAP_FORM"/>
+		
+		<!-- After successful registration, the user is redirected to this page.  -->
+		<property name="successRedirect" value="/register_ldap_success"/>
+		<!--
+			to log the user into the system after successful registration			 
+		 -->
+		<property name="rememberMeServices" ref="ldapRememberMeServices"/>
+		<property name="authenticationManager" ref="ldapAuthenticationManager"/>
+		<property name="ldapIdIsUsername" value="${auth.ldap.ldapIdIsUsername}"/>
+	</bean>
+	
+	<!-- Handles the login view -->
+	<bean id="userLoginController" class="org.bibsonomy.webapp.controller.actions.UserLoginController" scope="request">
+		<!-- to extract the spring security request attributes -->
+		<property name="requestLogic" ref="requestLogic"/>
+	</bean>
+	
+	<bean id="passwordReminderController" class="org.bibsonomy.webapp.controller.actions.PasswordReminderController" scope="request">
+		<!-- 
+			gets an admin DBLogic injected, because we need to get the full user details,
+			including password and passwordReminder 
+		-->
+		<property name="adminLogic" ref="adminLogic" />
+		<!-- e.g., to extract the x-forwarded-for header -->
+		<property name="requestLogic" ref="requestLogic" />
+		<property name="captcha" ref="captcha" />
+		
+		<!-- to send registration success mails -->
+		<property name="mailUtils" ref="mailUtils" />
+		
+		<!-- the maximal time a password reminder should be valid -->
+		<property name="maxMinutesPasswordReminderValid" value="60" />
+		<!-- secret key to encrypt the reminder hash -->
+		<property name="cryptKey" value="${password.reminder.cryptkey}" />
+		<!-- authentication config -->
+		<property name="authConfig" ref="authConfig" />
+	</bean>
+	
+	<bean id="passwordChangeOnRemindController" class="org.bibsonomy.webapp.controller.actions.PasswordChangeOnRemindController" scope="request">
+		<!-- 
+			gets an admin DBLogic injected, because we need to get the full user details,
+			including password and passwordReminder 
+		-->
+		<property name="adminLogic" ref="adminLogic"/>
+		<!-- e.g., to extract the x-forwarded-for header -->
+		<property name="requestLogic" ref="requestLogic"/>
+		<!-- secret key to decrypt the reminderHash -->
+		<property name="cryptKey" value="${password.reminder.cryptkey}"/>
+		<!-- authentication config -->
+		<property name="authConfig" ref="authConfig"/>		
+	</bean>
+
+	<!-- Handles password change process of a user -->
+	<bean id="changePasswordController" class="org.bibsonomy.webapp.controller.actions.ChangePasswordController" scope="request">
+		<property name="adminLogic" ref="adminLogic"/>
+		<property name="cookieLogic" ref="cookieLogic" />
+		<property name="rememberMeServices" ref="internalRememberMeServices" />
+		<property name="authConfig" ref="authConfig"/>
+	</bean>
+
+	<!-- Captcha bean -->
+	<bean id="reCaptcha" class="org.bibsonomy.webapp.util.captcha.ReCaptchaWrapper">
+		<property name="privateKey" value="${recaptcha.privateKey}"/>
+		<property name="publicKey" value="${recaptcha.publicKey}"/>
+		<property name="recaptchaServer" value="${recaptcha.recaptchaServer}"/>
+		<property name="includeNoscript" value="false" />
+	</bean>
+	<!-- for testing -->
+	<bean id="mockCaptcha" class="org.bibsonomy.webapp.util.captcha.MockCaptcha" />
+	<!--+
+		| the used captcha can be chosen with the "project.bean.captcha" property 
+		+-->	
+	<alias name="${project.bean.captcha}" alias="captcha" />
+	
+	
+
+	<!--+ 
+	 	|
+	 	| Pingback/Trackback sends a "PING" to a bookmarked URL.
+	 	|
+	 	| The corresponding cron trigger is defined in bibsonomy2-servlet-cronjobs.xml.
+	 	| The used pingback implementation can be chosen with the "project.bean.pingback" property.
+	 	+-->	
+	<bean id="pingbackClient" class="com.malethan.pingback.impl.ApachePingbackClient" />
+
+	<bean id="linkLoader" class="org.bibsonomy.pingback.HttpClientLinkLoader" />
+
+	<bean id="realPingback" class="org.bibsonomy.pingback.ThreadedPingback">
+		<property name="urlGenerator" ref="urlGenerator" />
+		<property name="pingbackClient" ref="pingbackClient" />
+		<property name="linkLoader" ref="linkLoader" />
+	</bean>
+	<bean id="mockPingback" class="org.bibsonomy.webapp.util.spring.factorybeans.NullFactoryBean"/>
+	<alias name="${project.bean.pingback}" alias="pingback"/>
+	
+	
+	
+	<!-- Handles the picture upload and download -->
+	<bean id="pictureController" class="org.bibsonomy.webapp.controller.PictureController" scope="request">
+		<property name="path" value="${project.picture.path}" />
+		<property name="adminLogic" ref="adminLogic" />
+		<property name="requestLogic" ref="requestLogic" />
+		<property name="uploadFactory" ref="tmpUploadFactory" />
+		<property name="defaultFileName" value="no_picture.png" />
+		<property name="sizeOfLargestSide" value="200" />
+	</bean>	
+	
+	<!-- Handles the settings update of a user -->
+	<bean id="updateUserSettingsController" class="org.bibsonomy.webapp.controller.actions.UpdateUserSettingsController" scope="request">
+		<property name="logic" ref="logic"/>
+		<property name="requestLogic" ref="requestLogic"/>
+	</bean>
+	
+	<!-- Handles the settings update of a group-user -->
+	<bean id="updateGroupSettingsController" class="org.bibsonomy.webapp.controller.actions.GroupSettingsController" scope="request">
+	    <property name="logic" ref="logic"/>
+	</bean>
+	
+	<!-- Handles the profile update of a user -->
+	<bean id="updateUserController" class="org.bibsonomy.webapp.controller.actions.UpdateUserController" scope="request">
+		<property name="logic" ref="logic"/>
+	</bean>
+	
+	<!-- Handles the filedownload -->
+	<bean id="downloadFileController" class="org.bibsonomy.webapp.controller.actions.DownloadFileController" scope="request">
+		<property name="logic" ref="logic" />
+		<property name="docpath" value="${project.document.path}"/>
+	</bean>
+	
+	<!-- Handles bookmark imports -->
+	<bean id="bookmarkImportController" class="org.bibsonomy.webapp.controller.actions.ImportBookmarksController" scope="request">
+		<property name="logic" ref="logic"/>
+		<property name="uploadFactory" ref="tmpUploadFactory"/>
+		<property name="importerFactory" ref="deliciousImporterFactory"/>
+		<property name="signPostManager" ref="deliciousSignPostManager"/>
+	</bean>
+	
+	<bean id="importDeliciousV2Controller" class="org.bibsonomy.webapp.controller.actions.DeliciousImportController" >
+		<property name="signPostManager" ref="deliciousSignPostManager"/>
+	</bean>
+	
+	<bean id="importDeliciousV1Controller" class="org.bibsonomy.webapp.controller.actions.DeliciousImportControllerV1" parent="importDeliciousV2Controller">
+		<property name="importBookmarksPath" value="/import/delicious"/>
+	</bean>
+	
+	<bean id="importJabRefLayout" class="org.bibsonomy.webapp.controller.actions.JabRefImportController" scope="request">
+		<property name="logic" ref="logic" />
+		<property name="uploadFactory" ref="uploadFactory" />
+		<property name="jabrefLayoutRenderer" ref="jabrefLayoutRenderer" />
+	</bean>
+		
+	<bean id="deliciousImporterFactory" class="org.bibsonomy.importer.bookmark.service.DeliciousImporterFactory">
+		<property name="bundlesPath" value="/v1/tags/bundles/all"/>
+		<property name="postsPath" value="/v1/posts/all"/>
+		<property name="port" value="-1"/>
+		<property name="protocol" value="https"/>
+		<property name="host" value="api.del.icio.us"/>
+		<property name="userAgent" value="Wget/1.9.1"/>
+	</bean>
+		
+	<bean id="deliciousSignPostManager" class="org.bibsonomy.importer.bookmark.service.DeliciousSignPostManager">
+		<property name="oAuthKey" value="org.bibsonomy.importer.bookmark.service.DeliciousSignPostManager.oAuthKey"/>
+		<property name="consumerKey" value="${org.bibsonomy.importer.bookmark.service.DeliciousSignPostManager.consumerKey}"/>
+		<property name="consumerSecret" value="${org.bibsonomy.importer.bookmark.service.DeliciousSignPostManager.consumerSecret}"/>
+		<property name="callbackBaseUrl" value="${project.home}import/delicious/v2"/>
+		<property name="requestTokenEndpointUrl" value="https://api.login.yahoo.com/oauth/v2/get_request_token"/>
+		<property name="accessTokenEndpointUrl" value="https://api.login.yahoo.com/oauth/v2/get_token"/>
+		<property name="authorizationWebsiteUrl" value="https://api.login.yahoo.com/oauth/v2/request_auth"/>
+		<property name="bundlesUrl" value="http://api.del.icio.us/v2/tags/bundles/all" />
+		<property name="bookmarksUrl" value="http://api.del.icio.us/v2/posts/all" />
+	</bean>
+
+	<!--
+		TODO: scope singleton?
+		returns instances of the HandleFileUpload class for every user to handle the upload of temporary files 
+	 -->
+	<bean id="tmpUploadFactory" class="org.bibsonomy.util.upload.impl.FileUploadFactory" scope="request">
+		<property name="docpath" value="${project.document.temp}"/>
+		<property name="tempPath" value="true"/>
+	</bean>
+	
+	<!-- 
+		use the factory to upload files to the server
+		TODO: why scope request? -->
+	<bean id="uploadFactory" class="org.bibsonomy.util.upload.impl.FileUploadFactory" scope="request">
+		<property name="docpath" value="${project.document.path}"/>
+		<property name="tempPath" value="false"/>
+	</bean>
+	
+	<bean id="userActivationController" class="org.bibsonomy.webapp.controller.actions.UserActivationController" scope="request">
+		<!-- 
+			gets an admin DBLogic injected, because we need to get the full pending user details
+		-->
+		<property name="logic" ref="logic"/>
+		<property name="requestLogic" ref="requestLogic"/>
+		<property name="mailUtils" ref="mailUtils"/>
+		<property name="successRedirect" value="/activate_success"/>
+		<property name="authenticationManager" ref="internalAuthenticationManager"/>
+	</bean>
+	
+	<!-- 
+		only forwards to the success view for user registration
+		neccessary, because after registration we send a redirect and somehow we need 
+		to serve this quasi-static page 
+	-->
+	<bean id="userActivationSuccessController" class="org.bibsonomy.webapp.controller.special.StaticViewController" scope="request">
+		<property name="view" value="ACTIVATE_USER_SUCCESS"></property>
+	</bean>
+	
+	<bean id="userRegistrationSuccessController" class="org.bibsonomy.webapp.controller.special.StaticViewController" scope="request">
+		<property name="view" value="REGISTER_USER_TO_BE_ACTIVATED"></property>
+	</bean>
+	
+	<bean id="userOpenIDLdapRegistrationSuccessController" class="org.bibsonomy.webapp.controller.special.StaticViewController" scope="request">
+		<property name="view" value="REGISTER_USER_SUCCESS"></property>
+	</bean>
+	
+	<bean id="postBookmarkController" class="org.bibsonomy.webapp.controller.special.StaticViewController" scope="request">
+		<property name="view" value="POST_BOOKMARK"></property>
+	</bean>
+	
+	<!-- EDIT TAGS -->
+	<bean id="batchEditController" class="org.bibsonomy.webapp.controller.actions.BatchEditController" scope="request">
+		<property name="logic" ref="logic"/>
+		<property name="requestLogic" ref="requestLogic"/>
+	</bean>
+		
+	<bean id="editTagsPageViewController" class="org.bibsonomy.webapp.controller.EditTagsPageViewController" scope="request">
+		<property name="logic" ref="logic"/>
+		<property name="userSettings" ref="userSettings"/>
+	</bean>	
+</beans>

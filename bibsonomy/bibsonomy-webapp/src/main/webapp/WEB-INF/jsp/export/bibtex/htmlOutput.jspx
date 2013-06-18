@@ -1,0 +1,108 @@
+<?xml version="1.0" ?>
+<!--
+
+
+     BibSonomy-Webapp - The webapplication for Bibsonomy.
+
+     Copyright (C) 2006 - 2011 Knowledge & Data Engineering Group,
+                               University of Kassel, Germany
+                               http://www.kde.cs.uni-kassel.de/
+
+     This program is free software; you can redistribute it and/or
+     modify it under the terms of the GNU General Public License
+     as published by the Free Software Foundation; either version 2
+     of the License, or (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+
+     You should have received a copy of the GNU General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+
+-->
+
+<jsp:root version="2.0"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
+	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/tags"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:output="urn:jsptagdir:/WEB-INF/tags/export/bibtex"> 
+	
+<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
+
+<!-- to get correct hash IDs for URLs  -->
+<jsp:useBean id="hash" class="org.bibsonomy.util.wrapper.HashIDBean" scope="application"/>
+  
+<html>
+  <head>
+	<!--+ 
+		| To have the locale available on all pages we set the scope to "request".
+		| see http://stackoverflow.com/questions/333729/how-do-i-access-locale-from-a-jsp 
+		|-->
+	<c:set var="locale" scope="request" value="${pageContext.response.locale}"/>
+	  
+    <title><c:out value="${projectName}"/></title>
+    <link rel="stylesheet" type="text/css" href="/resources/css/prolearn.css" />
+  </head>
+  <body>
+  
+  <h1>Publications</h1>
+  
+    <c:forEach var="post" items="${command.bibtex.list}">
+      <c:set var="bib" value="${post.resource}"/>
+      <p class="entry">
+        <!-- author -->
+        <c:if test="${not empty bib.author}"><span class="entry_author">
+			<c:forEach var="person" items="${bib.authorList}" varStatus="loopStatus">
+				<c:if test="${loopStatus.last and not loopStatus.first}"><c:out value=" "/><fmt:message key="and"/><c:out value=" "/></c:if>
+				${mtl:cleanBibtex(person.firstName)}<c:out value=" "/>${mtl:cleanBibtex(person.lastName)}
+				<!-- append separator "," -->
+				<c:if test="${not loopStatus.last}"><c:out value=", "/></c:if>
+			</c:forEach>. 
+        </span></c:if>
+        <!-- title  --><span class="entry_title"><a href="${projectHome}bibtex/${hash.intra.id}${bib.intraHash}/${fn:escapeXml(post.user.name)}">${mtl:cleanBibtex(bib.title)}</a>. </span>
+        <!-- editor -->
+        <c:if test="${not empty bib.editor}"><span class="entry_editor">In 
+        	<c:forEach var="person" items="${bib.editorList}" varStatus="loopStatus">
+				<c:if test="${loopStatus.last and not loopStatus.first}"><c:out value=" "/><fmt:message key="and"/><c:out value=" "/></c:if>
+				${mtl:cleanBibtex(person.firstName)}<c:out value=" "/>${mtl:cleanBibtex(person.lastName)}
+				<!-- append separator "," -->
+				<c:if test="${not loopStatus.last}"><c:out value=", "/></c:if>
+			</c:forEach> (<fmt:message key="bibtex.editors.abbr"/>), 
+		</span></c:if>
+        <!-- journal, booktitle, series  -->
+        <c:choose>
+          <c:when test="${!empty bib.journal}">
+            <span class="entry_journal">${mtl:cleanBibtex(bib.journal)}, </span>
+          </c:when>
+          <c:when test="${!empty bib.booktitle}">
+            <span class="entry_booktitle">${mtl:cleanBibtex(bib.booktitle)}, </span>
+          </c:when>        
+          <c:when test="${!empty bib.series}">
+            <span class="entry_series">${mtl:cleanBibtex(bib.series)}, </span>
+          </c:when>
+        </c:choose>
+        <!-- volume,number,pages -->
+        <span class="entry_vonupa">
+         <c:if test="${!empty bib.volume}">(${mtl:cleanBibtex(bib.volume)})<c:if test="${!empty bib.pages and empty bib.number}">:</c:if></c:if><c:if test="${!empty bib.number}">${mtl:cleanBibtex(bib.number)}<c:if test="${!empty bib.pages}">:</c:if></c:if><c:if test="${!empty bib.pages}">${mtl:cleanBibtex(bib.pages)}, </c:if>
+        </span>
+        <!-- publisher --><c:if test="${not empty bib.publisher}"><span class="entry_publisher">${mtl:cleanBibtex(bib.publisher)}, </span></c:if>
+        <!-- address   --><c:if test="${not empty bib.address}"><span class="entry_address">${mtl:cleanBibtex(bib.address)}, </span></c:if>
+        <!-- year      --><c:if test="${not empty bib.year}"><span class="entry_year"><c:out value="${mtl:getDate(bib.day, bib.month, bib.year, locale)}"/>. </span></c:if>
+
+        <!-- tags & url -->
+        <output:tagsUrl post="${post}"/>      
+        
+      </p>
+    </c:forEach>
+  
+  </body>
+</html>
+</jsp:root>

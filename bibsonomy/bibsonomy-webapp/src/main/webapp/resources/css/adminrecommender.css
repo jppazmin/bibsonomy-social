@@ -1,0 +1,180 @@
+/**
+ *
+ *  BibSonomy-Webapp - The webapplication for Bibsonomy.
+ *
+ *  Copyright (C) 2006 - 2011 Knowledge & Data Engineering Group,
+ *                            University of Kassel, Germany
+ *                            http://www.kde.cs.uni-kassel.de/
+ *
+ *  This program is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU General Public License
+ *  as published by the Free Software Foundation; either version 2
+ *  of the License, or (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ */
+
+.bluebox{
+	border: 1px solid #006699;
+	padding: 10px;
+	margin-top: 10px;
+	margin-bottom: 20px;
+	width: 804px;
+}
+
+.hidden {
+display: none;
+}
+.visible {
+display: block;
+}
+
+.bluebox h2{
+    margin-left: 10px;
+}
+.adminNavi{
+    width: 824px;
+}
+
+#recommenderEditDiv{
+    display: none;
+}
+
+#rectable {
+	font-size: 60%;
+	border-collapse: collapse;
+	empty-cells: show;
+	margin-top: 10px;
+	margin-bottom: 20px;
+	margin-left: 10px;
+	margin-right: 5px;
+	width: 95%;
+}
+
+#queriesPerLatency{
+    margin-left: 10px;
+	margin-right: 10px;
+}
+.bluebox label{
+    margin-left: 0;
+}
+label[for="queriesPerLatency"]{
+   margin-left: 10px;	
+}
+#selectedTab{
+    background-color: #ddd;
+}
+
+.adminNavi{
+    border-left: 1px solid #ccc;
+    border-right: 1px solid #ccc;
+    padding-left: 0;
+    padding-right: 0;
+}
+.adminNavi a {
+   padding-right: 10px;
+   padding-left: 10px;
+   letter-spacing: 0px;
+   border-right: 1px solid #BBBBBB;
+}
+
+#rectable th {
+	font-weight: bold;
+	background-color: #EEEEEE;
+	border: 1px solid #CCCCCC;
+	padding: 2px;
+	text-align: center;
+	font-size: 100%;
+}
+
+#rectable td {
+	border: 1px solid #CCCCCC;
+	padding: 3px;
+}
+
+
+.adminNavi{ margin-bottom: 20px
+}
+
+.compound, .activationCompound{
+    position: relative;
+    width: 780px;
+    overflow: visible;
+    margin-left: 10px;
+}
+
+.compound input[type="submit"], #recActivationBtn{
+	clear: left;
+	display: block;
+    position: absolute;
+    right: 0px;
+    margin-top: 5px;
+}
+#recEditBtn{
+	display: block;
+	margin-top: 5px;
+	position: absolute;
+	right: 80px;
+}
+#recRemoveBtn{
+    width: 75px;
+}
+
+input[name="newrecurl"]{
+    width: 100%;
+}
+
+#buttondiv {
+    float:left;
+    margin: 10px;
+    margin-top: 112px;
+}
+
+#pushrightbutton{
+    display:block;
+    margin-bottom:10px;
+}
+
+#buttondiv input{
+    margin-left: 0px;
+    margin-right: 0px;
+}
+
+form[name="recConfig"] select{
+	width: 363px;
+}
+
+select[name="deleteRecIds"]{
+    width: 100%;
+}
+
+hr{
+  border-style: none;
+  border-top: 1px solid #CCCCCC;
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+.bluebox input[type="text"], .bluebox select{
+  border: 1px solid #AAAAAA;
+  margin-left: 0;
+  margin-right: 0;
+  padding: 0;
+}
+
+.bluebox select{	
+  font-size: 10px;
+  font-family: monospace;
+  font-weight: normal;
+}
+
+.floatleft{
+	float:left;
+}

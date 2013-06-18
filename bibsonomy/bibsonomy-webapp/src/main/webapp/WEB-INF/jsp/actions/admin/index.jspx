@@ -1,0 +1,191 @@
+<?xml version="1.0" ?>
+<!--
+
+
+     BibSonomy-Webapp - The webapplication for Bibsonomy.
+
+     Copyright (C) 2006 - 2011 Knowledge & Data Engineering Group,
+                               University of Kassel, Germany
+                               http://www.kde.cs.uni-kassel.de/
+
+     This program is free software; you can redistribute it and/or
+     modify it under the terms of the GNU General Public License
+     as published by the Free Software Foundation; either version 2
+     of the License, or (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+
+     You should have received a copy of the GNU General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+
+-->
+
+<jsp:root version="2.0" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
+	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/users"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:menu="urn:jsptagdir:/WEB-INF/tags/menu"
+	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
+	xmlns:form="http://www.springframework.org/tags/form"
+	xmlns:spring="urn:http://www.springframework.org/tags"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
+
+	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
+	
+	<fmt:message key="navi.admin" var="pageTitle" />
+		
+	<layout:layout pageTitle="${pageTitle}" loginUser="${command.context.loginUser}" requPath="${requPath}">
+		<jsp:attribute name="heading">	
+			<a href="/admin"><c:out value="${pageTitle}" /></a>
+		</jsp:attribute>
+		
+		<jsp:attribute name="headerExt">
+			<link rel="stylesheet" type="text/css" href="${resdir}/css/admin.css" />
+			<link rel="stylesheet" type="text/css" href="${resdir}/css/spammer.css" />
+			
+			<link rel="stylesheet" href="${resdir}/jquery/plugins/ui/jquery-ui.css" type="text/css" media="all" />
+			<link rel="stylesheet" href="${resdir}/jquery/plugins/ui/ui.theme.css" type="text/css" media="all" />
+			
+	    	<script type="text/javascript" src="${resdir}/jquery/plugins/form/jquery.form.js">&amp;nbsp;</script> 
+			
+			<!--  scripts for ajax autocompletion -->
+			<script src="${resdir}/jquery/plugins/bgiframe/jquery.bgiframe.js" type="text/javascript"><!--  --></script>
+			<script src="${resdir}/jquery/plugins/ui/jquery-ui.js" type="text/javascript"><!--  --></script>
+			<script src="${resdir}/jquery/plugins/ui/jquery-ui-i18n.js" type="text/javascript"><!--  --></script>
+		 	
+			<!--  scripts for ajax requests -->
+			<script type="text/javascript" src="${resdir}/javascript/spammer.js">&amp;nbsp;</script>
+			<script type="text/javascript" src="${resdir}/javascript/ajax-dynamic-content.js">&amp;nbsp;</script>
+			<script type="text/javascript" src="${resdir}/javascript/ajax.js">&amp;nbsp;</script>
+			<script type="text/javascript" src="${resdir}/javascript/ajax-tooltip.js">&amp;nbsp;</script>
+		</jsp:attribute>
+
+		<jsp:attribute name="content">
+		
+	
+		
+		<!-- Admin Navigation -->	
+		<menu:adminNavi />	
+		
+		<div id="general">
+		
+		
+		<!-- Link to general actions -->
+		<div class="userInfoBox">
+		<div class="admin">
+		<div>
+		<!--  Print out feedback or errors while performing requests -->
+		<c:if test="${not empty command.adminResponse}">
+				<div class="adminResponse">
+					<c:out  value="${command.adminResponse}"/>
+				</div>
+		</c:if>
+		</div>
+	
+		<div>
+			<h2><fmt:message key="admin.actions.general"/></h2>
+			<table>
+				<!--  <ul class="adminList">-->
+				
+				<c:forEach var="entry" items="${command.actionTitles}">
+		 			<tr><td width="180px"><a href="/admin/${mtl:encodeURI(entry.key)}"><c:out value="${entry.value}"/></a></td></tr>		
+				</c:forEach>
+			</table>
+			</div>	
+			<hr/>
+		
+			<!--  autocomplete user info box -->
+			<script type="text/javascript">
+			<![CDATA[
+  				$(document).ready(function(){
+					addAutocomplete("#aclUserInfo", '2');
+					addAutocomplete("#requestedGroupName", '2');
+  			});
+  				function addAutocomplete(id, type) {
+  					$(id).autocomplete({
+  						source: function ( request, response ) {
+  							
+  							return $.ajax({
+  								url: "ajax/usersearch",
+  								data: {search:request.term, limit:10},
+  								async: false,
+  								success: function (data) {
+  									var names = new Array();
+  									$.each(data.items, function(index, item) {names.push(item.name);});
+  									response( $.map( names, function( item ) {
+  										return {
+  											label: item,
+  											value: item
+  										}
+  									}));
+  								}
+  								
+  							});
+  							
+  					}
+  					});  					
+  				}			
+  			]]>
+			</script>
+		
+			<!-- Get information about a specific user -->
+			<div>
+			<h2><fmt:message key="admin.actions.user"/></h2>
+			
+			<table>	
+				<form:form name="userinfo" action="/admin">
+				<tr>
+				<td width="180px"><form:label path="aclUserInfo">User name</form:label></td> 
+  				<td width="220px"><form:input path="aclUserInfo" /></td>
+  				<td><input class="adminBtn" type="submit" /></td>
+  				</tr>
+				</form:form>	
+	
+				<c:if test="${not empty command.user}">
+				<tr>	
+				<table class="userInfoTable">
+				 <tr>
+				    	<th><fmt:message key="admin.userinfo.Spam"/></th>
+						<th><fmt:message key="admin.userinfo.Username"/></th>
+						<th><fmt:message key="admin.userinfo.Name"/></th>
+						<th><fmt:message key="admin.userinfo.IP"/></th>
+						<th><fmt:message key="admin.userinfo.EMail"/></th>
+						<th><fmt:message key="admin.userinfo.Regdate"/></th>  	
+				    	<th><fmt:message key="admin.userinfo.UpdatedBy"/></th>
+				    	<th><fmt:message key="admin.userinfo.UpdatedAt"/></th>
+				 </tr>
+				 
+				 <!-- Row number is set negative, so that row is not removed 
+				 when flagging and unflagging the specific user  
+				 -->
+				  <tags:userInfo spamUser="${command.user}" rowNumber='-1'
+						moveFromTabSpammer="false" moveFromTabNSpammer="false"
+						moveFromTabUncertain="false" selTab="userInformation" />
+			    </table><br/>
+			    </tr>
+			    </c:if>   
+			</table>
+		</div>
+		<hr/>
+
+		<!-- Get scraper information  -->
+		<div>
+			<h2><fmt:message key="admin.actions.scraper"/></h2>
+		</div>
+		
+	
+		
+		</div>																																							
+        </div>   
+        </div>
+	    </jsp:attribute>
+		
+	</layout:layout>
+</jsp:root>

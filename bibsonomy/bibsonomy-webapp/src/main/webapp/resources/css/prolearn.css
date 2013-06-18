@@ -1,0 +1,72 @@
+/**
+ *
+ *  BibSonomy-Webapp - The webapplication for Bibsonomy.
+ *
+ *  Copyright (C) 2006 - 2011 Knowledge & Data Engineering Group,
+ *                            University of Kassel, Germany
+ *                            http://www.kde.cs.uni-kassel.de/
+ *
+ *  This program is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU General Public License
+ *  as published by the Free Software Foundation; either version 2
+ *  of the License, or (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ */
+
+body     { color: #3f3f3f; font-size: 11px; line-height: 17px; font-family: Verdana, Arial, Helvetica, sans serif; background-color: white }
+p , br , ul , li, td   { font-size: 11px; line-height: 14px; font-family: Verdana, Arial, Helvetica, sans serif }
+b      { color: #222c5a; font-size: 11px; font-family: Verdana, Arial, Helvetica, "sans serif"; font-weight: 700 }
+address { color: #006; font-size: 11px; font-family:  Verdana, Arial, Helvetica, sans serif; }
+h1       { color: #222c5a; font-size: 20px; font-family: Verdana, Arial, Helvetica, sans serif; font-weight: 400; line-height: 30px }
+h2       { color: #222c5a; font-size: 20px; font-family: Verdana, Arial, Helvetica, sans serif; font-weight: 400; line-height: 30px }
+h3      { color: #222c5a; font-size: 18px; font-family: Verdana, Arial, Helvetica, sans serif; font-weight: 400; line-height: 24px }
+h4       { color: #222c5a; font-size: 14px; font-family: Verdana, Arial, Helvetica, sans serif; font-weight: 400; line-height: 21px }
+tt  { color: #465984; font-size: 10px; font-family: "Courier New", Courier }
+.bu      { color: #646464; font-size: 10px; font-family: Arial, Helvetica, sans serif; text-decoration: none; margin-right: 8px; padding-left: 8px; position: inherit }
+.copyright { color : #222c5a; font-size : 9px; text-decoration : none; }
+.rss      { color: #646464; font-size: 10px; font-family: Arial, Helvetica, sans serif; text-decoration: none;  }
+
+.linknavi   { color: #232c5a; font-size: 11px; font-family: Arial, Helvetica, "sans serif"; line-height: 14px }
+
+a:link    { color: #283e6f; font-size: 11px; font-family: Arial, Helvetica, "sans serif"; line-height: 14px; text-decoration: underline }
+a:visited    { color: #60708f; font-size: 11px; font-family: Arial, Helvetica, "sans serif"; line-height: 14px; text-decoration: underline }
+a:hover       { color: #478080; font-size: 11px; font-family: Arial, Helvetica, "sans serif"; line-height: 14px; text-decoration: none }
+a:active     { color: #e5bb29; font-size: 11px; font-family: Arial, Helvetica, "sans serif"; line-height: 14px; text-decoration: underline }
+
+.text { font-family :  Georgia, Times, sans-serif; }
+
+div.navbar_link {
+    padding-bottom: 1em;
+}
+
+div.navbar_link_active {
+    padding-bottom: 1em;
+    font-weight: bold;
+}
+
+.teaser {
+    font-weight: bold;
+}
+
+/* SEAS STUFF */
+
+.required { background-color:#ffdddd}
+.error { background-color:#ff9999}
+.requirederror { background-color:#ff3333}
+
+/* BibSonomy additions */
+.entry {margin-left:3em;}
+.entry_title {font-weight: bold;}
+.entry_author {}
+
+.entry_journal, .entry_booktitle {
+  font-style: italic;
+}

@@ -1,0 +1,60 @@
+<?xml version="1.0" ?>
+<!--
+
+
+     BibSonomy-Webapp - The webapplication for Bibsonomy.
+
+     Copyright (C) 2006 - 2011 Knowledge & Data Engineering Group,
+                               University of Kassel, Germany
+                               http://www.kde.cs.uni-kassel.de/
+
+     This program is free software; you can redistribute it and/or
+     modify it under the terms of the GNU General Public License
+     as published by the Free Software Foundation; either version 2
+     of the License, or (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+
+     You should have received a copy of the GNU General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+
+-->
+
+<jsp:root version="2.0"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
+	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/tags"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"> 
+	
+<jsp:directive.page contentType="text/plain; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
+
+<!--
+BibTeX output for bookmarks
+-->
+
+<c:forEach var="post" items="${command.bookmark.list}">
+	<c:set var="bookmark" value="${post.resource}"/>
+  
+<jsp:text>
+@electronic{${mtl:getHostName(bookmark.url)},
+   title       = {${bookmark.title}}, 
+   url         = {${bookmark.url}},
+   biburl      = {${projectHome}url/${bookmark.intraHash}/${post.user['name']}},
+   keywords    = {${mtl:toTagString(post.tags)}},
+   added-at    = {<fmt:formatDate value='${post.date}' pattern="yyyy-MM-dd'T'HH:mm:ss.SSSZ"/>},
+   description = {${post.description}},
+   interhash   = {${bookmark.interHash}}, 
+   intrahash   = {${bookmark.intraHash}}
+}
+</jsp:text>
+  
+</c:forEach>
+</jsp:root>

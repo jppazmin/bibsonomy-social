@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+
+     BibSonomy-Webapp - The webapplication for Bibsonomy.
+
+     Copyright (C) 2006 - 2011 Knowledge & Data Engineering Group,
+                               University of Kassel, Germany
+                               http://www.kde.cs.uni-kassel.de/
+
+     This program is free software; you can redistribute it and/or
+     modify it under the terms of the GNU General Public License
+     as published by the Free Software Foundation; either version 2
+     of the License, or (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+
+     You should have received a copy of the GNU General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+
+-->
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+	                    http://www.springframework.org/schema/beans/spring-beans.xsd
+	                    http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-2.5.xsd">
+
+
+
+	<!--  #################### url mapping #################### -->
+	<!--+
+		| url mapping for OpenSocial requests
+		+-->
+	<bean id="opensocialUrlMapping" parent="urlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+		<property name="urlMap">
+			<map merge="true">
+			<!-- disabled bibsonomy's container page (2011/05/23, fei)
+				<entry key="/container">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName"	value="containerPageController" />
+						<property name="allowedFields">	
+							<list>
+								<value>gadgetUrl</value>
+							</list>
+						</property>					
+					</bean> 
+				</entry>
+			 -->
+				<entry key="/oauth/requestToken">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName"	value="oAuthRequestTokenController" />
+					</bean>
+				</entry>
+				<entry key="/oauth/accessToken">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName"	value="oAuthAccessTokenController" />
+					</bean>
+				</entry>
+				<entry key="/oauth/authorize">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName"	value="oAuthAuthorizeController" />
+						<property name="allowedFields">	
+							<list>
+								<value>authorizeAction</value>
+								<value>responseString</value>
+							</list>
+						</property>
+					</bean>
+				</entry>
+			</map>
+		</property>
+	</bean>
+
+
+	<!--  #################### controller #################### -->
+	<!-- used for making shindig's beans available to the spring configuration -->
+	<bean id="guiceBeanImporter" class="org.bibsonomy.webapp.util.opensocial.GuiceBeanImporter" init-method="init"/>
+
+	<!-- database interface for accessing token information -->	
+	<bean id="oauthDataStore" factory-bean="guiceBeanImporter" factory-method="getGuiceBean">
+		<constructor-arg value="org.apache.shindig.social.opensocial.oauth.OAuthDataStore"/>
+	</bean>
+	
+	<bean id="containerPageController" class="org.bibsonomy.webapp.controller.opensocial.ContainerPageController" scope="request">
+		<property name="logic" ref="logic"/>
+		<property name="userSettings" ref="userSettings"/>
+	</bean>
+	
+	<bean id="oAuthAccessTokenController" class="org.bibsonomy.webapp.controller.opensocial.OAuthAccessTokenController" scope="request">
+		<property name="dataStore" ref="oauthDataStore"/>
+		<property name="requestLogic" ref="requestLogic"/>
+		<property name="responseLogic" ref="responseLogic"/>
+		<property name="projectHome"><value>${project.home}</value></property>
+	</bean>
+	
+	<bean id="oAuthRequestTokenController" class="org.bibsonomy.webapp.controller.opensocial.OAuthRequestTokenController" scope="request">
+		<property name="dataStore" ref="oauthDataStore"/>
+		<property name="requestLogic" ref="requestLogic"/>
+		<property name="responseLogic" ref="responseLogic"/>
+		<property name="projectHome"><value>${project.home}</value></property>
+	</bean>
+	
+	<bean id="oAuthAuthorizeController" class="org.bibsonomy.webapp.controller.opensocial.OAuthAuthorizeTokenController" scope="request">
+		<property name="dataStore" ref="oauthDataStore"/>
+		<property name="requestLogic" ref="requestLogic"/>
+		<property name="responseLogic" ref="responseLogic"/>
+		<property name="projectHome"><value>${project.home}</value></property>
+	</bean>
+	
+</beans>

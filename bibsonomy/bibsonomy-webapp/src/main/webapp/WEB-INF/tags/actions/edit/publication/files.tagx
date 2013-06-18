@@ -1,0 +1,93 @@
+<jsp:root version="2.0" 
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
+	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/buttons"
+	xmlns:form="http://www.springframework.org/tags/form">
+
+<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true"/>
+	
+	<parts:fieldset maximized="${not command.context.loginUser.settings.simpleInterface}" legendKey="post.bibtex.files">
+		
+		<jsp:attribute name="content">
+			<fmt:message var="delete" key="post.bibtex.delete"/>
+			<script type="text/javascript" src="${resdir}/javascript/jquery.documentuploader.js">&amp;nbsp;</script>
+				
+	
+			<!--+ 
+			 	|
+			 	| the documents of the post
+				|
+				+-->
+			<c:if test="${not empty command.post.resource.documents}">
+				<div class="fsRow">
+					<span class="fsLabel"><fmt:message key="post.bibtex.uploadedFiles"/></span>
+					<ul class="documents"><c:forEach var="document" items="${command.post.resource.documents}">
+						<li>
+							<a class="documentFileName" href="/documents/${command.post.resource.intraHash}/${mtl:encodeURI(command.post.user.name)}/${mtl:encodeURI(document.fileName)}">
+								<c:out value="${document.fileName}"/>
+							</a>
+							<c:out value=" ("/>
+							<a class="deleteDocument" onclick="return deleteFunction(this);" href="/ajax/documents?intraHash=${command.intraHashToUpdate}&amp;fileName=${fn:escapeXml(document.fileName)}&amp;ckey=${ckey}&amp;temp=false&amp;action=delete">
+								<c:out value="${delete}"/>
+							</a>
+							<c:out value=")"/>
+						</li>
+					</c:forEach></ul>
+				</div>
+			</c:if>
+				
+
+			<div class="fsRow" id="inputDiv">
+				<label class="fsLabel" for="fu"><fmt:message key="bibtex.actions.private_document.upload"/></label>
+				<buttons:help message="post.bibtex.help"/>
+				<input id="fu" type="file" name="file"/>
+				<script type="text/javascript">
+						$(function(){
+							$("#fu").documentUploader();
+						});
+				</script>
+			</div>
+			
+			
+			<!--+ 
+			 	|
+			 	| the temporary uploaded documents
+			 	|
+			 	+-->
+			<div id="upload" class="fsRow">
+				<!-- stores the number of temporary files for JavaScript -->
+				<input class="counter" type="hidden" name="counter" value="0"/>
+				<input class="ck" type="hidden" name="ckey" value="${ckey}"/>
+
+				<div class="dissError initiallyHidden">
+					<span></span>
+				</div>
+				<span class="fsLabel"><fmt:message key="post.bibtex.addedFiles"/></span>
+				<ul class="documents"><!-- list of files !-->
+					<c:if test="${not empty command.fileName}">
+						<c:forEach var="fileN" items="${command.fileName}" varStatus="status">
+							<li id="file_${status.count}">
+								<span class="documentFileName"><c:out value="${fn:substring(fileN, 64, fn:length(fileN))}"/></span>
+								<c:out value=" ("/>
+								<!-- FIXME: deleteDocument() does not work -->
+								<a class="deleteDocument" onclick="return deleteFunction(this);" href="/ajax/documents?fileHash=${fn:substring(fileN, 0, 64)}&amp;ckey=${ckey}&amp;temp=true&amp;action=delete">
+									<c:out value="${delete}"/>
+								</a>
+								<c:out value=")"/>
+								<input type="hidden" class="tempFileName" value="${fn:escapeXml(fileN)}" name="fileName"/>
+							</li>
+							<!-- increase temporary file counter -->
+							<script type="text/javascript">$(".counter").val(${status.count});</script>
+						</c:forEach>
+					</c:if>				
+				</ul>
+			</div>
+						
+		</jsp:attribute>
+	</parts:fieldset>
+	
+</jsp:root>

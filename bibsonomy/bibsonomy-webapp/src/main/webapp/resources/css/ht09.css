@@ -1,0 +1,169 @@
+/**
+ *
+ *  BibSonomy-Webapp - The webapplication for Bibsonomy.
+ *
+ *  Copyright (C) 2006 - 2011 Knowledge & Data Engineering Group,
+ *                            University of Kassel, Germany
+ *                            http://www.kde.cs.uni-kassel.de/
+ *
+ *  This program is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU General Public License
+ *  as published by the Free Software Foundation; either version 2
+ *  of the License, or (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ */
+
+.topic {
+	font-size: 230%;
+	font-weight: bold;
+	padding: 0;
+	margin: 20px 0px 15px 0px;
+	text-align: center;
+}
+
+div.explanation {
+	text-align: justify;
+	margin-left: 40px;
+	margin-right: 40px;
+    padding: 10px 10px 0px 10px;
+}
+
+div.explanation a {
+	color: black;
+	text-decoration: underline;
+}
+
+div.explanation a:visited {
+	color: black;
+	text-decoration: underline;
+}
+
+div.linkbox {
+	text-align: center;
+	margin-left: 40px;
+	margin-right: 40px;
+	margin-top: 1em;
+	margin-bottom: 1em;
+	color: white;
+	background-color: #0000CC;
+	padding: 5px;
+}
+
+div.linkbox2 {
+	margin-left: 40px;
+	margin-right: 40px;
+}
+
+div.linkbox a {
+	font-weight: bold;
+	font-size: 120%;
+	text-decoration: none;
+	color: white;
+	padding: 2px 15px 2px 15px;
+	white-space: nowrap;
+}
+
+div.linkbox a:hover {
+	background-color: #f4f4f4;
+	color: black;
+}
+
+#credits {
+	font-size: 100%;
+	margin-left: 40px;
+	margin-right: 40px;
+	padding: 10px 10px 30px 10px;
+}
+
+#credits a {
+	color: black;
+	text-decoration: underline;
+}
+
+#credits a:visited {
+	color: black;
+	text-decoration: underline;
+}
+
+#logos {
+	text-align: center;
+	margin: 30px 30px 20px 30px;
+}
+
+#logos a {
+	padding-left: 15px;
+	padding-right: 15px;
+	white-space: nowrap;
+}
+
+#logos img {
+	border: 0;
+	vertical-align: top;
+}
+
+a.link {
+	color: white;
+	font-weight: bold;
+	text-decoration: none; 
+	padding: 0px 10px 0px 10px;
+}
+
+a.link:hover {
+	background-color: #f4f4f4;
+	color: black;
+}
+
+
+#tagcloudy .tag_fullPaper {color: #0000c0;}
+#tagcloudy .tag_shortPaper {color: #D90700;}
+#tagcloudy .tag_demo {color: #058909;}
+#tagcloudy .tag_poster {color: #ffa70d;}
+#tagcloudy .tag_invitedTalkAbstract {color: #FF0095;}
+#tagcloudy .tag_workshop {color: #9a2f91;}
+
+.tag_fullPaperb {background-color: #0000c0;}
+.tag_shortPaperb {background-color: #D90700;}
+.tag_demob {background-color: #058909;}
+.tag_posterb {background-color: #ffa70d;}
+.tag_invitedTalkAbstractb {background-color: #FF0095;}
+.tag_workshopb {background-color: #9a2f91;margin-bottom: 5px;}
+
+
+#topics {
+	font-size: 100%; 
+	color: white;
+	margin: 40px;
+}
+
+#topics .track {
+  color: black; 
+  padding: 0px 10px 0px 10px;
+  font-face: bold;
+}
+
+#tagcloudy {
+	text-align: justify;
+	background: #f4f4f4;
+	margin: 40px;
+    padding: 10px;
+}
+#tagcloudy li {
+  display:inline;  
+}
+#tagcloudy a {
+	text-decoration: none;
+	font-family: sans-serif;
+	white-space: nowrap;
+}
+
+#tagcloudy a:hover {
+	text-decoration: underline;
+}

@@ -1,0 +1,18 @@
+<jsp:root version="2.0" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:jsp="http://java.sun.com/JSP/Page">
+
+	<jsp:directive.attribute name="href" fragment="false" required="true" />
+	<jsp:directive.attribute name="onclick" fragment="false" required="false" />
+	<jsp:directive.attribute name="title" fragment="false" required="false" />
+	<jsp:directive.attribute name="image" fragment="false" required="false" />
+	<jsp:directive.attribute name="text" fragment="true" required="true" />
+
+	<a class="linkButton" href="${href}" title="${title}" onclick="${onclick}"> 
+		<c:if test='${image != null}'>
+			<img style="margin-right: -3px" src="${image}">&amp;&nbsp;</img>
+		</c:if> 
+		
+		<span><jsp:invoke fragment="text" /></span>
+	</a>
+</jsp:root>

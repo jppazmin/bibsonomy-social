@@ -1,0 +1,60 @@
+<jsp:root version="2.0" 
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+    xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:bib="urn:jsptagdir:/WEB-INF/tags/resources/bibtex"	
+	xmlns:jsp="http://java.sun.com/JSP/Page">
+	
+	<jsp:directive.attribute name="user" type="org.bibsonomy.model.User" required="true" />
+    <jsp:directive.attribute name="cssClass" type="java.lang.String" required="false" />
+
+    <table class="${cssClass}">
+    
+      <tr><th colspan="2">registration form data</th></tr>
+      <tr><th>name</th><td><a href="/admin?aclUserInfo=${fn:escapeXml(user.name)}"><c:out value="${user.name}"/></a></td></tr>
+      <tr><th>email</th><td><a href="mailto:${fn:escapeXml(user.email)}"><c:out value="${user.email}"/></a></td></tr>
+      <tr><th>real name</th><td><c:out value="${user.realname}"/></td></tr>
+      <tr><th>homepage</th><td><a href="${fn:escapeXml(user.homepage)}"><c:out value="${user.homepage}"/></a></td></tr>
+      
+      <tr><th colspan="2">system data</th></tr>
+      <tr><th>basket</th><td><c:out value="${user.basket.numPosts}"/></td></tr>
+      <tr><th>friends</th><td><c:out value="${user.friends}"/></td></tr>
+      <tr>
+        <th>groups</th>
+        <td>
+          <c:forEach items="${user.groups}" var="group">
+            <c:out value="${group.name}"/>(<c:out value="${group.groupId}"/>), 
+          </c:forEach>
+        </td>
+      </tr>
+      <tr><th>role</th><td><c:out value="${user.role}"/></td></tr>
+      <tr><th>apiKey</th><td><c:out value="${user.apiKey}"/></td></tr>
+      <tr><th>IPAddress</th><td><c:out value="${user.IPAddress}"/></td></tr>
+      <tr><th>registrationDate</th><td><c:out value="${user.registrationDate}"/></td></tr>
+      <tr><th>OpenID</th><td><c:out value="${user.openID}"/></td></tr>
+      <tr><th>LDAP ID</th><td><c:out value="${user.ldapId}"/></td></tr>
+      
+      <tr><th colspan="2">spam data</th></tr>
+      <tr><th>spammer</th><td><c:out value="${user.spammer}"/></td></tr>
+      <tr><th>updatedAt</th><td><c:out value="${user.updatedAt}"/></td></tr>
+      <tr><th>updatedBy</th><td><c:out value="${user.updatedBy}"/></td></tr>
+      <tr><th>algorithm</th><td><c:out value="${user.algorithm}"/></td></tr>
+      <tr><th>mode</th><td><c:out value="${user.mode}"/></td></tr>
+      <tr><th>prediction</th><td><c:out value="${user.prediction}"/></td></tr>
+      <tr><th>toClassify</th><td><c:out value="${user.toClassify}"/></td></tr>
+      
+      <tr><th colspan="2">FOAF data (from settings page)</th></tr>
+      <tr><th>birthday</th><td><c:out value="${user.birthday}"/></td></tr>
+      <tr><th>gender</th><td><c:out value="${user.gender}"/></td></tr>
+      <tr><th>hobbies</th><td><c:out value="${user.hobbies}"/></td></tr>
+      <tr><th>interests</th><td><c:out value="${user.interests}"/></td></tr>
+      <tr><th>openURL</th><td><c:out value="${user.openURL}"/></td></tr>
+      <tr><th>place</th><td><c:out value="${user.place}"/></td></tr>
+      <tr><th>profession</th><td><c:out value="${user.profession}"/></td></tr>
+      <tr><th>institution</th><td><c:out value="${user.institution}"/></td></tr>
+
+    </table>
+      
+	
+</jsp:root>

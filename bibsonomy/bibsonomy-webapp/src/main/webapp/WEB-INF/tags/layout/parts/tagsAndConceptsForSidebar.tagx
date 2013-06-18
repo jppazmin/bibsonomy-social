@@ -1,0 +1,240 @@
+<jsp:root version="2.0" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
+	
+<!--+ 
+	| Links to user's  or global concept / tag pages for the sidebar
+	+-->
+
+	<!-- Tags -->
+	
+	
+	<!--  link to loginuser's tag-page (if the user has ALL of the requestedTags as tags) -->
+	<c:if test="${command.postCountForTagsForLoginUser > 0}">
+		<li>
+			<a href="/user/${fn:escapeXml(command.context.loginUser.name)}/${mtl:encodeURI(command.requestedTags)}">${fn:escapeXml(command.requestedTags)}</a>
+			<c:out value=" "/>
+			<fmt:message key="tag.asTagFrom"/>
+			<c:out value=" "/>
+			${fn:escapeXml(command.context.loginUser.name)}	
+			<!-- if user is logged in, he benefits of seeing the postCount -->
+			<c:if test="${command.context.userLoggedIn}">
+				<c:out value=" (${fn:escapeXml(command.postCountForTagsForLoginUser)} "/>
+				<c:choose>
+					<c:when test="${command.postCountForTagsForLoginUser == 1}">
+						<fmt:message key="post"/>
+					</c:when>
+					<c:otherwise>
+						<fmt:message key="posts"/>
+					</c:otherwise>
+				</c:choose>
+				<c:out value=")"/>
+			</c:if>			
+		</li>
+	</c:if>	
+	
+		
+	<!--  link to requested user's tag-page (if the user has ALL of the requestedTags as tags) -->
+	<c:if test="${command.postCountForTagsForRequestedUser > 0}">
+		<li>
+			<a href="/user/${fn:escapeXml(command.requestedUser)}/${mtl:encodeURI(command.requestedTags)}">${fn:escapeXml(command.requestedTags)}</a>
+			<c:out value=" "/>
+			<fmt:message key="tag.asTagFrom"/>
+			<c:out value=" "/>
+			${fn:escapeXml(command.requestedUser)}		
+			<!-- if user is logged in, he benefits of seeing the postCount -->
+			<c:if test="${command.context.userLoggedIn}">
+				<c:out value=" (${fn:escapeXml(command.postCountForTagsForRequestedUser)} "/>
+				<c:choose>
+					<c:when test="${command.postCountForTagsForRequestedUser == 1}">
+						<fmt:message key="post"/>
+					</c:when>
+					<c:otherwise>
+						<fmt:message key="posts"/>
+					</c:otherwise>
+				</c:choose>
+				<c:out value=")"/>
+			</c:if>			
+		</li>
+	</c:if>	
+	
+	<!--  link to requested group's tag-page (if the group has ALL of the requestedTags as tags) -->
+	<c:if test="${command.postCountForTagsForGroup > 0}"> 
+		<li>
+			<a href="/group/${fn:escapeXml(command.requestedGroup)}/${mtl:encodeURI(command.requestedTags)}">${fn:escapeXml(command.requestedTags)}</a>
+			<c:out value=" "/>
+			<fmt:message key="tag.asTagFromGroup"/>
+			<c:out value=" "/>
+			${fn:escapeXml(command.requestedGroup)}		
+			<!-- if user is logged in, he benefits of seeing the postCount -->
+			<c:if test="${command.context.userLoggedIn}">
+				<c:out value=" (${fn:escapeXml(command.postCountForTagsForGroup)} "/>
+				<c:choose>
+					<c:when test="${command.postCountForTagsForGroup == 1}">
+						<fmt:message key="post"/>
+					</c:when>
+					<c:otherwise>
+						<fmt:message key="posts"/>
+					</c:otherwise>
+				</c:choose>
+				<c:out value=")"/>
+			</c:if>			
+		</li>
+	</c:if>
+	
+	<!-- link to global tag-page (if a user has ALL of the requestedTags as tags) -->
+  	<c:if test="${command.postCountForTagsForAll > 0}"> 
+		<li> 
+			<a href="/tag/${mtl:encodeURI(command.requestedTags)}">${fn:escapeXml(command.requestedTags)}</a>
+			<c:out value=" "/>
+			<fmt:message key="tag.asTagFromAll"/>
+			<!-- if user is logged in, he benefits of seeing the postCount -->
+			<c:if test="${command.context.userLoggedIn}">
+				<c:out value=" (${fn:escapeXml(command.postCountForTagsForAll)} "/>
+				<c:choose>
+					<c:when test="${command.postCountForTagsForAll == 1}">
+						<fmt:message key="post"/>
+					</c:when>
+					<c:otherwise>
+						<fmt:message key="posts"/>
+					</c:otherwise>
+				</c:choose>
+				<c:out value=")"/>
+			</c:if>	
+		</li>
+	</c:if>	
+	
+	<li style="margin-bottom: 1ex;"/>
+
+
+	<!-- Concepts -->
+
+
+	<!-- need number of requestedTags, i.e. length of list requestedTagsList -->
+	<c:set var="requTagsListLength" value="${fn:length(command.requestedTagsList)}"/>
+
+	<!-- links to loginUser's concept page (if the user has the respective requested tag as concept) -->
+	<c:if test="${not empty command.conceptsOfLoginUser}">
+		<c:forEach var="conceptVar" items="${command.conceptsOfLoginUser}">
+			<li>
+				<c:set var="conceptTitle">
+					<fmt:message key="subtags" />
+					<c:out value=": "/>
+					<!-- following code has to be in one line - do neither separate nor remove space characters! -->
+					<c:forEach var="subtag" items="${conceptVar.subTags}"> ${fn:escapeXml(subtag.name)} <c:out value=" "/></c:forEach>
+				</c:set>
+				<a title="${conceptTitle}" 
+					href="/concept/user/${fn:escapeXml(command.context.loginUser.name)}/${mtl:encodeURI(conceptVar.name)}">
+					<c:out value="${fn:escapeXml(conceptVar.name)}"/>
+				</a>
+				<c:out value=" "/>
+				<fmt:message key="tag.asConceptFrom"/>
+				<c:out value=" "/>
+				${fn:escapeXml(command.context.loginUser.name)}								
+			</li>
+		</c:forEach>
+		<c:if test="${requTagsListLength > 1}" >
+			<li>
+				<a href="/concept/user/${fn:escapeXml(command.context.loginUser.name)}/${mtl:encodeURI(command.requestedTags)}">${fn:escapeXml(command.requestedTags)}</a>
+				<c:out value=" "/>
+				<fmt:message key="tag.asConceptFrom"/>
+				<c:out value=" "/>
+				${fn:escapeXml(command.context.loginUser.name)}			
+			</li>
+		</c:if>
+	</c:if>
+	
+	<!-- links to requestedUser's concept page (if the user has the respective requested tag as concept) -->
+	<c:if test="${not empty command.conceptsOfRequestedUser}">
+		<c:forEach var="conceptVar" items="${command.conceptsOfRequestedUser}">
+			<li>
+				<c:set var="conceptTitle">
+					<fmt:message key="subtags" />
+					<c:out value=": "/>
+					<!-- following code has to be in one line - do neither separate nor remove space characters! -->
+					<c:forEach var="subtag" items="${conceptVar.subTags}"> ${fn:escapeXml(subtag.name)} <c:out value=" "/></c:forEach>
+				</c:set>
+				<a title="${conceptTitle}" 
+					href="/concept/user/${fn:escapeXml(command.requestedUser)}/${mtl:encodeURI(conceptVar.name)}">
+					<c:out value="${fn:escapeXml(conceptVar.name)}"/>
+				</a>
+				<c:out value=" "/>
+				<fmt:message key="tag.asConceptFrom"/>
+				<c:out value=" "/>
+				${fn:escapeXml(command.requestedUser)}				
+			</li>
+		</c:forEach>
+		<c:if test="${requTagsListLength > 1}" >
+			<li>
+				<a href="/concept/user/${fn:escapeXml(command.requestedUser)}/${mtl:encodeURI(command.requestedTags)}">${fn:escapeXml(command.requestedTags)}</a>
+				<c:out value=" "/>
+				<fmt:message key="tag.asConceptFrom"/>
+				<c:out value=" "/>
+				${fn:escapeXml(command.requestedUser)}			
+			</li>
+		</c:if>
+	</c:if>
+	
+	<!--  links to requestedGroup's concept page (if the group has the respective requested tag as concept) -->
+	<c:if test="${not empty command.conceptsOfGroup}">
+		<c:forEach var="conceptVar" items="${command.conceptsOfGroup}">
+    		<li>
+    			<c:set var="conceptTitle">
+					<fmt:message key="subtags" />
+					<c:out value=": "/>
+					<!-- following code has to be in one line - do neither separate nor remove space characters! -->
+					<c:forEach var="subtag" items="${conceptVar.subTags}"> ${fn:escapeXml(subtag.name)} <c:out value=" "/></c:forEach>
+				</c:set>
+				<a title="${conceptTitle}" 
+					href="/concept/group/${fn:escapeXml(command.requestedGroup)}/${mtl:encodeURI(conceptVar.name)}">
+					<c:out value="${fn:escapeXml(conceptVar.name)}"/>
+				</a>
+				<c:out value=" "/>
+				<fmt:message key="tag.asConceptFromGroup"/>
+				<c:out value=" "/>
+				${fn:escapeXml(command.requestedGroup)}		
+			</li>
+		</c:forEach>
+		<c:if test="${requTagsListLength > 1}" >
+			<li>
+				<a href="/concept/user/${fn:escapeXml(command.requestedGroup)}/${mtl:encodeURI(command.requestedTags)}">${fn:escapeXml(command.requestedTags)}</a>
+				<c:out value=" "/>
+				<fmt:message key="tag.asConceptFromGroup"/>
+				<c:out value=" "/>
+				${fn:escapeXml(command.requestedGroup)}			
+			</li>
+		</c:if>
+	</c:if>
+	
+	<!--  links to global concept page (if a user has the respective requested tag as concept) -->
+	<c:if test="${not empty command.conceptsOfAll}">
+		<c:forEach var="conceptVar" items="${command.conceptsOfAll}">
+			<li>
+				<c:set var="conceptTitle">
+					<fmt:message key="subtags" />
+					<c:out value=": "/>
+					<!-- following code has to be in one line - do not separate! -->
+					<c:forEach var="subtag" items="${conceptVar.subTags}"> ${fn:escapeXml(subtag.name)} <c:out value=" "/></c:forEach>
+				</c:set>
+				<a 	title="${conceptTitle}" 
+					href="/concept/tag/${mtl:encodeURI(conceptVar.name)}">
+					<c:out value="${fn:escapeXml(conceptVar.name)}"/>
+				</a>
+				<c:out value=" "/>
+				<fmt:message key="tag.asConceptFromAll"/>
+			</li>
+		</c:forEach>
+		<c:if test="${requTagsListLength > 1}" >
+			<li>
+				<a href="/concept/tag/${mtl:encodeURI(command.requestedTags)}">${fn:escapeXml(command.requestedTags)}</a>
+				<c:out value=" "/>
+				<fmt:message key="tag.asConceptFromAll"/>
+			</li>
+		</c:if>
+	</c:if>
+	<li style="margin-bottom: 1ex;"/>
+
+</jsp:root>

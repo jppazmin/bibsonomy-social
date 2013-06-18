@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+
+     BibSonomy-Webapp - The webapplication for Bibsonomy.
+
+     Copyright (C) 2006 - 2011 Knowledge & Data Engineering Group,
+                               University of Kassel, Germany
+                               http://www.kde.cs.uni-kassel.de/
+
+     This program is free software; you can redistribute it and/or
+     modify it under the terms of the GNU General Public License
+     as published by the Free Software Foundation; either version 2
+     of the License, or (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+
+     You should have received a copy of the GNU General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+
+-->
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+	                    http://www.springframework.org/schema/beans/spring-beans.xsd
+	                    http://www.springframework.org/schema/util
+	                    http://www.springframework.org/schema/util/spring-util-3.0.xsd">
+
+	<!--  #################### url mapping #################### -->
+    <bean id="synchronizationUrlMapping" parent="urlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+		<property name="urlMap">
+			<map merge="true">
+			    
+			    <!-- update synchronization settings -->
+			    <entry key="/updateSyncSettings">
+			    	<bean parent="controllerBase">
+			    		<property name="controllerBeanName" value="updateSyncSettingsController"/>
+			    		<property name="allowedFields">
+			    			<list>
+			    				<value>ckey</value>
+			    				<value>selTab</value>
+			    				<value>syncServer[*].*</value>
+			    				<value>newSyncServer.*</value>
+			    			</list>
+			    		</property>
+			    	</bean>
+			    </entry>
+			    <entry key="/sync">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="syncPageController"/>						
+					</bean>
+				</entry>
+				
+				<entry key="/ajax/synchronize">
+					<bean parent="controllerBase">
+					<property name="controllerBeanName" value ="syncController"/>
+					<property name="allowedFields">
+						<list>
+							<value>serviceName</value>
+							<value>syncBookmarks</value>
+							<value>syncPublications</value>
+						</list>
+					</property> 
+					</bean>
+				</entry>
+				
+				<entry key="/admin/sync">
+					<bean parent ="controllerBase">
+						<property name="controllerBeanName" value = "adminSyncController"/>
+						<property name="allowedFields">
+						<list>
+							<value>action</value>
+							<value>service</value>
+							<value>server</value>
+						</list>
+						</property>
+					</bean>
+				</entry>
+            </map>
+        </property>
+    </bean>
+	
+	<!--  #################### controller #################### -->
+	
+	<!-- handles sync admin page -->
+	<bean id="adminSyncController" class="org.bibsonomy.webapp.controller.admin.AdminSyncViewController" scope="request">
+		<property name="logic" ref="logic"/>
+	</bean>
+	
+	<!-- Handles the update of synchronitzation settings -->
+	<bean id="updateSyncSettingsController" class="org.bibsonomy.webapp.controller.actions.SyncSettingsController" scope="request">
+		<property name="logic" ref="logic"/>
+		<property name="requestLogic" ref="requestLogic"/>
+	</bean>
+	
+	<!-- Handles sync page -->	
+	<bean id="syncPageController" class="org.bibsonomy.webapp.controller.SyncPageController" scope="request">
+		<property name="logic" ref="logic"/>
+		<property name="syncClient" ref="synchronizationClient" />
+		<property name="requestLogic" ref="requestLogic"/>
+		<property name="messageSource" ref="messageSource"/>
+		<property name="projectHome" value="${project.home}"/>
+	</bean>
+		
+	<!-- handles synchronization request -->
+	<bean id="syncController" class="org.bibsonomy.webapp.controller.ajax.SynchronizationController" scope="request" parent="ajaxController">
+		<property name="client" ref="synchronizationClient"/>
+		<property name="messageSource" ref="messageSource"/>
+		<property name="projectHome" value="${project.home}"/>
+	</bean>
+
+	<!-- client bean, handles synchronization -->
+	<bean id="realSynchronizationClient" class="org.bibsonomy.sync.TwoStepSynchronizationClient" lazy-init="true">
+		<property name="ownUri" value="${project.home}"/>
+	</bean>
+	<bean id="mockSynchronizationClient" class="org.bibsonomy.webapp.util.spring.factorybeans.NullFactoryBean"/>
+	<alias name="${project.bean.syncclient}" alias="synchronizationClient"/>
+	
+</beans>

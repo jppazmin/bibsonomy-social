@@ -1,0 +1,39 @@
+<jsp:root version="2.0" 
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:rc="urn:jsptagdir:/WEB-INF/tags/resources/common"
+	xmlns:bm="urn:jsptagdir:/WEB-INF/tags/resources/bookmark"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
+	
+	<jsp:directive.attribute name="listView" type="org.bibsonomy.webapp.command.ListCommand" required="true"/>
+	<jsp:directive.attribute name="loginUserName" type="java.lang.String" required="true"/>
+	<jsp:directive.attribute name="disableActions" type="java.lang.Boolean" required="true"/>
+	<jsp:directive.attribute name="disableListNavigation" type="java.lang.Boolean" required="true"/>
+	<jsp:directive.attribute name="requPath" type="java.lang.String" required="true"/>
+
+	<rc:list
+		titleKey="bookmarks" 
+		loginUserName="${loginUserName}"
+		listViewStartParamName="bookmark.start"
+		otherPostsUrlPrefix="/url/"
+		disableActions="${disableActions}"
+		disableListNavigation="${disableListNavigation}"
+		listID="bookmarkList"
+		listView="${listView}">
+    
+		<jsp:attribute name="formatButtons">
+			<!-- Buttons to show content of page in different formats -->
+			<c:url var="rssPath" value="/rss/${requPath}${requQueryString}" context="${projectContext}"/><a href="${rssPath}">RSS</a>${mtl:ch('nbsp')}
+			<c:url var="bibPath" value="/bookbib/${requPath}${requQueryString}" context="${projectContext}"/><a href="${bibPath}">BibTeX</a>${mtl:ch('nbsp')}
+            <c:url var="xmlPath" value="/xml/${requPath}${requQueryString}" context="${projectContext}"/><a href="${xmlPath}">XML</a>
+		</jsp:attribute>
+    
+		<jsp:attribute name="title">  <bm:title   post="${post}"/></jsp:attribute>
+		<jsp:attribute name="desc">	  <bm:desc    post="${post}"/></jsp:attribute>
+		<jsp:attribute name="bmicon"> <bm:bmicon  post="${post}"/></jsp:attribute>
+		<jsp:attribute name="actions"><bm:actions post="${post}" loginUserName="${loginUserName}"/></jsp:attribute>
+    
+	</rc:list>
+	
+</jsp:root>

@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+
+     BibSonomy-Webapp - The webapplication for Bibsonomy.
+
+     Copyright (C) 2006 - 2011 Knowledge & Data Engineering Group,
+                               University of Kassel, Germany
+                               http://www.kde.cs.uni-kassel.de/
+
+     This program is free software; you can redistribute it and/or
+     modify it under the terms of the GNU General Public License
+     as published by the Free Software Foundation; either version 2
+     of the License, or (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+
+     You should have received a copy of the GNU General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+
+-->
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+	                    http://www.springframework.org/schema/beans/spring-beans.xsd
+	                    http://www.springframework.org/schema/util 
+	                    http://www.springframework.org/schema/util/spring-util-2.5.xsd">
+
+
+	<!--+
+		| url mapping for ajax request: /ajax/*
+		+-->
+	<bean id="ajaxUrlMapping" parent="urlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+		<property name="urlMap">
+			<map merge="true">
+				<entry key="/generalAjax">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="generalAjaxController"/>
+						 <property name="allowedFields">
+                            <list>
+                                <value>action</value>
+								<value>pageURL</value>
+								<value>q</value>
+								<value>requestedUser</value>
+							</list>
+						</property>
+					</bean>
+				</entry>
+				
+        				<entry key="/ajax/additionalURLs">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="additionalURLController" />
+						<property name="allowedFields">
+							<list>
+								<value>ckey</value>
+								<value>url</value>
+								<value>text</value>
+								<value>hash</value>
+								<value>action</value>
+							</list>
+						</property>
+					</bean>
+				</entry>
+
+				<entry key="/ajax/documents">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName"	value="documentsController" />
+						<property name="allowedFields">
+							<list>
+								<value>intraHash</value>
+								<value>fileName</value>
+								<value>fileHash</value>
+								<value>temp</value>
+								<value>ckey</value>
+								<value>action</value>
+								<value>file</value>
+								<value>fileID</value>
+							</list>
+						</property>
+					</bean>
+				</entry>
+				
+				<!-- get recommendations for user -->
+				<entry key="/ajax/getBookmarkRecommendedTags">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName"	value="ajaxGetBookmarkRecommendedTagsController" />
+						<property name="allowedFields" ref="bookmarkRequestParameters" />
+					</bean>
+				</entry>
+				<entry key="/ajax/getPublicationRecommendedTags">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName"	value="ajaxGetPublicationRecommendedTagsController" />
+						<property name="allowedFields" ref="publicationRequestParameters" />
+					</bean>
+				</entry>
+				<entry key="/ajax/handleFollower">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName"	value="followerAjaxController" />
+						<property name="allowedFields" >
+							<list>
+								<value>requestedUserName</value>
+								<value>action</value>
+								<value>forward</value>
+								<value>ckey</value>
+							</list>
+						</property>
+					</bean>
+				</entry>
+				<entry key="/ajax/pickUnpickPost">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName"	value="basketController" />
+						<property name="allowedFields" >
+							<list>
+								<value>hash</value>
+								<value>action</value>
+								<value>user</value>
+								<value>ckey</value>
+							</list>
+						</property>
+					</bean>
+				</entry>
+				<entry key="/ajax/pickUnpickConcept">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName"	value="conceptController" />
+						<property name="allowedFields" >
+							<list>
+								<value>tag</value>
+								<value>action</value>
+								<value>ckey</value>
+								<value>forward</value>
+							</list>
+						</property>
+					</bean>
+				</entry>
+				<entry key="/ajax/goldstandards/references">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="editGoldstandardReferencesController"/>
+						 <property name="allowedFields">
+                            <list>
+                                <value>action</value>
+								<value>hash</value>
+								<value>references</value>
+							</list>
+						</property>
+					</bean>
+				</entry>
+				<entry key="/ajax/usersearch">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="userSearchController"/>
+						<property name="allowedFields">
+							<list>
+								<value>search</value>
+								<value>limit</value>
+							</list>
+						</property>
+					</bean>
+				</entry>
+				<entry key="/ajax/comments">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="commentController"/>
+						<property name="allowedFields">
+							<list>
+								<value>hash</value>
+								<value>discussionItem.text</value>
+								<value>discussionItem.hash</value>
+								<value>discussionItem.anonymous</value>
+								<value>discussionItem.parentHash</value>
+								<value>abstractGrouping</value>
+	  							<value>groups</value>
+							</list>
+						</property>
+					</bean>
+				</entry>
+				<entry key="/ajax/reviews">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="reviewController"/>
+						<property name="allowedFields">
+							<list>
+								<value>hash</value>
+								<value>discussionItem.rating</value>
+								<value>discussionItem.text</value>
+								<value>discussionItem.hash</value>
+								<value>discussionItem.anonymous</value>
+								<value>abstractGrouping</value>
+	  							<value>groups</value>
+							</list>
+						</property>
+					</bean>
+				</entry>
+			</map>
+		</property>
+	</bean>
+	
+
+	<!--+
+		  | ajax controller
+	   	+-->
+	<bean id="ajaxController" class="org.bibsonomy.webapp.controller.ajax.AjaxController" abstract="true">
+		<property name="logic" ref="logic"/>
+		<property name="userSettings" ref="userSettings"/>
+		<property name="requestLogic" ref="requestLogic" />
+		<property name="responseLogic" ref="responseLogic"/>
+	</bean>
+
+	<bean id="generalAjaxController" class="org.bibsonomy.webapp.controller.ajax.GeneralAjaxController" scope="request" parent="ajaxController" />	
+	
+	<bean id="editGoldstandardReferencesController" class="org.bibsonomy.webapp.controller.ajax.EditGoldstandardReferencesController" scope="request" parent="ajaxController" />
+	
+	<bean id="commentController" class="org.bibsonomy.webapp.controller.ajax.CommentAjaxController" parent="ajaxController" scope="request" />
+	
+	<bean id="reviewController" class="org.bibsonomy.webapp.controller.ajax.ReviewAjaxController" parent="ajaxController" scope="request" />
+	
+	<bean id="additionalURLController" class="org.bibsonomy.webapp.controller.ajax.AdditionalURLController" scope="request" parent="ajaxController" />
+
+	<bean id="documentsController" class="org.bibsonomy.webapp.controller.ajax.DocumentsController" scope="request" parent="ajaxController">
+		<property name="docPath" value="${project.document.path}"/>
+		<property name="tempPath" value="${project.document.temp}"/>
+		<property name="messageSource" ref="messageSource"/>
+	</bean>	
+		
+	<!-- controller for handling recommendation requests -->
+	<bean id="ajaxTagsRecommendationsController" class="org.bibsonomy.webapp.controller.ajax.RecommendationsAjaxController" abstract="true" parent="ajaxController">
+		<!-- used for accessing spam informations -->
+		<property name="adminLogic" ref="adminLogic"/>  
+		<property name="tagRecommender"	ref="multiplexingTagRecommender" />
+		<!-- tag recommender used for spammer -->
+		<property name="spamTagRecommender" ref="jensRecommender"/>
+	</bean>
+	
+	<bean id="userSearchController" class="org.bibsonomy.webapp.controller.ajax.UserSearchController" scope="request" parent="ajaxController" />
+	<bean id="ajaxGetBookmarkRecommendedTagsController" class="org.bibsonomy.webapp.controller.ajax.GetBookmarkRecommendedTagsController" scope="request" parent="ajaxTagsRecommendationsController" />
+	<bean id="ajaxGetPublicationRecommendedTagsController" class="org.bibsonomy.webapp.controller.ajax.GetPublicationRecommendedTagsController" scope="request" parent="ajaxTagsRecommendationsController" />
+	<bean id="followerAjaxController" class="org.bibsonomy.webapp.controller.ajax.FollowerAjaxController" scope="request" parent="ajaxController" />
+	<bean id="basketController" class="org.bibsonomy.webapp.controller.ajax.BasketController" scope="request" parent="ajaxController" />
+	<bean id="conceptController" class="org.bibsonomy.webapp.controller.ajax.ConceptController" scope="request" parent="ajaxController" />
+</beans>

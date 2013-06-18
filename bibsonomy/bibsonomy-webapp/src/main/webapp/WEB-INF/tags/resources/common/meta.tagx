@@ -1,0 +1,86 @@
+<jsp:root version="2.0" 
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:rc="urn:jsptagdir:/WEB-INF/tags/resources/common"
+	xmlns:jsp="http://java.sun.com/JSP/Page">
+	
+	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true" />
+	<jsp:directive.attribute name="otherPostsUrlPrefix" type="java.lang.String" required="true" />
+
+	<!-- the tags of a resource -->
+	<c:if test="${!empty post.visibleTags}">
+		<fmt:message key="post.meta.taggedTo" />
+		<c:out value=" "/>
+		<span class="bmtags">
+			<c:forEach var="tag" items="${post.visibleTags}">
+				<c:url var="tagUrl" value="/user/${fn:escapeXml(post.user.name)}/${mtl:encodeURI(tag.name)}" context="${projectContext}"/>
+				<a href="${tagUrl}"><c:out value="${tag.name}"/></a>
+				<c:out value=" "/>
+			</c:forEach>
+		<!-- TODO: add "for:" tags  -->
+		<!-- c:if test="${command.context.loginUser.name eq post.user.name}">
+			<c:forEach var="foruser" items="${resource.usersToPost}">
+				<a href='${basePath}user/<mtl:encode value="${resource.user}" />/for:<mtl:encode value="${foruser}" />'>for:<c:out value='${foruser}' /></a>
+			</c:forEach>
+		</c:if -->
+		</span>
+	</c:if>
+	<c:if test="${!empty post.hiddenSystemTags}">
+		<c:url var="systagUrl" value="/user/${fn:escapeXml(post.user.name)}/" context="${projectContext}"/>
+		<c:set var="systagTitles" value=""/>
+		<c:forEach var="systag" items="${post.hiddenSystemTags}">
+			<c:set var="systagTitles" value="${systagTitles}${fn:escapeXml(systag.name)} " />
+		</c:forEach>		
+		<img alt="SystemTags" class="hiddenSystemTag" src="${resdir}/image/cog_wheel.png" url="${systagUrl}" tags="${systagTitles}" title="System Tags"/>	
+	</c:if>
+	
+	<!-- group of a post -->
+	<c:forEach var="group" items="${post.groups}">
+		<c:if test="${!empty group.name and group.name ne 'public'}">
+		<c:out value=" "/>
+			<c:choose>
+				<c:when test="${group.name eq 'friends'}">
+					<c:url var="groupUrl" value="/friend/${fn:escapeXml(post.user.name)}" context="${projectContext}"/>
+					<fmt:message key="post.meta.asGroup"/> 
+					<c:out value=" "/>
+					<a href="${groupUrl}"><fmt:message key="friends"/></a>
+				</c:when>
+				<c:otherwise>
+					<c:url var="groupUrl" value="/viewable/${fn:escapeXml(group.name)}" context="${projectContext}"/>
+					<fmt:message key="post.meta.asGroup"/> 
+					<c:out value=" "/>
+					<a href="${groupUrl}"><c:out value="${group.name}" /></a>
+				</c:otherwise>
+			</c:choose>
+		</c:if>	
+	</c:forEach>
+
+	<!-- user name of a resource -->
+	<c:if test="${!isUserPage}">	
+		<c:url var="taggedByUrl" value="/user/${post.user.name}" context="${projectContext}"/>
+		<c:out value=" "/>
+		<fmt:message key="post.meta.taggedBy" />
+		<c:out value=" "/>
+		<a name="${fn:escapeXml(post.user.name)}" href="${taggedByUrl}"><c:out value="${post.user.name}" escapeXml="true"/></a>
+	</c:if>
+	
+	<rc:otherpeople post="${post}" otherPostsUrlPrefix="${otherPostsUrlPrefix}"/>
+	
+	<!-- tagging date -->
+	<c:out value=" "/><fmt:message key="post.meta.taggedOn"/><c:out value=" "/>
+	<!-- for mouseover -->
+	<fmt:timeZone value="${command.context.loginUser.settings.timeZone}">
+		<fmt:formatDate type="date" dateStyle="medium" value="${post.changeDate}" var="changeDate" />
+		<fmt:formatDate type="time" timeStyle="short" value="${post.changeDate}" var="changeTime" />
+		<fmt:message key="post.meta.changedOn" var="changedOn"/>
+		<span title="${changedOn} ${changeDate}, ${changeTime}">
+			<!-- date -->
+			<fmt:formatDate type="date" dateStyle="medium" value="${post.date}" />,
+			<!-- time -->
+			<fmt:formatDate type="time" timeStyle="short" value="${post.date}" />
+		</span>
+	</fmt:timeZone>
+
+</jsp:root>

@@ -1,0 +1,36 @@
+<?xml version="1.0" ?>
+<jsp:root version="2.0"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
+	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/tags"
+    xmlns:bm="urn:jsptagdir:/WEB-INF/tags/resources/bookmark"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+    xmlns:rc="urn:jsptagdir:/WEB-INF/tags/resources/common"
+    xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/buttons"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">	 	
+	
+	<jsp:directive.attribute name="errors" type="org.springframework.web.servlet.support.BindStatus" required="true" description="The errors (Spring's BindStatus) this tag shall show."/>
+	<jsp:directive.attribute name="fastEdit" type="java.lang.Boolean" required="false" description="Whether this errors are displayed during fastediting of tags or not."/>
+	
+	<buttons:help iconText="X" iconTextStyle="color:red; font-size:120%">
+		<jsp:attribute name="helpText">
+			<ul>
+				<c:forEach var="errorMessage" items="${status.errorMessages}">
+					<li class="info_bold">
+						<c:choose>
+							<!--  use a larger font during fast-edit -->
+							<c:when test="${not empty fastEdit and fastEdit == true}">
+								<span style="font-size:120%">${errorMessage}</span>
+							</c:when>
+							<c:otherwise>${errorMessage}</c:otherwise>
+						</c:choose>					
+					</li>
+				</c:forEach>
+			</ul>
+		</jsp:attribute>
+	</buttons:help>
+	
+</jsp:root>

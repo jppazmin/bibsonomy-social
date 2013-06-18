@@ -1,0 +1,19 @@
+<jsp:root version="2.0" xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:discussionItem="urn:jsptagdir:/WEB-INF/tags/resources/discussion/discussionItem"
+	xmlns:comment="urn:jsptagdir:/WEB-INF/tags/resources/discussion/comment">
+    
+   	<jsp:directive.attribute name="comment" type="org.bibsonomy.model.Comment" required="true" />
+   	<jsp:directive.attribute name="loginUser" type="org.bibsonomy.model.User" required="true" />
+   	<jsp:directive.attribute name="resource" type="org.bibsonomy.model.Resource" required="true" />
+   	
+   	<discussionItem:discussionItem discussionItem="${comment}" loginUser="${loginUser}" resource="${resource}">
+   		<jsp:attribute name="content">
+   			<div class="comment text">
+				<c:out value="${comment.text}" />
+			</div>
+   		</jsp:attribute>
+   	</discussionItem:discussionItem>
+</jsp:root>

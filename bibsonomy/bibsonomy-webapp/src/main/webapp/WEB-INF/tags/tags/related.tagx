@@ -1,0 +1,97 @@
+<jsp:root version="2.0" xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions">
+
+	<jsp:directive.attribute name="cmd" type="org.bibsonomy.webapp.command.RelatedTagCommand" required="true" />
+	<jsp:directive.attribute name="requPath" type="java.lang.String" required="true" />
+	<jsp:directive.attribute name="order" type="java.lang.String" required="true" />
+
+	<ul class="taglist">
+		<c:forEach var="tag" items="${cmd.relatedTags}">
+
+			<!-- determine css depending on folkrank weights -->
+			<c:if test="${order eq 'folkrank'}">
+				<c:choose>
+					<c:when test="${tag.usercount > 6}">
+						<c:set var="tagclass" value="tagten" />
+					</c:when>			
+					<c:when test="${tag.usercount > 2}">
+						<c:set var="tagclass" value="tagone" />				
+					</c:when>							
+					<c:otherwise>
+						<c:set var="tagclass" value="" />
+					</c:otherwise>
+				</c:choose>
+			</c:if>
+			<!--  determine css depending on c	o-occurrence counts -->
+			<c:if test="${order eq 'added'}">
+				<c:set var="relatedness" value="${tag.usercount / cmd.tagGlobalCount}"/>
+				<c:choose>
+					<c:when test="${relatedness > 0.1 and cmd.tagGlobalCount > 1}">
+						<c:set var="tagclass" value="tagten" />
+					</c:when>			
+					<c:when test="${relatedness > 0.03 and cmd.tagGlobalCount > 1}">
+						<c:set var="tagclass" value="tagone" />				
+					</c:when>							
+					<c:otherwise>
+						<c:set var="tagclass" value="" />
+					</c:otherwise>
+				</c:choose>			
+			</c:if>
+			
+		
+			<!-- localized messages -->
+			<fmt:message key="posts" var="posts" /> <!-- plural -->		
+			<c:if test="${tag.usercount == 1}">
+				<fmt:message key="post" var="posts" /><!-- singular -->
+			</c:if>
+			
+			<!-- construct url to single tag -->
+			<c:url var="tagUrl"
+			       context="${projectContext}" 
+				   value="/${mtl:getLowerPath(requPath)}/${fn:escapeXml(tag.name)}${mtl:getQuery(requPath)}"/>
+			
+			<!-- construct url to several tags -->	   
+			<c:url var="tagsUrl"
+				   context="${projectContext}" 
+				   value="/${mtl:getLowerPath(requPath)}/${fn:escapeXml(fn:join(fn:split(cmd.requestedTags, ' '), '+'))}+${fn:escapeXml(tag.name)}${mtl:getQuery(requPath)}"/>
+			
+			<!-- set titles -->	   
+			<c:set var="tagTitle">
+				<c:choose>
+					<c:when test="${order eq 'folkrank'}">
+						<fmt:message key="sort.folkrank.weight"/>:
+						<c:out value=" "/>
+						${tag.usercount} <!-- this field is misused for folkrank weights in this case -->
+					</c:when>
+					<c:when test="${order eq 'added'}">
+						${fn:escapeXml(tag.name)}
+						<c:out value=" "/>
+						(<fmt:message key="tag.relatedness"/>:
+						${fn:substring(relatedness,0,4)})
+					</c:when>
+					<c:otherwise>${fn:escapeXml(tag.name)}</c:otherwise>
+				</c:choose>
+			</c:set>			
+			<c:set var="tagsTitle">
+				${fn:escapeXml(cmd.requestedTags)}
+				<c:out value=" "/>
+				${fn:escapeXml(tag.name)} 
+				<c:if test="${order ne 'folkrank'}">					
+					(${tag.usercount}<c:out value=" "/>${posts})
+				</c:if>
+			</c:set>				   				   
+			
+			<!-- display link -->							
+			<li class="${tagclass}">
+		      <a title="${tagsTitle}" href="${tagsUrl}">
+		      	<fmt:message key="tag.addRelatedTag"/>${mtl:ch('nbsp')}
+		      </a>
+		      <a title="${tagTitle}" href="${tagUrl}">${fn:escapeXml(tag.name)}</a>
+		      <c:out value=" "/>		      
+		    </li>
+		</c:forEach>
+	</ul> 	
+</jsp:root>

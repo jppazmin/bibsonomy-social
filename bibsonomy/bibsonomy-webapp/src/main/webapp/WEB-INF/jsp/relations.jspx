@@ -1,0 +1,114 @@
+<?xml version="1.0" ?>
+<!--
+
+
+     BibSonomy-Webapp - The webapplication for Bibsonomy.
+
+     Copyright (C) 2006 - 2011 Knowledge & Data Engineering Group,
+                               University of Kassel, Germany
+                               http://www.kde.cs.uni-kassel.de/
+
+     This program is free software; you can redistribute it and/or
+     modify it under the terms of the GNU General Public License
+     as published by the Free Software Foundation; either version 2
+     of the License, or (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+
+     You should have received a copy of the GNU General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+
+-->
+
+<jsp:root version="2.0"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
+  xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+  xmlns:user="urn:jsptagdir:/WEB-INF/tags/resources/user"
+	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/tags"
+  xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/buttons"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
+	
+  <jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
+
+    <layout:layout loginUser="${command.context.loginUser}" 
+ 		pageTitle="${command.pageTitle}" requPath="${requPath}" selectedNaviTab="nav_relations">
+      	
+    <jsp:attribute name="heading">
+		<a rel="path_menu" href="#"><img alt=""
+				src="${resdir}/image/box_arrow.png" />${mtl:ch('nbsp')}<fmt:message
+				key="navi.relations" /></a> :: 
+    	<form action="/concept/tag/"
+			method="get" class="smallform">
+			<input type="text" size="20" name="tag" id="inpf" />
+		</form>	
+    </jsp:attribute>
+    
+    <jsp:attribute name="content">
+    	<!-- header text output -->
+		<div style="margin-top: 20px; margin-left: 10px; margin-bottom: 10px;">
+			<!-- need to switch between if the user is logged in or not -->
+	        <fmt:message key="tagrelations.all.text.partOne"/>
+		    <c:if test="${command.context.userLoggedIn}">
+		    <c:out value=" " />
+				<fmt:message key="tagrelations.all.text.partTwo">
+			    	<fmt:param><a href="/relations/${fn:escapeXml(command.context.loginUser.name)}"><fmt:message key="navi.my.plural"/><fmt:message key="navi.relations"/></a></fmt:param>
+			      	<fmt:param><a href="/edit_tags"><fmt:message key="navi.editTags"/></a></fmt:param>
+			    </fmt:message>
+		    </c:if>
+	    </div>
+	    
+      <div id="general">
+      	<!-- table for all concepts -->
+     	<table>
+		<!-- iterate over given concepts to calculate the highest usercount (needed to compute fontsize)-->
+     	  	<c:set var="maxUpperCount" value="0" />
+     	  	<c:forEach var="upperTag" items="${command.tagRelations}">
+     	  		<c:if test="${upperTag.usercount>=maxUpperCount}"> <c:set var="maxUpperCount" value="${upperTag.usercount}" /></c:if>
+     	  	</c:forEach>
+     		<!-- iterate over given concepts -->
+		<c:forEach var="upperTag" items="${command.tagRelations}">
+			<tr>
+			<td class="upperconcept">
+					<fmt:message var="upperTagTitle" key="relations.userCount">
+						<fmt:param>${fn:escapeXml(upperTag.usercount)}</fmt:param>
+						<fmt:param>${upperTag.name}</fmt:param>
+					</fmt:message>
+				<a style="font-size: ${mtl:computeTagFontsize(upperTag.usercount, maxUpperCount, '')*1.1}%"
+				 title="${upperTagTitle}"  
+				href="/concept/tag/${mtl:encodeURI(upperTag.name)}"><c:out value="${upperTag.name}"/></a>
+			</td>
+			<td>&#8592;</td>
+			<td>
+				<ul class="tagcloud">
+					<c:forEach var="relation" items="${upperTag.subTags}" >  
+						<c:set var="link"><mtl:encode value='${relation.name}'/></c:set>
+			            <li class="box_lowerconcept"> 
+			  	        	<!-- determine subTag title depending on its frequency -->
+			    	      	<fmt:message var="subTagUsers" key="users" /> <!-- plural -->		
+						  	<c:if test="${relation.usercount == 1}">
+								<fmt:message var="subTagUsers" key="user" /> <!-- singular -->
+						  	</c:if>
+				          	<!-- We hand over maxUpperCount to the local variable tagMaxFrequency to ensure that 
+				          	subTags in every tagCloud have the same size if their usercount is the same.  -->
+				          	<a style="font-size:${mtl:computeTagFontsize(relation.usercount, maxUpperCount, '')*1.1}%" title="${relation.usercount} ${subTagUsers}" href="/tag/${mtl:encodeURI(relation.name)}"><c:out value="${relation.name}"/></a>	  	
+				    	  	<c:out value="&#32;"/>
+						</li>
+		        	</c:forEach>
+		        </ul>
+			</td>
+			</tr>
+		</c:forEach>
+		</table>
+	  </div>
+	</jsp:attribute>
+       
+  </layout:layout>
+</jsp:root>

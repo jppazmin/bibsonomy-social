@@ -1,0 +1,177 @@
+<?xml version="1.0" ?>
+<!--
+
+
+     BibSonomy-Webapp - The webapplication for Bibsonomy.
+
+     Copyright (C) 2006 - 2011 Knowledge & Data Engineering Group,
+                               University of Kassel, Germany
+                               http://www.kde.cs.uni-kassel.de/
+
+     This program is free software; you can redistribute it and/or
+     modify it under the terms of the GNU General Public License
+     as published by the Free Software Foundation; either version 2
+     of the License, or (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+
+     You should have received a copy of the GNU General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+
+-->
+
+<jsp:root version="2.0" 
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:form="http://www.springframework.org/tags/form"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
+	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/tags"
+    xmlns:user="urn:jsptagdir:/WEB-INF/tags/resources/user"
+    xmlns:users="urn:jsptagdir:/WEB-INF/tags/users"
+	xmlns:bib="urn:jsptagdir:/WEB-INF/tags/resources/bibtex"
+	xmlns:rc="urn:jsptagdir:/WEB-INF/tags/resources/common"
+	xmlns:export="urn:jsptagdir:/WEB-INF/tags/export/bibtex"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:resource="urn:jsptagdir:/WEB-INF/tags/resources"
+	xmlns:output="urn:jsptagdir:/WEB-INF/tags/export/bibtex"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
+
+	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
+
+	<fmt:message key="navi.sync" var="syncPageTitle"/>	
+
+	<layout:layout requPath="${requPath}" loginUser="${command.context.loginUser}" pageTitle="${command.pageTitle}">
+	
+		<jsp:attribute name="headerExt">
+			<link rel="stylesheet" type="text/css" href="${resdir}/css/fsform.css" />
+			<script type="text/javascript" src="${resdir}/javascript/date.js"><!-- keep me! --></script>
+    		<script type="text/javascript" src="${resdir}/jquery/plugins/form/jquery.form.js"><!-- keep me! --></script>
+    		<script type="text/javascript" src="${resdir}/javascript/sync.js"><!-- keep me! --></script>
+		</jsp:attribute>
+	
+		<!-- heading -->
+		<jsp:attribute name="heading">
+		   <a rel="path_menu" href="/sync"><img src="/resources/image/box_arrow.png"/>&amp;nbsp;<c:out value="${syncPageTitle}" /></a>
+    	</jsp:attribute>
+		
+		<jsp:attribute name="content">
+			
+			<fmt:message var="getSyncPlan" key="synchronization.syncPlan.get" />
+			<fmt:message var="syncPlan" key="synchronization.syncPlan" />
+			<fmt:message var="synchronize" key="synchronization.synchronize" />
+			<fmt:message var="serviceName" key="synchronization.serviceName" />
+			<fmt:message var="syncResults" key="synchronization.lastSyncResults" />
+			<fmt:message var="bookmarks" key="bookmarks" />
+			<fmt:message var="publications" key="publications" />
+			<fmt:message var="synchronizationRunning" key="synchronization.synchronizationRunning"/>
+			<fmt:message var="resetService" key="synchronization.server.reset" />
+			
+			<div id="general_100">
+				
+				<!-- iterate over all services -->
+				<c:forEach var="service" items="${command.syncServer}" varStatus="status">
+					<form:form action="/ajax/synchronize" method="post" id="sync_${status.index}">
+
+						<h2><c:out value="${serviceName}: "/> <c:out value="${service.service}" /></h2>	
+									
+						<fieldset class="fsOuter">
+							<p>
+								<fmt:message key="synchronization.explanation">
+									<fmt:param><fmt:message key="resourceType.${service.resourceType.simpleName}.plural"/></fmt:param>
+									<fmt:param><fmt:message key="synchronization.direction.${fn:toLowerCase(service.direction)}.on_client"/></fmt:param>
+								</fmt:message>
+							</p>
+
+							<!-- check if all resource types have a sync plan (and show "sync" button only then) -->
+							<c:set var="syncButtonDisplay" value="${empty service.lastSyncData ? 'none' : 'inline'}"/>
+
+							<!-- show last synchronization results -->
+							<fieldset class="fsInner">
+								<legend><c:out value="${syncResults}"/></legend>
+							
+								<div class="syncData">
+								<c:forEach var="entry" items="${service.lastSyncData}">
+								
+									<!-- enable sync button, if the resource type has a sync plan -->
+									<c:if test="${entry.value.status ne 'PLANNED'}">
+										<c:set var="syncButtonDisplay" value="none"/>
+									</c:if>
+								
+									<div class="fsRow resourceDiv">
+										<dl><dt>
+											<c:choose>
+												<c:when test="${entry.key == 'BibTex'}">
+													<c:out value="${publications}"/>:
+												</c:when>
+												<c:otherwise>
+													<c:out value="${bookmarks}"/>:
+												</c:otherwise>
+											</c:choose>
+										</dt>
+										<dd>
+											<c:choose>
+												<c:when test="${not empty entry.value}">
+													<fmt:formatDate value="${entry.value.lastSyncDate}" type="both" timeStyle="short" dateStyle="medium" />
+														<fmt:message key="synchronization.result"/>
+														<fmt:message key="synchronization.result.${fn:toLowerCase(entry.value.status)}"/>
+														<c:if test="${not empty entry.value.info}"> 
+															<em><c:out value=" (${entry.value.info})"/></em>
+														</c:if>
+												</c:when>
+												<c:otherwise>
+													<fmt:message key="synchronization.noresult"/>
+												</c:otherwise>
+											</c:choose>
+										</dd>
+										</dl>
+									</div>
+								</c:forEach>
+								</div>
+								<input type="submit" value="${resetService}" onclick="return confirmReset(this)" />
+							</fieldset>
+
+							<fieldset class="fsInner">
+								<div class="syncPlan">
+									<c:if test="${!empty service.plan }">
+										<dl>
+											<c:forEach var="resourceType" items="${service.plan}">								
+												<dt><fmt:message key="resourceType.${resourceType.key.simpleName}.plural"/></dt>
+												<dd><ul>
+													<c:forEach var="serv" items="${resourceType.value}">
+														<li>
+															<c:out value="${serv.value}"/>
+														</li>
+													</c:forEach>
+												</ul></dd>
+											</c:forEach>
+										</dl>
+									</c:if>
+								</div>
+							
+								<legend><c:out value="${syncPlan}"/></legend>
+								
+								<input type="submit" class="syncPlanBtn" value="${getSyncPlan}" onclick="return getSyncPlan(this);"/>
+
+								<input type="submit" class="synchronizeBtn" value="${synchronize}" style="display:${syncButtonDisplay}" onclick="return doSync(this);"/>
+
+								<img src="${resdir}/image/ajax-loader-bar.gif" alt="${synchronizationRunning}" class="progressGif" style="display:none"/>
+							</fieldset>
+	
+							<input type="hidden" name="serviceName" value="${service.service}" />
+							<input type="hidden" name="ckey" value="${ckey}" />
+							<input type="hidden" name="_method" value="GET" />
+						</fieldset>
+					</form:form>
+				</c:forEach>
+			</div>
+
+		</jsp:attribute>
+	</layout:layout>
+	
+</jsp:root>

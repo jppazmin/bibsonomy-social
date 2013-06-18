@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+
+     BibSonomy-Webapp - The webapplication for Bibsonomy.
+
+     Copyright (C) 2006 - 2011 Knowledge & Data Engineering Group,
+                               University of Kassel, Germany
+                               http://www.kde.cs.uni-kassel.de/
+
+     This program is free software; you can redistribute it and/or
+     modify it under the terms of the GNU General Public License
+     as published by the Free Software Foundation; either version 2
+     of the License, or (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+
+     You should have received a copy of the GNU General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+
+-->
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+	                    http://www.springframework.org/schema/beans/spring-beans.xsd
+	                    http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-2.5.xsd">
+
+	<!-- 
+		configuration file for BibSonomy's (tag) recommendation services
+	 -->
+	 
+	<util:list id="dc09RecommenderList" list-class="java.util.ArrayList">
+		<ref bean="distRecommender1"/>
+		<ref bean="distRecommender3"/>
+		<ref bean="distRecommender4"/>
+		<ref bean="distRecommender5"/>
+		<ref bean="distRecommender11"/>
+		<!-- 
+		<ref bean="testRecommender-local"/>
+		<ref bean="testRecommender"/>
+		<ref bean="testRecommender1"/>
+		<ref bean="testRecommender2"/>
+		<ref bean="testRecommender3"/>
+		<ref bean="testRecommender4"/>
+		<ref bean="testRecommender5"/>
+		<ref bean="testRecommender6"/>
+		<ref bean="testRecommender7"/>
+		 -->
+	</util:list>
+	
+	
+	<!--+
+	 	| Xiance
+	 	+-->
+	<bean id="distRecommender1" class="org.bibsonomy.recommender.tags.WebserviceTagRecommender">
+		<property name="address">
+			<value>http://141.51.167.111:8080/bibsonomy-recommender-servlet-2.0.3/TagRecommenderServlet</value>
+		</property>
+	</bean>	 
+
+	<!--+
+	 	| Hao Cao
+	 	+-->
+	<bean id="distRecommender3" class="org.bibsonomy.recommender.tags.WebserviceTagRecommender">
+		<property name="address">
+			<value>http://141.51.167.112:8080/bibsonomy-recommender-servlet-2.0.3/TagRecommenderServlet</value>
+		</property>
+	</bean>	 
+
+	<!--+
+	 	| Marek Lipczak 
+	 	+-->
+	<bean id="distRecommender4" class="org.bibsonomy.recommender.tags.WebserviceTagRecommender">
+		<property name="address">
+			<value>http://141.51.167.113:8080/bibsonomy-recommender-servlet-2.0.3/TagRecommenderServlet</value>
+		</property>
+	</bean>	 
+
+	<!--+
+	 	| Ernesto Diaz-Aviles
+	 	+-->
+	<bean id="distRecommender5" class="org.bibsonomy.recommender.tags.WebserviceTagRecommender">
+		<property name="address">
+			<value>http://pharos.l3s.uni-hannover.de:25010/andromeda/TagRecommenderServlet</value>
+		</property>
+	</bean>	 
+
+	<!--+
+	 	| Szymon Chojnacki
+	 	+-->
+	<bean id="distRecommender11" class="org.bibsonomy.recommender.tags.WebserviceTagRecommender">
+		<property name="address">
+			<value>http://213.135.36.105:8080/bibsonomy-recommender-servlet-2.0.3/TagRecommenderServlet</value>
+		</property>
+	</bean>	 
+
+
+	<!--+
+	 	| 
+	 	+-->
+	<bean id="distRecommender" class="org.bibsonomy.recommender.tags.WebserviceTagRecommender">
+		<property name="address">
+			<value></value>
+		</property>
+	</bean>	 
+
+
+	<!--+
+	 	| Test Recommender
+	 	+-->
+	<bean id="testRecommender-local" class="org.bibsonomy.recommender.tags.WebserviceTagRecommender">
+		<property name="address">
+			<value>http://localhost:8088/bibsonomy-recommender-servlet-2.0.3/TagRecommenderServlet</value>
+		</property>
+	</bean>	 
+	 
+	<!--+
+	 	| Test Recommender
+	 	+-->
+	<bean id="testRecommender" class="org.bibsonomy.recommender.tags.WebserviceTagRecommender">
+		<property name="address">
+			<value>http://www.biblicious.org:8080/bibsonomy-recommender-servlet/TagRecommenderServlet</value>
+		</property>
+	</bean>	 	
+	<bean id="testRecommender1" class="org.bibsonomy.recommender.tags.WebserviceTagRecommender">
+		<property name="address">
+			<value>http://www.biblicious.org:8080/bibsonomy-recommender-servlet-1/TagRecommenderServlet</value>
+		</property>
+	</bean>	 	
+	<bean id="testRecommender2" class="org.bibsonomy.recommender.tags.WebserviceTagRecommender">
+		<property name="address">
+			<value>http://www.biblicious.org:8080/bibsonomy-recommender-servlet-2/TagRecommenderServlet</value>
+		</property>
+	</bean>	 	
+	<bean id="testRecommender3" class="org.bibsonomy.recommender.tags.WebserviceTagRecommender">
+		<property name="address">
+			<value>http://www.biblicious.org:8080/bibsonomy-recommender-servlet-3/TagRecommenderServlet</value>
+		</property>
+	</bean>	 	
+	<bean id="testRecommender4" class="org.bibsonomy.recommender.tags.WebserviceTagRecommender">
+		<property name="address">
+			<value>http://www.biblicious.org:8080/bibsonomy-recommender-servlet-4/TagRecommenderServlet</value>
+		</property>
+	</bean>	 	
+	<bean id="testRecommender5" class="org.bibsonomy.recommender.tags.WebserviceTagRecommender">
+		<property name="address">
+			<value>http://www.biblicious.org:8080/bibsonomy-recommender-servlet-5/TagRecommenderServlet</value>
+		</property>
+	</bean>	 	
+	<bean id="testRecommender6" class="org.bibsonomy.recommender.tags.WebserviceTagRecommender">
+		<property name="address">
+			<value>http://www.biblicious.org:8080/bibsonomy-recommender-servlet-6/TagRecommenderServlet</value>
+		</property>
+	</bean>	 	
+	<bean id="testRecommender7" class="org.bibsonomy.recommender.tags.WebserviceTagRecommender">
+		<property name="address">
+			<value>http://www.biblicious.org:8080/bibsonomy-recommender-servlet-7/TagRecommenderServlet</value>
+		</property>
+	</bean>	 	
+</beans>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE taglib PUBLIC "-//Sun Microsystems, Inc.//DTD JSP Tag Library 1.1//EN" "http://java.sun.com/j2ee/dtds/web-jsptaglibrary_1_1.dtd">
+
+<!-- a tag library descriptor -->
+
+<taglib>
+   <tlibversion>1.0</tlibversion>
+   <jspversion>1.1</jspversion>
+   <shortname>myajaxtaglib</shortname>
+   <uri></uri>
+   <info>Some helpers to simplify ajax</info>
+
+  <tag>
+    <name>get</name>
+    <tagclass>tags.ajax.Autofill</tagclass>
+    <bodycontent>empty</bodycontent>
+    <info>Inserts HTML code which contains ids and class to be automatically filled.</info>
+    <attribute>
+       <name>var</name>
+       <required>true</required>
+       <rtexprvalue>true</rtexprvalue>
+    </attribute>
+  </tag>
+  
+</taglib>

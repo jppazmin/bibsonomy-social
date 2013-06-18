@@ -1,0 +1,277 @@
+<jsp:root version="2.0"
+  xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:jsp="http://java.sun.com/JSP/Page"
+  xmlns:c="http://java.sun.com/jsp/jstl/core"
+  xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+  xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
+  xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+  xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
+  xmlns:form="http://www.springframework.org/tags/form"
+  xmlns:spring="http://www.springframework.org/tags"
+  xmlns:errors="urn:jsptagdir:/WEB-INF/tags/errors"
+  xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+  xmlns:atl="urn:jsptld:/WEB-INF/taglibs/authtaglib.tld"
+  xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/buttons"
+  xmlns:settings="urn:jsptagdir:/WEB-INF/tags/settings">
+  
+	<jsp:directive.attribute name="command"  type="org.bibsonomy.webapp.command.BaseCommand" required="true"/>
+  
+	<!-- ############################################# settings tab ############################################# -->
+	<fmt:message var="cloud" key="settings.cloud"/>
+	<fmt:message var="list" key="settings.list"/>
+	<fmt:message var="alphabet" key="settings.alphabet"/>
+	<fmt:message var="frequency" key="settings.frequency"/>
+	<fmt:message var="yes" key="settings.yes"/>
+	<fmt:message var="no" key="settings.no"/>
+	<fmt:message var="english" key="settings.english"/>
+	<fmt:message var="german" key="settings.german"/>
+	<fmt:message var="setlayout" key="settings.setlayout"/>
+	<fmt:message var="generateapikey" key="settings.generateapikey"/>
+	<fmt:message var="updatesettings" key="settings.updatesettings" />
+	<fmt:message var="deleteaccount" key="settings.deleteaccount" />
+	<fmt:message var="all" key="settings.all"/>
+	<fmt:message var="bookmark" key="settings.bookmark"/>
+	<fmt:message var="publication" key="settings.publication"/>
+	<fmt:message var="advanced" key="settings.advanced"/>
+	<fmt:message var="simple" key="settings.simple"/>
+				
+
+	<!--+  
+		| show global errors
+		+-->
+	<errors:global errors="${errors}"/>
+
+	<!-- style settings -->		
+	<h2><fmt:message key="settings.styleSettingsHeader"/></h2>
+	<form:form id="styleSettingsForm" method="POST" action="/updateUserSettings">
+		<fieldset class="fsInner">
+	 		<div class="fsRow">
+	       		<form:label cssClass="fsLabel" path="user.settings.tagboxStyle"><fmt:message key="settings.tag.showAs"/></form:label>
+	       		<buttons:help message="settings.tag.showAs.help"/>
+	       		<form:select cssClass="fsInput fsSmall" path="user.settings.tagboxStyle">
+	          		<form:option label="${cloud}" value="0" />
+	          		<form:option label="${list}" value="1"/>
+	        	</form:select>
+			</div>
+	    
+			<div class="fsRow">
+		    	<form:label cssClass="fsLabel" path="user.settings.tagboxSort"><fmt:message key="settings.tag.sortBy"/></form:label>
+		        <buttons:help message="settings.tag.sortBy.help"/>
+		        <form:select cssClass="fsInput fsSmall" path="user.settings.tagboxSort">
+		    	    <form:option label="${alphabet}" value="0"/>
+		        	<form:option label="${frequency}" value="1"/>    
+		        </form:select>
+		    </div>
+	    
+		    <div class="fsRow">
+				<form:label cssClass="fsLabel" path="user.settings.tagboxTooltip"><fmt:message key="settings.tag.showTooltipsForTags"/></form:label>
+			    <buttons:help message="settings.tag.showTooltipsForTags.help"/>
+			    <form:select cssClass="fsInput fsSmall" path="user.settings.tagboxTooltip">
+			    	<form:option label="${no}" value="0"/>
+		          	<form:option label="${yes}" value="1"/>
+		        </form:select>
+		    </div>
+	
+			<fmt:message var="maxCount" key="settings.tag.options.maxCount"/>
+			<fmt:message var="minFreq" key="settings.tag.options.minFreq"/>
+	
+			  <div class="fsRow">
+		      	<form:label cssClass="fsLabel" path="user.settings.isMaxCount"><fmt:message key="settings.tag.maxCountminFreq"/></form:label>
+		        <buttons:help message="settings.tag.maxCountminFreq.help">
+		        	<jsp:attribute name="helpText">
+		        		<ol>
+		        			<li> <fmt:message key="settings.tag.maxCountminFreq.help.maxCount">
+		        					<fmt:param>${maxCount}</fmt:param>
+		        				</fmt:message>
+		        			</li>
+		        			<li> <fmt:message key="settings.tag.maxCountminFreq.help.minFreq">
+		        					<fmt:param>${minFreq}</fmt:param>
+		        				</fmt:message>
+		        			</li>
+		        		</ol>
+		        		<fmt:message key="settings.tag.maxCountminFreq.help.X"/>
+		        	</jsp:attribute>
+		        </buttons:help>
+		        <form:select cssClass="fsInput fsSmall" path="user.settings.isMaxCount">
+		        	<form:option label="${maxCount}" value="true"/>
+		        	<form:option label="${minFreq}" value="false"/>
+		        </form:select> 
+		      </div>
+	
+			  <div class="fsRow">
+		        <form:label cssClass="fsLabel" path="changeTo"><fmt:message key="settings.tag.threshold"/></form:label>
+		        <buttons:help message="settings.tag.threshold.help">
+		        	<jsp:attribute name="helpText">
+		        		<ol>
+		        			<li> <fmt:message key="settings.tag.threshold.help.maxCount">
+		        					<fmt:param>${maxCount}</fmt:param>
+		        				</fmt:message>
+		        			</li>
+		        			<li> <fmt:message key="settings.tag.threshold.help.minFreq">
+		        					<fmt:param>${minFreq}</fmt:param>
+		        				</fmt:message>
+		        			</li>
+		        		</ol>
+		        	</jsp:attribute>
+		        </buttons:help>
+		        <form:input cssClass="fsInput fsSmall" path="changeTo"/>
+		      </div>
+		      
+			  <div class="fsRow">
+		        <form:label cssClass="fsLabel" path="user.settings.listItemcount"><fmt:message key="settings.tag.itemsPerPage"/></form:label>
+		        <buttons:help message="settings.tag.itemsPerPage.help"/>
+		        <form:input cssClass="fsInput fsSmall" path="user.settings.listItemcount"/>
+		      </div>
+	         
+	         <div class="fsRow">
+		        <form:label cssClass="fsLabel" path="user.settings.showBookmark"><fmt:message key="settings.resource.resourceToShow"/></form:label>
+		        <buttons:help message="settings.resource.resourceToShow.help"/>
+		        <form:checkbox path="user.settings.showBookmark" label="${bookmark}"/>
+		        <form:checkbox path="user.settings.showBibtex" label="${publication}"/>
+		  		<div class="dissError"><form:errors path="user.settings.showBookmark" /></div>
+		      </div>
+		      
+		      <div class="fsRow">
+		        <form:label cssClass="fsLabel" path="user.settings.simpleInterface"><fmt:message key="settings.editPublication.interFace"/></form:label>
+		        <buttons:help message="settings.editPublication.interFace.help">
+		        	<jsp:attribute name="helpText">
+		        		<ol>
+		        			<li> <fmt:message key="settings.editPublication.interFace.help.advanced">
+		        					<fmt:param>${advanced}</fmt:param>
+		        				</fmt:message>
+		        			</li>
+		        			<li> <fmt:message key="settings.editPublication.interFace.help.simple">
+		        					<fmt:param>${simple}</fmt:param>
+		        				</fmt:message>
+		        			</li>
+		        		</ol>
+		        	</jsp:attribute>
+		        </buttons:help>
+		        <form:select cssClass="fsInput fsSmall" path="user.settings.simpleInterface">
+		          <form:option label="${advanced}" value="false" />
+		          <form:option label="${simple}" value="true" />
+		        </form:select>
+		      </div>
+		      
+		      <div class="fsRow">
+		        <form:label cssClass="fsLabel" path="user.settings.defaultLanguage"><fmt:message key="settings.tag.defaultLanguage"/></form:label>
+		        <buttons:help message="settings.tag.defaultLanguage.help"/>
+		        <form:select cssClass="fsInput fsSmall" path="user.settings.defaultLanguage">
+		          <form:option label="${english}" value="en"/>
+		          <form:option label="${german}" value="de"/>
+		        </form:select>
+		      </div>
+	      
+	   	         <div class="fsRow">
+		        <input type="hidden" name="ckey" value="${ckey}"/>
+		        <input type="hidden" name="action" value="layoutTagPost"/>
+		        <input type="hidden" name="selTab" value="1"/>
+		        <input type="submit" name="tagbox_style" value="${setlayout}"/>
+		      </div>
+		</fieldset>
+	</form:form>
+ 		
+	<!-- API -->
+	<h2>API</h2>
+	<form:form id="postForm" method="post" action="/updateUserSettings">
+		<fieldset class="fsInner">
+	  		<c:choose>
+				<c:when test="${command.context.loginUser.apiKey eq null}">			
+             			<p>
+             				<fmt:message key="settings.apisupport"><fmt:param><a href="/help/doc/api.html">API</a></fmt:param></fmt:message>  					 
+		  			</p>	
+				</c:when>
+				<c:otherwise>
+          				<div class="fsRow">
+						<fmt:message key="settings.yourapikey"/><c:out value=" " /><tt style="font-size: 14px;">${command.context.loginUser.apiKey}</tt><br/><br/>
+					</div>
+          				<div class="fsRow">
+						<fmt:message key="settings.questionsregardingapi">
+							<fmt:param>
+								<a href="/help/doc/api.html"><fmt:message key="settings.apidoc"/></a>
+							</fmt:param>
+							<fmt:param>
+								<!--
+									TODO: make this configurable 
+						 		-->
+								<parts:email address="api-support@bibsonomy.org"/>
+							</fmt:param>
+						</fmt:message>
+					</div>
+				</c:otherwise>
+			</c:choose>		 
+			<input type="hidden" name="selTab" value="1"/>
+			<input type="hidden" name="ckey" value="${ckey}"/>		
+			<input type="hidden" name="action" value="api"/>
+			<input type="submit" value="${generateapikey}"/>
+		</fieldset>
+	</form:form>
+   
+    <!-- log level -->
+	<h2><fmt:message key="settings.logging" /></h2>
+    <form:form id="postForm" method="post" action="/updateUserSettings">
+		<fieldset class="fsInner">
+  			<div class="fsRow">
+	     		<form:label cssClass="fsLabel" path="user.settings.logLevel"><fmt:message key="settings.logclicks"/></form:label>
+	        	<buttons:help message="settings.logclicks.help"/>
+			    <form:select path="user.settings.logLevel">
+			    	<form:option value="0"><fmt:message key="settings.yes"/></form:option>
+			    	<form:option value="1"><fmt:message key="settings.no"/></form:option>
+		  		</form:select>
+	  		</div>
+
+	         	<div class="fsRow">
+	        	<form:label cssClass="fsLabel" path="user.settings.confirmDelete"><fmt:message key="settings.confirm"/></form:label>
+	        	<buttons:help message="settings.confirm.help"/>
+ 		   	      	<form:select path="user.settings.confirmDelete">
+		       		<form:option value="true"><fmt:message key="settings.yes"/></form:option>
+		       		<form:option value="false"><fmt:message key="settings.no"/></form:option>
+		      	</form:select>
+  		       	</div>
+          	
+    	    <div class="fsRow">	          	
+       			<input type="hidden" name="ckey" value="${ckey}"/>
+           		<input type="hidden" name="selTab" value="1"/>
+           		<input type="hidden" name="action" value="logging"/>
+          			<input type="submit" value="${updatesettings}"/>
+           	</div>          
+		</fieldset>
+	</form:form>
+  
+	<!-- show password change dialog only if internal authentication is configured -->
+	<c:if test="${atl:containsAuthMethod(authConfig, 'INTERNAL')}">
+		<settings:passwordChange loginUser="${command.context.loginUser}"/>
+	</c:if>
+		
+	<!-- delete account -->
+	<h2><fmt:message key="settings.deletemyaccount"/></h2>		
+	<form:form id="postForm" method="post" action="/actions/goodBye">
+       	<fieldset class="fsInner">
+		    	<div class="fsRow">
+	      		<form:label cssClass="fsLabel" path="user.birthday"><fmt:message key="settings.really"/></form:label>
+				<input cssClass="fsInput fsSmall" type="text" name="delete" value="no" size="30"/>
+	      		<div class="dissError"><form:errors path="delete" /></div>		      
+	     		<c:out value=" "/>
+	     		<fmt:message key="settings.yestodeleteaccount"><fmt:param><em>yes</em></fmt:param></fmt:message>
+	    	</div>
+	  		<div class="fsRow">	  
+	  			<input type="hidden" name="ckey" value="${ckey}"/>
+	  			<input type="hidden" name="selTab" value="1"/>
+	  			<input type="submit" class="fsFormSubmit" style="clear:both; float:left" value="${deleteaccount}" />
+	  		</div>
+		</fieldset>
+	</form:form>
+	
+	<script type="text/javascript">
+       //<mtl:cdata>
+	       <![CDATA[
+	          // vanishing error boxes
+	          $(document).ready( function(){
+					prepareErrorBoxes('dissError');
+	          	}
+	          );
+	       ]]> 
+       //</mtl:cdata>
+    </script>
+
+</jsp:root>

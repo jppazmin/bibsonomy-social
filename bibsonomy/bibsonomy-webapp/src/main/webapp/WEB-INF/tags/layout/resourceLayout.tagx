@@ -1,0 +1,132 @@
+<jsp:root version="2.0"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:resources="urn:jsptagdir:/WEB-INF/tags/resources"
+	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
+	
+	<jsp:directive.attribute name="command" type="org.bibsonomy.webapp.command.SimpleResourceViewCommand" required="true"/>	
+	<jsp:directive.attribute name="requPath" type="java.lang.String" required="true"/>
+	<jsp:directive.attribute name="pageTitle" type="java.lang.String" required="true"/>
+	<jsp:directive.attribute name="disableActions" type="java.lang.Boolean" required="false"/>
+	<jsp:directive.attribute name="disableListNavigation" type="java.lang.Boolean" required="false"/>
+	<jsp:directive.attribute name="heading" fragment="true" required="true"/>
+	<jsp:directive.attribute name="sidebar" fragment="true" required="true"/>	
+	<jsp:directive.attribute name="selectedNaviTab" type="java.lang.String" required="false"/>
+	<jsp:directive.attribute name="contentHeading" fragment="true" required="false"/>
+	<jsp:directive.attribute name="headerExt" fragment="true" required="false"/>	
+  	<jsp:directive.attribute name="beforeBodyClose" fragment="true" required="false"/>
+	
+	<!-- 
+		store some locale messages in variables to be
+	    able to access them inside element attributes
+	-->
+	<c:set var="bookmarkRssFeed"><fmt:message key="feeds.bookmark"/></c:set>
+	<c:set var="publicationRssFeed"><fmt:message key="feeds.publication"/></c:set>
+	<c:set var="burstRssFeed"><fmt:message key="feeds.burst"/></c:set>
+    <c:set var="swrcFeed"><fmt:message key="feeds.swrc"/></c:set>
+	
+	<!--  actions (list navigation, editing entries, ...) are enabled by default -->
+	<c:if test="${empty disableActions}">
+		<c:set var="disableActions" value="${false}"/>
+	</c:if>
+	<c:if test="${empty disableListNavigation}">
+		<c:set var="disableListNavigation" value="${false}"/>
+	</c:if>	
+	<c:set var="requPath"><c:out value="${requPath}" escapeXml="true" /></c:set>	
+	<layout:layout loginUser="${command.context.loginUser}" pageTitle="${pageTitle}" heading="${heading}" requestedUser="${command.requestedUser}" sidebar="${sidebar}" requPath="${requPath}" selectedNaviTab="${selectedNaviTab}" personalized="${command.personalized}" beforeBodyClose="${beforeBodyClose}">		
+		<jsp:attribute name="headerExt">
+			<script type="text/javascript" src="${resdir}/javascript/resourceList.js">&amp;nbsp;</script>
+			<script type="text/javascript" src="${resdir}/javascript/jquery.fadebox.js">&amp;nbsp;</script> 
+			<c:set var="bookRssUrl" value="/rss/${requPath}"/>
+			<link rel="alternate" type="application/rss+xml" title="${bookmarkRssFeed} /${requPath}" href="${bookRssUrl}" />
+			<c:set var="bibRssUrl" value="/publrss/${requPath}"/>
+			<link rel="alternate" type="application/rss+xml" title="${publicationRssFeed} /${requPath}" href="${bibRssUrl}" />
+			<c:set var="burstUrl" value="/burst/${requPath}"/>
+			<link rel="alternate" type="application/rss+xml" title="${burstRssFeed} /${requPath}" href="${burstUrl}" />
+            <c:set var="swrcUrl" value="/swrc/${requPath}"/>
+            <link rel="alternate" type="application/rdf+xml" title="${swrcFeed} /${requPath}" href="${swrcUrl}" />
+            <!-- UnAPI service -->
+            <link rel="unapi-server" type="application/xml" title="unAPI" href="${projectHome}unapi"/>
+            	<c:if test="${command.context.loginUser.settings.showBookmark and command.context.loginUser.settings.showBibtex}">
+            		<c:set var="optionShowBoth"><c:out value="hiddenElement"/></c:set>
+            	</c:if>
+            	<script type="Text/JavaScript">
+					<![CDATA[
+					$(document).ready(function() {
+						sysTagFadeBox(self);
+					});
+					]]>
+				</script>
+        <!-- set by url parameter -->
+        <c:set var="showPublication" value="${mtl:containsResourceClass(command.resourcetype, 'publication')}" />
+        <c:set var="showBookmark" value="${mtl:containsResourceClass(command.resourcetype, 'bookmark')}" />
+        
+        <!-- if not set by url parameter use usersettings -->
+				<c:if test="${not showPublication and not showBookmark}">
+					<c:set var="showPublication" value="${command.context.loginUser.settings.showBibtex}" />
+					<c:set var="showBookmark" value="${command.context.loginUser.settings.showBookmark}" />
+				</c:if>
+        <c:if test="${showBookmark and not showPublication }">
+        	<style>
+						#bibtexList {
+							display:none;
+						}
+						#bookmarkList {
+							width:97%;
+						}
+					</style>
+					<c:set var="optionShowBoth"><c:out value=""/></c:set>
+					<c:set var="optionExpandBookmark"><c:out value="hiddenElement"/></c:set>
+        </c:if>
+				<c:if test="${showPublication and not showBookmark}">
+					<style>
+						#bookmarkList {
+							display:none;
+						}
+						#bibtexList {
+							width:97%;
+						}
+					</style>
+					<c:set var="optionShowBoth"><c:out value=""/></c:set>
+					<c:set var="optionExpandBibtex"><c:out value="hiddenElement"/></c:set>
+				</c:if>
+            <jsp:invoke fragment="headerExt"/>
+		</jsp:attribute>
+		<jsp:attribute name="content">
+			<div id="general_100">
+				<!-- expandBookmarkList(), showBothLists(), expandBibTexList() in resourceList.js -->
+				<ul id="bookmarkbibtexoptions">
+					<fmt:message var="expandBookmarks" key="list.expand.bookmarks"/>
+					<fmt:message var="expandPublications" key="list.expand.publications"/>
+					<fmt:message var="showBoth" key="list.expand.both"/>
+					<!-- TODO: load lists via ajax -->
+					<!-- <li id="optionExpandBookmark" class="${optionExpandBookmark}"><a href="javascript:expandBookmarkList();" title="${expandBookmarks}">&gt;</a></li> -->
+					<!-- <li id="optionShowBoth" class="${optionShowBoth}"><a href="javascript:showBothLists();" title="${showBoth}">|</a></li> -->
+					<!-- <li id="optionExpandBibtex" class="${optionExpandBibtex}"><a href="javascript:expandBibTexList();" title="${expandPublications}">&lt;</a></li> -->
+					<li id="optionExpandBookmark" class="${optionExpandBookmark}"><a href="?resourcetype=bookmark" title="${expandBookmarks}">&gt;</a></li>
+					<li id="optionShowBoth" class="${optionShowBoth}"><a href="?resourcetype=bookmark&amp;resourcetype=publication" title="${showBoth}">|</a></li>
+					<li id="optionExpandBibtex" class="${optionExpandBibtex}"><a href="?resourcetype=publication" title="${expandPublications}">&lt;</a></li>
+				</ul>
+				<!-- 
+					Some pages show a short introductory text at the top - this text 
+					should be put into the contentHeading attribute. If the text is not
+					available, we need a non-breakable space - for layout reasons. :-(
+				 -->
+				<c:choose>
+					<c:when  test="${not empty contentHeading}">
+						<jsp:invoke fragment="contentHeading" />
+					</c:when>
+					<c:otherwise>
+						&amp;nbsp;
+					</c:otherwise>
+				</c:choose>
+				
+			</div>
+			<resources:bookmarks listView="${command.bookmark}" loginUserName="${command.context.loginUser.name}" disableActions="${disableActions}" disableListNavigation="${disableListNavigation}" requPath="${requPath}"/>
+			<resources:bibtexs listView="${command.bibtex}" loginUserName="${command.context.loginUser.name}" disableActions="${disableActions}" disableListNavigation="${disableListNavigation}" requPath="${requPath}"/>
+		</jsp:attribute>
+	</layout:layout>
+</jsp:root>

@@ -1,0 +1,36 @@
+<jsp:root version="2.0" 
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:form="http://www.springframework.org/tags/form">
+
+	<jsp:directive.attribute name="groups" type="java.util.List" required="true"/>
+
+	<!--
+		shows form fields to choose tags from tagsets for each group
+	-->
+
+	<c:forEach var="group" items="${groups}" varStatus="status">
+		<c:if test="${not empty group.tagSets}">
+			<div id="field_${fn:escapeXml(group.name)}" style="display:none">
+				<fieldset class="fsOuter" style="position:relative;">
+					<legend><fmt:message key="actions.admin.group.tagsets"/>${mtl:ch('nbsp')}<fmt:message key="for"/>:${mtl:ch('nbsp')}<c:out value="${group.name}"/></legend> 
+			 		<div align="center">
+		 				<c:forEach var="tagset" items="${group.tagSets}" varStatus="status_t">
+    						<span class="info_bold"><c:out value="${tagset.setName}"/>:</span>${mtl:ch('nbsp')}
+							<form:select path="" size="1" multiple="false" cssStyle="margin-right: 1em;" tabindex="2">
+								<!-- show "please select" hint -->
+								<fmt:message var="pleaseselect" key="form.input.select"/>
+								<form:option value="" label="${pleaseselect}"/>
+								<form:options items="${tagset.tags}" itemLabel="${fn:escapeXml('name')}" itemValue="${fn:escapeXml('name')}" onclick="copyOptionTags('inpf',event)"/>
+							</form:select>
+						</c:forEach>
+					</div>
+				</fieldset>
+			</div>
+		</c:if>
+	</c:forEach>		
+	
+</jsp:root>	

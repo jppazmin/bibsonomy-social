@@ -1,0 +1,414 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+
+     BibSonomy-Webapp - The webapplication for Bibsonomy.
+
+     Copyright (C) 2006 - 2011 Knowledge & Data Engineering Group,
+                               University of Kassel, Germany
+                               http://www.kde.cs.uni-kassel.de/
+
+     This program is free software; you can redistribute it and/or
+     modify it under the terms of the GNU General Public License
+     as published by the Free Software Foundation; either version 2
+     of the License, or (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+
+     You should have received a copy of the GNU General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+
+-->
+
+<beans xmlns="http://www.springframework.org/schema/beans" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xmlns:security="http://www.springframework.org/schema/security"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+						http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+						http://www.springframework.org/schema/security 
+						http://www.springframework.org/schema/security/spring-security-3.0.4.xsd
+						http://www.springframework.org/schema/util 
+	                    http://www.springframework.org/schema/util/spring-util-3.0.xsd">
+	
+	<security:global-method-security pre-post-annotations="enabled" />
+	
+	<bean id="loginUrl" class="java.lang.String">
+		<constructor-arg value="/login" />
+	</bean>
+	
+	<security:http use-expressions="true" entry-point-ref="entryPoint" auto-config="false" security-context-repository-ref="contextRepository">
+		<!-- no filtering for css and js -->
+		<security:intercept-url pattern="/resources/**" filters="none" />
+		<security:intercept-url pattern="/logging**" filters="none" />
+		<!-- api uses own authentication handling -->
+		<security:intercept-url pattern="/api/**" filters="none" />
+		<!-- OAuth temporary tokens may be requested without authentication -->
+		<security:intercept-url pattern="/oauth/requestToken" filters="none" />
+		<!-- login -->
+		<security:intercept-url pattern="/login" access="isAnonymous()" />
+		<!-- restrict admin pages to admins -->
+		<security:intercept-url pattern="/admin/**" access="hasRole('ROLE_ADMIN')" />
+		<!-- everything else -->
+		<security:intercept-url pattern="/**" access="permitAll" />
+		
+		<security:custom-filter position="LOGOUT_FILTER" ref="logoutFilter" />
+		
+		<!-- XXX: it is a little bit tricky to add another exeption translation filter after the other one
+			 but if we replace the configurated one we could not use the namespace config (http, intercept-url) and had to add
+			 all spring security filters to this config file by bean definitions :(
+		 -->
+		<security:custom-filter after="EXCEPTION_TRANSLATION_FILTER" ref="exceptionTranslationFilter" />
+		
+		<!-- 
+			login filters are configurated by
+			org.bibsonomy.webapp.config.AuthenticationFilterConfigurator
+		 -->
+	</security:http>
+	
+	<!-- enable when using spring security tag libs
+	<bean id="expressionHandler" class="org.springframework.security.web.access.expression.DefaultWebSecurityExpressionHandler" />
+	 -->
+	 
+	<!-- Teergrube for login handler  -->
+	<bean id="teergrube" class="org.bibsonomy.webapp.util.TeerGrube" scope="singleton">
+		<property name="maxQueueAgeSeconds" value="1800"/>
+		<property name="waitingSecondsPerRetry" value="3"/>
+	</bean>
+	
+	<bean id="logoutFilter" class="org.springframework.security.web.authentication.logout.LogoutFilter">
+		<constructor-arg type="java.lang.String" value="/" />
+		<constructor-arg>
+			<list>
+				<ref bean="securityContextLogoutHandler" />
+				<ref bean="openidRememberMeServices" />
+				<ref bean="internalRememberMeServices" />
+				<ref bean="ldapRememberMeServices" />
+			</list>
+		</constructor-arg>
+		<property name="filterProcessesUrl" value="/logout" />
+	</bean>
+	
+	<!-- invalidates the session -->
+	<bean id="securityContextLogoutHandler" class="org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler" />
+	
+	<bean id="contextRepository" class="org.bibsonomy.webapp.util.spring.security.UsernameSecurityContextRepository">
+		<property name="service" ref="databaseUserService" />
+	</bean>
+	
+	<bean id="exceptionTranslationFilter" class="org.bibsonomy.webapp.util.spring.security.filter.ExceptionTranslationFilter">
+		<property name="authenticationEntryPoint" ref="entryPoint" />
+		<property name="accessDeniedHandler" ref="accessDeniedHandler" />
+	</bean>
+	
+	<bean id="accessDeniedHandler" class="org.springframework.security.web.access.AccessDeniedHandlerImpl">
+		<property name="errorPage" value="/errors/403" />
+	</bean>
+
+	<bean id="entryPoint" class="org.bibsonomy.webapp.util.spring.security.authentication.LoginUrlAuthenticationEntryPoint">
+		<property name="loginFormUrl" ref="loginUrl" />
+	</bean>
+	
+	<bean id="targetUrlParameter" class="java.lang.String">
+		<constructor-arg value="referer" />
+	</bean>
+	
+	<bean id="cookieKey" class="java.lang.String">
+		<constructor-arg value="${auth.cookie.cryptkey}" />
+	</bean>
+
+	<bean id="abstractUsernamePasswordFilter" class="org.bibsonomy.webapp.util.spring.security.filter.UsernamePasswordAuthenticationFilter" abstract="true">
+		<property name="grube" ref="teergrube" />
+		<property name="authenticationFailureHandler" ref="failureHandler" />
+		<property name="authenticationSuccessHandler" ref="successHandler" />
+		<property name="usernameParameter" value="username" />
+		<property name="passwordParameter" value="password" />
+	</bean>
+	
+	<bean id="successHandler" class="org.bibsonomy.webapp.util.spring.security.handler.SuccessHandler">
+		<property name="targetUrlParameter" ref="targetUrlParameter" />
+		<property name="loginFormUrl" ref="loginUrl" />
+	</bean>
+	
+	<bean id="failureHandler" class="org.bibsonomy.webapp.util.spring.security.handler.FailureHandler" scope="singleton">
+		<property name="grube" ref="teergrube" />
+		<property name="defaultFailureUrl" ref="loginUrl" />
+		<property name="usernameNotFoundExceptionMapper">
+			<set>
+				<bean class="org.bibsonomy.webapp.util.spring.security.exceptionmapper.LdapUsernameNotFoundExceptionMapper">
+					<property name="redirectUrl" value="/registerLDAP?step=2"/>
+				</bean>
+				<bean class="org.bibsonomy.webapp.util.spring.security.exceptionmapper.OpenIdUsernameNotFoundExceptionMapper">
+					<property name="redirectUrl" value="/registerOpenID?step=2"/>
+				</bean>
+			</set>
+		</property>
+	</bean>
+	
+	
+	<!-- database login -->
+	<bean id="internalUsernamePasswordFilter" parent="abstractUsernamePasswordFilter">
+		<property name="authenticationManager" ref="internalAuthenticationManager" />
+		<property name="filterProcessesUrl" value="/login_internal" />
+		<property name="rememberMeServices" ref="internalRememberMeServices" />
+	</bean>
+	
+	<!-- sets a remember me cookie for the database -->
+	<bean id="internalRememberMeServices" class="org.bibsonomy.webapp.util.spring.security.rememberMeServices.TokenBasedRememberMeServices">
+  		<property name="userDetailsService" ref="databaseUserService"/>
+  		<property name="key" ref="cookieKey"/>
+  		<property name="parameter" value="rememberMe"/>
+  		<property name="cookieName" value="db_user" />
+  		<property name="tokenValiditySeconds" ref="cookieAge" /> <!-- found in main servlet xml -->
+	</bean>
+	
+	<!-- filter for the db remember me cookie -->
+	<bean id="internalRememberMeFilter" class="org.springframework.security.web.authentication.rememberme.RememberMeAuthenticationFilter">
+		<property name="rememberMeServices" ref="internalRememberMeServices" />
+		<property name="authenticationManager" ref="internalAuthenticationManager" />
+	</bean>
+	
+	<bean id="databaseUserService" class="org.bibsonomy.webapp.util.spring.security.userdetailsservice.DatabaseUserDetailsService">
+		<property name="adminLogic" ref="adminLogic" />
+	</bean>	
+	
+	<security:authentication-manager alias="internalAuthenticationManager">
+		<security:authentication-provider ref="databaseAuthenticator" />
+		<security:authentication-provider ref="databaseAuthenticatorWithoutEncoding" />
+		<security:authentication-provider ref="rememberMeAuthenticator" />
+	</security:authentication-manager>
+	
+	<bean id="abstractDatabaseAuthenticator" class="org.springframework.security.authentication.dao.AbstractUserDetailsAuthenticationProvider" abstract="true">
+		<property name="userDetailsService" ref="databaseUserService"/>
+	</bean>
+	
+	<bean id="databaseAuthenticator" class="org.springframework.security.authentication.dao.DaoAuthenticationProvider" parent="abstractDatabaseAuthenticator">
+		<property name="passwordEncoder">
+			<bean class="org.springframework.security.authentication.encoding.Md5PasswordEncoder"/>
+		</property>
+	</bean>
+	
+	<!--+
+		| Required when the user shall be logged in after successful activation
+		| to compare the already md5hashed password from the pendingUser with
+		| the also md5-hashed password from the user table.   
+		|
+		| Note that this also bears some problems: if someone knows another user's
+		| password hash, he can use it to login!
+		+-->
+	<bean id="databaseAuthenticatorWithoutEncoding" class="org.springframework.security.authentication.dao.DaoAuthenticationProvider" parent="abstractDatabaseAuthenticator" />
+		
+	<bean id="rememberMeAuthenticator" class="org.springframework.security.authentication.RememberMeAuthenticationProvider">
+		<property name="key" ref="cookieKey" />
+	</bean>
+	
+	<!-- Open ID login -->
+	<bean id="openidLoginUrl" class="java.lang.String">
+		<constructor-arg value="/login_openid" />
+	</bean>
+	
+	<!--+
+		| open id consumer
+		|
+		| TODO: The openid-login XML element of Spring security allows to 
+		|       configure OpenID attribute exchange. We should try to use it,
+		|       because it's much nicer to write/read.
+		+-->
+	<bean id="openidConsumer" class="org.springframework.security.openid.OpenID4JavaConsumer">
+		<constructor-arg>
+			<list>
+				<!--+
+					|
+					| Types with "http://axschema.org/..." don't seem to work - 
+					| replaced them with http://schema.openid.net/ and it worked
+					| on myopenid.net. See also http://forum.springsource.org/showthread.php?t=85078
+					|
+				 	+-->
+				<bean class="org.springframework.security.openid.OpenIDAttribute">
+					<constructor-arg index="0" value="nickname"/>
+					<constructor-arg index="1" value="http://schema.openid.net/namePerson/friendly"/>
+					<property name="required" value="true"/>
+				</bean>
+				<bean class="org.springframework.security.openid.OpenIDAttribute">
+					<constructor-arg index="0" value="email"/>
+					<constructor-arg index="1" value="http://schema.openid.net/contact/email"/>
+					<property name="required" value="true"/>
+				</bean>
+				
+				<bean class="org.springframework.security.openid.OpenIDAttribute">
+					<constructor-arg index="0" value="fullname"/>
+					<constructor-arg index="1" value="http://schema.openid.net/namePerson"/>
+				</bean>
+				<bean class="org.springframework.security.openid.OpenIDAttribute">
+					<constructor-arg index="0" value="gender"/>
+					<constructor-arg index="1" value="http://schema.openid.net/person/gender"/>
+				</bean>
+				<bean class="org.springframework.security.openid.OpenIDAttribute">
+					<constructor-arg index="0" value="language"/>
+					<constructor-arg index="1" value="http://schema.openid.net/pref/languagehome"/>
+				</bean>
+				<bean class="org.springframework.security.openid.OpenIDAttribute">
+					<constructor-arg index="0" value="city"/>
+					<constructor-arg index="1" value="http://schema.openid.net/contact/city/home"/>
+				</bean>
+				<bean class="org.springframework.security.openid.OpenIDAttribute">
+					<constructor-arg index="0" value="web"/>
+					<constructor-arg index="1" value="http://schema.openid.net/contact/web/default"/>
+				</bean>
+			</list>
+		</constructor-arg>
+	</bean>
+	
+	<!-- filter -->
+	<bean id="openidFilter" class="org.springframework.security.openid.OpenIDAuthenticationFilter">
+		<property name="authenticationManager" ref="openidAuthenticationManager" />
+		<property name="filterProcessesUrl" ref="openidLoginUrl" />
+		<property name="authenticationSuccessHandler" ref="successHandler" />
+		<property name="authenticationFailureHandler" ref="failureHandler" />
+		<property name="rememberMeServices" ref="openidRememberMeServices" />
+		<property name="consumer" ref="openidConsumer" />
+		<property name="claimedIdentityFieldName" value="openID" />
+		<property name="returnToUrlParameters">
+			<set>
+				<ref bean="targetUrlParameter" />
+			</set>
+		</property>
+	</bean>
+	
+	<!-- open id remember me filter -->
+	<bean id="openidRememberMeFilter" class="org.springframework.security.web.authentication.rememberme.RememberMeAuthenticationFilter">
+		<property name="rememberMeServices" ref="openidRememberMeServices" />
+		<property name="authenticationManager" ref="openidAuthenticationManager" />
+	</bean>
+	
+	<!-- open id remember me service -->
+	<bean id="openidRememberMeServices" class="org.bibsonomy.webapp.util.spring.security.rememberMeServices.OpenIDRememberMeServices">
+		<property name="userDetailsService" ref="databaseUserService"/>
+  		<property name="key" ref="cookieKey"/>
+  		<property name="parameter" value="rememberMe"/>
+  		<property name="cookieName" value="openID_user" />
+  		<property name="filterUrl" ref="openidLoginUrl" />
+		<property name="projectRoot" value="${project.home}" />
+		<property name="consumer" ref="openidConsumer" />
+	</bean>
+	
+	<bean id="openidAuthenticationProvider" class="org.bibsonomy.webapp.util.spring.security.provider.OpenIDAuthenticationProvider">
+		<property name="userDetailsService" ref="openidUserDetailsService" />
+	</bean>
+	
+	<bean id="openidUserDetailsService" class="org.bibsonomy.webapp.util.spring.security.userdetailsservice.OpenIDDatabaseUserDetailsService">
+		<property name="adminLogic" ref="adminLogic" />
+	</bean>
+	
+	<bean id="openidAuthenticationManager" class="org.springframework.security.authentication.ProviderManager">
+		<property name="providers">
+			<list>
+				<ref bean="openidAuthenticationProvider"/> 
+			</list>
+		</property>
+	</bean>
+	
+	<!-- LDAP login -->
+	<bean id="ldapUsernamePasswordFilter" parent="abstractUsernamePasswordFilter">
+		<property name="authenticationManager" ref="ldapAuthenticationManager" />
+		<property name="filterProcessesUrl" value="/login_ldap" />
+		<property name="rememberMeServices" ref="ldapRememberMeServices" />
+	</bean>
+	
+	<bean id="ldapAuthenticationManager" class="org.springframework.security.authentication.ProviderManager">
+		<property name="providers">
+			<list>
+				<ref bean="ldapAuthProvider"/> 
+			</list>
+		</property>
+	</bean>
+	
+	<!-- filter for the ldap remember me cookie -->
+	<bean id="ldapRememberMeFilter" class="org.springframework.security.web.authentication.rememberme.RememberMeAuthenticationFilter">
+		<property name="rememberMeServices" ref="ldapRememberMeServices" />
+		<property name="authenticationManager" ref="ldapAuthenticationManager" />
+	</bean>
+	
+	<!-- ldap remember me service -->
+	<bean id="ldapRememberMeServices" class="org.bibsonomy.webapp.util.spring.security.rememberMeServices.LDAPRememberMeServices">
+		<property name="userDetailsService" ref="databaseUserService"/>
+  		<property name="key" ref="cookieKey"/>
+  		<property name="parameter" value="rememberMe"/>
+  		<property name="cookieName" value="ldap_user" />
+  		<property name="encryptor" ref="encryptor"/>
+	</bean>
+	
+	<bean id="encryptor" class="org.jasypt.util.text.StrongTextEncryptor">
+		<property name="password" value="${auth.cookie.cryptkey}" />
+	</bean>
+	
+	<!--+ 
+	 	|
+	 	| Authenticator config for LDAP
+	 	| We have two options: directly create the DN pattern to find the user
+	 	| (simpleLdapBindAuthenticator) or first do a search using a filter
+	 	| (searchLdapBindAuthenticator).
+	 	|
+	 	+-->
+	<bean id="simpleLdapBindAuthenticator" class="org.springframework.security.ldap.authentication.BindAuthenticator">
+		<constructor-arg ref="contextSource" />
+		<property name="userDnPatterns">
+			<list>
+				<value>${auth.ldap.userDnPattern}</value>
+			</list>
+		</property>
+	</bean>
+	<bean id="ldapUserSearch" class="org.springframework.security.ldap.search.FilterBasedLdapUserSearch">
+		<constructor-arg value="${auth.ldap.userSearchBase}" />
+		<constructor-arg value="${auth.ldap.userSearchFilter}" />
+		<constructor-arg ref="contextSource" />
+	</bean>
+	<bean id="searchLdapBindAuthenticator" class="org.springframework.security.ldap.authentication.BindAuthenticator">
+		<constructor-arg ref="contextSource" />
+		<property name="userSearch" ref="ldapUserSearch" />
+	</bean>
+	<!-- configure the used authenticator using the property "auth.ldap.authenticator" -->
+	<alias name="${auth.ldap.authenticator}" alias="ldapAuthenticator"/>
+
+	<bean id="ldapAuthProvider" class="org.springframework.security.ldap.authentication.LdapAuthenticationProvider">
+		<constructor-arg ref="ldapAuthenticator" />
+		<property name="userDetailsContextMapper" ref="ldapUserDetailsMapper" />
+		<property name="hideUserNotFoundExceptions" value="false" />
+	</bean>
+	
+	<!-- for testing @see dev wiki
+	<security:ldap-server port="33389" ldif="classpath:ldap_test.ldif" root="dc=ub,dc=uni-kassel,dc=de" id="contextSource" />-->
+	
+	<security:ldap-server id="contextSource" url="${auth.ldap.server}" />
+	
+	<bean id="ldapUserDetailsMapper" class="org.bibsonomy.webapp.util.spring.security.userdetailsservice.LDAPUserDetailsServiceMapper">
+		<property name="userDetailsService" ref="databaseUserService" />
+		<property name="adminLogic" ref="adminLogic" />
+	</bean>
+	
+	<bean id="authConfig" class="org.bibsonomy.webapp.config.AuthConfig">
+		<property name="authOrderString" value="${auth.order}" />
+	</bean>
+	
+	<bean id="authFilterConfig" class="org.bibsonomy.webapp.config.AuthenticationFilterConfigurator">
+		<property name="config" ref="authConfig" />
+		<property name="authFilterMap">
+			<map key-type="org.bibsonomy.webapp.config.AuthMethod">
+				<entry key="INTERNAL" value-ref="internalUsernamePasswordFilter" />
+				<entry key="LDAP" value-ref="ldapUsernamePasswordFilter" />
+				<entry key="OPENID" value-ref="openidFilter" />
+			</map>
+		</property>
+		<property name="authRememberMeFilterMap">
+			<map key-type="org.bibsonomy.webapp.config.AuthMethod">
+				<entry key="INTERNAL" value-ref="internalRememberMeFilter" />
+				<entry key="LDAP" value-ref="ldapRememberMeFilter" />
+				<entry key="OPENID" value-ref="openidRememberMeFilter" />
+			</map>
+		</property>
+	</bean>
+</beans>

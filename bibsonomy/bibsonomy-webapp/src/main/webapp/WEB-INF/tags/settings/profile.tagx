@@ -1,0 +1,209 @@
+<jsp:root version="2.0"
+  xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:jsp="http://java.sun.com/JSP/Page"
+  xmlns:c="http://java.sun.com/jsp/jstl/core"
+  xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+  xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
+  xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+  xmlns:form="http://www.springframework.org/tags/form"
+  xmlns:spring="http://www.springframework.org/tags"
+  xmlns:errors="urn:jsptagdir:/WEB-INF/tags/errors"
+  xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+  xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/buttons"
+  >
+  
+  <jsp:directive.attribute name="command"  type="org.bibsonomy.webapp.command.BaseCommand" required="true"/>
+  
+	<!-- ############################################# profile tab ############################################# -->	
+		<fmt:message var="saveChanges" key="settings.saveChanges" />
+		<fmt:message var="male" key="settings.male"/>
+		<fmt:message var="female" key="settings.female"/>
+		<fmt:message var="upload" key = "settings.picture.upload" />
+
+		<c:set var="user" value="${command.user}" />
+ 
+        <p>
+        	<fmt:message key="settings.profileInfo">
+        		<fmt:param><a href="/foaf/user/${mtl:encodeURI(user.name)}">/foaf/user/<c:out value="${user.name}"/></a></fmt:param>
+        		<fmt:param><fmt:message key="settings.profileViewableFor"/></fmt:param>
+        		<fmt:param value="/cv/user/${mtl:encodeURI(user.name)}"/>
+        	</fmt:message>
+        </p>
+		
+		<form:form name="account" method="post" action="/updateUserProfile">		
+
+        <h2><fmt:message key="settings.generalInformation" /></h2>		
+    
+    	<div id="fsform">
+       	  <fieldset class="fsInner">
+		    <div class="fsRow">
+		  	  <form:label cssClass="fsLabel" path="user.name" ><fmt:message key="user.name"/></form:label>
+		  	  <form:input cssClass="fsInput fsSmall" path="user.name" tabindex="2" disabled="true"/>
+  		    </div>
+            <div class="fsRow">
+		      <form:label cssClass="fsLabel" path="user.realname"><fmt:message key="user.realname"/></form:label>
+		      <form:input cssClass="fsInput fsSmall" path="user.realname"/>
+              <div class="dissError"><form:errors path="user.realname" /></div>
+ 		    </div>
+		    <div class="fsRow">
+		      <form:label cssClass="fsLabel" path="user.gender"><fmt:message key="user.gender"/></form:label>
+		      <form:select cssClass="fsInput fsSmall" path="user.gender">
+		    	<form:option label="${male}" value="m"/>
+		    	<form:option label="${female}" value="f"/>
+		      </form:select>
+		      <div class="dissError"><form:errors path="user.gender" /></div>
+		    </div>
+ 		    <div class="fsRow">
+		      <form:label cssClass="fsLabel" path="user.birthday"><fmt:message key="user.birthday"/></form:label>
+		      <form:input cssClass="fsInput fsSmall" path="user.birthday"/>
+		      <div class="dissError"><form:errors path="user.birthday" /></div>		      
+		      <form:label cssClass="fsHelp" path="user.birthday">format: YYYY-MM-DD</form:label>
+		    </div>
+		    <div class="fsRow">
+		      <form:label cssClass="fsLabel" path="user.place"><fmt:message key="user.place"/></form:label>
+		      <form:input cssClass="fsInput fsSmall" path="user.place"/>
+		    </div>
+		    <div class="fsRow">
+		      <form:label cssClass="fsLabel" path="profilePrivlevel"><fmt:message key="settings.profileViewableFor"/></form:label>
+		      <form:select cssClass="fsInput fsSmall" path="profilePrivlevel">
+		    	<form:option label="public" value="public"/>
+		    	<form:option label="private" value="private"/>
+		    	<form:option label="friends" value="friends"/>
+		      </form:select>
+		      <div class="dissError"><form:errors path="profilePrivlevel" /></div>
+		    </div>
+		  </fieldset>
+		</div>
+
+		
+		<h2><fmt:message key="settings.contact" /></h2>		
+		
+		<div id="fsform">
+    	  <fieldset class="fsInner">
+		    <div class="fsRow">
+		      <form:label cssClass="fsLabel" path="user.email"><fmt:message key="user.email"/></form:label>
+		      <buttons:help message="settings.mandatory"/>
+		      <form:input cssClass="fsInput" path="user.email"/>
+              <div class="dissError"><form:errors path="user.email" /></div>
+		    </div>
+		    <div class="fsRow">
+		      <form:label cssClass="fsLabel" path="user.homepage"><fmt:message key="user.homepage"/></form:label>
+		      <buttons:help message="settings.homepage"/>
+		      <form:input cssClass="fsInput" path="user.homepage"/>
+		      <div class="dissError"><form:errors path="user.homepage" /></div>
+		    </div>
+		    <div class="fsRow">
+ 		      <form:label cssClass="fsLabel" path="user.openURL">OpenURL</form:label>
+		      <buttons:help message="settings.openURLDescription" helpPage="/OpenURL"/>
+		      <form:input cssClass="fsInput" path="user.openURL"/>
+		      <div class="dissError"><form:errors path="user.openURL" /></div>
+		    </div>
+		  </fieldset>
+		</div>
+
+
+
+
+		
+		<h2><fmt:message key="settings.aboutMe"/></h2>
+		
+		<div id="fsform">
+    	  <fieldset class="fsInner">
+  	        <div class="fsRow">
+		      <form:label cssClass="fsLabel" path="user.profession"><fmt:message key="user.profession"/></form:label>
+		      <form:input cssClass="fsInput" path="user.profession"/>		        
+		    </div>
+		    <div class="fsRow">
+		      <form:label cssClass="fsLabel" path="user.institution"><fmt:message key="user.institution"/></form:label>
+		      <form:input cssClass="fsInput" path="user.institution"/>		        
+		    </div>
+		    <div class="fsRow">
+		      <form:label cssClass="fsLabel" path="user.interests"><fmt:message key="user.scientificInterests"/></form:label>
+		      <form:textarea cssClass="fsInput" path="user.interests"/>
+		      <div class="dissError"><form:errors path="user.interests" /></div>
+		    </div>
+		    <div class="fsRow">
+		      <form:label cssClass="fsLabel" path="user.hobbies"><fmt:message key="user.hobbies"/></form:label>
+		      <form:textarea cssClass="fsInput" path="user.hobbies" />
+		      <div class="dissError"><form:errors path="user.hobbies" /></div>
+		    </div>
+  		  </fieldset>
+		</div>
+
+        <p>
+          <input type="submit" class="fsFormSubmit" value="${saveChanges}"/>
+          <input type="hidden" name="action" value="update"/>
+          <input type="hidden" name="ckey" value="${ckey}"/>
+          <input type="hidden" name="selTab" value="0"/>
+        </p>
+        
+      </form:form> 
+      
+      
+      <!-- picture settings-->
+      <form:form id="settingImportForm" action="/picture/user/${fn:escapeXml(user.name)}?ckey=${ckey}" method="post" enctype="multipart/form-data">
+		<h2>
+			<fmt:message key="settings.picture.header" >
+        		<fmt:param value="/cv/user/${mtl:encodeURI(user.name)}"/>
+			</fmt:message>		
+		</h2>		
+		
+		<div id="fsform">
+    	  <fieldset class="fsInner">
+    	  	<div class ="fsRow">
+    	  	<form:label cssClass="fsLabel" path="file"><fmt:message key="settings.picture.current"/></form:label>
+				<img style="clear:both;" src="/picture/user/${fn:escapeXml(user.name)}"/>
+			</div>
+    	  
+    	  	<div class="fsRow">
+	        	<form:label cssClass="fsLabel" path="file"><fmt:message key="settings.picture.file"/></form:label>
+	        	<buttons:help message="settings.picture.help"/>
+	        	<input type="file" name="file" class="fsInput fsSmall"/>
+		    </div>
+			
+			
+			<div class="fsRow">	
+		   		<input type="submit" value="${upload}" />
+				<!-- <input id="importType" name="importType" type="hidden" value="picture"/>-->
+			</div>
+		    
+		  </fieldset>
+		</div>
+		</form:form> 
+		
+		<h2><fmt:message key="settings.myFriends"/></h2>
+		
+		
+		<div id="fsform">
+    	  <fieldset class="fsInner">		  
+		    <div class="fsRow">	
+			  <span class="fsLabel"><fmt:message key="settings.friendOf"/></span>
+				<div style="float:left;  width: 76%;">
+					<c:if test="${empty command.userFriends}"><fmt:message key="settings.noFriends"/></c:if>
+					<c:forEach var="myfr1" items="${command.userFriends}">			
+				 		<a href="/user/${mtl:encodeURI(myfr1.name)}"><c:out value="${myfr1.name} "/></a>	 		
+					</c:forEach>
+				</div>
+		    </div>
+		    <div class="fsRow">		
+		 	  <span class="fsLabel"><fmt:message key="settings.myFriendsAre"><fmt:param><a href="/friends"><fmt:message key="friends"/></a></fmt:param></fmt:message></span>
+			  <c:if test="${empty command.friendsOfUser}">
+				<fmt:message key="settings.addFriendsNow">
+					<fmt:param>
+						<a href="/friends">
+							<fmt:message key="settings.add"/>
+						</a>
+					</fmt:param>
+				</fmt:message>
+			  </c:if>
+			  <div style="float:left; width: 76%;">
+				<c:forEach var="myfr2" items="${command.friendsOfUser}">			
+		 			<a href="/user/${mtl:encodeURI(myfr2.name)}"><c:out value="${myfr2.name} "/></a>	 		
+				</c:forEach>
+			  </div>
+ 		    </div>
+		  </fieldset>
+		</div>
+		
+
+</jsp:root>

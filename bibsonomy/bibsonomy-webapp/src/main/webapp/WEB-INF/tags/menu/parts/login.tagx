@@ -1,0 +1,19 @@
+<jsp:root version="2.0"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
+
+	<fmt:message key="navi.login" var="login"/>
+
+	<c:url var="loginUrl" value="/login" context="${projectContext}"/>
+	<form method="POST" action="${loginUrl}" style="display:inline">
+		<label for="un"><fmt:message key="navi.username"/>:${mtl:ch('nbsp')}</label> <input type="text" size="10" name="username" id="un" />${mtl:ch('nbsp')}
+		<label for="pw"><fmt:message key="navi.password"/>:${mtl:ch('nbsp')}</label> <input type="password" size="10" name="password" id="pw" />
+		<input type="image" src="${projectContext}${resdir}/image/grey.png" alt="${login}" />
+	</form>
+	
+	
+
+</jsp:root>

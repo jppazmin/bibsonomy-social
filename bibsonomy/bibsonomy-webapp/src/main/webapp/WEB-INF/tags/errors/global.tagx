@@ -1,0 +1,32 @@
+<jsp:root version="2.0"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+    xmlns:spring="http://www.springframework.org/tags"
+	xmlns:menuparts="urn:jsptagdir:/WEB-INF/tags/menu/parts"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
+	
+    <jsp:directive.attribute name="errors"  type="org.springframework.validation.Errors" required="true"/>
+    <jsp:directive.attribute name="cssClass"  type="java.lang.String" required="false" description="The CSS class for the div the errors are written to"/>
+              <!-- this tag is neccessary, otherwise errors is empty!  -->
+	          <spring:hasBindErrors name="command">
+
+                <c:if test="${not empty errors.globalErrors}">
+                  <div style="border:1px solid #006699; padding: 1em; margin-bottom: 1em;">
+                    <h3><fmt:message key="error"/></h3>
+
+                    <c:forEach var="error" items="${errors.globalErrors}">
+                      <c:if test="${empty cssClass}"><c:set var="cssClass" value="error"/></c:if>
+                      <pre class="${cssClass}">
+                        <spring:message code="${error.code}" text="${error.defaultMessage}" arguments="${error.arguments}" htmlEscape="true"/>
+                      </pre>
+                    </c:forEach>
+                  
+                  </div>
+                </c:if>
+
+              </spring:hasBindErrors>
+
+</jsp:root>

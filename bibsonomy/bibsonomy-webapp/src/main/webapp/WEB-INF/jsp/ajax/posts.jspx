@@ -1,0 +1,64 @@
+<!--
+
+
+     BibSonomy-Webapp - The webapplication for Bibsonomy.
+
+     Copyright (C) 2006 - 2011 Knowledge & Data Engineering Group,
+                               University of Kassel, Germany
+                               http://www.kde.cs.uni-kassel.de/
+
+     This program is free software; you can redistribute it and/or
+     modify it under the terms of the GNU General Public License
+     as published by the Free Software Foundation; either version 2
+     of the License, or (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+
+     You should have received a copy of the GNU General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+
+-->
+
+<jsp:root version="2.0"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
+	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/tags"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"> 
+
+	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
+	<div onclick='javascript:ajax_hideTooltip()'/>
+	<div class="tipHeader">
+		Bookmarks:  <c:out value="${command.bookmarkCount}"/>
+        <c:if test="${command.bibtexCount > 0}">
+		   , <span class="important">Publications: <c:out value="${command.bibtexCount}"/></span>
+        </c:if>
+	</div>
+	<table class="poststable">
+	<tr><th>Field</th><th>Data</th></tr>
+	<c:forEach var="post" items="${command.bookmarks}">
+		<tr>
+		<td class="title">Title</td>
+		<td class="urlTitle">
+		<a href="${fn:escapeXml(post.resource.url)}"><c:out value="${fn:escapeXml(post.resource.title)}"/></a>
+		</td></tr>
+		<!--<tr><td>Desc.</td><td><c:out value="${post.description}"/></td></tr>-->
+		<tr>
+			<td>Tags</td>
+			<td>
+			<c:forEach var="tag" items="${post.tags}">			
+			<c:out value="${tag.name}"/><c:out value=" "/>
+			</c:forEach>			
+			</td>
+		</tr>	
+		<tr class="lastrow"><td>Date</td><td><c:out value="${post.date}"/></td></tr>	
+	</c:forEach>
+	</table>	
+</jsp:root>

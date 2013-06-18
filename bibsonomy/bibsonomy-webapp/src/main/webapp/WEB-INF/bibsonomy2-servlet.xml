@@ -1,0 +1,760 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+
+     BibSonomy-Webapp - The webapplication for Bibsonomy.
+
+     Copyright (C) 2006 - 2011 Knowledge & Data Engineering Group,
+                               University of Kassel, Germany
+                               http://www.kde.cs.uni-kassel.de/
+
+     This program is free software; you can redistribute it and/or
+     modify it under the terms of the GNU General Public License
+     as published by the Free Software Foundation; either version 2
+     of the License, or (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+
+     You should have received a copy of the GNU General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+
+-->
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+	                    http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+	                    http://www.springframework.org/schema/util 
+	                    http://www.springframework.org/schema/util/spring-util-3.0.xsd">	
+	<!-- TODO: extract general things like sessionFactory to a seperate file -->
+	<!-- 
+		extracts properties from the provided file and inserts them into bean 
+		properties using "${property.name}" notation  
+	-->
+	<bean id="propertyConfigurer" class="org.bibsonomy.webapp.util.ContextParamConfigurer">
+		<property name="location">
+			<value>/WEB-INF/project.properties</value>
+		</property>
+		<property name="systemPropertiesModeName" value="SYSTEM_PROPERTIES_MODE_CONTEXTPARAM"/>
+	</bean>
+	
+	<!--
+		conversion service to convert:
+		- strings to enums (a generic converter)
+		- strings to class (and "bookmark", "publication" to resource classes)
+	-->
+	<bean id="conversionService" class="org.springframework.context.support.ConversionServiceFactoryBean">
+		<property name="converters">
+	        <list>
+	            <bean class="org.bibsonomy.web.spring.converter.factories.StringToEnumConverterFactory"/>
+	            <bean class="org.bibsonomy.web.spring.converter.StringToClassConverter" />
+	            <bean class="org.bibsonomy.web.spring.converter.StringToURLConverter" />
+	        </list>
+	    </property>
+	</bean>
+	
+	<bean id="controllerBase" class="org.bibsonomy.webapp.util.spring.controller.MinimalisticControllerSpringWrapper" abstract="true">
+		<property name="allowedFields" ref="allowedFields"/>
+		<property name="disallowedFields" ref="disallowedFields"/>
+		<property name="urlGenerator" ref="urlGenerator"/>
+		<property name="supportedMethods" value="HEAD,GET,POST,DELETE,PUT" />
+		<property name="conversionService" ref="conversionService" />
+	</bean>
+	
+	<!--  #################### factory beans #################### -->
+	
+	<!-- Renders JabRef Layouts -->
+	<bean id="jabrefLayoutRenderer" class="org.bibsonomy.layout.jabref.JabrefLayoutRenderer">
+		<property name="userLayoutFilePath" value="${project.document.path}"/>
+		<property name="urlGenerator" ref="urlGenerator"/>
+	</bean>
+
+	<!-- provides access to the request for all controllers, which need it -->
+	<bean id="requestLogic" class="org.bibsonomy.webapp.util.RequestLogic" scope="request"/>
+
+	<!-- provides access to the response for all controllers, which need it -->
+	<bean id="responseLogic" class="org.bibsonomy.webapp.util.ResponseLogic" scope="request"/>
+
+	<bean id="cookieAge" class="java.lang.Integer">
+		<constructor-arg value="31536000" /> <!-- one year (= 3600 * 24 * 365 seconds) -->
+	</bean>
+
+	<!-- provides access to cookies -->
+	<bean id="cookieLogic" class="org.bibsonomy.webapp.util.CookieLogic" scope="request">
+		<property name="requestLogic" ref="requestLogic"/>
+		<property name="responseLogic" ref="responseLogic"/>
+		<!-- configuration of cookies -->
+		<property name="cookieAge" ref="cookieAge"/>
+		<property name="cookiePath" value="/"/>
+		<property name="cookieSpammer" value="_lPost"/>
+	</bean>
+	
+	<!-- an instance of the currently logged in user -->
+	<bean id="loginUser" class="org.bibsonomy.webapp.util.spring.factorybeans.UserFactoryBean" scope="request">
+		<property name="requestLogic" ref="requestLogic"/>
+	</bean>
+	
+	<!-- the settings of the currently logged in user -->
+	<bean id="userSettings" class="org.bibsonomy.webapp.util.spring.factorybeans.UserSettingsFactoryBean" scope="request">
+		<property name="user" ref="loginUser"/>
+	</bean>
+	
+	<!-- 
+	    This bean provides admin access to the logic interface by predicting 
+	    to be a user with role "admin". 
+	 -->
+	<bean id="adminLogic" class="org.bibsonomy.webapp.util.spring.factorybeans.AdminLogicFactoryBean" scope="singleton">
+	    <!-- name the admin user will have when accessing the logic interface -->
+		<property name="adminUserName" value="admin"/>
+		<property name="dbSessionFactory" ref="dbSessionFactory"/>
+	</bean>
+
+	<!-- provides access to the database for all controllers -->
+	<bean id="logic" class="org.bibsonomy.webapp.util.spring.factorybeans.LogicFactoryBean" scope="request">
+		<property name="user" ref="loginUser"/>
+		<property name="dbSessionFactory" ref="dbSessionFactory"/>
+	</bean>
+
+	<!-- handles sending of mails  -->
+	<bean id="mailUtils" class="org.bibsonomy.util.MailUtils" scope="singleton">
+		<property name="projectHome" value="${project.home}" />
+		<property name="projectName" value="${project.name}" />
+		<property name="projectBlog" value="${project.blog}" />
+		<property name="projectEmail" value="${project.email}" />
+		<property name="projectRegistrationFromAddress" value="${project.registrationFromAddress}" />
+		<property name="projectJoinGroupRequestFromAddress" value="${project.joinGroupRequestFromAddress}" />
+		<property name="mailHost" value="${mail.smtp.host}" />
+		<property name="messageSource" ref="messageSource"/>
+	</bean>
+
+	<!--  #################### interceptors #################### -->
+	<bean id="localeChangeInterceptor" class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor">
+		<property name="paramName" value="lang" />
+	</bean>	
+	
+	<bean id="requestWrapperContextInterceptor" class="org.bibsonomy.webapp.util.spring.RequestWrapperContextHandlerInterceptor">
+	</bean>
+	
+	<bean id="mobileDetectionHandlerInterceptor" class="org.bibsonomy.webapp.util.spring.MobileDetectionHandlerInterceptor">
+		<property name="wurflManager" ref="wurfl.manager" />
+		<property name="cookieAge" ref="cookieAge" />
+	</bean>
+	
+	<!--  #################### locale and theme resolver #################### -->
+	<bean id="localeResolver" class="org.bibsonomy.webapp.util.spring.i18n.SecurityContextAwareSessionLocaleResolver">
+		<property name="defaultLocale" value="${project.defaultLocale}" />
+	</bean>
+	
+    <bean id="themeResolver" class="org.springframework.web.servlet.theme.FixedThemeResolver">
+      <property name="defaultThemeName" value="${project.theme}" />
+    </bean>
+    
+	<bean id="themeSource" class="org.springframework.ui.context.support.ResourceBundleThemeSource">
+    	<property name="basenamePrefix" value="theme_"/>
+	</bean>
+	
+	<bean id="urlGenerator" class="org.bibsonomy.services.URLGenerator">
+		<property name="projectHome" value="${project.home}" />
+	</bean>
+
+	<!-- to resolve messages -->  
+	<bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
+		<!-- matches messages.properties, messages_de.properties, ... -->   
+		<property name="basenames">
+			<list>
+				<value>projects/${project.name}_messages</value>
+				<value>themes/${project.theme}_messages</value>
+				<value>messages</value>
+			</list>
+		</property> 
+	</bean>
+
+	<!--  #################### view resolver #################### -->
+	<!-- default: JSPs -->
+	<bean id="viewResolver"	class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="viewClass" value="org.springframework.web.servlet.view.JstlView" />
+		<property name="prefix" value="/WEB-INF/jsp/" />
+		<property name="suffix" value=".jspx" />
+		<!-- expose the application context's beans to the view layer so that they can be accessed in all jsp's via ${beanName} -->
+		<property name="exposedContextBeanNames">
+			<list>
+				<value>authConfig</value>
+			</list>
+		</property>
+	</bean>
+	
+	<!-- used to resolve non-JSP views, e.g., JabRef's layout views -->
+	<bean id="nonJSPViewResolver" class="org.springframework.web.servlet.view.XmlViewResolver">
+    	<property name="order" value="1"/>
+	</bean>
+	
+	<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver"/>
+	
+	<!-- WURFL -->
+	<bean id="wurfl.model" class="net.sourceforge.wurfl.core.resource.DefaultWURFLModel">
+		<constructor-arg index="0">
+    		<bean class="net.sourceforge.wurfl.core.resource.SpringXMLResource">
+      			<constructor-arg value="classpath:wurfl.zip" />
+   			</bean>
+  		</constructor-arg>
+  		<constructor-arg index="1">
+   			<bean class="net.sourceforge.wurfl.core.resource.WURFLResources">
+      			<constructor-arg>
+        			<list>
+          				<bean class="net.sourceforge.wurfl.core.resource.SpringXMLResource">
+            				<constructor-arg value="classpath:web_browsers_patch.xml" />
+          				</bean>
+        			</list>
+      			</constructor-arg>
+    		</bean>
+  		</constructor-arg>
+	</bean>
+	<bean id="wurfl.matcherManager" class="net.sourceforge.wurfl.core.handlers.matchers.MatcherManager">
+		<constructor-arg ref="wurfl.model" />
+	</bean>
+	<bean id="wurfl.deviceProvider" class="net.sourceforge.wurfl.core.DefaultDeviceProvider">
+		<constructor-arg ref="wurfl.model" />
+	</bean>
+	<bean id="wurfl.service" class="net.sourceforge.wurfl.core.DefaultWURFLService">
+		<constructor-arg ref="wurfl.matcherManager" />
+		<constructor-arg ref="wurfl.deviceProvider" />
+	</bean>
+	<bean id="wurfl.manager" class="net.sourceforge.wurfl.core.DefaultWURFLManager">
+		<constructor-arg ref="wurfl.service" />
+	</bean>
+	
+	<bean id="urlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+		<property name="interceptors">
+			<list>
+				<ref local="localeChangeInterceptor"/>
+				<!-- 
+   		         Wraps the request into a context and provides access to loginUser, ckey, etc.
+		         Will be put into the command by the controllerBase
+		        -->
+				<ref local="requestWrapperContextInterceptor"/>
+				<ref local="mobileDetectionHandlerInterceptor"/>
+			</list>
+		</property>
+		<property name="urlMap">
+			<map>
+				<entry key="/homepage">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="${project.bean.homepageController}"/>
+					</bean>
+				</entry>
+				<entry key="/settings">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="settingsPageController"/>
+						<property name="allowedFields">
+							<list>
+								<value>selTab</value>
+								<value>ckey</value>
+								<value>requestedUser</value>
+								<value>importType</value>
+								<value>importDataV1</value>
+								<value>importDataV2</value>
+								<value>overwrite</value>
+								<value>overwriteV1</value>
+								<value>overwriteV2</value>
+								<value>userName</value>
+								<value>file</value> 
+								<value>group</value>
+								<value>delete</value>
+							</list>
+						</property>
+					</bean>
+				</entry>
+				<entry key="/user">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="userPageController"/>
+					</bean>
+				</entry>
+				<entry key="/foaf">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="fOAFController"/>
+						<property name="allowedFields">
+							<list>
+								<value>requestedUser</value>
+							</list>
+						</property>
+					</bean>
+				</entry>	
+				<entry key="/cvpage">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="cvPageController"/>
+						<property name="allowedFields">
+							<list>
+								<value>requestedUser</value>
+								<value>layout</value>
+							</list>
+						</property>
+					</bean>
+				</entry>
+				<entry key="/groupcvpage">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="groupCvPageController"/>
+						<property name="allowedFields">
+							<list>
+								<value>requestedGroup</value>
+								<value>layout</value>
+							</list>
+						</property>
+					</bean>
+				</entry>	
+				<entry key="/relations">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="userRelationsController"/>
+					</bean>
+				</entry>				
+				<entry key="/export">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="exportPageController"/>
+					</bean>
+				</entry>				
+				<entry key="/groups">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="groupsPageController"/>
+					</bean>
+				</entry>
+				<entry key="/group">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="groupPageController"/>
+					</bean>
+				</entry>	
+				<entry key="/reporting">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="groupReportingPageController"/>
+						<property name="allowedFields">
+							<list>
+								<value>requestedGroup</value>
+								<value>transposeMatrix</value>
+								<value>requestedTags</value>
+							</list>
+						</property>
+					</bean>
+				</entry>	
+				<entry key="/viewable">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="viewablePageController"/>
+					</bean>
+				</entry>
+				<entry key="/tag">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="tagPageController"/>
+					</bean>
+				</entry>
+				<entry key="/author">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="authorPageController"/>
+					</bean>
+				</entry>
+				<entry key="/authors">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="authorsPageController"/>
+					</bean>
+				</entry>				
+				<entry key="/concept">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="conceptPageController"/>
+					</bean>
+				</entry>	
+				<entry key="/friends">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="friendsPageController"/>
+					</bean>
+				</entry>	
+				<entry key="/friend">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="friendPageController"/>
+					</bean>
+				</entry>
+<!--				<entry key="/spheres">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="spheresPageController"/>
+					</bean>
+				</entry>-->
+				<entry key="/bibtexkey">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="bibtexkeyPageController"/>
+					</bean>
+				</entry>		
+				<entry key="/url">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="urlPageController"/>
+					</bean>
+				</entry>	
+				<entry key="/bibtex">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="publicationPageController"/>
+					</bean>
+				</entry>
+				<entry key="/basket">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="basketPageController"/>
+					</bean>
+				</entry>	
+				<entry key="/inbox">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="inboxPageController"/>
+					</bean>
+				</entry>			
+				<entry key="/unapi">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="UnAPIController"/>
+						<property name="allowedFields">
+							<list>
+								<value>id</value>
+								<value>format</value>
+							</list>
+						</property>
+					</bean>
+				</entry>			 
+				<entry key="/redirect">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="redirectController"/>
+						<property name="allowedFields">
+							<list>
+								<value>myPage</value>
+								<value>search</value>
+								<value>scope</value>
+								<value>requUser</value>
+								<value>url</value>
+							</list>
+						</property>
+					</bean>
+				</entry>
+				<entry key="/search">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="searchPageController"/>
+					</bean>
+				</entry>
+				<entry key="/popular">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="popularPageController"/>
+					</bean>
+				</entry>
+				<entry key="/tags">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="popularTagsPageController"/>						
+					</bean>
+				</entry>
+				<entry key="/mySearch">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="mySearchController"/>
+						<property name="allowedFields">
+							<list>
+								<value>requGroup</value>
+							</list>
+						</property>
+					</bean>
+				</entry>
+				<entry key="/buttons">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="buttonPageController"/>
+					</bean>
+				</entry>
+				<entry key="/allRelations">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="relationsController"/>
+					</bean>
+				</entry>
+				<entry key="/followers">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="followersPageController"/>
+					</bean>
+				</entry>
+				<entry key="/scraperinfo">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="scraperInfoController"/>
+					</bean>
+				</entry>
+				<entry key="/layoutinfo">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="exportLayoutController"/>
+					</bean>
+				</entry>
+				<entry key="/errors/403">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="error403PageController"/>
+					</bean>
+				</entry>
+				<entry key="/errors/404">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="error404PageController"/>
+					</bean>
+				</entry>
+				<entry key="/errors/405">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="error405PageController"/>
+					</bean>
+				</entry>
+				<entry key="/errors/500">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="error500PageController"/>
+					</bean>
+				</entry>
+				<entry key="/errors/504">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="error503PageController"/>
+					</bean>
+				</entry>
+			</map>
+		</property>
+	</bean>
+	
+	
+  	<!--  #################### controller #################### -->
+ 	<bean id="resourceController" class="org.bibsonomy.webapp.controller.ResourceListController" abstract="true">
+		<property name="logic" ref="logic"/>
+		<property name="userSettings" ref="userSettings"/>
+	</bean>
+	
+	<bean id="multiResourceListController" class="org.bibsonomy.webapp.controller.SingleResourceListController" abstract="true" parent="resourceController" />
+	
+	<bean id="multiResourceListControllerWithTags" class="org.bibsonomy.webapp.controller.SingleResourceListControllerWithTags" abstract="true" parent="multiResourceListController" />
+	
+	<util:set id="allResources" scope="request">
+		<value type="java.lang.Class">org.bibsonomy.model.BibTex</value>
+		<value type="java.lang.Class">org.bibsonomy.model.Bookmark</value>
+		<value type="java.lang.Class">org.bibsonomy.model.GoldStandardPublication</value>
+	</util:set>
+	
+	<bean id="homepageController" class="org.bibsonomy.webapp.controller.HomepageController" scope="request" parent="multiResourceListController">
+		<property name="supportedResources" ref="allResources"/>
+	</bean>
+	
+	<bean id="relationsController" class="org.bibsonomy.webapp.controller.RelationsController" scope="request">
+		<property name="logic" ref="logic"/>
+	</bean>
+	
+	<bean id="followersPageController" class="org.bibsonomy.webapp.controller.FollowersPageController" scope="request" parent="multiResourceListController">
+		<property name="supportedResources" ref="allResources"/>	
+	</bean>
+	
+	<bean id="settingsPageController" class="org.bibsonomy.webapp.controller.SettingsPageController" scope="request">
+		<property name="logic" ref="logic"/>
+		<!-- commented out due to incomplete wiki dependency in the setttingsPageController
+			<property name="requestLogic" ref="requestLogic"/>
+			<property name="messageSource" ref="messageSource"/>
+		-->
+	</bean>
+
+	<bean id="userPageController" class="org.bibsonomy.webapp.controller.UserPageController" scope="request" parent="multiResourceListControllerWithTags">
+		<property name="supportedResources" ref="allResources"/>
+	</bean>
+	
+	<bean id="fOAFController" class="org.bibsonomy.webapp.controller.FOAFController" scope="request">
+		<property name="logic" ref="logic"/>
+	</bean>
+	
+	<bean id="cvPageController" class="org.bibsonomy.webapp.controller.CvPageController" scope="request" parent="resourceController">
+		<property name="supportedResources" ref="allResources"/>
+		<property name="forcedResources">
+			<set>
+				<value type="java.lang.Class">org.bibsonomy.model.BibTex</value>
+				<value type="java.lang.Class">org.bibsonomy.model.Bookmark</value>
+			</set>
+		</property>
+	</bean>	
+	
+	<bean id="groupCvPageController" class="org.bibsonomy.webapp.controller.GroupCvPageController" scope="request" parent="resourceController">
+		<property name="supportedResources" ref="allResources"/>
+		<property name="entries">
+			<value>3</value>
+		</property>
+		<property name="forcedResources">
+			<set>
+				<value type="java.lang.Class">org.bibsonomy.model.BibTex</value>
+				<value type="java.lang.Class">org.bibsonomy.model.Bookmark</value>
+			</set>
+		</property>
+	</bean>	
+	
+	<bean id="mySearchController" class="org.bibsonomy.webapp.controller.MySearchController" scope="request" parent="multiResourceListControllerWithTags">
+		<property name="supportedResources" ref="allResources"/>
+	</bean>
+	
+	<bean id="friendsPageController" class="org.bibsonomy.webapp.controller.FriendsPageController" scope="request" parent="multiResourceListController">
+		<property name="supportedResources" ref="allResources"/>
+	</bean>
+	
+	<bean id="friendPageController" class="org.bibsonomy.webapp.controller.FriendPageController" scope="request" parent="multiResourceListControllerWithTags">
+		<property name="supportedResources" ref="allResources"/>
+	</bean>
+	
+	<bean id="spheresPageController" class="org.bibsonomy.webapp.controller.SpheresPageController" scope="request" parent="multiResourceListControllerWithTags">
+		<property name="supportedResources" ref="allResources"/>
+		<property name="logic" ref="logic"/>		
+	</bean>
+	
+	<bean id="groupPageController" class="org.bibsonomy.webapp.controller.GroupPageController" scope="request" parent="multiResourceListControllerWithTags">
+		<property name="supportedResources" ref="allResources"/>
+	</bean>
+	
+	<bean id="groupReportingPageController" class="org.bibsonomy.webapp.controller.reporting.GroupReportingPageController" scope="request">
+		<property name="logic" ref="logic"/>
+	</bean>	
+	
+	<bean id="groupsPageController" class="org.bibsonomy.webapp.controller.GroupsPageController" scope="request">
+		<property name="logic" ref="logic"/>
+		<property name="userSettings" ref="userSettings"/>
+	</bean>	
+	
+	<bean id="viewablePageController" class="org.bibsonomy.webapp.controller.ViewablePageController" scope="request" parent="multiResourceListControllerWithTags">
+		<property name="supportedResources" ref="allResources"/>
+	</bean>
+	
+	<bean id="tagPageController" class="org.bibsonomy.webapp.controller.TagPageController" scope="request" parent="multiResourceListControllerWithTags">
+		<property name="supportedResources" ref="allResources"/>
+	</bean>
+
+	<bean id="authorPageController" class="org.bibsonomy.webapp.controller.AuthorPageController" scope="request" parent="multiResourceListControllerWithTags">
+		<property name="supportedResources">
+			<set>
+				<value type="java.lang.Class">org.bibsonomy.model.BibTex</value>
+			</set>
+		</property>
+	</bean>
+
+	<bean id="authorsPageController" class="org.bibsonomy.webapp.controller.AuthorsPageController" scope="request">
+		<property name="logic" ref="logic"/>
+	</bean>
+	
+	<bean id="userRelationsController" class="org.bibsonomy.webapp.controller.UserRelationsController" scope="request">
+		<property name="logic" ref="logic"/>
+		<property name="userSettings" ref="userSettings"/>
+	</bean>
+	
+	<bean id="exportPageController" class="org.bibsonomy.webapp.controller.ExportPageController" scope="request">
+		<property name="layoutRenderer" ref="jabrefLayoutRenderer"/>
+		<property name="requestLogic" ref="requestLogic"/>
+	</bean>
+
+	<bean id="conceptPageController" class="org.bibsonomy.webapp.controller.ConceptPageController" scope="request">
+		<property name="logic" ref="logic"/>
+		<property name="userSettings" ref="userSettings"/>
+		<property name="supportedResources" ref="allResources"/>
+	</bean>
+	
+	<bean id="publicationPageController" class="org.bibsonomy.webapp.controller.BibtexPageController" scope="request" parent="multiResourceListControllerWithTags">
+		<property name="supportedResources">
+			<set>
+				<value type="java.lang.Class">org.bibsonomy.model.BibTex</value>
+			</set>
+		</property>
+	</bean>
+
+	<bean id="basketPageController" class="org.bibsonomy.webapp.controller.BasketPageController" scope="request" parent="multiResourceListController">
+		<property name="supportedResources">
+			<set>
+				<value type="java.lang.Class">org.bibsonomy.model.BibTex</value>
+			</set>
+		</property>
+	</bean>	 
+	
+	<bean id="inboxPageController" class="org.bibsonomy.webapp.controller.InboxPageController" scope="request" parent="multiResourceListController">
+		<property name="supportedResources" ref="allResources"/>
+	</bean>	 
+		
+	<bean id="exportLayoutController" class="org.bibsonomy.webapp.controller.ExportLayoutController" scope="request">
+		<property name="layoutRenderer" ref="jabrefLayoutRenderer"/>
+		<property name="requestLogic" ref="requestLogic"/>
+	</bean>
+	
+	<!-- 
+		Implements the UnAPI specification http://unapi.info/
+		* returns an overview of the supported formats
+		* given an ID and a format, returns the post in the chosen format
+		* basically redirects to existing controllers
+	-->
+	<bean id="UnAPIController" class="org.bibsonomy.webapp.controller.special.UnAPIController" scope="request">
+		<property name="responseLogic" ref="responseLogic"/>
+	</bean>
+	 
+	<!-- 
+	   Does various redirects, like /myRelations, /myBibSonomy, etc.
+	 -->
+	<bean id="redirectController" class="org.bibsonomy.webapp.controller.special.RedirectController" scope="request">
+		<property name="requestLogic" ref="requestLogic"/>
+	</bean>
+
+	<bean id="bibtexkeyPageController" class="org.bibsonomy.webapp.controller.BibtexkeyPageController" scope="request" parent="multiResourceListController">
+		<property name="supportedResources">
+			<set>
+				<value type="java.lang.Class">org.bibsonomy.model.BibTex</value>
+			</set>
+		</property>
+	</bean>
+	 
+	<bean id="urlPageController" class="org.bibsonomy.webapp.controller.UrlPageController" scope="request" parent="multiResourceListController">
+		<property name="supportedResources">
+			<set>
+				<value type="java.lang.Class">org.bibsonomy.model.Bookmark</value>
+			</set>
+		</property>
+	</bean>
+	
+	<bean id="searchPageController" class="org.bibsonomy.webapp.controller.SearchPageController" scope="request" parent="multiResourceListController">
+		<property name="supportedResources" ref="allResources"/>
+	</bean>
+	
+	<bean id="popularTagsPageController" class="org.bibsonomy.webapp.controller.PopularTagsPageController" scope="request">
+		<property name="logic" ref="logic"/>
+	</bean>
+	
+	<bean id="popularPageController" class="org.bibsonomy.webapp.controller.PopularPageController" scope="request">
+		<property name="logic" ref="logic"/>
+		<property name="userSettings" ref="userSettings"/>
+		<property name="supportedResources" ref="allResources"/>
+		<property name="entriesPerPage" value="3" />
+	</bean>
+	
+	<bean id="scraperInfoController" class="org.bibsonomy.webapp.controller.ScraperInfoController" scope="request" />
+	
+    <!--  #################### PUMA Controller #################### -->
+	<bean id="pumaHomepageController" class="de.unikassel.puma.webapp.controller.HomepageController" scope="request" parent="multiResourceListControllerWithTags">
+		<property name="supportedResources" ref="allResources"/>
+	</bean>	
+
+	<!--  #################### static views #################### -->
+	<bean id="buttonPageController" class="org.bibsonomy.webapp.controller.special.StaticViewController" scope="request">
+		<property name="view" value="BUTTONS"/>
+	</bean>
+	<bean id="error403PageController" class="org.bibsonomy.webapp.controller.special.StaticViewController" scope="request">
+		<property name="view" value="ERROR403"/>
+	</bean>
+	<bean id="error404PageController" class="org.bibsonomy.webapp.controller.special.StaticViewController" scope="request">
+		<property name="view" value="ERROR404"/>
+	</bean>
+	<bean id="error405PageController" class="org.bibsonomy.webapp.controller.special.StaticViewController" scope="request">
+		<property name="view" value="ERROR405"/>
+	</bean>
+	<bean id="error500PageController" class="org.bibsonomy.webapp.controller.special.StaticViewController" scope="request">
+		<property name="view" value="ERROR500"/>
+	</bean>
+	<bean id="error503PageController" class="org.bibsonomy.webapp.controller.special.StaticViewController" scope="request">
+		<property name="view" value="ERROR503"/>
+	</bean>
+
+	<!--  #################### imports #################### -->
+    <import resource="bibsonomy2-servlet-fields.xml"/>
+    <import resource="bibsonomy2-servlet-recommender.xml"/>	
+    <import resource="bibsonomy2-servlet-actions.xml"/>
+    <import resource="bibsonomy2-servlet-ajax.xml"/>	
+    <import resource="bibsonomy2-servlet-admin.xml"/>
+    <import resource="bibsonomy2-servlet-database.xml" />
+	<import resource="bibsonomy2-servlet-lucene.xml"/>
+	<import resource="bibsonomy2-servlet-security.xml"/>
+    <import resource="bibsonomy2-servlet-opensocial.xml"/>
+    <import resource="bibsonomy2-servlet-rest.xml"/>
+    <import resource="bibsonomy2-servlet-cronjobs.xml"/>
+	<import resource="bibsonomy2-servlet-synchronization.xml"/>
+	
+    <import resource="bibsonomy2-servlet-bibsonomy.xml"/>
+	<import resource="bibsonomy2-servlet-puma.xml"/>
+</beans>

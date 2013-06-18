@@ -1,0 +1,41 @@
+<jsp:root version="2.0" xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt">
+    
+   	<jsp:directive.attribute name="discussionItem" type="org.bibsonomy.model.DiscussionItem" required="true" />
+	
+	<span class="date">
+		<fmt:message key="post.resource.comment.on"/><c:out value=" "/><fmt:formatDate type="date" timeStyle="medium" dateStyle="medium" value="${discussionItem.date}"/>
+	</span>
+	<c:if test="${not empty discussionItem.changeDate}">
+		<span class="changeDate">
+			<fmt:message key="post.resource.comment.updatedOn" />
+			<c:out value=" "/><fmt:formatDate type="date" timeStyle="medium" dateStyle="medium" value="${discussionItem.changeDate}"/>
+		</span>
+	</c:if>
+	<span class="groups">
+		<c:forEach var="group" items="${discussionItem.groups}" varStatus="status">
+			<c:if test="${not empty group.name and group.name ne 'public'}">
+				<c:if test="${status.first}">
+					<fmt:message key="post.resource.comment.groups" />
+					<c:out value=" " />
+				</c:if>
+				<c:if test="${not status.first}">
+					<c:out value=", "/>
+				</c:if>
+				<c:choose>
+					<c:when test="${group.name eq 'friends'}">
+						<fmt:message key="post.groups.friends" /> <!-- TODO: look for message key -->
+					</c:when>
+					<c:when test="${group.name eq 'private'}">
+						<fmt:message key="post.groups.private" /> <!-- TODO: look for message key -->
+					</c:when>
+					<c:otherwise>
+						<a href="/group/${fn:escapeXml(group.name)}"><c:out value="${group.name}" /></a>
+					</c:otherwise>
+				</c:choose>
+			</c:if>	
+		</c:forEach>
+	</span>
+</jsp:root>

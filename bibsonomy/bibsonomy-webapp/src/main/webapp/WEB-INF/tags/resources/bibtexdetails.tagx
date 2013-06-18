@@ -1,0 +1,324 @@
+<jsp:root version="2.0" 
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:rc="urn:jsptagdir:/WEB-INF/tags/resources/common"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:bib="urn:jsptagdir:/WEB-INF/tags/resources/bibtex"
+	xmlns:form="http://www.springframework.org/tags/form"
+	xmlns:export="urn:jsptagdir:/WEB-INF/tags/export/bibtex"
+	xmlns:resource="urn:jsptagdir:/WEB-INF/tags/resources"
+	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/tags"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:spring="http://www.springframework.org/tags"
+    xmlns:editpub="urn:jsptagdir:/WEB-INF/tags/actions/edit/publication"
+    xmlns:review="urn:jsptagdir:/WEB-INF/tags/resources/discussion/review">
+	
+	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true" description="The publication post that should be rendered."/>
+	<jsp:directive.attribute name="referer" type="java.lang.String" required="true" description="The referer to the scraped site"/>
+	
+	<c:set var="publication" value="${post.resource}"/>
+	<c:set var="isOwnEntry" value="${post.user.name eq command.context.loginUser.name}"/>
+	
+	<spring:theme code="javascript.openaccess" var="jsOpenAccess" text=""/>
+
+	<c:if test="${not empty jsOpenAccess}">
+		<script type="text/javascript" src="${jsOpenAccess}"><!--  --></script>
+	</c:if>
+  	
+	<!-- Javascript snippet to fold/unfold the individual sections -->
+	<script type="text/javascript">
+	function foldUnfold(id) {
+		var node = document.getElementById(id);
+		var imgNode = document.getElementById(id + "Img");
+		var img = document.createElement("img");
+		img.border = 0;
+		img.id = id + "Img";
+		if (node.style.display == "none") {
+			node.style.display = "inline";
+			img.src = "${resdir}/image/icon_collapse.png";
+		} else {
+			node.style.display = "none";
+			img.src = "${resdir}/image/icon_expand.png";
+		}
+		imgNode.parentNode.replaceChild(img,imgNode);
+	}
+	</script>
+	
+	
+	
+	<div style="float:left; width:97%; margin-left:10px; margin-top:10px; padding-bottom:13px;">
+	
+		<!-- header (username, nr. or other users, edit, delete links .. -->
+		<div class="kiste">
+		  <span class="nextprev">
+		    <fmt:message key="bibtex.details.owner"/><c:out value=" "/><a href="/user/${post.user.name}"><c:out value="${post.user.name}"/></a>
+		    <rc:otherpeople post="${post}" otherPostsUrlPrefix="/bibtex/"/>:
+		    <jsp:text>${mtl:ch('nbsp')}</jsp:text>
+		  </span>
+		  <span class="nextprev" style="float:right;">
+		  	<bib:actions post="${post}" loginUserName="${command.context.loginUser.name}" disableResourceLinks="${true}" noedittags="${true}"/>
+		  </span>		  
+		  <jsp:text>${mtl:ch('nbsp')}</jsp:text>	  
+		</div>
+		
+		<!-- discussion and rating -->
+		<div id="rating" style="margin-top:0.5em;">
+			<fmt:message var="title" key="post.resource.discussion.title.bibtex"/>
+			<a href="/bibtex/${publication.interHash}#discussion" title="${title}"><review:reviewStars rating="${publication.rating}" dimension="0.75" /></a><span class="reviewInfo">(<c:out value="${publication.numberOfRatings}" />)</span>
+			<div class="initiallyHidden">
+				<review:reviewRatingsInfo resource="${publication}" />
+			</div>
+		</div>
+		
+		<!-- title of the publication -->
+		<h2 style="font-size: 120%; margin-bottom: 0.5em;">
+			<bib:documents post="${post}" includeFilename="${false}"/><a href="/bibtex/${post.resource.interHash}">${mtl:cleanBibtex(publication.title)}</a>
+		</h2>
+		
+		<!-- authors / editors -->
+		<fmt:message key="by"/><c:out value=": "/><bib:author publication="${publication}"/>
+		
+		<!-- citation-format-like display of the publication -->    		       
+		<div style="margin:1.2em;">
+		<c:choose>
+			<c:when test="${not empty command.layout and not (command.layout eq '') and not (command.layout eq 'plain')}">
+				<mtl:renderJabRefLayout layout="${command.layout}" post="${post}" />
+			</c:when>
+			<c:otherwise>
+				<export:plain bib="${publication}"/>
+			 </c:otherwise>		  
+		</c:choose> 	
+		</div>
+				
+		<!-- selection of citation format -->
+		<div >
+			<span id="citation_formats"> 				
+				<form name="citation_format_form" action="" style="font-size:80%;">
+					<fmt:message var="allExportsTitle" key="bibtex.all_exports.title" />
+					<fmt:message key="bibtex.citation_format"/><c:out value=" ("/>
+					<a href="/export/bibtex/2${publication.intraHash}/${mtl:encodeURI(post.user.name)}" title="${allExportsTitle}"><fmt:message key="bibtex.all_exports"/></a><c:out value="): "/>
+					
+					<form:select path="command.layout" onchange="citation_format_form.submit()" size="1">
+						<form:option value="plain"><fmt:message key="plain"/></form:option>
+						<form:option value="harvardhtml">Harvard</form:option>
+						<form:option value="din1505">DIN1505</form:option>
+						<form:option value="simplehtml">simple HTML</form:option>
+					</form:select>
+				    <c:out value=" "/>
+				    <input type="image" src="${resdir}/image/nice_box_arrow_right.png"/>		    
+				</form>						
+			</span>
+		</div>
+		
+		
+		<!-- ###############  PUMA / OpenAccess  ################# -->
+		<c:if test="${not empty jsOpenAccess}"> <!-- is there any openaccess javascript code defined in theme*.properties? -->
+			<c:if test="${isOwnEntry}"> <!-- only if publication is own one -->
+			    <c:if test="${mtl:hasTagMyown(post)}"> <!-- only if publication is tagged with myown system tag -->				
+					<c:if test="${command.context.loginUser.role.role==0}"> <!-- TODO: remove if testing phase is over-->
+						<div class="boxed">
+							<editpub:openaccess referer="${referer}" bibtex="${publication}"/>
+						</div>
+					</c:if>
+				</c:if>
+			</c:if>
+		</c:if>
+								
+		<!-- main box with resources, abstract, private note, bitex record, .. -->
+		<div class="boxed">
+										
+		<!-- ###############  RESOURCES (PS/PDF, URLs, ...) ################# -->
+		<c:if test="${not empty publication.url or isOwnEntry}">
+			<h3><a href="javascript:foldUnfold('resources');"><img id="resourcesImg" src="${resdir}/image/icon_collapse.png" border="0"/><fmt:message key="bibtex.resources"/></a></h3>
+			<div id="resources" style="font-size: 90%;">
+				<table>
+					<!-- publication URL -->
+					<c:if test="${not empty publication.url}">
+						<!-- disabled: similar resources from PIA webservice 
+							<tags:similarresources url="${publication.url}" method="findSimilarUrls"/>
+						 -->
+						<tr>
+							<td><fmt:message key="bibtex.url"/>:</td>
+							<td><a href="${fn:escapeXml(publication.url)}"><c:out value="${publication.url}"/></a></td>
+						</tr>
+					</c:if>
+					<!-- publication DOI -->
+					<c:if test="${not empty publication.miscFields['doi']}">
+						<fmt:message key="post_bibtex.doi_isbn.doi" var="urlTitle"/>
+						<tr>
+							<td><c:out value="${urlTitle}"/>:</td>
+							<td><a href="http://dx.doi.org/${mtl:encodeURI(mtl:extractDOI(publication.miscFields['doi']))}" title="${urlTitle}"><c:out value="${mtl:extractDOI(publication.miscFields['doi'])}"/></a></td>
+						</tr>
+					</c:if>
+					
+					<!-- ##### additional URLs ##### -->
+						<c:if test="${not empty publication.extraUrls or isOwnEntry}">
+						<tr>							
+							<td>
+								<script type="text/javascript" src="${resdir}/javascript/additionalUrl.js"><!--  --></script>
+								<fmt:message key="bibtex.additional_urls"/><c:out value=":"/>
+							  	<!--  add url -->						  	
+							    <c:if test="${isOwnEntry}">
+							        <fmt:message var="addAdditionalUrlTitle" key="bibtex.actions.additional_url.add.title" />
+							        <c:out value=" ("/>
+							        <a class="addUrl" title="${addAdditionalUrlTitle}" href="javascript:addUrlForm()" id="l_addURL"><fmt:message key="bibtex.actions.additional_url.add"/></a>
+							        <c:out value=")"/>
+							    </c:if>								
+							</td>
+							<td>
+								<!-- display extra URLs -->
+						      	<div id="urlList" class="allAddUrls">
+						      	<c:forEach items="${publication.extraUrls}" var="url">
+						      		<div id="${fn:escapeXml(url.url)}">
+						        	<a href="${fn:escapeXml(url.url)}"><c:out value="${url.text}"/></a>
+						        	<c:if test="${isOwnEntry}">
+						        		<c:out value=" ("/>
+						          		<a href="#" onclick="deleteUrl(this, '${fn:escapeXml(url.url)}','${fn:escapeXml(publication.intraHash)}','${fn:escapeXml(command.context.ckey)}');return false;" ><fmt:message key="post.bibtex.delete"/></a>
+						          		<c:out value=")"/><br/>
+						        	</c:if>
+						        	</div>
+						      	</c:forEach>
+						      	</div>
+						    	<form method="post" action="/ajax/additionalURLs" id="f_addURL" class="initiallyHidden">
+						          	<fmt:message key="bibtex.url"/><c:out value=":"/>
+						          	<input type="text" name="url"/> 
+								  	<fmt:message key="text"/><c:out value=":"/>						          
+						          	<input type="text" name="text"/>
+						          	<input type="hidden" name="ckey" value="${fn:escapeXml(command.context.ckey)}"/>
+						          	<input type="hidden" name="hash" value="${fn:escapeXml(publication.intraHash)}"/>
+						          	<input type="hidden" name="action" value="addUrl" id="submitAddUrl"/>
+						          	<input class="postUrl" type="button" value="addURL" id="addURLButton"/>
+						        </form>					      						  							  						  	 
+							</td>
+						</tr>
+					</c:if>
+					
+					<!-- OpenURL -->
+					<c:if test="${not empty command.context.loginUser.openURL}">
+						<tr>							
+					    	<fmt:message var="openurlTitle" key="bibtex.actions.openurl.title" />
+					    	<td><fmt:message key="bibtex.actions.openurl"/><c:out value=":"/></td>
+					    	<td>
+						    	<a href="${fn:escapeXml(command.context.loginUser.openURL)}?${fn:escapeXml(post.resource.openURL)}" title="${openurlTitle}">
+						    		<fmt:message key="bibtex.actions.openurl"/>
+						    	</a>
+					    	</td>
+					    </tr>															
+					</c:if> 
+					
+					<!--  private copy (pdf, ps) -->
+				  	<c:if test="${isOwnEntry}">
+				  		<tr>		  
+				  			<td><fmt:message key="bibtex.actions.private_document.description"/><c:out value=":"/></td>
+				  		<td>
+				  		<span id="files">
+				  			<fmt:message var="downloadPrivDocTitle" key="bibtex.actions.private_document.download"/>
+				  				<c:forEach var="document" items="${publication.documents}">
+				  					<div class="fsRow">
+										<a class="documentFileName" href="/documents/${post.resource.intraHash}/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(document.fileName)}">
+											<fmt:message key="bibtex.actions.private_document.download" var="downloadDoc"/>
+											<img src="${resdir}/image/document-txt-blue.png" style="float:left;" alt="${downloadDoc}"/>
+											<c:out value="${document.fileName}"/>
+										</a>	
+										<c:out value=" ("/>
+										<a class="deleteDocument" href="/ajax/documents?intraHash=${post.resource.intraHash}&amp;fileName=${fn:escapeXml(document.fileName)}&amp;ckey=${ckey}&amp;temp=false&amp;action=delete">
+											<fmt:message key="bibtex.actions.private_document.delete"/>
+										</a>
+										<c:out value=")"/>
+									</div>
+								</c:forEach>
+				  		</span>
+				  		</td>
+				  		</tr>
+				  		<tr>
+				  			<td>
+				  				<script type="text/javascript" src="${resdir}/jquery/plugins/form/jquery.form.js"><!--  --></script>
+				  				<script type="text/javascript">
+									var fuCkey="${ckey}";
+									var fuIntraHash="${post.resource.intraHash}";
+									var fuUserName="${mtl:encodeURI(post.user.name)}";				  					
+				  				</script>
+				  				<script type="text/javascript" src="${resdir}/javascript/fileUpload.js"><!--  --></script>
+				  				
+
+				  				<fmt:message key="bibtex.actions.additionalFiles"/><c:out value=": ("/>
+				  				<a class="addDocument" href=""><fmt:message key="bibtex.actions.additional_url.add"/></a>
+				  				<c:out value=")"/>
+				  			</td>
+				  			<td>
+				  				
+				  					<div id="inputDiv">
+				  						<!-- temporary content -->
+				  						<input class="ck" type="hidden" name="ckey" value="${ckey}"/>
+				  						<input class="intraHash" type="hidden" name="intraHash" value="${post.resource.intraHash}"/>
+				  						<input class="resdir" type="hidden" name="resdir" value="${resdir}"/>
+				  						<div id="gif" style="display:none;">
+											<img id='uploadGif' alt="uploading..." src="${resdir}/image/ajax_loader.gif" />
+										</div>
+				  					</div>
+				  				
+				  			</td>
+				  		</tr>
+
+				  	</c:if>				
+				</table>
+			</div>		
+		</c:if>
+		
+		
+		<!-- ###############  ABSTRACT ################# -->
+		<c:if test="${not empty publication.abstract}">
+			<h3><a href="javascript:foldUnfold('abstract');"><img id="abstractImg" src="${resdir}/image/icon_collapse.png" border="0"/><fmt:message key="bibtex.abstract.cap"/></a></h3>
+			<div id="abstract" style="font-size:90%">${mtl:cleanBibtex(publication.abstract)}</div>
+		</c:if>				
+		
+		<!-- ############## DESCRIPTION ############## -->		
+		<c:if test="${not empty post.description}">
+			<h3><a href="javascript:foldUnfold('desc');"><img id="descImg" src="${resdir}/image/icon_collapse.png" border="0"/><fmt:message key="post.resource.description.cap"/></a></h3>
+			<div id="desc">${post.description}</div>
+			<script type="text/javascript">foldUnfold('desc');</script>			
+		</c:if>
+		
+
+
+		<!-- ###############  PRIVATE NOTE ################# -->
+		<c:if test="${isOwnEntry}">
+			<h3><a href="javascript:foldUnfold('privnote');"><img id="privnoteImg" src="${resdir}/image/icon_collapse.png" border="0"/><fmt:message key="bibtex.private_note"/></a></h3>
+			<div id="privnote">
+				<form method="post" action="/ExtendedFieldsHandler" id="note" style="padding-right:5px;">
+			  		<input type="hidden" name="ckey" value="${fn:escapeXml(command.context.ckey)}"/>
+			  		<input type="hidden" name="hash" value="${fn:escapeXml(publication.intraHash)}"/>
+			  		<input type="hidden" name="oldprivnote" value="${fn:escapeXml(publication.privnote)}"/>
+			  		<input type="hidden" name="action" value="updatePrivateNote"/>
+			  		<textarea style="width:100%;" name="privnote" rows="10"><c:out value="${publication.privnote}"/></textarea>
+			  		<fmt:message key="save" var="save" />
+			  		<br/>
+			  		<input type="submit" value="${save}" id="makeP"/>    
+			  	</form>
+			</div> 
+		</c:if>			
+		
+		<!-- ###############  BIBTEX ################# -->
+		<h3><a href="javascript:foldUnfold('bibtex');"><img id="bibtexImg" src="${resdir}/image/icon_collapse.png" border="0"/><fmt:message key="export.bibtex.record"/></a></h3>
+	  	<div id="bibtex">
+	  		<form style="padding-right:5px;">	  	
+		  		<textarea style="width:100%;" name="bibtex_textarea" rows="20"><export:bibtex post="${post}" escapeXml="${true}"/></textarea>
+		  	</form>			
+		</div>
+		
+		
+		<!-- ###############  ENDNOTE ################# -->
+		<h3><a href="javascript:foldUnfold('endnote');"><img id="endnoteImg" src="${resdir}/image/icon_collapse.png" border="0"/><fmt:message key="export.endnote.record"/></a></h3>
+	  	<div id="endnote">
+	  		<form style="padding-right:5px;">
+	  			<c:set var="endnoteExport"><export:endnote bib="${publication}"/></c:set>	  	
+		  		<textarea style="width:100%;" name="endnote_textarea" rows="20"><c:out value="${endnoteExport}"/></textarea>
+		  	</form>			
+		</div>
+		<script type="text/javascript">foldUnfold('endnote');</script>									
+		</div>
+		
+	</div>
+	
+</jsp:root>

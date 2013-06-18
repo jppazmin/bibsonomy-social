@@ -1,0 +1,208 @@
+<?xml version="1.0" ?>
+<jsp:root version="2.0" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:form="http://www.springframework.org/tags/form"
+	xmlns:spring="http://www.springframework.org/tags"
+	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/tags"
+    xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:errors="urn:jsptagdir:/WEB-INF/tags/errors"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:post="urn:jsptagdir:/WEB-INF/tags/post"
+	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
+    xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/buttons"
+  >
+
+    <jsp:directive.attribute name="command" type="org.bibsonomy.webapp.command.actions.EditPostCommand" required="true"/>
+    <jsp:directive.attribute name="requPath" type="java.lang.String" required="true"/>
+    <jsp:directive.attribute name="resourceType" type="java.lang.String" required="true" description="The type of the resource this page handles (e.g., 'Bookmark', or 'Publication'). First letter upper case, remaining lower case."/>
+    <jsp:directive.attribute name="selectedNaviTab" type="java.lang.String" required="false"/>
+    <jsp:directive.attribute name="hideGroupsAndTags" type="java.lang.Boolean" required="false"/>
+    
+    <jsp:directive.attribute name="headerExtResource" fragment="true" required="false" />
+    <jsp:directive.attribute name="generalInformation" fragment="true" required="true" description="The form fields to enter general information."/>
+    <jsp:directive.attribute name="detailedInformation" fragment="true" required="false" description="The form fields to enter detailed information."/>
+    <jsp:directive.attribute name="tagsAndGroups" fragment="true" required="false" />
+    <jsp:directive.attribute name="extraInformation" fragment="true" required="false" description="Extra information which shall be displayed outside the form."/>
+	
+	<fmt:message key="navi.edit${resourceType}" var="editPageTitle" />
+	
+	<layout:paneLayout pageTitle="${editPageTitle}" command="${command}" requPath="${requPath}" selectedNaviTab="${selectedNaviTab}">
+	    <!--+
+    	 	| html header extension: page specific javascript
+    	 	+-->
+		<jsp:attribute name="headerExt">
+			<link rel="stylesheet" type="text/css" href="${resdir}/css/fsform.css" />
+			<spring:theme code="stylesheet.additional.fsform" var="additionalFsformCSS" text=""/> 
+			<c:if test="${not empty additionalFsformCSS}">
+				<link rel="stylesheet" type="text/css" href="${additionalFsformCSS}" />
+			</c:if>
+			
+			<!-- TODO: document why we need this jquery plugin -->
+	    	<script type="text/javascript" src="${resdir}/jquery/plugins/form/jquery.form.js">&amp;nbsp;</script>
+            <!--
+               | one script just for the post page
+               -->
+            <jsp:invoke fragment="headerExtResource"/>
+            <script type="text/javascript" src="${resdir}/javascript/editPost.js">&amp;nbsp;</script>
+	    </jsp:attribute>
+	    
+            
+        <jsp:attribute name="heading">
+          <a rel="path_menu" href="#"><img alt="" src="${resdir}/image/box_arrow.png" />${mtl:ch('nbsp')}<c:out value="${editPageTitle}" /></a> 
+        </jsp:attribute>
+      
+		<jsp:attribute name="content">
+		   <div style="float left;width:97%;margin-left:10px; padding-bottom: 13px;">
+
+              <h2 style="text-align: center; margin-bottom: 0"><fmt:message key="post.resource.edit${resourceType}"/></h2><!-- TODO: generalize -->
+
+              <!-- 
+                 | show global errors
+                 -->
+              <errors:global errors="${errors}"/>
+
+              <!-- 
+                 | form starts here
+                 -->
+              <form:form id="postForm" action="/edit${resourceType}?ckey=${ckey}" method="post">
+	             <div id="fsform">
+	                <fieldset class="fsOuter">
+
+                                <!-- 
+                                    | user is posting an existing resource ...
+                                     -->
+                                <c:if test="${not empty command.diffPost}">
+                                	<fieldset class="fsInner">
+                                		<legend>
+                                			<fmt:message key="note"/>
+                                		</legend>
+      		                            <span style="float:left; font-weight: bold; margin-left: 1em;"><fmt:message key="post.edit.existent" /></span>
+               		                    <buttons:help message="post.edit.existent.help"/>
+                                  	</fieldset>
+                                </c:if>
+
+                      
+                                <!--
+                                   | general information 
+                                   -->
+                                <parts:fieldset maximized="true" legendKey="post.resource.fields.general">
+                                	<jsp:attribute name="content">
+    	                                <jsp:invoke fragment="generalInformation"/>
+									</jsp:attribute>
+                                </parts:fieldset>
+								
+								<jsp:invoke fragment="tagsAndGroups" />
+								
+                                <c:if test="${not empty detailedInformation}">
+                                    <jsp:invoke fragment="detailedInformation"/>
+                                </c:if>
+  
+                  
+                                <!--
+                                   | a Captcha for our spammers ... 
+                                   -->         
+								<c:if test="${not empty command.captchaHTML}">
+									<parts:fieldset maximized="true" legendKey="captcha">
+										<jsp:attribute name="content">
+									
+											<c:if test="${resourceType eq 'Publication'}">
+												<p>
+													<fmt:message key="post.edit.spam_note">
+														<fmt:param value="user ${command.context.loginUser.name} was flagged as spammer"/>
+													</fmt:message>
+													<parts:email address="${projectNoSpamEmail}"/>
+												</p>
+											</c:if>
+											<span class="fsLabel"><fmt:message key="captcha"/></span>
+						              		<span class="fsInput">${command.captchaHTML}<form:errors cssClass="errmsg" path="recaptcha_response_field" /></span>
+						              	</jsp:attribute>
+						            </parts:fieldset>
+						        </c:if>
+
+                                <!--
+                                   | buttons 
+                                   -->
+								<div>
+	                                <input type="hidden" name="postID" value="${command.postID}"/>
+                                    <input type="hidden" name="referer" value="${fn:escapeXml(command.referer)}"/>
+	                                <input type="hidden" name="ckey" value="${fn:escapeXml(command.context.ckey)}"/>
+									<c:set var="save"><fmt:message key="save"/></c:set>
+							      	<c:set var="reset"><fmt:message key="resetbutton"/></c:set>
+									<form:hidden path="intraHashToUpdate"/>
+									<input type="reset" value="${reset}" tabindex="2"/>
+									<input type="submit" value="${save}" onclick="clear_tags();" tabindex="2"/>
+								</div>
+				    </fieldset>
+			     </div>
+			  </form:form>
+              <c:if test="${not empty extraInformation}">
+                  <jsp:invoke fragment="extraInformation"/>
+              </c:if>
+           </div>
+           
+           <div id="hiddenUpload" style="display:none;">
+           	<!-- temporary content -->
+           </div>
+
+		</jsp:attribute>
+		
+    
+    
+		<jsp:attribute name="sidebar">
+ 			<ul id="sidebar">
+            	<li>
+             		<!-- display user's tag relations -->     
+              		<fmt:message key="tagrelations.title" var="tagRelationsTitle"/>
+              		<span class="sidebar_h">
+                		<a href="/relations/${fn:escapeXml(command.context.loginUser.name)}" title="${tagRelationsTitle}">
+                  			<fmt:message key="tagrelations"/>
+                		</a>
+              		</span> 
+              		<tags:concepts cmd="${command.concepts}" usersOwnRelations="${true}" requestedUserName="${command.context.loginUser.name}"/>
+            	</li>
+				<li>
+					<!-- display tags -->
+					<span class="sidebar_h"><fmt:message key="tags"/></span>
+					<tags:cloud requPath="tag/" cmd="${command.tagcloud}" tagboxMinfreqStyle="user" copytag="${true}" targetId="inpf"/>				
+				</li>
+			</ul>
+		</jsp:attribute>
+
+
+
+
+       <jsp:attribute name="beforeBodyClose">
+          <script type="text/javascript">
+             var userName = "${mtl:encodeURI(command.context.loginUser.name)}";
+             //<mtl:cdata>
+             <![CDATA[
+                // vanishing error boxes
+                $(document).ready( function(){
+						prepareErrorBoxes('dissError');
+                	}
+                );
+                // tagRecoOptions defined in post*.js
+                $('#postForm').ajaxSubmit(tagRecoOptions); 
+                          
+                // get user's tags for suggestions
+                $.ajax({
+                    type: "GET",
+                    url: "/json/tags/user/" + encodeURIComponent(userName) + "?tagcloud.maxCount=100000",
+                    dataType: "jsonp",
+                    success: function(json){
+                       populateSuggestionsFromJSON(json);
+                    }
+                });
+          
+             ]]> 
+             //</mtl:cdata>
+          </script>
+       
+       </jsp:attribute>
+
+	</layout:paneLayout>
+
+</jsp:root>

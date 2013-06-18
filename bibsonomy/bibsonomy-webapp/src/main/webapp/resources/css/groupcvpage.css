@@ -1,0 +1,88 @@
+/**
+ *
+ *  BibSonomy-Webapp - The webapplication for Bibsonomy.
+ *
+ *  Copyright (C) 2006 - 2011 Knowledge & Data Engineering Group,
+ *                            University of Kassel, Germany
+ *                            http://www.kde.cs.uni-kassel.de/
+ *
+ *  This program is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU General Public License
+ *  as published by the Free Software Foundation; either version 2
+ *  of the License, or (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ */
+
+.bookmarkList {
+        list-style-type: disc;
+}
+
+
+.resources {
+        clear: both;
+        margin: 5px 5px 5px 5px;
+}
+
+h2 {
+        clear: both;
+        margin: 5px 0px 10px 5px;
+        border-bottom: solid #eee 2px;
+}
+
+.hand {
+        cursor: pointer;
+}
+
+
+.align {
+        margin-left: 25px;
+        padding-top: 2px;
+}
+
+
+.details {
+        display: none;
+}
+
+
+.imageContainer {
+max-width: 200px;
+text-align: center;
+float: left;
+margin: 5px 5px 5px 5px;
+}
+
+.imageCapture {
+text-align: center;
+}
+
+.groupImage {
+max-width: auto;
+text-align: center;
+margin: 0 auto;
+}
+
+.entry {
+font-size:14px;
+line-height:14px;
+text-decoration:none;
+}
+.entry_title {
+font-weight: bold;
+color:#478080;
+}
+.entry_author {
+}
+
+.entry_journal, .entry_booktitle {
+font-style: italic;
+color:#478080;
+}

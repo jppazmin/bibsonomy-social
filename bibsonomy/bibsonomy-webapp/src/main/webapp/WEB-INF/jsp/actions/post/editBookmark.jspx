@@ -1,0 +1,140 @@
+<?xml version="1.0" ?>
+<!--
+
+
+     BibSonomy-Webapp - The webapplication for Bibsonomy.
+
+     Copyright (C) 2006 - 2011 Knowledge & Data Engineering Group,
+                               University of Kassel, Germany
+                               http://www.kde.cs.uni-kassel.de/
+
+     This program is free software; you can redistribute it and/or
+     modify it under the terms of the GNU General Public License
+     as published by the Free Software Foundation; either version 2
+     of the License, or (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+
+     You should have received a copy of the GNU General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+
+-->
+
+<jsp:root version="2.0" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:form="http://www.springframework.org/tags/form"
+	xmlns:spring="http://www.springframework.org/tags"
+	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/tags"
+    xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:errors="urn:jsptagdir:/WEB-INF/tags/errors"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:post="urn:jsptagdir:/WEB-INF/tags/post">
+
+    <jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
+ 
+	<layout:editPostLayout command="${command}" requPath="${requPath}" resourceType="Bookmark" selectedNaviTab="nav_postBook">
+
+		<jsp:attribute name="generalInformation">
+            <div class="fsRow">
+			  <form:label cssClass="fsLabel" path="post.resource.url" ><fmt:message key="post.resource.url"/>*</form:label>
+			  <form:input cssClass="fsInput reqinput" path="post.resource.url" tabindex="2"/>
+			  <div class="dissError"><form:errors path="post.resource.url" /></div>
+            </div>
+            
+            <div class="fsRow">
+			  <form:label cssClass="fsLabel" path="post.resource.title" ><fmt:message key="post.resource.title"/>*</form:label>
+			  <form:input cssClass="fsInput reqinput" path="post.resource.title" tabindex="2"/>
+			  <div class="dissError"><form:errors path="post.resource.title" /></div>
+              <div class="fsSuggestion" id="suggestion.resource.title"><!-- This comment is needed, otherwise this will result in an self-closing element --></div>
+            </div>
+	                           
+            <div class="fsRow">     
+			  <form:label cssClass="fsLabel" path="post.description" ><fmt:message key="post.resource.description"/>, <fmt:message key="post.resource.comment"/></form:label>
+			  <form:textarea cssClass="fsInput" path="post.description" tabindex="2" rows="3" />
+			  <div class="fsSuggestion" id="suggestion.description"><!-- This comment is needed, otherwise this will result in an self-closing element --></div>
+            </div>
+		</jsp:attribute>
+
+        <jsp:attribute name="extraInformation">
+            <!-- 
+               | check, if this bookmark can be scraped
+               -->	
+            <div id="scrapable" style="display:none">
+                <br/>
+                <form:form action="/editPublication" method="post" id="bibtex_snippet">      
+                  <fieldset style="border: 1px solid #069;background-color: #eee; position:relative;">
+                    <fieldset class="fsnoborder" style="position:relative;">
+                      <h2><fmt:message key="post.meta.recommended"/>: <fmt:message key="post.meta.save_as_publication"/></h2>
+                      <p>
+                        <fmt:message key="post.resource.bookmark_a_publication"/>:<c:out value=" "/>
+                        <fmt:message key="post.meta.save_as_publication" var="post_publication"/>
+                        <input type="hidden" name="referer" value="${fn:escapeXml(command.referer)}"/>
+                        <input id="button" type="submit" name="submit" value="${post_publication}"/>
+                      </p>
+                      <textarea style="width: 100%;" id="bib" name="selection" rows="15" class="reqinput"><c:out value=" "/></textarea>
+                   </fieldset>
+                 </fieldset>   
+               </form:form>
+            </div>
+
+           <!-- 
+              | corresponding JavaScript ...
+              -->
+           <script type="text/javascript">
+              //<mtl:cdata>
+              <![CDATA[   
+              function scraping(){
+                var url = document.getElementById("post.resource.url").value;
+                if(url.length > 'http://'.length){
+                  var req = ajaxInit();
+                  if(req){
+                    req.open("GET", '/scrapingservice?url='+encodeURIComponent(url)+'&format=bibtex&doIE=false&selection='+encodeURIComponent(document.getElementById("post.description").value), true); // Request starten
+                    req.onreadystatechange = function() {
+                        if ( req.readyState == 4 ) {
+                            if ( req.status == 200 ) {
+                              handle(req);
+                            }
+                        }
+                    };
+                    req.send(null);
+                  }
+                }
+              }
+        
+              function handle(request){
+                var textfield = document.getElementById("bib");
+                if(request.responseText != ''){
+                  textfield.value = request.responseText;
+                  showHide("scrapable");
+                }
+              }
+        
+              function showHide(id){
+                var bibtexBox = document.getElementById(id);
+                if(bibtexBox.value != ''){
+                  bibtexBox.style.display = '';
+                }else{
+                  bibtexBox.style.display = 'hidden';
+                }
+              }
+              
+              scraping();
+              // try to get title from url
+              checkUrlForTitle();
+              ]]> 
+             //</mtl:cdata>
+          </script>
+
+       
+       </jsp:attribute>
+
+	</layout:editPostLayout>
+
+</jsp:root>

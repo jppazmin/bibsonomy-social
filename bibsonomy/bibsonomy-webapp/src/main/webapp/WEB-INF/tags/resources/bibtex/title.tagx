@@ -1,0 +1,17 @@
+<jsp:root version="2.0" 
+	xmlns:c="http://java.sun.com/jsp/jstl/core"	
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:bib="urn:jsptagdir:/WEB-INF/tags/resources/bibtex"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt">
+	
+	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true"/>	
+
+	<!-- include link to private document(s) -->	
+	<bib:documents post="${post}" includeFilename="${false}"/>
+
+	<!--  display title -->
+	<c:set var="bibUrlTemplate">/bibtex/${hash.intra.id}${post.resource.intraHash}/<mtl:encode value='${post.user.name}'/></c:set>
+	<c:url var="bibUrl" value="${bibUrlTemplate}" context="${projectContext}"/>
+	<a href="${bibUrl}">${mtl:cleanBibtex(post.resource.title)}</a><c:out value=" "/>
+</jsp:root>

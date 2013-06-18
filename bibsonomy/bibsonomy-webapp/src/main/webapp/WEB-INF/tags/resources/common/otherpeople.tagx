@@ -1,0 +1,23 @@
+<jsp:root version="2.0" 
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:jsp="http://java.sun.com/JSP/Page">
+	
+	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true" />
+	<jsp:directive.attribute name="otherPostsUrlPrefix" type="java.lang.String" required="true" />
+	
+	<c:if test="${!empty post.resource.interHash and post.resource.count > 2}">
+		<c:set var="style"><mtl:xOtherPersonsStyle value="${post.resource.count}"/></c:set>
+		<c:url var="otherPeopleUrl" value="${otherPostsUrlPrefix}${post.resource.interHash}" context="${projectContext}"/>
+		<c:out value= " "/><fmt:message key="and" /><c:out value= " "/>
+		<a style="${style}" href="${otherPeopleUrl}">${post.resource.count-1}<c:out value= " "/><fmt:message key="post.meta.otherPeople"/></a>
+	</c:if>
+	<c:if test="${!empty post.resource.interHash and post.resource.count == 2}">
+		<c:url var="otherPeopleUrl" value="${otherPostsUrlPrefix}${post.resource.interHash}" context="${projectContext}"/>
+		<c:out value= " "/><fmt:message key="and" /><c:out value= " "/>
+		<a style="background-color:rgb(97%,97%,97%);" href="${otherPeopleUrl}">1<c:out value= " "/><c:out value= " "/><fmt:message key="post.meta.otherPerson"/></a>
+	</c:if>
+	
+</jsp:root>

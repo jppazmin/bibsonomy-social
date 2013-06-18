@@ -1,0 +1,63 @@
+<jsp:root version="2.0" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:c="http://java.sun.com/jsp/jstl/core">
+
+	<jsp:directive.attribute name="legendKey" type="java.lang.String" required="true" description="The message key describing the form fields inside this field set. If the corresponding message is empty, the fieldset is not rendered."/>
+	<jsp:directive.attribute name="legendExt" fragment="true" required="false" description="If text is not sufficient for the legend, use this fragment to add arbitrary content."/>	
+	<jsp:directive.attribute name="maximized" type="java.lang.Boolean" required="true" description="Shall the fieldset be shown (true) or hidden (false)?"/>
+	<jsp:directive.attribute name="content" fragment="true" required="true" description="The content of the fieldset (i.e., the form fields)."/>	
+
+	<!-- 
+		If the message for the given legendKey is empty, the fieldset is not
+		rendered. This can be used to disable certain fieldsets based on 
+		message properties.
+	 -->
+
+	<fmt:message key="${legendKey}" var="legendKeyMsg"/>
+	<c:if test="${not empty legendKeyMsg}">
+
+		<!--+
+			| set variables for hiding the contents
+			+-->
+		<c:choose>
+			<c:when test="${maximized}">
+				<c:set var="fsClass" value="fsVisible"/>
+				<c:set var="fsIconUrl" value="${resdir}/image/icon_collapse.png"/>
+			</c:when>
+			<c:otherwise>
+				<c:set var="fsClass" value="fsHidden"/>
+				<c:set var="fsIconUrl" value="${resdir}/image/icon_expand.png"/>
+			</c:otherwise>
+		</c:choose>
+	
+	
+	
+		<fieldset class="${fsClass}">
+			<legend>
+				<!-- 
+				   | toggle button for maximizing/minimizing this fieldset
+				   -->
+				<img src="${fsIconUrl}"  onClick="toggleFieldsetVisibility(this)"/>
+				<!-- 
+				   | legend text + extension
+				   -->
+				${legendKeyMsg}
+				<c:if test="${not empty legendExt}">
+					<c:out value=" "/>
+					<jsp:invoke fragment="legendExt"/>
+				</c:if>
+			</legend>
+			
+			<!-- 
+				| fieldset content
+				-->
+			<div>
+				<jsp:invoke fragment="content"/>
+			</div>
+		</fieldset>
+	</c:if>
+
+
+</jsp:root>

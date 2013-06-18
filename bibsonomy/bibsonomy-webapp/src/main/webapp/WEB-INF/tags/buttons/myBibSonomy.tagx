@@ -1,0 +1,23 @@
+<jsp:root version="2.0"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+    xmlns:spring="http://www.springframework.org/tags"
+	xmlns:menuparts="urn:jsptagdir:/WEB-INF/tags/menu/parts"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
+	
+    <jsp:directive.attribute name="username" type="java.lang.String" required="true"/>
+  
+    <!-- ####################### localized myProjectName button ############################ -->
+  
+    <fmt:message key="buttons.myProject.title" var="buttonsTitle"/>
+    <fmt:message key="navi.my" var="buttonsMy"/>
+    <fmt:message key="image.button.myProject" var="buttonImage"/>
+  
+    <a href="${projectHome}user/${fn:escapeXml(username)}" class="bookmarklet2" title="${buttonsTitle}">
+      <img src="${buttonImage}" alt="${buttonsMy}${projectName}" title="${buttonsMy}${projectName}"/>
+    </a>
+	          
+</jsp:root>

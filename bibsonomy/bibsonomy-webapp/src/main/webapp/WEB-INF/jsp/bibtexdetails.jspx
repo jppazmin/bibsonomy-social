@@ -1,0 +1,113 @@
+<?xml version="1.0" ?>
+<!--
+
+
+     BibSonomy-Webapp - The webapplication for Bibsonomy.
+
+     Copyright (C) 2006 - 2011 Knowledge & Data Engineering Group,
+                               University of Kassel, Germany
+                               http://www.kde.cs.uni-kassel.de/
+
+     This program is free software; you can redistribute it and/or
+     modify it under the terms of the GNU General Public License
+     as published by the Free Software Foundation; either version 2
+     of the License, or (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+
+     You should have received a copy of the GNU General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+
+-->
+
+<jsp:root version="2.0"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
+	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/tags"
+	xmlns:users="urn:jsptagdir:/WEB-INF/tags/users"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:resource="urn:jsptagdir:/WEB-INF/tags/resources"
+	xmlns:spring="http://www.springframework.org/tags">
+	
+	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
+	
+	<fmt:message key="navi.publication" var="pageTitle" />
+	<c:set var="cleanedTitle" value="${mtl:cleanBibtex(command.title)}" />
+	
+	<layout:paneLayout pageTitle="${pageTitle} :: ${cleanedTitle}" command="${command}" requestedUser="${command.requestedUser}" requPath="${requPath}">
+		<jsp:attribute name="headerExt">
+			<link rel="stylesheet" type="text/css" href="${resdir}/css/fsform.css" />
+			<spring:theme code="stylesheet.additional.fsform" var="additionalFsformCSS" text=""/> 
+			<c:if test="${not empty additionalFsformCSS}">
+				<link rel="stylesheet" type="text/css" href="${additionalFsformCSS}" />
+			</c:if>
+	    </jsp:attribute>
+	
+		<jsp:attribute name="heading">
+		<a rel="path_menu" href="#"><img alt="" src="${resdir}/image/box_arrow.png"/>${mtl:ch('nbsp')}<c:out value="${pageTitle}" /></a> :: 
+		<form action="/search" method="get" class="smallform">
+		  <input type="text" size="20" name="search" value="${cleanedTitle}"/>
+		</form>
+		</jsp:attribute>
+		
+		<jsp:attribute name="sidebar">
+			<ul id="sidebar">
+				<!-- edit tags -->					
+				<c:if test="${command.bibtex.list[0].user.name eq command.context.loginUser.name}">
+					<li>
+						<span class="sidebar_h"><fmt:message key="navi.editTags"/></span>
+						<form action="/batchEdit" method="post" style="padding:0.8em;">
+							<input type="text" name="newTags['${fn:escapeXml(command.bibtex.list[0].resource.intraHash)}']" style="width:100%" value="${mtl:toTagString(command.bibtex.list[0].tags)}"/>
+							<input type="hidden" name="oldTags['${fn:escapeXml(command.bibtex.list[0].resource.intraHash)}']" value="${mtl:toTagString(command.bibtex.list[0].tags)}"/>
+							<fmt:message key="bibtex.actions.tags.update" var="updateTags"/>
+							<input type="submit" value="${updateTags}"/>
+							<input type="hidden" name="referer" value="/bibtex/2${command.bibtex.list[0].resource.intraHash}/${mtl:encodeURI(command.bibtex.list[0].user.name)}"/>
+							<input type="hidden" name="ckey" value="${fn:escapeXml(command.context.ckey)}"/>
+							<input type="hidden" name="resourcetype" value="bibtex"/>
+							<input type="hidden" name="deleteCheckedPosts" value="true"/>
+						</form>
+					</li>
+				</c:if>
+					
+
+				<!-- display tags -->
+				<li>			
+					<span class="sidebar_h"><fmt:message key="tags"/>
+						<span style="font-size:80%;font-weight:lighter;">
+							(<a href="/user/${fn:escapeXml(command.bibtex.list[0].user.name)}">${fn:escapeXml(command.bibtex.list[0].user.name)}</a>
+							<fmt:message key="tags.highlighted.by_user"/>)
+						</span>
+					</span>
+					<tags:cloud requPath="tag" cmd="${command.tagcloud}" tagboxMinfreqStyle="none" highlightTags="${mtl:toTagString(command.bibtex.list[0].tags)}"/>
+				</li>
+		
+				<!-- related users -->
+				<!-- FIXME: We are using the relatedUsers for Post owners here -->
+				<c:if test="${not empty command.relatedUserCommand.relatedUsers}">
+					<li>
+						<span class="sidebar_h"><fmt:message key="users"/></span>
+						<users:related cmd="${command.relatedUserCommand}" userSimilarity="bibtexdetails"/>
+					</li>			
+				</c:if>
+			</ul>
+		</jsp:attribute>
+				
+		<jsp:attribute name="content">
+		<!-- display content -->
+		<c:forEach var="post" items="${command.bibtex.list}">
+			<resource:bibtexdetails post="${post}" referer="${command.referer}"/>
+		</c:forEach>
+		
+		</jsp:attribute>
+		
+	</layout:paneLayout>
+
+</jsp:root>

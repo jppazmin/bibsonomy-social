@@ -1,0 +1,16 @@
+<jsp:root version="2.0" xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/buttons"
+	xmlns:discussion="urn:jsptagdir:/WEB-INF/tags/resources/discussion"
+	xmlns:review="urn:jsptagdir:/WEB-INF/tags/resources/discussion/review">
+
+	<jsp:directive.attribute name="resource" type="org.bibsonomy.model.Resource" required="true" />
+	<jsp:directive.attribute name="discussionItems" type="java.util.List" required="true" />
+
+	<div id="discussionbox">
+		
+		<!-- TODO: display comment count -->
+		<discussion:discussion loginUser="${command.context.loginUser}" resource="${resource}" discussionItems="${discussionItems}" />
+	</div>	
+</jsp:root>

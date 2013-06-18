@@ -1,0 +1,155 @@
+<?xml version="1.0" ?>
+<!--
+
+
+     BibSonomy-Webapp - The webapplication for Bibsonomy.
+
+     Copyright (C) 2006 - 2011 Knowledge & Data Engineering Group,
+                               University of Kassel, Germany
+                               http://www.kde.cs.uni-kassel.de/
+
+     This program is free software; you can redistribute it and/or
+     modify it under the terms of the GNU General Public License
+     as published by the Free Software Foundation; either version 2
+     of the License, or (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+
+     You should have received a copy of the GNU General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+
+-->
+
+<jsp:root version="2.0"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
+	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/tags"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:output="urn:jsptagdir:/WEB-INF/tags/export/bibtex"
+	xmlns:json="urn:jsptagdir:/WEB-INF/tags/export/json"> 
+	
+<jsp:directive.page contentType="application/json; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
+
+<c:if test="${not empty command.callback}"><c:out value="${command.callback}"/> (</c:if>
+{  
+   "types" : {
+      "Bookmark" : {
+         "pluralLabel" : "Bookmarks"
+      },
+      "Publication" : {
+         "pluralLabel" : "Publications"
+      },
+      "GoldStandardPublication" : {
+      	 "pluralLabel" : "GoldStandardPublications"
+      },
+      "Tag" : {
+         "pluralLabel" : "Tags"
+      },
+      "User" : {
+         "pluralLabel" : "Users"
+      }
+   },
+   
+   "properties" : {
+      "count" : {
+         "valueType" : "number"
+      },
+      "date" : {
+         "valueType" : "date"
+      },
+      "changeDate" : {
+         "valueType" : "date"
+      },
+      "url" : {
+         "valueType" : "url"
+      },
+      "id" : {
+         "valueType" : "url"
+      },
+      "tags" : {
+         "valueType" : "item"
+      },
+      "user" : {
+         "valueType" : "item"
+      }      
+   },
+   
+   "items" : [
+   	  <!-- track, whether a comma has to be placed between list elements of different types -->
+      <c:set var="isCommaNecessary" value="${false}"/>
+   
+      <!-- bookmarks -->
+      <c:forEach var="post" varStatus="status" items="${command.bookmark.list}">
+      	<json:bookmark post="${post}"/><c:if test="${not status.last}">,</c:if>
+      	<c:if test="${status.last}">
+      		<c:set var="isCommaNecessary" value="${true}"/>
+      	</c:if>
+      </c:forEach>
+      
+      <!-- comma between bibtex & bookmark resources, if both present -->
+      <c:if test="${isCommaNecessary and not empty command.bibtex.list}">,<c:set var="isCommaNecessary" value="${false}"/></c:if>
+      
+      <!-- publications -->
+      <c:forEach var="post" varStatus="status" items="${command.bibtex.list}">
+      	<json:publication post="${post}"/><c:if test="${not status.last}">,</c:if>      
+      	<c:if test="${status.last}">
+      		<c:set var="isCommaNecessary" value="${true}"/>
+      	</c:if>
+      </c:forEach>
+      
+      <!-- comma between publications & gold standard publications resources, if both present -->
+      <c:if test="${isCommaNecessary and not empty command.goldStandardPublications.list}">,<c:set var="isCommaNecessary" value="${false}"/></c:if>
+      
+      <!-- gold standard publications -->
+      <c:forEach var="post" varStatus="status" items="${command.goldStandardPublications.list}">
+      	<json:goldStandardPublication post="${post}"/><c:if test="${not status.last}">,</c:if>      
+      	<c:if test="${status.last}">
+      		<c:set var="isCommaNecessary" value="${true}"/>
+      	</c:if>
+      </c:forEach>
+      
+      <!-- comma if tags are present, preceded by either bookmarks or publications or gold standard publications -->
+      <c:if test="${isCommaNecessary and not empty command.tagcloud.tags}">,<c:set var="isCommaNecessary" value="${false}"/></c:if>
+
+      <!-- tags -->
+      <c:forEach var="tag" varStatus="status" items="${command.tagcloud.tags}" >
+      	<json:tag tag="${tag}"/><c:if test="${not status.last}">,</c:if>
+      	<c:if test="${status.last}">
+      		<c:set var="isCommaNecessary" value="${true}"/>
+      	</c:if>
+      </c:forEach>
+
+      <mtl:exists path="command.userFriends">
+      	<!-- comma, if friends exist and (tags exist or resources are present) -->
+      	<c:if test="${isCommaNecessary and not empty command.userFriends}">,<c:set var="isCommaNecessary" value="${false}"/></c:if>
+
+      	<!-- friends -->
+	    <json:users users="${command.userFriends}" />
+      </mtl:exists>
+
+	  <mtl:exists path="command.friendsOfUser">
+		<!-- comma, if friends exist and (tags exist or resources are present) -->
+      	<c:if test="${isCommaNecessary and not empty command.friendsOfUser}">,<c:set var="isCommaNecessary" value="${false}"/></c:if>
+
+	    <!-- friends -->
+	    <json:users users="${command.friendsOfUser}" />
+      </mtl:exists>
+      
+	  <mtl:exists path="command.users">
+      	<c:if test="${isCommaNecessary and not empty command.users}">,<c:set var="isCommaNecessary" value="${false}"/></c:if>
+      	
+	    <!-- searched users -->
+	    <json:users users="${command.users}" />
+	  </mtl:exists>
+   ]
+}
+<c:if test="${not empty command.callback}">)</c:if>
+ </jsp:root>

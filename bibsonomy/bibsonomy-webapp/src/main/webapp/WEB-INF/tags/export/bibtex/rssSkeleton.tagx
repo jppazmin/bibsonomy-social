@@ -1,0 +1,109 @@
+<jsp:root version="2.0"
+	 xmlns:jsp="http://java.sun.com/JSP/Page"
+	 xmlns:c="http://java.sun.com/jsp/jstl/core"
+	 xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	 xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
+	 xmlns:tags="urn:jsptagdir:/WEB-INF/tags/tags"
+	 xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	 xmlns:bib="urn:jsptagdir:/WEB-INF/tags/resources/bibtex"
+	 xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+     xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+     xmlns="http://purl.org/rss/1.0/"
+     xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+     xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+     xmlns:cc="http://web.resource.org/cc/"
+     xmlns:taxo="http://purl.org/rss/1.0/modules/taxonomy/"
+     xmlns:dc="http://purl.org/dc/elements/1.1/"
+     xmlns:syn="http://purl.org/rss/1.0/modules/syndication/"
+     xmlns:content="http://purl.org/rss/1.0/modules/content/"
+     xmlns:admin="http://webns.net/mvcb/"
+      >
+      
+  <!-- skeleton for publication post RSS feeds --> 
+	
+
+  <!-- to get correct hash IDs for URLs  -->
+  <jsp:useBean id="hash" class="org.bibsonomy.util.wrapper.HashIDBean" scope="application"/>
+
+  <!-- the current date -->
+  <jsp:useBean id="now" class="java.util.Date"/>
+
+  <!--+ 
+	  | To have the locale available on all pages we set the scope to "request".
+	  | see http://stackoverflow.com/questions/333729/how-do-i-access-locale-from-a-jsp 
+	  |-->
+  <c:set var="locale" scope="request" value="${pageContext.response.locale}"/>
+
+  <jsp:directive.attribute name="format" type="java.lang.String" required="true" description="The format identifier of the RSS feed (e.g., 'aparss')."/>
+  <jsp:directive.attribute name="content" fragment="true" required="true" description="The fragment which creates the content for 'content:encoded'."/>
+  <jsp:directive.attribute name="additionalItemMetadata" fragment="true" required="false" description="Any additional metadata for each item."/>
+  <jsp:directive.variable name-given="post" description="A post, can be used in the content fragment."/>
+
+  <jsp:output omit-xml-declaration="false"/>
+  
+  <jsp:element name="rdf:RDF">
+    <!-- all the XML namespace declarations -->
+    <jsp:attribute name="xmlns:rdf">http://www.w3.org/1999/02/22-rdf-syntax-ns#</jsp:attribute>
+    <jsp:attribute name="xmlns">http://purl.org/rss/1.0/</jsp:attribute>
+    <jsp:attribute name="xmlns:rdfs">http://www.w3.org/2000/01/rdf-schema#</jsp:attribute>
+    <jsp:attribute name="xmlns:xsd">http://www.w3.org/2001/XMLSchema#</jsp:attribute>
+    <jsp:attribute name="xmlns:cc">http://web.resource.org/cc/</jsp:attribute>
+    <jsp:attribute name="xmlns:taxo">http://purl.org/rss/1.0/modules/taxonomy/</jsp:attribute>
+    <jsp:attribute name="xmlns:dc">http://purl.org/dc/elements/1.1/</jsp:attribute>
+    <jsp:attribute name="xmlns:syn">http://purl.org/rss/1.0/modules/syndication/</jsp:attribute>
+    <jsp:attribute name="xmlns:content">http://purl.org/rss/1.0/modules/content/</jsp:attribute>
+    <jsp:attribute name="xmlns:admin">http://webns.net/mvcb/</jsp:attribute>
+    <jsp:attribute name="xmlns:swrc">http://swrc.ontoware.org/ontology#</jsp:attribute>
+    <jsp:attribute name="xmlns:burst">http://xmlns.com/burst/0.1/</jsp:attribute>
+    <jsp:attribute name="xmlns:owl">http://www.w3.org/2002/07/owl#</jsp:attribute>
+
+    <jsp:body>
+      <!-- an RSS feed first defines a channel with general metadata and an overview of the described items -->
+      <channel rdf:about="${projectHome}${fn:escapeXml(requPath)}">
+        <!-- title, link, description -->
+        <title>${projectName} publications for /<c:out value="${requPath}"/></title>
+        <link>${projectHome}<c:out value="${format}"/>/<c:out value='${requPath}'/></link>
+        <description>${projectName} RSS feed for /<c:out value='${requPath}'/></description>
+        <dc:date><mtl:formatDate value="${now}"/></dc:date>
+         
+        <!-- the items of the RSS feed -->
+        <items>
+	      <rdf:Seq>
+	        <c:forEach var="post" items="${command.bibtex.list}">
+              <!-- one item ... is described in detail below and referenced by the URI defined here  -->
+	  	 	  <rdf:li rdf:resource="${projectHome}bibtex/${hash.intra.id}${post.resource.intraHash}/${fn:escapeXml(post.user.name)}"/>
+	 	    </c:forEach>
+	      </rdf:Seq>
+	    </items>
+      </channel>
+
+      <c:forEach var="post" items="${command.bibtex.list}">
+        <!-- one item ... use the URI referenced above to further describe it -->
+	    <item rdf:about="${projectHome}bibtex/${hash.intra.id}${post.resource.intraHash}/${fn:escapeXml(post.user.name)}">
+          
+          <!-- title, description, link, creator, date, subject -->
+    	  <title>${mtl:cleanBibtex(mtl:removeXmlControlChars(post.resource.title))}</title>
+  		  <link>${projectHome}bibtex/${hash.intra.id}${post.resource.intraHash}/<mtl:encode value='${post.user.name}'/></link>
+  		  <dc:creator><c:out value="${post.user.name}"/></dc:creator>
+  		  <dc:date><mtl:formatDate value="${post.date}"/></dc:date>
+  		  <dc:subject><c:forEach var="tag" items="${post.tags}"><c:out value="${fn:escapeXml(mtl:removeXmlControlChars(tag.name))}"/><c:out value=" "/></c:forEach></dc:subject>
+
+          <!-- The HTML description of the item. -->
+  		  <content:encoded><jsp:invoke fragment="content"/></content:encoded>
+            
+          <!-- The tags -->
+  		  <taxo:topics>
+	        <rdf:Bag>
+	          <c:forEach var="tag" items="${post.tags}">
+	            <rdf:li rdf:resource="${projectHome}tag/${fn:escapeXml(mtl:removeXmlControlChars(tag.name))}"/>
+	          </c:forEach>  
+	        </rdf:Bag>
+	      </taxo:topics>
+        
+          <jsp:invoke fragment="additionalItemMetadata"/>
+        
+	    </item>
+      </c:forEach>
+    </jsp:body>
+  </jsp:element>
+</jsp:root>

@@ -1,0 +1,45 @@
+<jsp:root version="2.0"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+    xmlns:spring="http://www.springframework.org/tags"
+	xmlns:menuparts="urn:jsptagdir:/WEB-INF/tags/menu/parts"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
+	
+    <fmt:message key="navi.postPublicationPopup" var="postPublicationPopup"/>
+    <fmt:message key="image.button.postPublicationPopup" var="buttonImage"/>
+
+	<span id="image.button.postPublicationPopup">
+	</span>
+    <script type="text/javascript">
+    	var title = '${postPublicationPopup}';
+   	 	var image = '${buttonImage}';
+        var projectHome ="${projectHome}";
+        //<mtl:cdata>
+		<![CDATA[
+			var myurl = "javascript: var post=window.open('"+projectHome+"BibtexHandler?requTask=upload&amp;url='+encodeURIComponent(location.href)+'&amp;description='+encodeURIComponent(document.title)+'&amp;selection='+";
+			if (window.getSelection) {
+			  myurl  += "encodeURIComponent(window.getSelection()), 'BibSonomy', 'width=1000,height=600,scrollbars=1,resizable=1'); void(window.setTimeout('post.focus()',250));";
+			} else if (document.getSelection) {
+			  myurl  += "encodeURIComponent(document.getSelection()), 'BibSonomy', 'width=1000,height=600,scrollbars=1,resizable=1'); void(window.setTimeout('post.focus()',250));";
+			} else if (document.selection) {
+			  myurl  += "encodeURIComponent(document.selection.createRange().text), 'BibSonomy', 'width=1000,height=600,scrollbars=1,resizable=1'); void(window.setTimeout('post.focus()',250));";
+			}
+		    var left  = String.fromCharCode(60);
+		    var right = String.fromCharCode(62);
+		    $('#image\\.button\\.postPublicationPopup').html(left + 'a title="' + title + '" href="' + myurl + '" onclick="return false" class="bookmarklet2"' + right + left + 'img src="' + image + '" alt="' + title + '" title="' + title + '"/' + right  + left + '/a' + right);
+		]]>
+		//</mtl:cdata>
+	</script>
+
+	<noscript>
+		(<fmt:message key="buttons.javascript"/>
+		<!-- Firefox & Opera document.getSelection() -->
+		Firefox/Opera: <a title="${postPublicationPopup}" href="javascript:location.href='${projectHome}BibtexHandler?requTask=upload&amp;url='+encodeURIComponent(location.href)+'&amp;description='+encodeURIComponent(document.title)+'&amp;selection='+encodeURIComponent(document.getSelection())" onclick="return false" class="bookmarklet2"><img src="${buttonImage}" alt="${postPublicationPopup}" title="${postPublicationPopup}"/></a>,
+		<!-- Internet Explorer document.selection.createRange().text -->    
+		InternetExplorer: <a title="${postPublicationPopup}" href="javascript:location.href='${projectHome}BibtexHandler?requTask=upload&amp;url='+encodeURIComponent(location.href)+'&amp;description='+encodeURIComponent(document.title)+'&amp;selection='+encodeURIComponent(document.selection.createRange().text)" onclick="return false" class="bookmarklet2"><img src="${buttonImage}" alt="${postPublicationPopup}" title="${postPublicationPopup}"/></a>)
+    </noscript>
+
+</jsp:root>

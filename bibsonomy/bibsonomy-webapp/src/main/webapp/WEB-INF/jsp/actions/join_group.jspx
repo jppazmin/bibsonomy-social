@@ -1,0 +1,132 @@
+<?xml version="1.0" ?>
+<!--
+
+
+     BibSonomy-Webapp - The webapplication for Bibsonomy.
+
+     Copyright (C) 2006 - 2011 Knowledge & Data Engineering Group,
+                               University of Kassel, Germany
+                               http://www.kde.cs.uni-kassel.de/
+
+     This program is free software; you can redistribute it and/or
+     modify it under the terms of the GNU General Public License
+     as published by the Free Software Foundation; either version 2
+     of the License, or (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+
+     You should have received a copy of the GNU General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+
+-->
+
+<jsp:root version="2.0"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
+	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/tags"
+    xmlns:form="http://www.springframework.org/tags/form"
+	xmlns:spring="http://www.springframework.org/tags"
+    xmlns:errors="urn:jsptagdir:/WEB-INF/tags/errors"
+    xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/buttons"
+	xmlns:rc="urn:jsptagdir:/WEB-INF/tags/resources/common"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"> 
+	
+	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
+
+    <layout:layout loginUser="${command.context.loginUser}" pageTitle="${command.pageTitle}" requPath="${requPath}">
+  
+    	<!--+
+    	 	| heading
+    	 	-->
+    	<jsp:attribute name="heading">
+			<a rel="path_menu" href="">
+				<img src="${resdir}/image/box_arrow.png"/>${mtl:ch('nbsp')}<fmt:message key="joinGroup"/>
+			</a> :: 
+			<a href="/group/${fn:escapeXml(command.group)}"><c:out value='${command.group}'/></a>
+    	</jsp:attribute>
+      
+      	<jsp:attribute name="headerExt">
+			<link rel="stylesheet" type="text/css" href="${resdir}/css/fsform.css" />
+			<spring:theme code="stylesheet.additional.fsform" var="additionalFsformCSS" text=""/> 
+			<c:if test="${not empty additionalFsformCSS}">
+				<link rel="stylesheet" type="text/css" href="${additionalFsformCSS}" />
+			</c:if>
+		</jsp:attribute>
+
+    	<!--+
+    	 	| content
+    	 	-->
+		<jsp:attribute name="content">
+
+			<div id="general">
+				<form:form action="/join_group?group=${command.group}" method="POST">
+		        	<errors:global errors="${errors}"/>             
+					<div class="fsOuter">
+						<h2><fmt:message key="navi.join"><fmt:param>${command.group}</fmt:param></fmt:message></h2>
+
+						<fieldset class="fsInner">
+	            			<div class="fsRow">
+								<form:label cssClass="fsLabel" path="reason"><fmt:message key="joinGroup.reason"/></form:label>
+				   			    <buttons:help message="joinGroup.reason.hint">
+		    				    	<jsp:attribute name="helpText">
+		    				    		<fmt:message key="joinGroup.reason.hint.appendix"><fmt:param>${command.reasonMaxLen}</fmt:param></fmt:message>
+		    			    		</jsp:attribute>
+		    				    </buttons:help>
+			  					<form:textarea rows="4" cols="50" cssClass="fsInput" path="reason" htmlEscape="true"/>
+			  					<div class="dissError"><form:errors path="reason" /></div>
+            				</div>
+               				<div class="fsRow">
+			  					<form:label cssClass="fsLabel" path="recaptcha_response_field" ><fmt:message key="joinGroup.captcha"/>*</form:label>
+			  					<div class="help"><b style="" class="smalltext">${mtl:ch('nbsp')}</b></div>
+			  					<div class="fsInput">${command.captchaHTML}</div> 
+			  					<div class="dissError"><form:errors path="recaptcha_response_field" /></div>
+            				</div>
+  		           			<div class="fsRow">
+	    	       				<div class="fsLabel">${mtl:ch('nbsp')}</div>
+	        	   				<div class="help"><b style="" class="smalltext">${mtl:ch('nbsp')}</b></div>
+								<input type="hidden" name="ckey" value="${ckey}"/>
+	      			            <input type="submit"/>
+	            			</div>
+	             		</fieldset>
+	             	</div>	
+
+				</form:form>
+			</div>
+		</jsp:attribute>
+		
+        <jsp:attribute name="sidebar">
+	        <ul id="sidebar">
+				<!-- loginUser.groups -->
+				<li>    
+					<span class="sidebar_h"><a href="/groups"><fmt:message key="groups"/></a></span>
+					<ul><c:forEach var="group" items="${command.context.loginUser.groups}">
+			  			<li><a href="/group/${mtl:encodeURI(group.name)}"><c:out value='${group.name}'/></a></li>
+					</c:forEach></ul>
+				</li>
+
+        	</ul>
+        </jsp:attribute>
+      
+		<jsp:attribute name="beforeBodyClose">
+        	<script type="text/javascript">
+             	//<mtl:cdata>
+             	<![CDATA[
+                	// vanishing error boxes
+                	$(document).ready( function(){
+						prepareErrorBoxes('dissError');
+            		});
+             	]]> 
+             	//</mtl:cdata>
+          	</script>
+		</jsp:attribute>
+
+    </layout:layout>
+</jsp:root>

@@ -1,0 +1,107 @@
+<jsp:root version="2.0" xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions">
+
+	<jsp:directive.attribute name="cmd"	type="org.bibsonomy.webapp.command.ConceptsCommand" required="true" />
+	<jsp:directive.attribute name="usersOwnRelations" type="java.lang.Boolean" required="true" />
+	<jsp:directive.attribute name="requestedUserName" type="java.lang.String" required="true" />
+	<jsp:directive.attribute name="requestedConcepts" type="java.util.List" required="false" />	
+	
+	<!-- show buttons to hide/show all of the users (own!) relations -->		
+	<c:if test="${usersOwnRelations}">
+		<div>
+			<ul class="floatul">
+				<li>
+					<!-- load localized strings -->
+					<fmt:message key="tagrelations.showAll.title" var="showAllRelationsTitle" />
+					<fmt:message key="tagrelations.hideAll.title" var="hideAllRelationsTitle" />
+				    
+				    (<a onclick="updateRelations(event,'all', 'show');"
+							href="/ajax/pickUnpickConcept?action=all&amp;tag=show&amp;ckey=${ckey}&amp;forward=true"
+							title="${showAllRelationsTitle}">
+						<fmt:message key="tagrelations.showAll" />
+						</a>
+				    |
+				    <a onclick="updateRelations(event,'all', 'hide');"
+							href="/ajax/pickUnpickConcept?action=all&amp;tag=hide&amp;ckey=${ckey}&amp;forward=true"
+							title="${hideAllRelationsTitle}">
+						<fmt:message key="tagrelations.hideAll" />
+						</a>)
+				</li>
+			</ul>
+		</div>	     	  
+  	</c:if>
+
+	<ul id="relations">
+		<!-- load localized strings -->
+		<fmt:message key="tagrelations.hide.title" var="hideRelationTitle" />
+
+		<!-- set path part - either tag or user/USER -->
+		<c:set var="tagPath" value="tag"/>
+		<c:if test="${not empty command.requestedUser}">
+			<c:set var="tagPath" value="user/${fn:escapeXml(requestedUserName)}"/>
+		</c:if>
+		
+		<!-- loop over concepts -->		
+		<c:forEach var="concept" items="${cmd.conceptList}">
+			<li class="box_upperconcept">			
+				<!-- display link to hide relation -->
+				<c:if test="${usersOwnRelations}">
+					<a onclick="hideConcept(event);"
+						href="/ajax/pickUnpickConcept?action=hide&amp;tag=${fn:escapeXml(concept.name)}&amp;ckey=${ckey}&amp;forward=true"
+						title="${hideRelationTitle}">
+						<fmt:message key="tagrelations.hide"/>
+					</a>
+					<c:out value=" "/>
+				</c:if>
+				
+				<!-- display supertag -->
+				<c:set var="showPostsForConceptTitle">
+					<fmt:message key="tagrelations.showPostsForConcept.title">
+						<fmt:param value="${fn:escapeXml(concept.name)}"/>		
+					</fmt:message>
+				</c:set>
+				
+				<c:if test="${fn:contains(requestedConcepts,concept.name)}">
+					<c:set var="selectedConceptClass" value="selectedConcept" />
+				</c:if>
+				
+				<!--<c:out value="${requTag}" />-->
+				<a href="/concept/${tagPath}/${fn:escapeXml(concept.name)}" 
+				   title="${showPostsForConceptTitle}" 
+				   class="${selectedConceptClass}">${fn:escapeXml(concept.name)}</a>
+				<c:out value=" "/>${mtl:ch('tagrelations.superConceptOf')}<c:out value=" "/>
+				<c:out value=" "/>
+				
+				<!-- display subtags -->
+				<ul id="${concept.name}" class="box_lowerconcept_elements">
+					<!-- iterate over subtags to get highest usercount -->
+					<c:set var="maxCount" value="0" />
+     	  			<c:forEach var="subtag" items="${concept.subTags}">
+     	  				<c:if test="${subtag.usercount>=maxCount}"> <c:set var="maxCount" value="${subtag.usercount}" /></c:if>
+     	  			</c:forEach>
+     	  			<!-- display subtags -->
+					<c:forEach var="subtag" items="${concept.subTags}">
+						<li class="box_lowerconcept">
+							<!-- show style attribute for fontsize only when neccessary -->
+							<c:set var="fontsize" value="${mtl:computeTagFontsize(subtag.usercount, maxCount, 'home')}"/>
+							<c:choose>
+								<c:when test="${fontsize == 100}">
+									<a href="/${tagPath}/${fn:escapeXml(subtag.name)}"><c:out value="${subtag.name}"/></a>
+								</c:when>
+								<c:otherwise>
+									<a href="/${tagPath}/${fn:escapeXml(subtag.name)}" style="font-size:${fontsize}%"><c:out value="${subtag.name}"/></a>
+								</c:otherwise>
+							</c:choose>
+	          			</li>
+	          			<c:out value=" "/>
+					</c:forEach>
+				</ul>
+			</li>
+		</c:forEach>
+		<c:out value=" "/>
+	</ul>
+
+</jsp:root>

@@ -1,0 +1,44 @@
+ <jsp:root version="2.0"
+  xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:jsp="http://java.sun.com/JSP/Page"
+  xmlns:c="http://java.sun.com/jsp/jstl/core"
+  xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+  xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
+  xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+  xmlns:form="http://www.springframework.org/tags/form"
+  xmlns:spring="http://www.springframework.org/tags"
+  xmlns:errors="urn:jsptagdir:/WEB-INF/tags/errors"
+  xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/buttons"
+  xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+  xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts">
+  
+	<div class="fsRow">
+		<form:label cssClass="fsLabel" path="serverUser['userName']" ><fmt:message key="navi.username"/></form:label>
+		<form:input cssClass="fsInput" path="serverUser['userName']"/>
+		<div class="dissError"><form:errors path="serverUser['userName']" /></div>
+	</div>
+	<div class="fsRow">
+		<form:label cssClass="fsLabel" path="serverUser['apiKey']" ><fmt:message key="navi.apikey"/></form:label>
+		<form:input cssClass="fsInput" path="serverUser['apiKey']"/>
+		<div class="dissError"><form:errors path="serverUser['apiKey']" /></div>
+	</div>
+	<div class="fsRow">
+		<form:label cssClass="fsLabel" path="direction" ><fmt:message key="synchronization.direction"/></form:label>
+		<form:select cssClass="fsInput fsSmall" path="direction">
+			<form:option value="BOTH"><fmt:message key="synchronization.direction.both"/></form:option>
+			<form:option value="CLIENT_TO_SERVER"><fmt:message key="synchronization.direction.client_to_server.on_client"/></form:option>
+			<form:option value="SERVER_TO_CLIENT"><fmt:message key="synchronization.direction.server_to_client.on_client"/></form:option>
+		</form:select>
+		<div class="dissError"><form:errors path="direction" /></div>
+	</div>
+	<div class="fsRow">
+		<form:label cssClass="fsLabel" path="resourceType" ><fmt:message key="synchronization.resourceType"/></form:label>
+		<form:select cssClass="fsInput fsSmall" path="resourceType">
+			<form:option value="org.bibsonomy.model.Resource"><fmt:message key="resourceType.Resource.plural"/></form:option>
+			<form:option value="org.bibsonomy.model.BibTex"><fmt:message key="resourceType.BibTex.plural"/></form:option>
+			<form:option value="org.bibsonomy.model.Bookmark"><fmt:message key="resourceType.Bookmark.plural"/></form:option>
+			</form:select>
+		<div class="dissError"><form:errors path="resourceType" /></div>
+	</div>
+ 
+ </jsp:root>

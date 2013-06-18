@@ -1,0 +1,125 @@
+<?xml version="1.0" ?>
+<!--
+
+
+     BibSonomy-Webapp - The webapplication for Bibsonomy.
+
+     Copyright (C) 2006 - 2011 Knowledge & Data Engineering Group,
+                               University of Kassel, Germany
+                               http://www.kde.cs.uni-kassel.de/
+
+     This program is free software; you can redistribute it and/or
+     modify it under the terms of the GNU General Public License
+     as published by the Free Software Foundation; either version 2
+     of the License, or (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+
+     You should have received a copy of the GNU General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+
+-->
+
+<jsp:root version="2.0" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
+	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/users"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:menu="urn:jsptagdir:/WEB-INF/tags/menu"
+	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
+	xmlns:form="http://www.springframework.org/tags/form"
+	xmlns:spring="urn:http://www.springframework.org/tags"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
+
+	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
+	
+	<fmt:message key="navi.admin" var="pageTitle" />
+	
+	<layout:layout pageTitle="${pageTitle} :: Lucene" loginUser="${command.context.loginUser}" requPath="${requPath}">
+		<jsp:attribute name="heading">
+		    <a href="/admin"><c:out value="${pageTitle}" /></a> ::
+			<a rel="path_menu" href="/admin/lucene">Lucene</a>
+		</jsp:attribute>
+		
+		<jsp:attribute name="headerExt">
+			<link rel="stylesheet" type="text/css" href="${resdir}/css/adminlucene.css" />
+		</jsp:attribute>
+		
+		<jsp:attribute name="content">
+		<script language="javascript">
+		function generateIndex(resource) { 
+			var box = window.confirm("This will generate a new " + resource +"Index. Are you sure?");
+			if (box == true) { 
+			    window.location.href="?action=generateIndex&amp;resource=" + resource; 
+			}
+		} 
+		</script>
+
+<div id="outerBox">
+	<h2>
+			Lucene Index Statistics 
+	</h2>
+	
+	  <c:if test="${not empty command.adminResponse}">
+		<div class="adminResponse"><c:out value="${command.adminResponse}"/></div>
+	  </c:if>
+	  
+    <c:forEach var="index" items="${command.indices}">
+	    <div class="indexProperties">
+			<fieldset>
+				<legend><label><c:out value="${index.name}" /></label></legend>
+				<c:choose>
+				    <c:when test="${index.enabled}">
+					    <div class="ls-description">containing docs:</div><div class="ls-value">${index.numDocs}</div>
+					    <div class="ls-description">deleted docs:</div><div class="ls-value">${index.numDeletedDocs}</div>
+					    <div class="ls-description">newest date:</div><div class="ls-value">${index.newestDateString}</div>
+					    <div class="ls-description">last modified date:</div><div class="ls-value">${index.lastModifiedString}</div>
+					    <div class="ls-description cgrey">current version:</div><div class="ls-value cgrey">${index.currentVersion}</div>
+					    <div class="ls-description csilver">isCurrent:</div><div class="ls-value csilver">${index.current}</div>
+				    </c:when>
+				    <c:otherwise>
+				        Seems to be properly configured but could not physically be found. <br />
+				        <a href="?action=generateIndex&amp;resource=${index.resourceName}">Generate a new <c:out value="${index.name}" /></a>
+				    </c:otherwise>
+				</c:choose>
+				<c:if test="${!index.generatingIndex}">
+				  <a style="cursor: pointer;">
+					<img src="${resdir}/image/button_reload.png" alt="generate new ${index.name}" title="generate new ${index.name}" onclick="javascript:generateIndex('${index.resourceName}')" />
+					<span style="width: 200px; height: 10px; border: 1px;  "></span>
+				  </a>
+				</c:if>
+			</fieldset>
+			<fieldset>
+				<legend><label><c:out value="${index.inactiveIndex.name}" /></label></legend>
+				    <c:if test="${index.enabled &amp;&amp; !index.generatingIndex}">
+						<div class="ls-description">containing docs:</div><div class="ls-value">${index.inactiveIndex.numDocs}</div>
+						<div class="ls-description">deleted docs:</div><div class="ls-value">${index.inactiveIndex.numDeletedDocs}</div>
+						<div class="ls-description">newest date:</div><div class="ls-value">${index.inactiveIndex.newestDateString}</div>
+						<div class="ls-description">last modified date:</div><div class="ls-value">${index.inactiveIndex.lastModifiedString}</div>
+						<div class="ls-description cgrey">current version:</div><div class="ls-value cgrey">${index.inactiveIndex.currentVersion}</div>
+						<div class="ls-description csilver">isCurrent:</div><div class="ls-value csilver">${index.inactiveIndex.current}</div>
+					</c:if>
+					<c:if test="${index.generatingIndex}">
+					    Currently generating new index. <br />			    
+					<div style="width: 202px; height: 12px; border: 1px solid #999999; background-color: #CCCCCC">
+    					<div style="width: ${index.indexGenerationProgress*2}px; height:10px; border: 1px solid #CCCCCC; background-color: #002244" />
+					</div><br />
+					${index.indexGenerationProgress} % done.
+					</c:if>
+			</fieldset>
+	    </div>
+    </c:forEach>
+</div>    
+            
+		</jsp:attribute>				
+	</layout:layout>
+
+
+
+</jsp:root>

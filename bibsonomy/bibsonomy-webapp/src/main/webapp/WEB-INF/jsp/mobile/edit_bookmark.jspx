@@ -1,0 +1,60 @@
+<!--
+
+
+     BibSonomy-Webapp - The webapplication for Bibsonomy.
+
+     Copyright (C) 2006 - 2011 Knowledge & Data Engineering Group,
+                               University of Kassel, Germany
+                               http://www.kde.cs.uni-kassel.de/
+
+     This program is free software; you can redistribute it and/or
+     modify it under the terms of the GNU General Public License
+     as published by the Free Software Foundation; either version 2
+     of the License, or (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+
+     You should have received a copy of the GNU General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+
+-->
+
+<jsp:root version="2.0" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:mobile="urn:jsptagdir:/WEB-INF/tags/mobile"
+	xmlns:errors="urn:jsptagdir:/WEB-INF/tags/errors"
+	xmlns:form="http://www.springframework.org/tags/form"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
+
+	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
+
+	<!-- site to edit a bookmark -->
+	<mobile:editpost command="${command}" selected="nav_more" resourceType="Bookmark">
+		<jsp:attribute name="headerExt"/>
+		<jsp:attribute name="general">
+			<p>
+			  <form:label cssClass="fsLabel" path="post.resource.url" ><fmt:message key="post.resource.url"/>*</form:label>
+			  <form:input cssClass="fsInput reqinput" path="post.resource.url" tabindex="2"/>
+			  <div class="dissError"><form:errors path="post.resource.url" /></div>
+            </p>
+            <p>
+			  <form:label cssClass="fsLabel" path="post.resource.title" ><fmt:message key="post.resource.title"/>*</form:label>
+			  <form:input cssClass="fsInput reqinput" path="post.resource.title" tabindex="2"/>
+			  <div class="dissError"><form:errors path="post.resource.title" /></div>
+              <div class="fsSuggestion" id="suggestion.resource.title"><!-- This comment is needed, otherwise this will result in an self-closing element --></div>
+            </p>                
+            <p>     
+			  <form:label cssClass="fsLabel" path="post.description" ><fmt:message key="post.resource.description"/>, <fmt:message key="post.resource.comment"/></form:label>
+			  <form:textarea cssClass="fsInput" path="post.description" tabindex="2" rows="3" />
+			  <div class="fsSuggestion" id="suggestion.description"><!-- This comment is needed, otherwise this will result in an self-closing element --></div>
+            </p>
+		</jsp:attribute>
+	</mobile:editpost>
+</jsp:root>

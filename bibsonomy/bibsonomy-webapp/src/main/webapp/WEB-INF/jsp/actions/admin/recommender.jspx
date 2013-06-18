@@ -1,0 +1,191 @@
+<?xml version="1.0" ?>
+<!--
+
+
+     BibSonomy-Webapp - The webapplication for Bibsonomy.
+
+     Copyright (C) 2006 - 2011 Knowledge & Data Engineering Group,
+                               University of Kassel, Germany
+                               http://www.kde.cs.uni-kassel.de/
+
+     This program is free software; you can redistribute it and/or
+     modify it under the terms of the GNU General Public License
+     as published by the Free Software Foundation; either version 2
+     of the License, or (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+
+     You should have received a copy of the GNU General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+
+-->
+
+<jsp:root version="2.0" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
+	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/users"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:menu="urn:jsptagdir:/WEB-INF/tags/menu"
+	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
+	xmlns:form="http://www.springframework.org/tags/form"
+	xmlns:spring="urn:http://www.springframework.org/tags"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
+
+	<jsp:directive.page contentType="text/html; charset=UTF-8"
+		language="java" pageEncoding="UTF-8" session="true" />
+	
+	<layout:layout pageTitle="${command.pageTitle}" loginUser="${command.context.loginUser}" requPath="">
+		<jsp:attribute name="heading">
+		    <a href="/admin"><fmt:message key="navi.admin"/></a> ::
+			<a rel="path_menu" href="/admin/recommender">Recommender</a>
+		</jsp:attribute>	
+		<jsp:attribute name="headerExt">
+			<link rel="stylesheet" type="text/css"
+				href="${resdir}/css/admin.css" />
+			<link rel="stylesheet" type="text/css"
+				href="${resdir}/css/adminrecommender.css" />
+		</jsp:attribute>
+		
+			
+		<jsp:attribute name="content">
+
+
+<!-- Navi for tabselection -->
+<p class="adminNavi">
+  <c:forEach var="tab" items="${command.tabs}">
+    <c:choose>
+      <c:when test="${command.tab == tab.key}">
+        <a id="selectedTab" href="?tab=${tab.key}">${tab.value}</a>
+      </c:when>
+      <c:otherwise>
+        <a href="?tab=${tab.key}">${tab.value}</a>
+      </c:otherwise>
+    </c:choose>
+  </c:forEach>
+</p>
+
+<div id="fullscreen">
+    <div class="bluebox">
+    
+      <!-- Box for adminmessages -->
+	  <c:if test="${not empty command.adminResponse}">
+		<div class="adminResponse"><c:out value="${command.adminResponse}"/></div>
+	  </c:if>
+	
+	<!-- name of current tab -->
+    <h2><c:out value="${command.tabDescription}"/></h2><br />
+    
+    
+    <!-- Tab: Status  -->
+    <c:if test="${command.tab == 0}">
+	    <table id="rectable">
+	      <tr><th>SettingID</th><th>RecommenderID</th><th>average Latency</th></tr>
+	      <c:forEach var="recommender" items="${command.recOverview}">
+	        <tr>
+	          <td> <c:out value="${recommender.settingID}"/></td>
+	          <td> <c:out value="${recommender.recID}" /></td>
+	          <td> <c:out value="${recommender.latency}"/>ms</td>
+	        </tr>
+	      </c:forEach>
+	    </table>
+	    
+	    <br />
+        <form:form name="latencyCalculation" action="/admin/recommender">
+		    <form:label path="queriesPerLatency"><fmt:message key="admin.recommender.latencyvalues"/></form:label>
+  		    <input type="text" id="queriesPerLatency" name="queriesPerLatency" value="${command.queriesPerLatency}" />
+  	        <input class="adminBtn" type="submit" />
+	    </form:form>
+	</c:if>
+	
+	
+	<!-- Tab: Add/Remove -->
+    <c:if test="${command.tab == 2}">
+        <div class="compound">
+        <form:form name="recommenderAdd" action="/admin/recommender?action=addrecommender">
+            <form:label path="newrecurl"><fmt:message key="admin.recommender.add"/></form:label>
+            <br />
+            <form:input path="newrecurl"  />
+  	        <input class="adminBtn" type="submit" />
+        </form:form>
+  	    <br />
+        </div>
+	    <hr />
+        <div class="compound">
+        <form:form name="recommenderRemove" action="/admin/recommender?action=removerecommender">
+            <form:label path="deleteRecIds"><fmt:message key="admin.recommender.remove"/></form:label><br />
+            
+		  	<select name="deleteRecIds" size="15" multiple="multiple">
+				<c:forEach var="rec" items="${command.activeRecommenders}">
+				  <option value="${rec.value}">${rec.key} - ${rec.value}</option>
+				</c:forEach>
+		  	</select>
+		  	
+		  	<!-- <form:select path="deletesid" items="${command.activeRecommenders}" itemValue="key" itemLabel="value"></form:select> -->
+  	        <input class="adminBtn" id="recRemoveBtn" type="submit" value="Entfernen" />
+	  	    <input type="button" class="adminBtn" id="recEditBtn" value="Bearbeiten" onclick="openEditForm()" />
+        </form:form>
+  	    <br />
+        </div>
+        <div id="recommenderEditDiv">
+            <div class="compound">
+ 		    <br />
+ 		    <form:form name="recommenderEdit" action="/admin/recommender?action=editRecommender">
+ 		    <form:label path="editSid"><fmt:message key="admin.recommender.edit"/></form:label><br />
+ 		    <input type="hidden" id="editId" name="editSid"  />
+ 		    <input type="text" id="editedRecurl" name="newrecurl" />
+ 		    <input type="submit" class="adminBtn" />
+ 		    </form:form>
+ 		    </div>
+ 		    <br />
+        </div>
+
+    </c:if>
+	
+	<!-- Tab: Activate/Deactivate -->
+    <c:if test="${command.tab == 1}">
+        <div class="activationCompound">
+		<form:form name="recConfig" action="/admin/recommender?action=updateRecommenderstatus" onsubmit="selectAll(activeRecs); selectAll(disabledRecs);">
+		    <div class="floatleft">
+			    <form:label path="disabledRecs"><fmt:message key="admin.recommender.disabled"/></form:label><br />
+		  		
+		  		<select name="disabledRecs" size="20" multiple="multiple">
+					<c:forEach var="rec" items="${command.disabledRecommenders}">
+					  <option value="${rec.key}">${rec.key} - ${rec.value}</option>
+					</c:forEach>
+		  		</select>
+	  	    </div>
+	  	    
+		    <div id="buttondiv">
+		        <input type="button" class="adminBtn" value="&gt;&gt;" onclick="pushSelectedOptions(disabledRecs, activeRecs)" id="pushrightbutton" />
+		        <input type="button" class="adminBtn" value="&lt;&lt;" onclick="pushSelectedOptions(activeRecs, disabledRecs)" />
+		    </div>
+		    
+	  		<form:label path="activeRecs"><fmt:message key="admin.recommender.active"/></form:label><br />
+		  		<select name="activeRecs" size="20" multiple="multiple">
+					<c:forEach var="rec" items="${command.activeRecommenders}">
+					  <option value="${rec.key}">${rec.key} - ${rec.value}</option>
+					</c:forEach>
+		  		</select>
+	  	    <input class="adminBtn" type="submit" id="recActivationBtn" />
+	  	    <br /><br />
+		</form:form>
+		</div>
+	</c:if>
+	
+	
+    <br />
+   </div> 
+</div>
+            
+		</jsp:attribute>				
+	</layout:layout>
+
+
+
+</jsp:root>

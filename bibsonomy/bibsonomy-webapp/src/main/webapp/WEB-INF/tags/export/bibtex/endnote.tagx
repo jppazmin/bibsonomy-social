@@ -1,0 +1,59 @@
+<?xml version="1.0" ?>
+<jsp:root version="2.0"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
+	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/tags"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"> 
+	
+	<jsp:directive.attribute name="bib" type="org.bibsonomy.model.BibTex" required="true"/>	
+
+<jsp:text>%0 ${mtl:getRISEntryType(bib.entrytype)}</jsp:text>
+<c:if test="${not empty bib.bibtexKey}"><jsp:text>
+%1 ${bib.bibtexKey}</jsp:text></c:if>    
+<c:if test="${not empty bib.authorList}"><c:forEach var="person" varStatus="status" items="${bib.authorList}">
+%A ${person.name}</c:forEach></c:if>        
+<c:if test="${not empty bib.booktitle}"><jsp:text>
+%B ${bib.booktitle}</jsp:text></c:if>
+<c:if test="${not empty bib.miscFields['isbn']}"><jsp:text>
+%@ ${bib.miscFields['isbn']}</jsp:text></c:if>
+<c:if test="${not empty bib.address}"><jsp:text>
+%C ${bib.address}</jsp:text></c:if>  
+<c:if test="${not empty bib.year}"><jsp:text>
+%D ${bib.year}</jsp:text></c:if>
+<c:if test="${not empty bib.editorList}"><c:forEach var="person" varStatus="status" items="${bib.editorList}">
+%E ${person.name}</c:forEach></c:if>    
+<c:if test="${not empty bib.publisher}"><jsp:text>
+%I ${bib.publisher}</jsp:text></c:if>
+<c:if test="${not empty bib.journal}"><jsp:text>
+%J ${bib.journal}</jsp:text></c:if>
+<jsp:text>
+%K ${mtl:toTagString(post.tags)}</jsp:text>
+<c:if test="${not empty bib.number}"><jsp:text>
+%N ${bib.number}</jsp:text></c:if>
+<c:if test="${not empty bib.pages}"><jsp:text>
+%P ${bib.pages}</jsp:text></c:if>
+<c:if test="${not empty bib.title}"><jsp:text>
+%T ${bib.title}</jsp:text></c:if>
+<c:if test="${not empty bib.miscFields['doi']}"><jsp:text>
+%R ${bib.miscFields['doi']}</jsp:text></c:if>
+<c:if test="${not empty bib.url}"><jsp:text>
+%U ${bib.url}</jsp:text></c:if>
+<c:if test="${not empty bib.volume}"><jsp:text>
+%V ${bib.volume}</jsp:text></c:if>
+<c:if test="${not empty bib.abstract}"><jsp:text>
+%X ${bib.abstract}</jsp:text></c:if>
+<c:if test="${not empty bib.annote}"><jsp:text>
+%Z ${bib.annote}</jsp:text></c:if>
+<c:if test="${not empty bib.edition}"><jsp:text>
+%7 ${bib.edition}</jsp:text></c:if>
+<c:if test="${not empty bib.chapter}"><jsp:text>
+%&amp; ${bib.chapter}</jsp:text></c:if>
+<jsp:text>
+
+</jsp:text>
+  
+</jsp:root>

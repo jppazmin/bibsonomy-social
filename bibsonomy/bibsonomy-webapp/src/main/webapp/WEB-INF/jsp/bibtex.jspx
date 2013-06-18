@@ -1,0 +1,92 @@
+<?xml version="1.0" ?>
+<!--
+
+
+     BibSonomy-Webapp - The webapplication for Bibsonomy.
+
+     Copyright (C) 2006 - 2011 Knowledge & Data Engineering Group,
+                               University of Kassel, Germany
+                               http://www.kde.cs.uni-kassel.de/
+
+     This program is free software; you can redistribute it and/or
+     modify it under the terms of the GNU General Public License
+     as published by the Free Software Foundation; either version 2
+     of the License, or (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+
+     You should have received a copy of the GNU General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+
+-->
+
+<jsp:root version="2.0"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
+	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/tags"
+	xmlns:users="urn:jsptagdir:/WEB-INF/tags/users"
+	xmlns:discussion="urn:jsptagdir:/WEB-INF/tags/resources/discussion"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
+	
+	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
+	
+	<layout:bibtexLayout pageTitle="${command.pageTitle}" command="${command}" requPath="${requPath}">
+	
+		<jsp:attribute name="heading">
+			<a rel="path_menu" href="#"><img alt="" src="${resdir}/image/box_arrow.png"/>${mtl:ch('nbsp')}<fmt:message key="navi.publication"/></a> :: 
+			<form action="/search" method="get" class="smallform">
+			  <input type="text" size="20" name="search" value="${fn:escapeXml(command.title)}"/>
+			</form>
+		</jsp:attribute>
+		
+		<jsp:attribute name="headerExt">
+			<script type="text/javascript" src="${resdir}/jquery/plugins/ui/jquery-ui.js">&amp;nbsp;</script>
+			<script type="text/javascript" src="${resdir}/javascript/merged/discussion.js">&amp;nbsp;</script>
+			
+			<c:if test="${not empty command.goldStandardPublication}">
+				<script type="text/javascript" src="${resdir}/javascript/goldstandards.js">&amp;nbsp;</script>
+			
+				<link rel="stylesheet" type="text/css" href="${resdir}/css/goldstandards.css" />
+			</c:if>
+			
+			<!-- TODO: PUMA? -->
+			<link rel="stylesheet" type="text/css" href="${resdir}/css/fsform.css" />
+			<link rel="stylesheet" type="text/css" href="${resdir}/css/discussion.css" />
+			<link rel="stylesheet" type="text/css" href="${resdir}/jquery/plugins/ui/jquery.ui.tabs.css" />
+			<link rel="stylesheet" type="text/css" href="${resdir}/jquery/plugins/ui/plugins/stars/jquery.ui.stars.css" />
+	    </jsp:attribute>
+	    
+		<jsp:attribute name="sidebar">
+			<ul id="sidebar">		
+				<!-- display tags -->
+				<li>
+					<span class="sidebar_h"><fmt:message key="tags" /></span>
+					<tags:cloud requPath="tag" cmd="${command.tagcloud}" tagboxMinfreqStyle="none" />
+				</li>
+				<!-- related users -->
+				<c:if test="${not empty command.relatedUserCommand.relatedUsers}">
+					<li>
+						<span class="sidebar_h"><fmt:message key="users"/></span>
+						<users:related cmd="${command.relatedUserCommand}" userSimilarity="bibtexdetails"/>
+					</li>			
+				</c:if>
+			</ul>
+		</jsp:attribute>
+		
+		<jsp:attribute name="contentHeading">
+			<c:set var="publication" value="${command.bibtex.list[0].resource}" />
+			<h2><c:out value="${publication.title}" /></h2>
+		
+			<discussion:singleResourceDiscussionLayout resource="${publication}" discussionItems="${command.discussionItems}" />
+		</jsp:attribute>
+	</layout:bibtexLayout>
+
+</jsp:root>

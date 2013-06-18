@@ -1,0 +1,48 @@
+<jsp:root version="2.0" 
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:rc="urn:jsptagdir:/WEB-INF/tags/resources/common"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions">
+	
+	<jsp:directive.attribute name="titleKey" type="java.lang.String" required="true"/>
+	<jsp:directive.attribute name="listView" type="org.bibsonomy.webapp.command.ListCommand" required="true"/>
+	<jsp:directive.attribute name="loginUserName" type="java.lang.String" required="true"/>
+	<jsp:directive.attribute name="otherPostsUrlPrefix" type="java.lang.String" required="true"/>
+	
+  <jsp:directive.attribute name="title" fragment="true" required="true"/>
+	<jsp:directive.attribute name="extTitle" fragment="true" required="false"/>
+	<jsp:directive.attribute name="desc" fragment="true" required="true"/>
+	<jsp:directive.attribute name="actions" fragment="true" required="true"/>
+	<jsp:directive.attribute name="bmicon" fragment="true" required="true"/>
+  
+	<jsp:directive.variable name-given="post" scope="NESTED"/>
+	
+	<div class="bookbox">
+	
+		<h2 class="listh"><fmt:message key="${titleKey}" />${mtl:ch('nbsp')}</h2>		 
+		<jsp:invoke fragment="extTitle"/>
+		
+		<div class="kiste">${mtl:ch('nbsp')}</div>
+		
+        <fmt:message key="post.meta.own_post" var="alreadyOwn" />
+        <fmt:message key="post.meta.copy_this_post" var="copyThisPost" />
+
+        <!-- iterate over a list of resources and create the list -->
+        <ul id="${listView.resourcetype}">
+          <c:forEach var="post" items="${listView.list}">
+  
+            <!-- show one post -->
+			<rc:post post="${post}" otherPostsUrlPrefix="${otherPostsUrlPrefix}" loginUserName="${loginUserName}" copyThisPost="${copyThisPost}" alreadyOwn="${alreadyOwn}">
+			   <jsp:attribute name="title">  <jsp:invoke fragment="title"/>  </jsp:attribute>
+			   <jsp:attribute name="actions"><jsp:invoke fragment="actions"/></jsp:attribute>
+			   <jsp:attribute name="bmicon"> <jsp:invoke fragment="bmicon"/> </jsp:attribute>
+			   <jsp:attribute name="desc">   <jsp:invoke fragment="desc"/>   </jsp:attribute>
+		    </rc:post>
+      
+          </c:forEach>
+        </ul>
+	</div>
+
+</jsp:root>

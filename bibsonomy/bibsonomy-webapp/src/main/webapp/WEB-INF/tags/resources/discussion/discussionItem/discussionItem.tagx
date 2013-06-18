@@ -1,0 +1,51 @@
+<jsp:root version="2.0" xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:discussionItem="urn:jsptagdir:/WEB-INF/tags/resources/discussion/discussionItem">
+	
+	<jsp:directive.attribute name="discussionItem" type="org.bibsonomy.model.DiscussionItem" required="true" />
+	<jsp:directive.attribute name="resource" type="org.bibsonomy.model.Resource" required="true" />
+	<jsp:directive.attribute name="loginUser" type="org.bibsonomy.model.User" required="true" />
+	<jsp:directive.attribute name="content" fragment="true" required="true"/>
+	
+	<c:set var="discussionItemUserName" value="${discussionItem.user.name}" />
+	
+	<c:set var="ownDiscussionItem" value="${loginUser.name eq discussionItemUserName}" />
+	<c:set var="anonymous" value="${discussionItem.anonymous and not ownDiscussionItem}" />
+	
+	<c:set var="class" value="${fn:toLowerCase(discussionItem.class.simpleName)}" />
+    
+	<c:choose>
+		<c:when test="${anonymous}">
+			<img src="${resdir}/image/anonymous.png" alt="anonymous" class="commentPicture" />
+		</c:when>
+		<c:otherwise>
+			<img src="/picture/user/${fn:escapeXml(discussionItemUserName)}" alt="userPicture" class="commentPicture"/>
+		</c:otherwise>
+	</c:choose>
+	
+	<div class="${class} details">
+		<div class="${class} info" data-username="${discussionItemUserName}" data-discussionItemHash="${discussionItem.hash}">
+			<span class="${class}er">				
+				<c:choose>
+					<c:when test="${anonymous}">
+						<fmt:message key="post.resource.discussionItem.anonymous" />
+					</c:when>
+					<c:otherwise>
+						<a href="/user/${fn:escapeXml(discussionItemUserName)}"><c:out value="${discussionItemUserName}" /></a>
+					</c:otherwise>
+				</c:choose>
+			</span>
+			<discussionItem:discussionItemMeta discussionItem="${discussionItem}" />
+		</div>
+		
+		<jsp:invoke fragment="content"/>
+	</div>
+	
+	<!-- actions -->
+	<discussionItem:discussionItemActions discussionItem="${discussionItem}" />
+	
+	<!-- sub items -->
+	<discussionItem:subDiscussionItems discussionItems="${discussionItem.subDiscussionItems}" loginUser="${loginUser}" resource="${resource}" />
+</jsp:root>

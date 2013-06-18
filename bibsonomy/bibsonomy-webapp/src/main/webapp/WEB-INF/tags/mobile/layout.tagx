@@ -1,0 +1,89 @@
+<jsp:root version="2.0"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:mobile="urn:jsptagdir:/WEB-INF/tags/mobile"
+	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts">
+	
+	<!-- Basic layout for mobile site 
+		 Includes header, content placeholder and footer.
+		 Author: Waldemar Biller
+	-->
+	
+	<jsp:directive.attribute name="loginUser" type="org.bibsonomy.model.User" required="true"/>
+	<jsp:directive.attribute name="requestedUser" type="java.lang.String" required="false"/>
+	<jsp:directive.attribute name="headerExt" fragment="true" />
+	<jsp:directive.attribute name="selected" required="true"/>
+	<jsp:directive.attribute name="resources" required="true"/>
+	<jsp:directive.attribute name="content" fragment="true" required="true"/>	
+	
+	<jsp:output doctype-root-element="html"	doctype-public="-//W3C//DTD XHTML 1.0 Transitional//EN" doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd" omit-xml-declaration="yes" />
+	<jsp:element name="html">
+		<jsp:attribute name="xmlns">http://www.w3.org/1999/xhtml</jsp:attribute>
+		<jsp:body>
+			<head>
+				<!-- to have it on all pages we set the scope to "request" -->
+				<c:set var="locale" scope="request" value="${pageContext.response.locale}"/>
+				
+				<meta http-equiv="content-Type" content="text/html; charset=UTF-8" />
+				<!--  set the viewport of the mobile device. disabled scaling -->
+				<meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;"/>
+				<link rel="icon" href="${resdir}/image/favicon.png" type="image/png" />
+				<c:if test="${not empty additionalCSS}">
+					<link rel="stylesheet" type="text/css" href="${additionalCSS}" />
+				</c:if>
+				<link rel="stylesheet" type="text/css" href="${resdir}/css/mobile.css" />
+				<!-- The only JavaScript framework used on the mobile site is jQuery -->
+				<script type="text/javascript" src="${resdir}/jquery/jquery.js">&amp;nbsp;</script>
+				<script type="text/javascript" src="${resdir}/javascript/localized_strings_${locale.language}.js">&amp;nbsp;</script>
+				<script type="text/javascript" src="${resdir}/javascript/functions.js">&amp;nbsp;</script>
+				<c:if test="${not empty additionalJS}">
+					<script type="text/javascript" src="${additionalJS}">&amp;nbsp;</script>
+				</c:if>
+				<meta name="email" content="${projectEmail}"/>
+				<parts:meta fieldName="author"/>
+				<parts:meta fieldName="copyright"/>
+				<parts:meta fieldName="keywords"/>
+				<parts:meta fieldName="description"/>
+				<title>${projectName}</title>
+				<jsp:invoke fragment="headerExt"/>
+			</head>
+			<body>
+				<!-- site header -->
+				<div id="head">
+					<h1>
+						<c:url var="root" value="/" context="${projectContext}"/>
+						<a href="${root}">${projectName}</a>
+					</h1>
+					<!-- menu including toolbar -->
+					<mobile:menu selected="${selected}" loginUser="${loginUser}" resources="${resources}" />
+				</div>
+				<!-- content placeholder -->
+				<div id="content">
+					<jsp:invoke fragment="content" />
+				</div>
+				<!-- site footer -->
+				<div id="footer">
+					<!-- site version switch -->
+					<div id="switch" style="margin-bottom: 10px;">
+						<a href="?mobile=false"><fmt:message key="mobile.switch" /></a>
+					</div>
+					<!-- legal notes -->
+					<div style="width: 70%;">
+						<fmt:message key="system.offeredBy">
+							<fmt:param value="${projectName}"/>
+							<fmt:param value="${kdeHome}"/>
+						</fmt:message>
+						<br />
+						<fmt:message key="system.contact"/>
+						<c:out value=" "/>
+						<parts:email address="${projectEmail}"/>
+						<br />
+						<fmt:message key="system.termsOfUse"/>
+					</div>
+				</div>
+			</body>
+		</jsp:body>
+	</jsp:element>
+</jsp:root>

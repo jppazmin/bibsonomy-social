@@ -1,0 +1,172 @@
+/**
+ *
+ *  BibSonomy-Webapp - The webapplication for Bibsonomy.
+ *
+ *  Copyright (C) 2006 - 2011 Knowledge & Data Engineering Group,
+ *                            University of Kassel, Germany
+ *                            http://www.kde.cs.uni-kassel.de/
+ *
+ *  This program is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU General Public License
+ *  as published by the Free Software Foundation; either version 2
+ *  of the License, or (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ */
+
+body {
+  font-family: serif;  
+  
+}
+
+#full {
+  margin: 5px 10px 2% 10px; 
+  padding-right: 5px;   
+}
+
+.topic {
+	font-size: 200%;
+	font-weight: bold;
+	padding: 0;
+	margin: 20px 0px 15px 0px;
+}
+
+#tagcloudy {
+	text-align: justify;
+	background: #f4f4f4;
+	margin: 40px;
+    padding: 10px;
+}
+#tagcloudy li {
+  display:inline;  
+}
+#tagcloudy a {
+	text-decoration: none;
+	font-family: sans-serif;
+	white-space: nowrap;
+}
+
+#tagcloudy a:hover {
+	text-decoration: underline;
+}
+
+#topics {
+	font-size: 100%; 
+	color: black;
+	background: #f4f4f4;
+	margin: 30px;
+}
+
+div.explanation {
+	text-align: justify;
+	margin-left: 30px;
+	margin-right: 30px;
+    padding: 10px 10px 0px 10px;
+}
+
+div.explanation a {
+	color: black;
+	text-decoration: underline;
+}
+
+div.explanation a:visited {
+	color: black;
+	text-decoration: underline;
+}
+
+div.linkbox {
+	text-align: center;
+	margin-left: 40px;
+	margin-right: 40px;
+	margin-top: 1em;
+	margin-bottom: 1em;
+	background-color: #fc0;
+	padding: 5px;
+}
+
+div.linkbox2 {
+    margin-left: 30px; 
+    margin-right: 30px; 
+}
+
+div.linkbox a {
+	font-weight: bold;
+	font-size: 120%;
+	text-decoration: none;
+	color: black;
+	padding: 2px 15px 2px 15px;
+	white-space: nowrap;
+}
+
+div.linkbox a:hover {
+	background-color: white;
+}
+
+#credits {
+	font-size: 100%;
+	margin-left: 30px;
+	margin-right: 30px;
+	padding-bottom: 30px;
+}
+
+#credits a {
+	color: black;
+	text-decoration: underline;
+}
+
+#credits a:visited {
+	color: black;
+	text-decoration: underline;
+}
+
+#logos {
+	text-align: center;
+	margin: 30px 30px 20px 30px;
+}
+
+#logos a {
+	padding-left: 15px;
+	padding-right: 15px;
+	white-space: nowrap;
+}
+
+#logos img {
+	border: 0;
+	vertical-align: top;
+}
+
+#cool {
+  display:none;  
+  
+}
+
+a.t1 { color: #ff6600 }
+a.t2 { color: #ffcc00 }
+a.t3 { color: #ff00ff }
+a.t4 { color: #65ff00 }
+a.t5 { color: #00ff00 }
+a.t6 { color: #00ff66 }
+a.t7 { color: #00ffcb }
+a.t8 { color: #00cbff }
+a.t9 { color: #0066ff }
+a.t10 { color: #0000ff }
+a.t11 { color: #6500ff }
+
+.t1b { background-color: #ff6600 }
+.t2b { background-color: #ffcc00 }
+.t3b { background-color: #ff00ff }
+.t4b { background-color: #65ff00 }
+.t5b { background-color: #00ff00 }
+.t6b { background-color: #00ff66 }
+.t7b { background-color: #00ffcb }
+.t8b { background-color: #00cbff }
+.t9b { background-color: #0066ff }
+.t10b { background-color: #0000ff }
+.t11b { background-color: #6500ff }

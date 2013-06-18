@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<taglib xmlns="http://java.sun.com/xml/ns/j2ee"
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee 
+		                    http://java.usn.com/xml/ns/j2ee/web-jsptaglibrary_2_0.xsd"
+		version="2.1">
+
+	<tlib-version>2009-02-13</tlib-version>
+	<short-name>jspx</short-name>
+	<uri>http://diaryproducts.net/jspx-taglib</uri>
+
+	<tag-file>
+		<name>attribute</name>
+		<path>/WEB-INF/tags/jspx/attribute.tagx</path>
+	</tag-file>
+
+	<tag-file>
+		<name>body</name>
+		<path>/WEB-INF/tags/jspx/body.tagx</path>
+	</tag-file>
+
+	<tag-file>
+		<name>element</name>
+		<path>/WEB-INF/tags/jspx/element.tagx</path>
+	</tag-file>
+
+	<tag-file>
+		<name>fragment</name>
+		<path>/WEB-INF/tags/jspx/fragment.tagx</path>
+	</tag-file>
+
+</taglib>

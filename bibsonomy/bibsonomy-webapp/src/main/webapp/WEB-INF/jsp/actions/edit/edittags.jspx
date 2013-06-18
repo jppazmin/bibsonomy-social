@@ -1,0 +1,260 @@
+<?xml version="1.0" ?>
+<!--
+
+
+     BibSonomy-Webapp - The webapplication for Bibsonomy.
+
+     Copyright (C) 2006 - 2011 Knowledge & Data Engineering Group,
+                               University of Kassel, Germany
+                               http://www.kde.cs.uni-kassel.de/
+
+     This program is free software; you can redistribute it and/or
+     modify it under the terms of the GNU General Public License
+     as published by the Free Software Foundation; either version 2
+     of the License, or (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+
+     You should have received a copy of the GNU General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+
+-->
+
+<jsp:root version="2.0" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
+	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/tags"
+	xmlns:user="urn:jsptagdir:/WEB-INF/tags/resources/user"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/buttons"
+	xmlns:spring="http://www.springframework.org/tags"
+  	xmlns:form="http://www.springframework.org/tags/form"
+	xmlns:rc="urn:jsptagdir:/WEB-INF/tags/resources/common">
+	
+	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
+	
+	<!-- used for the sample -->
+	<jsp:useBean id="newDate" class="java.util.Date" />
+	
+	<fmt:message key="navi.editTags" var="pageTitle" />
+
+	<layout:paneLayout pageTitle="${pageTitle} :: ${command.context.loginUser.name}" command="${command}" requPath="${requPath}">
+		<jsp:attribute name="heading">
+			<a rel="path_menu" href="#"><img src="${resdir}/image/box_arrow.png" />${mtl:ch('nbsp')}<c:out value="${pageTitle}" /></a> 
+		</jsp:attribute>
+		
+		<jsp:attribute name="headerExt">
+			<link rel="stylesheet" type="text/css" href="${resdir}/css/fsform.css" />
+			<spring:theme code="stylesheet.additional.fsform" var="additionalFsformCSS" text=""/> 
+			<c:if test="${not empty additionalFsformCSS}">
+				<link rel="stylesheet" type="text/css" href="${additionalFsformCSS}" />
+			</c:if>
+	    </jsp:attribute>
+
+		<jsp:attribute name="content">
+			<div id="general_100">
+				<!-- 
+					message for "reset" buttons
+			 	-->
+				<fmt:message var="reset" key="edittags.button.reset"/>
+				<fmt:message var="example" key="edittags.example"/>
+				
+				<!-- 
+					some resources/relations have been updated
+				 -->
+				<c:if test="${command.updatedRelationsCount > 0 or command.updatedTagsCount > 0}">
+		  			<h2><fmt:message key="edittags.update.headline" /></h2>
+		 			<c:if test="${command.updatedTagsCount > 0}">
+		   				<p>
+		   					<fmt:message key="edittags.update.resources"> 
+		   						<fmt:param>${command.updatedTagsCount}</fmt:param>
+		   					</fmt:message>
+		   				</p>
+		 			</c:if>
+		 			<c:if test="${command.updatedRelationsCount > 0}">
+		    			<p>
+		    				<fmt:message key="edittags.update.relations">
+		    					<fmt:param>${command.updatedRelationsCount}</fmt:param>
+		    				</fmt:message>
+		    			</p>
+		  			</c:if>
+				</c:if>			
+		 
+		 
+		  		<form:form action="/edit_tags" method="post">
+		 
+		 			<fieldset class="fsInner">
+		 				<h2><fmt:message key="edittags.main.Header"/></h2>
+		  				<p style="float:left;"><fmt:message key="edittags.main.textOne" /></p>
+							<!-- 
+								an example	
+			        	 	-->
+			        	 	<buttons:help iconText="${example}">
+			        	 		<jsp:attribute name="helpText">
+				        			<fmt:message key="edittags.example.partOne">
+				        			 	<fmt:param><a href="/tag/folksonomy"> folksonomy </a></fmt:param>
+				        				<fmt:param><a href="/tag/project"> project </a></fmt:param>
+				        				<fmt:param><a href="/tag/social"> social </a></fmt:param>
+				        				<fmt:param><a href="/tag/system"> system </a></fmt:param> 
+				        				<fmt:param><a href="/tag/bookmarking"> bookmarking </a></fmt:param> 
+				        			</fmt:message>
+
+						    		<hr />
+				        			
+									<div class="bmtitel">
+										<b><a href="${root}">${projectName}</a></b>
+									</div>
+				     				<span class="bmmeta">
+				        				<fmt:message key="edittags.example.partTwo">
+											<fmt:param> <a href="/user/${fn:escapeXml(command.context.loginUser.name)}/bibtex">bibtex</a></fmt:param>
+											<fmt:param> <a href="/user/${fn:escapeXml(command.context.loginUser.name)}/folksonomy">folksonomy</a></fmt:param>
+											<fmt:param> <a href="/user/${fn:escapeXml(command.context.loginUser.name)}/project">project</a></fmt:param>
+											<fmt:param> <a href="/user/${fn:escapeXml(command.context.loginUser.name)}"><c:out value='${command.context.loginUser.name}' /></a></fmt:param>
+				       						<fmt:param><fmt:formatDate value="${newDate}" pattern="yyyy-MM-dd HH:mm:ss" /></fmt:param>
+				       					</fmt:message>
+									</span>
+							
+									<div class="bmtitel">
+										<b><a href="${root}">${projectName}</a></b>
+									</div>
+				     
+									<span class="bmmeta">
+				        				<fmt:message key="edittags.example.partTwo">
+											<fmt:param> <a href="/user/${fn:escapeXml(command.context.loginUser.name)}/bibtex">bibtex</a></fmt:param>
+											<fmt:param> 
+												<a href="/user/${fn:escapeXml(command.context.loginUser.name)}/bookmarking">bookmarking</a>
+												<c:out value=" "/>
+												<a href="/user/${fn:escapeXml(command.context.loginUser.name)}/social">social</a>
+											</fmt:param>
+											<fmt:param> <a href="/user/${fn:escapeXml(command.context.loginUser.name)}/system">system</a></fmt:param>
+											<fmt:param> <a href="/user/${fn:escapeXml(command.context.loginUser.name)}"><c:out value='${command.context.loginUser.name}' /></a></fmt:param>
+				       						<fmt:param><fmt:formatDate value="${newDate}" pattern="yyyy-MM-dd HH:mm:ss" /></fmt:param>
+				       					</fmt:message>
+									</span>
+									
+								</jsp:attribute>
+							</buttons:help>			
+						<div class="fsRow">
+					      <form:label cssClass="fsLabel" path="editTags.delTags"><fmt:message key="edittags.main.replace" />:</form:label><buttons:help message="edittags.help.delTags" />
+					      <form:input cssClass="fsInput" path="editTags.delTags" id="inpf" onclick="setActiveInputField(this.id)" />		        
+					    </div>
+						<div class="fsRow">
+					      <form:label cssClass="fsLabel" path="editTags.addTags"><fmt:message key="edittags.main.newtags" />:</form:label><buttons:help message="edittags.help.addTags" />
+					      <form:input cssClass="fsInput" path="editTags.addTags" id="inpfNew" onclick="setActiveInputField(this.id)" />		        
+					    </div>
+						<div class="fsRow">
+		        			<form:label cssClass="fsLabel" path="editTags.updateRelations"><fmt:message key="edittags.main.updaterelations" />:</form:label><buttons:help message="edittags.help.updateRelations" />
+							<form:checkbox cssClass="fsInput" path="editTags.updateRelations"/>
+							<fmt:message key="edittags.main.note" />
+		        		</div>
+
+						<div class="fsRow">
+							<input type="hidden" name="ckey" value="${ckey}"/>
+							<input type="hidden" name="forcedAction" value="1"/>
+			    			<fmt:message var="send" key="edittags.button.send"/>
+			    			<input type="submit" value="${send}"/><c:out value=" "/>
+			    			<input type="reset" value="${reset}"/>
+			    		</div>
+		        	</fieldset>
+				</form:form>
+
+				<!-- 
+					edit tag relations 
+				-->
+				<fmt:message var="supertag" key="edittags.supertag"/>
+				<fmt:message var="subtag" key="edittags.subtag"/>
+		
+				<form:form action="/edit_tags" method="post">
+		  
+		 			<fieldset class="fsInner">
+						<h2><fmt:message key="edittags.main.insertRelationsOne" /></h2>
+						<div class="fsRow">
+					      <form:label cssClass="fsLabel" path="relationsEdit.upper">
+					      	<buttons:help message="edittags.help.enterSuperTag" />
+					      </form:label>
+					      <form:input cssClass="fsInput fsSmall descriptiveLabel" path="relationsEdit.upper" id="insert_up" onclick="setActiveInputField(this.id)" onfocus="setActiveInputField(this.id);" value="${supertag}"/>
+					      <span style="float:left;">&#8592;</span>
+					      		        
+					      <form:label cssClass="fsLabel" path="relationsEdit.lower">
+					      	<buttons:help message="edittags.help.enterSubTag" />
+					      </form:label>
+					      <form:input cssClass="fsInput fsSmall descriptiveLabel" path="relationsEdit.lower" id="insert_lo" onclick="setActiveInputField(this.id)" onfocus="setActiveInputField(this.id);" value="${subtag}"/>				    
+					    </div>
+
+			    			<fmt:message var="insertRelation" key="edittags.button.insertRelations"/>
+							<input type="submit" value="${insertRelation}" /><c:out value=" "/>
+							<input type="reset"  onclick="var b='descriptiveLabel';$('#insert_up').addClass(b);$('#insert_lo').addClass(b);" value="${reset}" />
+							<input type="hidden" name="ckey" value="${ckey}"/>
+							<input type="hidden" name="forcedAction" value="2"/>
+							<input type="hidden" name="relationsEdit.forcedAction" value="0"/>
+
+
+					</fieldset>
+				</form:form>
+			  
+			    
+			    <form:form action="/edit_tags" method="post">
+			    	<fieldset class="fsInner">  
+						<h2><fmt:message key="edittags.main.deleteRelationsOne" /></h2>
+			    		
+						<div class="fsRow">
+					      <form:label cssClass="fsLabel" path="relationsEdit.upper">
+					      	<buttons:help message="edittags.help.enterSuperTag" />
+					      </form:label>
+					      <form:input cssClass="fsInput fsSmall descriptiveLabel" path="relationsEdit.upper" id="delete_up" onclick="setActiveInputField(this.id)" onfocus="setActiveInputField(this.id);" value="${supertag}"/>					      <span style="float:left;">&#8592;</span>
+					      		        
+					      <form:label cssClass="fsLabel" path="relationsEdit.lower"><buttons:help message="edittags.help.enterSubTag" /></form:label>
+					      <form:input cssClass="fsInput fsSmall descriptiveLabel" path="relationsEdit.lower" id="delete_lo" onclick="setActiveInputField(this.id)" onfocus="setActiveInputField(this.id);" value="${subtag}"/>		        
+					    
+					    </div>
+			    		
+							<fmt:message var="deleteRelation" key="edittags.button.deleteRelations"/>
+			    			<input type="submit" value="${deleteRelation}" /><c:out value=" "/>
+			    			<input type="reset" onclick="var b='descriptiveLabel';$('#delete_up').addClass(b);$('#delete_lo').addClass(b);" value="${reset}" />
+			    			<input type="hidden" name="ckey" value="${ckey}"/>
+							<input type="hidden" name="forcedAction" value="2"/>
+							<input type="hidden" name="relationsEdit.forcedAction" value="1"/>
+
+			    	</fieldset>
+				</form:form>
+				
+			</div>
+		</jsp:attribute>
+			
+		<jsp:attribute name="sidebar">	
+			<ul id="sidebar">			
+				<li>
+					<fmt:message key="tagrelations.title" var="tagRelationsTitle"/>
+					<span class="sidebar_h">
+						<a href="/relations/${fn:escapeXml(command.context.loginUser.name)}" title="${tagRelationsTitle}">
+							<fmt:message key="tagrelations"/>
+						</a>
+					</span>	
+					<tags:concepts cmd="${command.concepts}" usersOwnRelations="${true}" requestedUserName="${command.context.loginUser.name}"/>
+				</li>
+				<li>
+					<span class="sidebar_h"><fmt:message key="tags" /></span>
+					<tags:cloud requPath="user/${command.context.loginUser.name}" cmd="${command.tagcloud}"
+							tagboxMinfreqStyle="user"
+							showTooltips="${command.context.loginUser.settings.tagboxTooltip}" />
+				</li>
+	 		</ul>
+
+			<script type="text/javascript">
+				add_toggle();
+	  			disableHandler();
+	  			add_toggle_relations();
+	  			setOps();
+	 		</script>
+
+		</jsp:attribute>
+	</layout:paneLayout>
+
+</jsp:root>

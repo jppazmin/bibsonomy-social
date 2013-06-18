@@ -1,0 +1,193 @@
+<jsp:root version="2.0" 
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
+	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/buttons"
+	xmlns:form="http://www.springframework.org/tags/form">
+	
+	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true"/>
+	
+	
+	<parts:fieldset maximized="${not command.context.loginUser.settings.simpleInterface}" legendKey="post.resource.fields.detailed">
+		<jsp:attribute name="legendExt">
+	      (<a id="collapse" href="javascript:showAll()"><fmt:message key="post.resource.fields.detailed.show.all"/></a>)
+	   	</jsp:attribute>
+        
+        <jsp:attribute name="content">         
+	        <div class="fsRow">
+	          <form:label cssClass="fsLabel" path="post.resource.booktitle" ><fmt:message key="post.resource.booktitle"/></form:label><buttons:help message="post.resource.booktitle.help"/>
+	          <form:input cssClass="fsInput" path="post.resource.booktitle" tabindex="2"/>
+	          <div class="dissError"><form:errors path="post.resource.booktitle" /></div>
+	        </div>
+	 
+	        <div class="fsRow">
+	          <form:label cssClass="fsLabel" path="post.resource.journal" ><fmt:message key="post.resource.journal"/></form:label><buttons:help message="post.resource.journal.help"/>
+	          <form:input cssClass="fsInput" path="post.resource.journal" tabindex="2"/>
+	          <div class="dissError"><form:errors path="post.resource.journal" /></div>
+	        </div>
+	 
+	 
+	        <div class="fsRow">
+	          <form:label cssClass="fsLabel" path="post.resource.volume" ><fmt:message key="post.resource.volume"/></form:label><buttons:help message="post.resource.volume.help"/>
+	          <form:input cssClass="fsInput fsSmall" path="post.resource.volume" tabindex="2"/>
+	          <div class="dissError"><form:errors path="post.resource.volume" /></div>
+	        </div>
+	
+	        <div class="fsRow">
+	          <form:label cssClass="fsLabel" path="post.resource.number" ><fmt:message key="post.resource.number"/></form:label><buttons:help message="post.resource.number.help"/>
+	          <form:input cssClass="fsInput fsSmall" path="post.resource.number" tabindex="2"/>
+	          <div class="dissError"><form:errors path="post.resource.number" /></div>
+	        </div>
+	
+	        <div class="fsRow">
+	          <form:label cssClass="fsLabel" path="post.resource.pages" ><fmt:message key="post.resource.pages"/></form:label><buttons:help message="post.resource.pages.help"/>
+	          <form:input cssClass="fsInput fsSmall" path="post.resource.pages" tabindex="2"/>
+	          <div class="dissError"><form:errors path="post.resource.pages" /></div>
+	        </div>
+	
+	        <div class="fsRow">
+	          <form:label cssClass="fsLabel" path="post.resource.month" ><fmt:message key="post.resource.month"/></form:label><buttons:help message="post.resource.month.help"/>
+	          <form:input cssClass="fsInput fsSmall" path="post.resource.month" tabindex="2"/>
+	          <div class="dissError"><form:errors path="post.resource.month" /></div>
+	        </div>
+	
+	        <div class="fsRow">
+	          <form:label cssClass="fsLabel" path="post.resource.day" ><fmt:message key="post.resource.day"/></form:label><buttons:help message="post.resource.day.help"/>
+	          <form:input cssClass="fsInput fsSmall" path="post.resource.day" tabindex="2"/>
+	          <div class="dissError"><form:errors path="post.resource.day" /></div>
+	        </div>
+	
+	
+	        <div class="fsRow">
+	          <form:label cssClass="fsLabel" path="post.resource.publisher" ><fmt:message key="post.resource.publisher"/></form:label><buttons:help message="post.resource.publisher.help"/>
+	          <form:input cssClass="fsInput" path="post.resource.publisher" tabindex="2"/>
+	          <div class="dissError"><form:errors path="post.resource.publisher" /></div>
+	        </div>
+	
+	        <div class="fsRow">
+	          <form:label cssClass="fsLabel" path="post.resource.address" ><fmt:message key="post.resource.address"/></form:label><buttons:help message="post.resource.address.help"/>
+	          <form:input cssClass="fsInput" path="post.resource.address" tabindex="2"/>
+	          <div class="dissError"><form:errors path="post.resource.address" /></div>
+	        </div>
+	
+	
+	        <div class="fsRow">
+	          <form:label cssClass="fsLabel" path="post.resource.edition" ><fmt:message key="post.resource.edition"/></form:label><buttons:help message="post.resource.edition.help"/>
+	          <form:input cssClass="fsInput fsSmall" path="post.resource.edition" tabindex="2"/>
+	          <div class="dissError"><form:errors path="post.resource.edition" /></div>
+	        </div>
+	
+	        <div class="fsRow">
+	          <form:label cssClass="fsLabel" path="post.resource.chapter" ><fmt:message key="post.resource.chapter"/></form:label><buttons:help message="post.resource.chapter.help"/>
+	          <form:input cssClass="fsInput fsSmall" path="post.resource.chapter" tabindex="2"/>
+	          <div class="dissError"><form:errors path="post.resource.chapter" /></div>
+	        </div>
+	
+	
+	        <div class="fsRow">
+	          <form:label cssClass="fsLabel" path="post.resource.url" ><fmt:message key="post.resource.url"/></form:label><buttons:help message="post.resource.url.help"/>
+	          <form:input cssClass="fsInput" path="post.resource.url" tabindex="2"/>
+	          <div class="dissError"><form:errors path="post.resource.url" /></div>
+	        </div>
+	
+	
+	        <div class="fsRow">
+	          <form:label cssClass="fsLabel" path="post.resource.key" ><fmt:message key="post.resource.key"/></form:label><buttons:help message="post.resource.key.help"/>
+	          <form:input cssClass="fsInput fsSmall" path="post.resource.key" tabindex="2"/>
+	          <div class="dissError"><form:errors path="post.resource.key" /></div>
+	        </div>
+	
+	
+	        <div class="fsRow">
+	          <form:label cssClass="fsLabel" path="post.resource.type" ><fmt:message key="post.resource.type"/></form:label><buttons:help message="post.resource.type.help"/>
+	          <form:input cssClass="fsInput" path="post.resource.type" tabindex="2"/>
+	          <div class="dissError"><form:errors path="post.resource.type" /></div>
+	        </div>
+	
+	        <div class="fsRow">
+	          <form:label cssClass="fsLabel" path="post.resource.howpublished" ><fmt:message key="post.resource.howpublished"/></form:label><buttons:help message="post.resource.howpublished.help"/>
+	          <form:input cssClass="fsInput" path="post.resource.howpublished" tabindex="2"/>
+	          <div class="dissError"><form:errors path="post.resource.howpublished" /></div>
+	        </div>
+	
+	
+	        <div class="fsRow">
+	          <form:label cssClass="fsLabel" path="post.resource.institution" ><fmt:message key="post.resource.institution"/></form:label><buttons:help message="post.resource.institution.help"/>
+	          <form:input cssClass="fsInput" path="post.resource.institution" tabindex="2"/>
+	          <div class="dissError"><form:errors path="post.resource.institution" /></div>
+	        </div>
+	
+	        <div class="fsRow">
+	          <form:label cssClass="fsLabel" path="post.resource.organization" ><fmt:message key="post.resource.organization"/></form:label><buttons:help message="post.resource.organization.help"/>
+	          <form:input cssClass="fsInput" path="post.resource.organization" tabindex="2"/>
+	          <div class="dissError"><form:errors path="post.resource.organization" /></div>
+	        </div>
+	
+	        <div class="fsRow">
+	          <form:label cssClass="fsLabel" path="post.resource.school" ><fmt:message key="post.resource.school"/></form:label><buttons:help message="post.resource.school.help"/>
+	          <form:input cssClass="fsInput" path="post.resource.school" tabindex="2"/>
+	          <div class="dissError"><form:errors path="post.resource.school" /></div>
+	        </div>
+	
+	
+	        <div class="fsRow">
+	          <form:label cssClass="fsLabel" path="post.resource.series" ><fmt:message key="post.resource.series"/></form:label><buttons:help message="post.resource.series.help"/>
+	          <form:input cssClass="fsInput" path="post.resource.series" tabindex="2"/>
+	          <div class="dissError"><form:errors path="post.resource.series" /></div>
+	        </div>
+	
+	
+	        <div class="fsRow">
+	          <form:label cssClass="fsLabel" path="post.resource.crossref" ><fmt:message key="post.resource.crossref"/></form:label><buttons:help message="post.resource.crossref.help"/>
+	          <form:input cssClass="fsInput fsSmall" path="post.resource.crossref" tabindex="2"/>
+	          <div class="dissError"><form:errors path="post.resource.crossref" /></div>
+	        </div>  
+	
+	        <div class="fsRow">
+	          <form:label cssClass="fsLabel" path="post.resource.misc" ><fmt:message key="post.resource.misc"/></form:label><buttons:help message="post.resource.misc.help"/>
+	          <form:textarea cssClass="fsInput" path="post.resource.misc" tabindex="2" rows="3"/>
+	          <div class="dissError"><form:errors path="post.resource.misc" /></div>
+	        </div>
+	
+	        <div class="fsRow">
+	          <form:label cssClass="fsLabel" path="post.resource.abstract" ><fmt:message key="post.resource.abstract"/></form:label><buttons:help message="post.resource.abstract.help"/>
+	          <form:textarea cssClass="fsInput" path="post.resource.abstract" tabindex="2" rows="3"/>
+	          <div class="dissError"><form:errors path="post.resource.abstract" /></div>
+	        </div>
+        </jsp:attribute>
+     </parts:fieldset>
+     
+     <parts:fieldset maximized="${not command.context.loginUser.settings.simpleInterface}" legendKey="post.resource.fields.comments" >
+	     <jsp:attribute name="content">
+         
+        	 <!-- 
+            	| TODO: explain difference between fields!
+            	-->
+            <div class="fsRow">
+              <form:label cssClass="fsLabel" path="post.description" ><fmt:message key="post.resource.description"/>, <fmt:message key="post.resource.comment"/></form:label><buttons:help cssStyle="float:left" message="post.resource.description.help"/>
+              <form:textarea cssClass="fsInput" path="post.description" tabindex="2" rows="3" />
+            </div>
+            
+            <div class="fsRow">
+              <form:label cssClass="fsLabel" path="post.resource.privnote" ><fmt:message key="post.resource.privnote"/></form:label><buttons:help message="post.resource.privnote.help"/>
+              <form:textarea cssClass="fsInput" path="post.resource.privnote" tabindex="2" rows="3" />
+              <div class="dissError"><form:errors path="post.resource.privnote" /></div>
+            </div>
+            
+            <div class="fsRow">
+              <form:label cssClass="fsLabel" path="post.resource.annote" ><fmt:message key="post.resource.annote"/></form:label><buttons:help message="post.resource.annote.help"/>
+              <form:input cssClass="fsInput" path="post.resource.annote" tabindex="2"/>
+              <div class="dissError"><form:errors path="post.resource.annote" /></div>
+            </div>
+
+            <div class="fsRow">
+              <form:label cssClass="fsLabel" path="post.resource.note" ><fmt:message key="post.resource.note"/></form:label><buttons:help message="post.resource.note.help"/>
+              <form:input cssClass="fsInput" path="post.resource.note" tabindex="2"/>
+              <div class="dissError"><form:errors path="post.resource.note" /></div>
+            </div>
+    	</jsp:attribute>
+	</parts:fieldset>
+</jsp:root>

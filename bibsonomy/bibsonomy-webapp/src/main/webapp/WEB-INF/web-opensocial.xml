@@ -1,0 +1,329 @@
+<!--
+
+
+     BibSonomy-Webapp - The webapplication for Bibsonomy.
+
+     Copyright (C) 2006 - 2011 Knowledge & Data Engineering Group,
+                               University of Kassel, Germany
+                               http://www.kde.cs.uni-kassel.de/
+
+     This program is free software; you can redistribute it and/or
+     modify it under the terms of the GNU General Public License
+     as published by the Free Software Foundation; either version 2
+     of the License, or (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+
+     You should have received a copy of the GNU General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+
+-->
+
+<!--
+	Syntax: <key>=<value> separated by a newline system.properties
+	specifies the environmental variables that will be set to the JVM
+	System Properties at server startup time. Alternatively, you may add
+	these values in your app server (ex: Tomcat) as VM arguments like
+	this: -Dshindig.host="my.production.shindig.server.com". Here are a
+	few properties that can be set for Shindig: shindig.host: the server
+	name that Shindig is deployed and running on shindig.port: the port
+	number of shindig.host server Make sure you escape all HTML values for
+	the web.xml to be parsed correctly.
+-->
+<!-- 
+<context-param>
+	<param-name>system.properties</param-name>
+	<param-value>
+		shindig.host=folke.biblicious.org
+		shindig.port=80
+
+		aKey=/shindig/gadgets/proxy?container=default&amp;url=
+     </param-value>
+</context-param>
+ -->
+<context-param>
+	<param-name>spring-application-context-name</param-name>
+	<param-value>
+	</param-value>
+</context-param>
+
+<!--+
+	| maps some of BibSonomy's configuration parameters to system.properties for
+	| configuring shindig  
+	+-->
+<listener>
+	<listener-class>org.bibsonomy.opensocial.config.SystemPropertiesContextListener</listener-class>
+</listener>  
+
+<!--+
+	| Configure custom Guice module(s) as a colon-separated list. 
+	+-->	
+<context-param>
+	<param-name>guice-modules</param-name>
+	<param-value>
+	  <!-- org.bibsonomy.opensocial.config.BibSonomyPropertiesModule: -->
+      org.apache.shindig.common.PropertiesModule:
+      org.bibsonomy.opensocial.config.GuiceModule:
+      org.apache.shindig.gadgets.DefaultGuiceModule:
+      <!-- org.apache.shindig.social.core.config.SocialApiGuiceModule: -->
+      org.bibsonomy.opensocial.config.SocialApiGuiceModule:
+      <!-- org.apache.shindig.social.sample.SampleModule: -->
+      <!-- org.apache.shindig.gadgets.oauth.OAuthModule:  -->
+      org.bibsonomy.opensocial.oauth.OAuthModule:
+      org.apache.shindig.common.cache.ehcache.EhCacheModule:
+      org.apache.shindig.extras.ShindigExtrasGuiceModule:
+      org.apache.shindig.extras.as.ActivityStreamsGuiceModule
+    </param-value>
+ </context-param>
+
+<!--+
+	| configure shindig auth filter which uses previously via guice configured
+	| auth provier
+	+-->
+<filter>
+	<filter-name>authFilter</filter-name>
+	<filter-class>org.apache.shindig.auth.AuthenticationServletFilter
+	</filter-class>
+</filter>
+
+<filter-mapping>
+	<filter-name>authFilter</filter-name>
+	<url-pattern>/social/*</url-pattern>
+</filter-mapping>
+
+<filter-mapping>
+	<filter-name>authFilter</filter-name>
+	<url-pattern>/gadgets/ifr</url-pattern>
+</filter-mapping>
+
+<filter-mapping>
+	<filter-name>authFilter</filter-name>
+	<url-pattern>/gadgets/makeRequest</url-pattern>
+</filter-mapping>
+
+<filter-mapping>
+	<filter-name>authFilter</filter-name>
+	<url-pattern>/gadgets/api/rpc/*</url-pattern>
+</filter-mapping>
+
+<filter-mapping>
+	<filter-name>authFilter</filter-name>
+	<url-pattern>/gadgets/api/rest/*</url-pattern>
+</filter-mapping>
+
+<filter-mapping>
+	<filter-name>authFilter</filter-name>
+	<url-pattern>/rpc/*</url-pattern>
+</filter-mapping>
+
+<filter-mapping>
+	<filter-name>authFilter</filter-name>
+	<url-pattern>/rest/*</url-pattern>
+</filter-mapping>
+
+<!--+
+    | Listeners
+    +-->
+<!-- GuiceServletContextListener -->
+<listener>
+	<listener-class>org.apache.shindig.common.servlet.GuiceServletContextListener</listener-class>
+</listener>
+
+<!--+ ApplicationServletContextListener
+    | Destroys Spring's ApplicationContext at shutdown, forcing bean defined
+    | destroy-methods to be invoked
+	+-->
+<listener>
+	<listener-class>org.bibsonomy.opensocial.servlet.ApplicationServletContextListener
+	</listener-class>
+</listener>  
+
+
+<!--+
+    | Servlets
+    +-->
+<!-- Render a Gadget -->
+<servlet>
+	<servlet-name>xml-to-html</servlet-name>
+	<servlet-class>
+		org.apache.shindig.gadgets.servlet.GadgetRenderingServlet
+	</servlet-class>
+</servlet>
+
+<servlet>
+	<servlet-name>accel</servlet-name>
+	<servlet-class>
+		org.apache.shindig.gadgets.servlet.HtmlAccelServlet
+    </servlet-class>
+</servlet>
+
+<!-- Proxy -->
+<servlet>
+	<servlet-name>proxy</servlet-name>
+	<servlet-class>
+		org.apache.shindig.gadgets.servlet.ProxyServlet
+    </servlet-class>
+</servlet>
+
+<!-- makeRequest -->
+<servlet>
+	<servlet-name>makeRequest</servlet-name>
+	<servlet-class>
+		org.apache.shindig.gadgets.servlet.MakeRequestServlet
+    </servlet-class>
+</servlet>
+
+<!-- Concat -->
+<servlet>
+	<servlet-name>concat</servlet-name>
+	<servlet-class>
+		org.apache.shindig.gadgets.servlet.ConcatProxyServlet
+    </servlet-class>
+</servlet>
+
+<!-- OAuth callback -->
+<servlet>
+	<servlet-name>oauthCallback</servlet-name>
+	<servlet-class>
+		org.apache.shindig.gadgets.servlet.OAuthCallbackServlet
+    </servlet-class>
+</servlet>
+
+<!-- Metadata RPC -->
+<servlet>
+	<servlet-name>metadata</servlet-name>
+	<servlet-class>
+		org.apache.shindig.gadgets.servlet.RpcServlet
+    </servlet-class>
+</servlet>
+
+<!-- javascript serving -->
+<servlet>
+	<servlet-name>js</servlet-name>
+	<servlet-class>org.apache.shindig.gadgets.servlet.JsServlet
+	</servlet-class>
+</servlet>
+
+<servlet>
+	<servlet-name>restapiServlet</servlet-name>
+	<servlet-class>
+		org.apache.shindig.protocol.DataServiceServlet
+    </servlet-class>
+	<init-param>
+		<param-name>handlers</param-name>
+		<param-value>org.apache.shindig.handlers</param-value>
+	</init-param>
+</servlet>
+
+<!-- Serve social RPC api -->
+<servlet>
+	<servlet-name>jsonRpcServlet</servlet-name>
+	<servlet-class>
+		org.apache.shindig.protocol.JsonRpcServlet
+    </servlet-class>
+	<init-param>
+		<param-name>handlers</param-name>
+		<param-value>org.apache.shindig.handlers</param-value>
+	</init-param>
+</servlet>
+
+<!-- Serve sample OAuth apis -->
+<servlet>
+	<servlet-name>sampleOAuth</servlet-name>
+	<servlet-class>
+		org.apache.shindig.social.sample.oauth.SampleOAuthServlet
+	</servlet-class>
+</servlet>
+
+
+<!--+
+    | Servlet mappings 
+    +-->
+<servlet-mapping>
+	<servlet-name>js</servlet-name>
+	<url-pattern>/gadgets/js/*</url-pattern>
+</servlet-mapping>
+
+<servlet-mapping>
+	<servlet-name>proxy</servlet-name>
+	<url-pattern>/gadgets/proxy/*</url-pattern>
+</servlet-mapping>
+
+<servlet-mapping>
+	<servlet-name>makeRequest</servlet-name>
+	<url-pattern>/gadgets/makeRequest</url-pattern>
+</servlet-mapping>
+
+<servlet-mapping>
+	<servlet-name>jsonRpcServlet</servlet-name>
+	<url-pattern>/rpc/*</url-pattern>
+</servlet-mapping>
+
+<servlet-mapping>
+	<servlet-name>jsonRpcServlet</servlet-name>
+	<url-pattern>/gadgets/api/rpc/*</url-pattern>
+</servlet-mapping>
+
+<servlet-mapping>
+	<servlet-name>jsonRpcServlet</servlet-name>
+	<url-pattern>/social/rpc/*</url-pattern>
+</servlet-mapping>
+
+
+<servlet-mapping>
+	<servlet-name>restapiServlet</servlet-name>
+	<url-pattern>/rest/*</url-pattern>
+</servlet-mapping>
+
+<servlet-mapping>
+	<servlet-name>restapiServlet</servlet-name>
+	<url-pattern>/gadgets/api/rest/*</url-pattern>
+</servlet-mapping>
+
+<servlet-mapping>
+	<servlet-name>restapiServlet</servlet-name>
+	<url-pattern>/social/rest/*</url-pattern>
+</servlet-mapping>
+
+
+<servlet-mapping>
+	<servlet-name>concat</servlet-name>
+	<url-pattern>/gadgets/concat</url-pattern>
+</servlet-mapping>
+
+<servlet-mapping>
+	<servlet-name>oauthCallback</servlet-name>
+	<url-pattern>/gadgets/oauthcallback</url-pattern>
+</servlet-mapping>
+
+<servlet-mapping>
+	<servlet-name>xml-to-html</servlet-name>
+	<url-pattern>/gadgets/ifr</url-pattern>
+</servlet-mapping>
+
+<servlet-mapping>
+	<servlet-name>accel</servlet-name>
+	<url-pattern>/gadgets/accel</url-pattern>
+</servlet-mapping>
+
+<servlet-mapping>
+	<servlet-name>metadata</servlet-name>
+	<url-pattern>/gadgets/metadata</url-pattern>
+</servlet-mapping>
+
+<!-- 
+<servlet-mapping>
+	<servlet-name>sampleOAuth</servlet-name>
+	<url-pattern>/oauth/*</url-pattern>
+</servlet-mapping>
+ -->
+ 
+<servlet-mapping>
+	<servlet-name>default</servlet-name>
+	<url-pattern>/resources</url-pattern>
+</servlet-mapping>
+    

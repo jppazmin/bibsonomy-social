@@ -1,0 +1,39 @@
+<jsp:root version="2.0"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:resources="urn:jsptagdir:/WEB-INF/tags/resources"
+	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
+	
+	<jsp:directive.attribute name="command" type="org.bibsonomy.webapp.command.GroupsListCommand" required="true"/>	
+	<jsp:directive.attribute name="requPath" type="java.lang.String" required="true"/>
+	<jsp:directive.attribute name="pageTitle" type="java.lang.String" required="true"/>
+	<jsp:directive.attribute name="disableActions" type="java.lang.Boolean" required="false"/>
+	<jsp:directive.attribute name="disableListNavigation" type="java.lang.Boolean" required="false"/>
+	<jsp:directive.attribute name="heading" fragment="true" required="true"/>
+	<jsp:directive.attribute name="sidebar" fragment="true" required="false"/>	
+	<jsp:directive.attribute name="content" fragment="true" required="true"/>	
+	<jsp:directive.attribute name="selectedNaviTab" type="java.lang.String" required="false"/>	
+	<jsp:directive.attribute name="headerExt" fragment="true" />
+	
+	<!--  actions (list navigation, editing entries, ...) are enabled by default -->
+	<c:if test="${empty disableActions}">
+		<c:set var="disableActions" value="${false}"/>
+	</c:if>
+	<c:if test="${empty disableListNavigation}">
+		<c:set var="disableListNavigation" value="${false}"/>
+	</c:if>	
+		
+	<c:set var="requPath"><c:out value="${requPath}" escapeXml="true" /></c:set>
+	<layout:layout loginUser="${command.context.loginUser}" pageTitle="${pageTitle}" heading="${heading}" requestedUser="${command.context.loginUser.name}" sidebar="${sidebar}" requPath="${requPath}" selectedNaviTab="${selectedNaviTab}">
+		<jsp:attribute name="headerExt">
+			<jsp:invoke fragment="headerExt"/>		
+		</jsp:attribute>
+
+		<jsp:attribute name="content">
+			<jsp:invoke fragment="content"/>
+		</jsp:attribute>
+	</layout:layout>
+</jsp:root>

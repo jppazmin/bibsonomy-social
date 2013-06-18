@@ -1,0 +1,197 @@
+<jsp:root version="2.0" 
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"	
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:swrc="http://swrc.ontoware.org/ontology#"
+	xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:owl="http://www.w3.org/2002/07/owl#"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions">
+	
+	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true" />
+
+    <c:if test="${!empty post.resource.url}">
+      <owl:sameAs rdf:resource="${fn:escapeXml(mtl:cleanUrl(post.resource.url))}" />
+    </c:if>
+    
+
+    <c:if test="${!empty post.date}">
+      <swrc:date>
+        <c:out value="${post.date}" />
+      </swrc:date>
+    </c:if>
+
+    <c:if test ="${!empty post.resource.address}">
+		<swrc:address>
+			<c:out value="${post.resource.address}"/>
+		</swrc:address>
+	</c:if>
+	
+	<c:if test ="${!empty post.resource.booktitle}">
+		<swrc:booktitle>
+			<c:out value="${post.resource.booktitle}"/>
+		</swrc:booktitle>
+	</c:if>
+	
+	<c:if test ="${!empty post.resource.chapter}">
+		<swrc:chapter>
+			<c:out value="${post.resource.chapter}"/>
+		</swrc:chapter>
+	</c:if>
+	
+	<c:if test ="${!empty post.resource.crossref}">
+		<swrc:crossref>
+			<c:out value="${post.resource.crossref}"/>
+		</swrc:crossref>
+	</c:if>
+	<c:if test ="${!empty post.resource.edition}">
+		<swrc:edition>
+			<c:out value="${post.resource.edition}"/>
+		</swrc:edition>
+	</c:if>
+	
+	<c:if test ="${!empty post.resource.howpublished}">
+		<swrc:howpublished>
+			<c:out value="${post.resource.howpublished}"/>
+		</swrc:howpublished>
+	</c:if>
+	
+	<c:if test ="${!empty post.resource.institution}">
+		<swrc:institution>
+			<swrc:Organization swrc:name="${fn:escapeXml(post.resource.institution)}"/>
+		</swrc:institution>
+	</c:if>
+	
+	<c:if test ="${!empty post.resource.journal}">
+		<swrc:journal>
+			<c:out value="${post.resource.journal}"/>
+		</swrc:journal>
+	</c:if>
+	
+	<c:if test ="${!empty post.resource.key}">
+		<swrc:key>
+			<c:out value="${post.resource.key}"/>
+		</swrc:key>
+	</c:if>
+	
+	<c:if test ="${!empty post.resource.month}">
+		<swrc:month>
+			<c:out value="${post.resource.month}"/>
+		</swrc:month>
+	</c:if>
+	
+	<c:if test ="${!empty post.resource.note}">
+		<swrc:note>
+			<c:out value="${post.resource.note}"/>
+		</swrc:note>
+	</c:if>
+	
+	<c:if test ="${!empty post.resource.number}">
+		<swrc:number>
+			<c:out value="${post.resource.number}"/>
+		</swrc:number>
+	</c:if>
+	
+	<c:if test ="${!empty post.resource.organization}">
+		<swrc:organization>
+			<swrc:Organization swrc:name="${fn:escapeXml(post.resource.organization)}"/>
+		</swrc:organization>
+	</c:if>
+	
+	<c:if test ="${!empty post.resource.pages}">
+		<swrc:pages>
+			<c:out value="${post.resource.pages}"/>
+		</swrc:pages>
+	</c:if>
+	
+	<c:if test ="${!empty post.resource.publisher}">
+		<swrc:publisher>
+			<swrc:Organization swrc:name="${fn:escapeXml(post.resource.publisher)}"/>
+		</swrc:publisher>
+	</c:if>
+	
+	<c:if test ="${!empty post.resource.school}">
+		<swrc:school>
+			<swrc:University swrc:name="${fn:escapeXml(post.resource.school)}"/>
+		</swrc:school>
+	</c:if>
+	
+	<c:if test ="${!empty post.resource.series}">
+		<swrc:series>
+			<c:out value="${post.resource.series}"/>
+		</swrc:series>
+	</c:if>
+	
+	<c:if test ="${!empty post.resource.title}">
+		<swrc:title>
+			<c:out value="${post.resource.title}"/>
+		</swrc:title>
+	</c:if>
+	
+	<c:if test ="${!empty post.resource.type}">
+		<swrc:type>
+			<c:out value="${post.resource.type}"/>
+		</swrc:type>
+	</c:if>
+	
+	<c:if test ="${!empty post.resource.volume}">
+		<swrc:volume>
+			<c:out value="${post.resource.volume}"/>
+		</swrc:volume>
+	</c:if>
+	
+	<c:if test ="${!empty post.resource.year}">
+		<swrc:year>
+			<c:out value="${post.resource.year}"/>
+		</swrc:year>
+	</c:if>
+	
+	<c:if test ="${fn:length(post.tags) != 0}">
+		<swrc:keywords>
+			 <c:forEach var="tag" items="${post.tags}">
+                 <c:out value ='${tag.name}'/><c:out value=" "/>
+             </c:forEach>
+		</swrc:keywords>
+	</c:if>
+	
+	<c:if test ="${!empty post.resource.day}">
+		<swrc:day>
+			<c:out value="${post.resource.day}"/>
+		</swrc:day>
+	</c:if>
+	
+	<c:if test ="${!empty post.resource.abstract}">
+		<swrc:abstract>
+			<c:out value="${post.resource.abstract}"/>
+		</swrc:abstract>
+	</c:if>
+	
+	<c:if test="${!empty post.resource.miscFields}">
+		<c:forEach var="misc" items="${post.resource.miscFields}">
+		  <swrc:hasExtraField>
+		    <swrc:Field swrc:key="${fn:escapeXml(misc.key)}" swrc:value="${fn:escapeXml(misc.value)}"/>
+		  </swrc:hasExtraField>
+		</c:forEach>
+	</c:if>
+
+	<c:if test="${!empty post.resource.authorList}">
+		<swrc:author>
+		  <rdf:Seq>
+		  <c:forEach var="person" varStatus="status" items="${post.resource.authorList}">
+		    <![CDATA[<rdf:_${status.index + 1}><swrc:Person swrc:name="${fn:escapeXml(person.name)}"/></rdf:_${status.index + 1}>]]>
+		  </c:forEach>
+		  </rdf:Seq>
+		</swrc:author>
+	</c:if>
+
+	<c:if test="${!empty post.resource.editorList}">
+		<swrc:editor>
+		  <rdf:Seq>
+		  <c:forEach var="person" varStatus="status" items="${post.resource.editorList}">
+		     <![CDATA[<rdf:_${status.index + 1}><swrc:Person swrc:name="${fn:escapeXml(person.name)}"/></rdf:_${status.index + 1}>]]>
+		  </c:forEach>
+		  </rdf:Seq>
+		</swrc:editor>	
+	</c:if>
+	
+</jsp:root>

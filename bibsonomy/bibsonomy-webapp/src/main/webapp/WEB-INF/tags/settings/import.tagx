@@ -1,0 +1,133 @@
+<jsp:root version="2.0"
+  xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:jsp="http://java.sun.com/JSP/Page"
+  xmlns:c="http://java.sun.com/jsp/jstl/core"
+  xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+  xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
+  xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+  xmlns:form="http://www.springframework.org/tags/form"
+  xmlns:spring="http://www.springframework.org/tags"
+  xmlns:errors="urn:jsptagdir:/WEB-INF/tags/errors"
+  xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/buttons"
+  xmlns:post="urn:jsptagdir:/WEB-INF/tags/post"
+  xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
+  
+  <jsp:directive.attribute name="command"  type="org.bibsonomy.webapp.command.BaseCommand" required="true"/>
+  
+	<!--   ############################################# import tab ############################################# -->
+		<!-- firefox import -->
+		<!-- TODO: please merge this form with the firefoxImport.tagx and use the tagx here -->
+		
+		<fmt:message var="private" key="post.resource.private"/>
+		<fmt:message var="public" key="post.resource.public"/>
+		<fmt:message var="valueButton" key="settings.import.button"/>
+		
+		<h2><fmt:message key="settings.firefox.header"/></h2>
+		<form:form id="settingImportForm" action="/import/firefox?ckey=${ckey}" method="post" enctype="multipart/form-data">
+
+			<fieldset class="fsInner">
+  				<div class="fsRow">
+        			<form:label cssClass="fsLabel" path="file"><fmt:message key="settings.firefox.fileselect"/></form:label>
+        			<buttons:help message="settings.firefox.fileselect.help"/>
+        			<input type="file" name="file" class="fsInput fsSmall"/>
+	    		</div>
+
+  				<div class="fsRow">
+					<form:label cssClass="fsLabel" path="group"><fmt:message key="settings.firefox.viewable"/></form:label>
+        			<buttons:help message="settings.firefox.viewable.help"/>
+		      		<form:select path="group" id="viewablebox" cssClass="fsInput fsSmall">
+			      		<form:option label="${public}" value="public"/>
+			      		<form:option label="${private}" value="private"/>
+		      		</form:select>
+	      		</div>
+
+				<div class="fsRow">	
+					<form:label cssClass="fsLabel" path="overwrite"><fmt:message key="settings.overwrite"/></form:label>
+		        	<buttons:help message="settings.overwrite.help.firefox"/>
+	   				<form:checkbox path="overwrite" id="overwriteBox" cssClass="fsInput fsSmall"/>
+		   		</div>
+		   		
+				<div class="fsRow">	
+	   				<input type="submit" value="${valueButton}" />
+					<input id="importType" name="importType" type="hidden" value="firefox"/>
+				</div>
+				
+			</fieldset>
+		</form:form>
+		
+
+		<!-- delicious import -->
+		<post:deliciousImport valueButton="${valueButton }"/>
+		
+
+		<!-- handle layout file -->
+		
+		<c:set var="userName">${command.context.loginUser.name}</c:set>
+		
+		<c:set var="actionJabRef" />
+		
+		<h2 id="layout"><fmt:message key="settings.jabRef.layoutfile"/></h2>
+		<form:form id="settingImportForm" action="/import/jabref?action=create&amp;ckey=${ckey}" method="post" enctype="multipart/form-data">
+			<fieldset class="fsInner">
+  				<div class="fsRow">
+					<fmt:message key="settings.jabRef.explain">
+						<fmt:param><a href="/layout/custom/user/${fn:escapeXml(userName)}"><c:out value="${projectName}"/></a></fmt:param>		
+					</fmt:message>
+				</div>
+
+  				<div class="fsRow">
+					<label class="fsLabel"><fmt:message key="settings.jabRef.begin"/></label>
+	      			<buttons:help message="settings.jabRef.begin.help"/>
+					<c:choose>
+	        			<c:when test="${empty command.beginName}">
+	        				<c:set var="actionJabRef" value="create"/>
+	        				<input name="fileBegin" type="file" class="fsInput fsSmall"/>
+	        			</c:when>
+	        			<c:otherwise>
+	        				<c:out value="${command.beginName}"/>
+	        				<a class="action" href="/import/jabref?hash=${command.beginHash}&amp;action=delete&amp;ckey=${mtl:encodeURI(ckey)}">delete</a>
+	        			</c:otherwise>
+	      			</c:choose>
+	      		</div>
+	      		
+  				<div class="fsRow">
+					<label class="fsLabel"><fmt:message key="settings.jabRef.item"/></label>
+		      			<buttons:help message="settings.jabRef.item.help"/>
+		      			<c:choose>
+	        			<c:when test="${empty command.itemName}">
+	        				<c:set var="actionJabRef" value="create"/>
+	        				<input name="fileItem" type="file" class="fsInput fsSmall"/>
+	        			</c:when>
+	        			<c:otherwise>
+	        				<c:out value="${command.itemName}"/>
+	        				<a class="action" href="/import/jabref?hash=${command.itemHash}&amp;action=delete&amp;ckey=${mtl:encodeURI(ckey)}">delete</a>
+	        			</c:otherwise>
+	      			</c:choose>
+	      		</div>
+	  
+	  			<div class="fsRow">
+					<label class="fsLabel"><fmt:message key="settings.jabRef.end"/></label>
+	      			<buttons:help message="settings.jabRef.end.help"/>
+					<c:choose>
+	        			<c:when test="${empty command.endName}">
+	        				<c:set var="actionJabRef" value="create"/>
+	        				<input name="fileEnd" type="file" class="fsInput fsSmall"/>
+	        			</c:when>
+	        			<c:otherwise>
+	        				<c:out value="${command.endName}"/>
+	        				<a class="action" href="/import/jabref?hash=${command.endHash}&amp;action=delete&amp;ckey=${mtl:encodeURI(ckey)}">delete</a>
+	        			</c:otherwise>
+	      			</c:choose>
+				</div>
+				
+		 		<div class="fsRow">
+		 			<fmt:message var="jabRefButton" key="settings.jabRef.button"/>
+					<input type="submit" value="${jabRefButton}" />
+	  				<input name="action" type="hidden" value="${actionJabRef}"/> 
+	 				<input name="importType" type="hidden" value="jabref"/>
+				</div>
+	  
+			</fieldset>
+		</form:form>		
+
+</jsp:root>

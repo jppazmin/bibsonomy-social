@@ -1,0 +1,121 @@
+<?xml version="1.0" ?>
+<!--
+
+
+     BibSonomy-Webapp - The webapplication for Bibsonomy.
+
+     Copyright (C) 2006 - 2011 Knowledge & Data Engineering Group,
+                               University of Kassel, Germany
+                               http://www.kde.cs.uni-kassel.de/
+
+     This program is free software; you can redistribute it and/or
+     modify it under the terms of the GNU General Public License
+     as published by the Free Software Foundation; either version 2
+     of the License, or (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+
+     You should have received a copy of the GNU General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+
+-->
+
+<jsp:root version="2.0"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
+  xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+  xmlns:user="urn:jsptagdir:/WEB-INF/tags/resources/user"
+	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/tags"
+  xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/buttons"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
+	
+  <jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
+
+    <layout:layout loginUser="${command.context.loginUser}" 
+ 		pageTitle="${command.pageTitle}" requPath="${requPath}" selectedNaviTab="nav_relations">
+
+		<jsp:attribute name="heading">
+    		<link rel="stylesheet" href="/resources/css/gadgets.css">&amp;nbsp;</link>
+    		
+			<script type="text/javascript" src="/gadgets/js/shindig-container:rpc.js?c=1&amp;debug=1">&amp;nbsp;</script>
+			
+			<!--  autocomplete user info box -->
+			<script type="text/javascript">
+					var securityToken = "${command.securityToken}"; 
+			<![CDATA[
+			     	var my = {};
+
+			    	my.cnt = 0;
+
+			    	my.gadgetSpecUrls = [ 'http://www.google.com/ig/modules/horoscope.xml',
+			    			'https://opensocialdeju.googlecode.com/svn/Twitter/TwitterDemo.xml',
+			    			'http://www.labpixies.com/campaigns/todo/todo.xml' ];
+
+			    	// This container lays out and renders gadgets itself.
+
+			    	my.LayoutManager = function() {
+			    		shindig.LayoutManager.call(this);
+			    	};
+
+			    	my.LayoutManager.inherits(shindig.LayoutManager);
+
+			    	my.LayoutManager.prototype.getGadgetChrome = function(gadget) {
+			    		var chromeId = 'gadget-chrome-' + gadget.id;
+			    		return chromeId ? document.getElementById(chromeId) : null;
+			    	};
+
+			    	my.init = function() {
+			    		shindig.container.layoutManager = new my.LayoutManager();
+			    		for (i=0; i<this.gadgetSpecUrls.length; i++) {
+				    		this.renderGadget(this.gadgetSpecUrls[i]);
+			    		}
+			    	};
+
+			    	my.renderGadget = function(specUrl) {
+			    		// create gadget container
+			    		var containerElement =  document.getElementById('gadgets');
+
+			    		var newContainer       = document.createElement('div');
+			    		newContainer.id        = 'gadget-chrome-'+my.cnt;		
+			    		newContainer.className ='gadgets-gadget-chrome';
+			    		containerElement.appendChild(newContainer);
+			    		
+			    		// render gadget
+			    		var gadget = shindig.container.createGadget( {specUrl : specUrl, secureToken: securityToken} );
+			    		shindig.container.addGadget(gadget);
+			    		shindig.container.renderGadget(gadget);
+
+			    		my.cnt++;
+			    	};
+						
+  				$(document).ready(function(){
+  	  				my.init();
+	  			});
+  			]]>
+			</script>
+		    
+	</jsp:attribute>
+
+	<jsp:attribute name="content">
+		Input Gadget URL: 
+		<form class="gadgetInputBox" onSubmit="my.renderGadget(this.gadgetUrl.value); return false;" action="">
+			<span>
+				<input size="50" type="text" name="gadgetUrl" id="gadgetUrl" value="http://www.google.com/ig/modules/horoscope.xml"/>
+				<input class="navigation" value="Render Gadget" type="submit" name="b1"/>
+			</span>
+		</form>
+		<br />
+		<div id="gadgets">
+		</div>
+    
+	</jsp:attribute>
+       
+  </layout:layout>
+</jsp:root>

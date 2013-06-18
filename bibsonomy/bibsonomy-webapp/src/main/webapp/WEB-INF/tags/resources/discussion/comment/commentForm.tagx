@@ -1,0 +1,30 @@
+<jsp:root version="2.0" xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/buttons"
+	xmlns:discussionItem="urn:jsptagdir:/WEB-INF/tags/resources/discussion/discussionItem"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt">
+    
+    <jsp:directive.attribute name="comment" type="org.bibsonomy.model.Comment" required="false" />
+    <jsp:directive.attribute name="resource" type="org.bibsonomy.model.Resource" required="true" />
+   <jsp:directive.attribute name="userName" type="java.lang.String" required="true" />
+ 	
+	<discussionItem:discussionItemForm resource="${resource}" discussionItem="${comment}" action="create" discussionItemClass="comment" userName="${userName}">
+		<jsp:attribute name="additionalInputs">
+			<span style="float:left"><fmt:message key="post.resource.comment.actions.post" /></span>
+	 		<buttons:help message="post.resource.comment.help">
+				<jsp:attribute name="helpText">
+			        <ul style="list-style:circle inside none">
+			        	<li><fmt:message key="post.resource.discussion.anonymous.help"/></li>
+			        	<li><fmt:message key="post.resource.discussion.visibility.help"/></li>
+			       	</ul>
+			       	<fmt:message key="post.resource.comment.${fn:toLowerCase(resource.class.simpleName)}.several"/>
+	        	</jsp:attribute>
+	        </buttons:help>
+ 
+			<div class="fsRow reviewTextBox" style="margin-right:6px">
+   				<textarea class="fsInput reqinput" rows="3" name="discussionItem.text"><!-- text --></textarea>
+   			</div>
+		</jsp:attribute>
+	</discussionItem:discussionItemForm>
+</jsp:root>

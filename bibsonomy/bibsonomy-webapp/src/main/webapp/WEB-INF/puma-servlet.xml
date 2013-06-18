@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+
+     BibSonomy-Webapp - The webapplication for Bibsonomy.
+
+     Copyright (C) 2006 - 2011 Knowledge & Data Engineering Group,
+                               University of Kassel, Germany
+                               http://www.kde.cs.uni-kassel.de/
+
+     This program is free software; you can redistribute it and/or
+     modify it under the terms of the GNU General Public License
+     as published by the Free Software Foundation; either version 2
+     of the License, or (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+
+     You should have received a copy of the GNU General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+
+-->
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+	                    http://www.springframework.org/schema/beans/spring-beans.xsd
+	                    http://www.springframework.org/schema/util 
+	                    http://www.springframework.org/schema/util/spring-util-2.5.xsd">
+
+	<!-- 
+		extracts properties from the provided file and inserts them into bean 
+		properties using "${property.name}" notation  
+	-->
+	<bean id="propertyConfigurer" class="org.bibsonomy.webapp.util.ContextParamConfigurer">
+		<property name="location">
+			<value>/WEB-INF/puma.project.properties</value>
+		</property>
+		<property name="systemPropertiesModeName" value="SYSTEM_PROPERTIES_MODE_CONTEXTPARAM"/>
+	</bean>
+	
+<!-- Wouldn't it make sense to overwrite the <bean id="hompageController" ...> here so 
+project.bean.homepageController in project.properties would be superfluous -->
+<!--      #################### controller #################### -->
+<!--	<bean id="homepageController" class="de.unikassel.puma.webapp.controller.HomepageController" scope="request">-->
+<!--		<property name="logic" ref="logic"/>-->
+<!--		<property name="userSettings" ref="userSettings"/>-->
+<!--		<property name="listsToInitialise">-->
+<!--			<list>-->
+<!--				<value type="java.lang.Class">org.bibsonomy.model.BibTex</value>-->
+<!--				<value type="java.lang.Class">org.bibsonomy.model.Bookmark</value>-->
+<!--			</list>-->
+<!--		</property>-->
+<!--	</bean>-->
+	
+</beans>

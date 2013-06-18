@@ -1,0 +1,12 @@
+<jsp:root version="2.0" 
+	xmlns:c="http://java.sun.com/jsp/jstl/core"	
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt">
+	
+	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true"/>	
+	
+	<c:if test="${not empty post.resource.chapter}">		
+		<em><fmt:message key="bibtex.chapter"/><c:out value=" "/>${mtl:cleanBibtex(post.resource.chapter)},<c:out value=" "/></em>		
+	</c:if>
+</jsp:root>

@@ -1,0 +1,71 @@
+<?xml version="1.0" ?>
+<!--
+
+
+     BibSonomy-Webapp - The webapplication for Bibsonomy.
+
+     Copyright (C) 2006 - 2011 Knowledge & Data Engineering Group,
+                               University of Kassel, Germany
+                               http://www.kde.cs.uni-kassel.de/
+
+     This program is free software; you can redistribute it and/or
+     modify it under the terms of the GNU General Public License
+     as published by the Free Software Foundation; either version 2
+     of the License, or (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+
+     You should have received a copy of the GNU General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+
+-->
+
+<jsp:root version="2.0"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
+	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/tags"
+	xmlns:users="urn:jsptagdir:/WEB-INF/tags/users"
+	xmlns:rc="urn:jsptagdir:/WEB-INF/tags/resources/common"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts">
+	
+	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
+	
+	<layout:bibtexLayout pageTitle="${command.pageTitle}" command="${command}" requPath="${requPath}">	
+		<jsp:attribute name="heading">
+			<a rel="path_menu" href="#"><img alt="" src="${resdir}/image/box_arrow.png"/>${mtl:ch('nbsp')}<fmt:message key="navi.group"/></a> :: 
+			<a href="/group/${fn:escapeXml(command.requestedGroup)}"><c:out value='${command.requestedGroup}'/></a> ::
+			<form action="/group/${fn:escapeXml(command.requestedGroup)}" method="get" class="smallform">
+			  <c:choose>
+				  <c:when test="${empty command.requestedTags}">
+					  <input type="text" size="20" name="tag" id="inpf"/>			  
+				  </c:when>
+				  <c:otherwise>
+					  <input type="text" size="20" name="tag" id="inpf" value="${fn:escapeXml(command.requestedTags)}"/>
+				  </c:otherwise>
+			  </c:choose>
+			</form>
+					
+		</jsp:attribute>		
+		
+		<jsp:attribute name="sidebar">
+			<ul id="sidebar">		
+				<parts:tagsAndConceptsForSidebar/>
+				
+				<!-- tagcloud -->
+				<li>
+					<span class="sidebar_h"><fmt:message key="tags"/></span>
+					<tags:cloud requPath="${requPath}" cmd="${command.tagcloud}" showTooltips="${command.context.loginUser.settings.tagboxTooltip}"/>
+				</li>
+			</ul>
+		</jsp:attribute>	
+	</layout:bibtexLayout>
+</jsp:root>

@@ -1,0 +1,245 @@
+<?xml version="1.0" ?>
+<!--
+
+
+     BibSonomy-Webapp - The webapplication for Bibsonomy.
+
+     Copyright (C) 2006 - 2011 Knowledge & Data Engineering Group,
+                               University of Kassel, Germany
+                               http://www.kde.cs.uni-kassel.de/
+
+     This program is free software; you can redistribute it and/or
+     modify it under the terms of the GNU General Public License
+     as published by the Free Software Foundation; either version 2
+     of the License, or (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+
+     You should have received a copy of the GNU General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+
+-->
+
+<jsp:root version="2.0" 
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:form="http://www.springframework.org/tags/form"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
+	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/tags"
+    xmlns:user="urn:jsptagdir:/WEB-INF/tags/resources/user"
+    xmlns:users="urn:jsptagdir:/WEB-INF/tags/users"
+	xmlns:bib="urn:jsptagdir:/WEB-INF/tags/resources/bibtex"
+	xmlns:rc="urn:jsptagdir:/WEB-INF/tags/resources/common"
+	xmlns:export="urn:jsptagdir:/WEB-INF/tags/export/bibtex"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:resource="urn:jsptagdir:/WEB-INF/tags/resources"
+	xmlns:output="urn:jsptagdir:/WEB-INF/tags/export/bibtex"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
+
+	<fmt:message key="navi.cv" var="cvPageTitle" />
+	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
+	<layout:layout requPath="${requPath}" loginUser="${command.context.loginUser}" pageTitle="${cvPageTitle}">
+			
+		<!--+
+    	 	| html header extension: page specific stylesheet
+    	 	-->
+		<jsp:attribute name="sidebar">
+		 	<ul id="sidebar">
+		 		<!--+
+					| only for logged in users: followers, friends, groups, etc.
+			 		-->
+			
+				<c:if test="${command.context.userLoggedIn and command.context.loginUser.name ne command.requestedUser}">
+					<li>
+						<users:socializer 
+							loginUser="${command.context.loginUser}" 
+							requestedUser="${command.requestedUser}" 
+							isOfFriendUser="${command.ofFriendUser}" 
+							isFriendOfUser="${command.friendOfUser}" 
+							isFollowerOfUser="${command.followerOfUser}" />
+					</li>
+				</c:if>
+			
+			<li id="sidebarfilter"></li>
+		 	
+    	 		<!-- display tags -->
+				<li>
+					<span class="sidebar_h">
+						<fmt:message key="tags"/> 
+					</span>
+					<tags:cloud requPath="user/${command.requestedUser}" cmd="${command.tagcloud}" tagboxMinfreqStyle="user" tagSizeMode="user" showTooltips="${command.context.loginUser.settings.tagboxTooltip}"/>
+				</li>
+			</ul>
+		</jsp:attribute>
+
+		<jsp:attribute name="headerExt">
+			<link rel="stylesheet" type="text/css" href="${resdir}/css/cv_page.css" />
+	    	<script type="text/javascript" src="${resdir}/javascript/cvpage.js">&amp;nbsp;</script> 
+	    </jsp:attribute>
+
+		<!--+
+    	 	| heading
+    	 	-->
+		<jsp:attribute name="heading">
+			<c:out value="${cvPageTitle}" /> ::
+			<a rel="path_menu" href="#"><img alt="" src="${resdir}/image/box_arrow.png"/>${mtl:ch('nbsp')}<fmt:message key="navi.user"/></a> :: 
+			<a href="/user/${fn:escapeXml(command.requestedUser)}"><c:out value='${command.requestedUser}'/></a> ::
+			<form action="/user/${fn:escapeXml(command.requestedUser)}" method="get" class="smallform">
+		  		<input type="text" size="20" name="tag" id="inpf"/>
+			</form>
+    	</jsp:attribute>
+		
+		<jsp:attribute name="content">
+			<!--  Show a hint on how to fill the cv-page if the loginUser looks at his own cv-page -->
+			<c:if test="${command.context.loginUser.name eq command.requestedUser}">
+				<div id="general_100">
+					<span class="smalltext">
+						<fmt:message key = "cv.hint"/>
+						<ul class="helpList">
+							<li><fmt:message key = "cv.hint2">
+								<fmt:param><fmt:message key = "settings.public"/></fmt:param>
+								</fmt:message></li>
+							<li><fmt:message key = "cv.hint3"/></li>
+						</ul>
+						<fmt:message key = "cv.hint4"/>
+					</span>
+				</div>
+			</c:if>
+			
+			<c:if test="${not empty command.user.realname or not empty command.user.place or not empty command.user.birthday or not empty command.user.profession}">
+				<div id="personalData">
+	      		 	<h2><fmt:message key="cv.personal_data"/></h2>
+
+					<table class="align personalData" style="float:left;">
+	   					<c:if test="${not empty command.user.realname}">
+	    					<tr>
+								<td><fmt:message key="cv.name"/></td>
+								<td class="secondTD">
+									<c:choose>
+										<c:when test="${not empty command.user.homepage}">
+											<a href="${fn:escapeXml(command.user.homepage)}">
+												<c:out value="${command.user.realname}" />
+											</a>
+										</c:when>
+										<c:otherwise>
+											<c:out value="${command.user.realname}" />
+										</c:otherwise>
+									</c:choose>
+								</td>
+	    					</tr>
+	   					</c:if>
+	   					<c:if test="${not empty command.user.place}">
+							<tr>
+								<td><fmt:message key="cv.place"/></td>
+								<td class="secondTD"><c:out value="${command.user.place}" /></td>
+							</tr>
+	   					</c:if>
+	   					<c:if test="${not empty command.user.birthday}">
+							<tr>
+								<td><fmt:message key="cv.birthday"/></td>
+								<td class="secondTD"><fmt:formatDate value="${command.user.birthday}" pattern="yyyy-MM-dd"/></td>
+							</tr>
+					   </c:if>
+					   <c:if test="${not empty command.user.profession}">
+							<tr>
+								<td><fmt:message key="cv.profession"/></td>
+								<td class="secondTD"><c:out value="${command.user.profession}" /></td>
+							</tr>
+					   </c:if>
+					   <c:if test="${not empty command.user.institution}">
+							<tr>
+								<td><fmt:message key="cv.institution"/></td>
+								<td class="secondTD"><c:out value="${command.user.institution}" /></td>
+							</tr>
+					   </c:if>
+  				    </table>
+	  				<!--foto-->
+	  				<img style="clear:both;" src="/picture/user/${fn:escapeXml(command.user.name)}"/> 
+
+				</div>
+			</c:if>
+			
+			<c:if test="${not empty command.user.interests}">
+	 			<h2><fmt:message key="cv.scientificInterests"/></h2>
+	 			<p class="align"><c:out value="${command.user.interests}" /></p>
+			</c:if>
+			<c:if test="${not empty command.user.hobbies}">
+	 			<h2><fmt:message key="cv.hobbies"/></h2>
+		 		<p class="align"><c:out value="${command.user.hobbies}" /></p>
+			</c:if>
+			
+			<c:if test='${not empty command.bookmark.list}'>
+				<h2><fmt:message key="cv.own_bookmarks"/></h2>
+				<div class="align">
+					<ul id="liste" class="bookmarkList">
+						<c:forEach var="post" items="${command.bookmark.list}">
+	    		    		<div style="margin:1.2em;" class="entry">
+								<li>
+ 	    							<span class="entry_title">
+ 	    								<c:set var="bookUrl"><c:out value="${mtl:cleanUrl(post.resource.url)}" escapeXml="true"/></c:set>
+										<a href="${bookUrl}" rel="nofollow"><c:out value='${post.resource.title}'/></a>
+	     							</span>
+	     							<c:if test="${not empty post.description}">
+	     								<a class="hand"><c:out value=" "/><fmt:message key="cv.options.show_details"/></a>
+				    					<p class="details"> 
+	 		      							<c:out value="${post.description}" />
+	       								</p>
+	       							</c:if>
+ 	    						</li>
+							</div>
+ 	  					</c:forEach>
+ 	  				</ul>
+				</div>
+			</c:if>
+
+	<c:if test="${not empty command.bibtex.list}">
+		<h2><fmt:message key="cv.publications"/></h2>
+		<div class="box align">
+
+			<!-- selection of citation format for the publications -->
+			<div>
+				<span id="citation_formats"> 				
+					<form name="citation_format_form" action="" style="font-size:80%;">
+						<c:set var="allExportsTitle"><fmt:message key="bibtex.all_exports.title"/></c:set>
+						<fmt:message key="bibtex.citation_format"/><c:out value=" ("/>
+						<!-- 
+							TODO: we should probably make the usage of the "myown" tag configurable
+						 -->
+						<a href="/export/user/${fn:escapeXml(command.user.name)}/myown" title="${allExportsTitle}"><fmt:message key="bibtex.all_exports"/></a><c:out value="): "/>
+						<form:select path="command.layout" onchange="citation_format_form.submit()" size="1">
+							<form:option value="plain"><fmt:message key="cv.options.plain"/></form:option>
+							<form:option value="harvardhtml"><fmt:message key="cv.options.harvard"/></form:option>
+							<form:option value="din1505"><fmt:message key="cv.options.DIN1505"/></form:option>
+							<form:option value="simplehtml"><fmt:message key="cv.options.simpleHTML"/></form:option>
+						</form:select>
+	    				<c:out value=" "/>
+	    				<input type="image"  src="/resources/image/nice_box_arrow_right.png"/>		    
+					</form>						
+				</span>
+			</div>
+
+			<!--Render the publications !!-->
+			<div class="entry">
+				<c:choose>
+       					<c:when test="${empty command.layout}">
+       						<mtl:renderJabRefLayout layout="plain" posts="${command.bibtex.list}" />
+				        </c:when>
+					<c:otherwise>
+						<mtl:renderJabRefLayout layout="${command.layout}" posts="${command.bibtex.list}" />
+       					</c:otherwise>
+  					</c:choose>
+  				</div>
+
+		</div>
+	</c:if>
+
+</jsp:attribute>
+</layout:layout>
+	
+</jsp:root>

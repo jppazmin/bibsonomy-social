@@ -1,0 +1,49 @@
+<?xml version="1.0" ?>
+<jsp:root version="2.0" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:form="http://www.springframework.org/tags/form"
+	xmlns:spring="http://www.springframework.org/tags"
+	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/tags"
+    xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:errors="urn:jsptagdir:/WEB-INF/tags/errors"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:post="urn:jsptagdir:/WEB-INF/tags/post"
+	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
+    xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/buttons"
+  >
+
+    <jsp:directive.attribute name="command" type="org.bibsonomy.webapp.command.actions.EditPostCommand" required="true"/>
+    <jsp:directive.attribute name="requPath" type="java.lang.String" required="true"/>
+    <jsp:directive.attribute name="resourceType" type="java.lang.String" required="true" description="The type of the resource this page handles (e.g., 'Bookmark', or 'Publication'). First letter upper case, remaining lower case."/>
+    <jsp:directive.attribute name="selectedNaviTab" type="java.lang.String" required="false"/>
+    
+    <jsp:directive.attribute name="generalInformation" fragment="true" required="true" description="The form fields to enter general information."/>
+    <jsp:directive.attribute name="detailedInformation" fragment="true" required="false" description="The form fields to enter detailed information."/>
+    <jsp:directive.attribute name="extraInformation" fragment="true" required="false" description="Extra information which shall be displayed outside the form."/>
+
+	<layout:editGoldStandardPostLayout generalInformation="${generalInformation}" requPath="${requPath}" resourceType="${resourceType}" command="${command}" detailedInformation="${detailedInformation}" extraInformation="${extraInformation}">
+		<jsp:attribute name="headerExtResource">
+			<script type="text/javascript" src="${resdir}/javascript/edit${resourceType}.js">&amp;nbsp;</script>
+		</jsp:attribute>
+		
+		<jsp:attribute name="tagsAndGroups">
+			<!--
+               | tags 
+                      -->
+	    	<post:tagfield containsComma="${command.containsComma}" tags="${command.tags}" recommendedTags="${command.recommendedTags}"/>
+            <!--
+               | groups 
+      			       -->
+	        <post:groupBox groups="${command.context.loginUser.groups}"/>
+			<c:if test="${not empty command.context.loginUser.groups}">
+				<post:relevantForBox groups="${command.context.loginUser.groups}"/>
+			</c:if>	
+			<div class="clearfloat p">
+				<post:tagSets groups="${command.context.loginUser.groups}"/>
+			</div>
+		</jsp:attribute>
+	</layout:editGoldStandardPostLayout>
+</jsp:root>

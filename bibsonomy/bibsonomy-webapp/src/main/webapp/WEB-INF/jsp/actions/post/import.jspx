@@ -1,0 +1,75 @@
+<?xml version="1.0" ?>
+<!--
+
+
+     BibSonomy-Webapp - The webapplication for Bibsonomy.
+
+     Copyright (C) 2006 - 2011 Knowledge & Data Engineering Group,
+                               University of Kassel, Germany
+                               http://www.kde.cs.uni-kassel.de/
+
+     This program is free software; you can redistribute it and/or
+     modify it under the terms of the GNU General Public License
+     as published by the Free Software Foundation; either version 2
+     of the License, or (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+
+     You should have received a copy of the GNU General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+
+-->
+
+<jsp:root version="2.0"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
+	xmlns:post="urn:jsptagdir:/WEB-INF/tags/post"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:errors="urn:jsptagdir:/WEB-INF/tags/errors"
+	xmlns:spring="http://www.springframework.org/tags"
+	xmlns:form="http://www.springframework.org/tags/form"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"> 
+	
+	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
+
+	<layout:paneLayout pageTitle="${command.pageTitle}" command="${command}" requestedUser="${command.userName}" requPath="${requPath}">
+		
+		<jsp:attribute name="heading">
+			<fmt:message key="import"/>
+		</jsp:attribute>
+		
+		<jsp:attribute name="content">
+						
+			<div id="general">	
+				
+				<!-- display potential errors -->
+				<errors:global errors="${errors}"/>
+             	
+				<!-- in case of existing errors, look into the importType and redraw the 
+					 respective form 
+					 TODO: Handle firefoxImport simply by error-Messages on the main page -->
+				<c:choose>
+					<c:when test="${empty command.importType or (command.importType eq 'firefox' and command.totalCount == 0)}">		
+						<post:firefoxImport/>
+					</c:when>
+					<c:otherwise>
+						<!-- make some output about the import results -->	
+						<post:importResults command="${command}"/>
+					</c:otherwise>
+				</c:choose>
+		
+        	</div>
+      
+      
+		</jsp:attribute>
+		
+	</layout:paneLayout>
+
+</jsp:root>

@@ -1,0 +1,11 @@
+<jsp:root version="2.0" 
+	xmlns:c="http://java.sun.com/jsp/jstl/core"	
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt">
+	
+	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true"/>	
+	
+	<c:set var="bookUrl"><c:out value="${mtl:cleanUrl(post.resource.url)}" escapeXml="true"/></c:set>
+	<a href="${bookUrl}" rel="nofollow"><c:out value='${post.resource.title}'/></a>
+</jsp:root>

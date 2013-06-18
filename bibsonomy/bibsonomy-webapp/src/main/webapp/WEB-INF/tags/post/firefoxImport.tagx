@@ -1,0 +1,63 @@
+<jsp:root version="2.0" 
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:form="http://www.springframework.org/tags/form">
+	
+	<!-- This tag can be used to support the bookmark import from a firefox bookmark export file -->
+	
+	<c:set var="valueButton"><fmt:message key="import"/></c:set>
+	
+
+	<form:form action="/import/firefox?ckey=${ckey}" method="post" enctype="multipart/form-data">
+		<fieldset class="fsOuter" style="padding: 1em; margin-bottom: 1em;">
+			
+			<legend><fmt:message key="import.firefox"/></legend>
+			<h2><fmt:message key="settings.firefox.header"/></h2>
+       
+			<table>
+				<tr>
+					<td>
+						<form:label path="file" >
+							<fmt:message key="settings.firefox.fileselect"/>
+						</form:label>
+					</td>
+					<td>
+						<input type="file" name="file" size="20"/>
+						<form:errors path="file"/><br/>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<!-- set the visibility of the resources -->
+						<form:label path="group">
+							<fmt:message key="post.resource.viewablefor"/>:
+						</form:label>
+					</td>
+					<td>
+						<form:select path="group" id="viewablebox">
+						<form:option label="public" value="public"/>
+						<form:option label="private" value="private"/>
+					</form:select>
+					</td>
+				</tr>
+				<tr>
+					<td>
+					</td>
+					<td>
+                           <!-- overwrite duplicates? -->
+						<form:checkbox path="overwrite"/>
+                           <fmt:message key="import.overwrite">
+                               <fmt:param><fmt:message key="import.firefox"/></fmt:param>
+                               <fmt:param>${projectName}</fmt:param>
+                           </fmt:message>
+					</td>
+				</tr>
+			</table>
+			<input type="submit" value="${valueButton}" />
+		</fieldset>
+	</form:form>
+
+</jsp:root>

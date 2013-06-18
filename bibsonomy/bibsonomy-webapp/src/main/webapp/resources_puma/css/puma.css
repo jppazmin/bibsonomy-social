@@ -1,0 +1,770 @@
+/**
+ *
+ *  BibSonomy-Webapp - The webapplication for Bibsonomy.
+ *
+ *  Copyright (C) 2006 - 2011 Knowledge & Data Engineering Group,
+ *                            University of Kassel, Germany
+ *                            http://www.kde.cs.uni-kassel.de/
+ *
+ *  This program is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU General Public License
+ *  as published by the Free Software Foundation; either version 2
+ *  of the License, or (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ */
+
+body {
+	background-color: #FBF7F4;
+	min-width: 990px;
+/*	max-width: 1400px; */
+}
+
+h3 {
+	margin-top: .6ex;
+}
+
+#main {
+	border: 0px solid #DF430D;
+
+}
+
+#mainHeaderRightBox {
+	margin-right: 6px;
+}
+
+img#sidebarGrip{
+	margin-left:-12px;
+	margin-top: 10px;
+	float:left;
+}
+
+#main_header {
+	background-color:#DF430D;
+	height:70px;
+	margin-left:50px;
+	padding-left:30px;
+}
+
+#headerlogoimage {
+	width: 86px;
+	position:absolute;
+	margin-left:-6px;
+	margin-top:-12px;
+	display: block;
+}
+
+#nice_tnav {
+	background-color:  #ecf9f6;
+}
+
+#nice_tnav ul {
+	padding-left:81px
+}
+
+#nice_tnav .checked {
+	background-color:#DF430D;
+	border-color:#6F6F6F #6F6F6F #000000;
+	border-style:solid;
+	border-width:0 1px;
+	color:#FFFFFF;
+	padding:1px 10px;
+}
+
+#nice_tnav li a:hover {
+	background-color:#DF430D;
+	border-color:#6F6F6F #6F6F6F #000000;
+	border-style:solid;
+	border-width:0 1px;
+	color:#FFFFFF;
+	padding:1px 10px;
+}
+
+#nice_tnav li .selected {
+	background-color:#DF430D;
+	border-color:#6F6F6F #6F6F6F #000000;
+	border-style:solid;
+	border-width:0 1px;
+	color:#FFFFFF;
+	padding:1px 10px;
+}
+
+#nice_tnav .nicedropmenudiv a:hover {
+	color: white;
+	margin: 0;
+	padding-left: 10px;
+	padding-right: 10px;
+	padding-top: 5px;
+	padding-bottom: 5px;
+	text-decoration: none;
+	background-color: #DF430D;
+}
+
+a, a:link, a:visited {
+	color:#DF430D;
+}
+
+h2 {
+	color:#DF430D;
+}
+
+.listhButtons a:hover {
+background-color:#DF430D;
+border:1px solid #6F6F6F;
+color:#FFFFFF;
+}
+
+
+.sidebarroundcorner {
+background-color:#DF430D;
+float:right;
+padding:3px;
+width:23%;
+margin-top: 2ex;
+margin-right:2ex;
+}
+
+#path_menu a {
+	color: #DF430D;
+}
+
+#path_menu a:hover {
+	color: #000000;
+}
+
+#general {
+	width:100%;
+}
+
+.sidebarBoxInner {
+	background-color: #FBF7F4;
+	background-color: #e0e0e0; 
+	background-color: #FFC170;
+	
+	width: 100%;
+	padding: 0px;
+	padding-bottom: 1px;
+}
+
+.sidebarBoxOuter {
+	background-color: #DF430D; 
+	background-color: #e0e0e0; 
+	background-color: #FFC170;
+	margin-top: 10px;
+	margin-bottom: 10px;
+}
+
+ul#sidebar {
+	margin:0.5ex 0 0 0;
+	padding: .5ex;	
+}
+
+ul#tagbox {
+	margin:0;	
+}
+#helpbox {
+	background-color: #DF430D; 
+	background-color: #e0e0e0;
+	background-color: #FFC170;
+	display: none;
+	overflow:hidden;
+}
+
+.btnHomepage {
+ 	padding-left:5px;
+	padding-right:5px;
+}
+
+#wrap_btn {
+	 float: none;
+	 width: 510px;
+	 margin: auto;
+}
+
+#wrap_advantages {
+	width: 100%; 
+	min-height: 175px; 
+	margin-top: 3ex; 
+	margin-bottom: 10px;
+	text-align: center;
+}
+
+#desc_advantages {
+	padding: 2ex 3em;
+	text-align: center;
+	/*font-size: 80%;*/
+	font-weight: normal;
+	color: #DF430D;
+	height: 5ex;
+}
+
+.hidebox {
+	height: 13px;
+}
+
+.togglehelp {
+	float: right;
+	font-weight: bold;
+	cursor: pointer;
+}
+
+#navitogglehelp {
+	padding-right:5px;
+}
+
+#sidebarroundcorner {
+	float: right;
+	width: 23%;
+	padding: 0px;
+	background-color: #FBF7F4;
+}
+
+.aboutMeIMG {
+	position:inherit !important;
+	left:auto !important;
+	float:right !important;
+	
+}
+
+p {
+	width: auto !important;
+}
+
+.boxcontent {
+	padding: 0.8ex;
+	font-size: 80%;
+}
+
+.boxheadline {
+	font-weight: bold;
+	margin-bottom: 0.5ex;
+/*	font-size: 80%; */
+}
+
+#pumageneral {
+		font-size: 100%;
+		margin-bottom: 4ex;
+		margin-top: 3ex;
+		text-align: center;
+		font-weight: normal;
+}
+
+#bookmarkbibtexoptions {
+	clear: both;
+	float: none;
+}
+
+.bookbox a {
+	color: #000000;
+}
+
+.bmtitle a {
+	color: #DF430D;	
+}
+
+.bc-head {
+	font-weight: bold;
+	margin-top: 0.8ex;
+}
+
+.bc-highlight {
+	font-weight: bold;
+	font-style: italic;
+	margin-top: 0.8ex;
+}
+
+.closeX {
+	font-size: 120%	
+}
+
+table.report {
+	margin: 1ex 0;
+	border-collapse: collapse;
+}
+
+table.report td.header {
+	background-color: #DF430D;
+	color: white;
+	padding: 0.5ex;
+	border: 1px solid #000000;
+	font-weight: bold;
+}
+
+table.report td {
+	padding: 0.5ex;
+	border: 1px solid #000000;
+}
+
+
+#error {
+	border: none;
+}
+
+.error {
+	max-width: none;
+	overflow: auto;
+}
+
+.errorcontainer {
+	border: 1px solid #DF430D; 
+	padding: 1em; 
+	margin-bottom: 1em;
+}
+
+.errorcontainer > h3 {
+	color: #DF430D; 
+}
+
+.groupsButtons a:hover {
+	background-color: #DF430D !important;
+}
+
+
+a.reportingTableHeaderDescription {
+	color: #888888;
+}
+
+#tab_content {
+	border: 1px solid #DF430D;
+}
+
+.fsOuter, .fsInner, .fsVisible {
+	border: 1px solid #EFAC95;
+}
+
+
+div.grippie {
+	border-color:#EFAC95;
+	background-color:#FFE7DF;
+}
+
+input[type="text"], input[type="password"], input[type="file"], textarea, select {
+	border: 1px solid #EFAC95;
+}
+		 
+.reqinput {
+	background-color:#FFE7DF;
+}		 
+		 
+#tab #selected {
+	border-color:#DF430D;
+}		 
+
+#tab #selected a{
+	color:#DF430D;
+}	
+
+
+input[type="submit"], input[type="button"], input[type="reset"] {
+	border:1px solid #EFAC95;
+}	 
+
+div.help > a, div.help > b {
+	color:#DF430D;
+}
+
+#openAccessClassificationSelect div.help {
+	float:none;
+}
+
+.news .bmtitle {
+	font-size: 90%;
+	margin-bottom: 0.5ex;
+}
+
+.news .bmdesc {
+	font-size: 90%;
+	color: #000000;
+	display: block;
+}
+
+ul.news  {
+ margin-left: 5px !important;
+}
+
+.news li {
+	 list-style:none outside none;
+}
+
+div.ui-tabs div.ui-tabs-panel {
+	border: 1px solid #DF430D;
+}
+
+div.ui-tabs ul.ui-tabs-nav li.ui-tabs-selected {
+	background-color: #fff;
+	border: 1px solid #DF430D;
+}
+
+div.ui-tabs ul.ui-tabs-nav li.ui-tabs-selected a:hover {
+	color: #DF430D;
+}
+
+
+.oa-publishers {
+}
+
+.oa-publisher {
+	font-weight: bold;
+	padding-left: 3px;	
+}
+
+.oa-conditions {
+	list-style: disc inside;
+	padding-left: 1em;
+}
+	
+.oa-green {
+	border-left: 5px solid green;	
+}
+.oa-yellow {
+	border-left: 5px solid yellow;	
+}
+.oa-red {
+	border-left: 5px solid red;	
+}
+.oa-blue {
+	border-left: 5px solid blue;	
+}
+.oa-white {
+	border-left: 5px solid white;	
+}
+
+.classificationSelect {
+	width: 20%;
+    border-right: medium none;
+    border-top: medium none;
+    margin: 0.5ex;
+ }
+
+div.classificationInput {
+	width: 2.5em;
+	font-weight: normal;
+	display: inline-block;
+}
+
+
+#swordresponse {
+	display: inline;
+	padding-left: 2em;
+	font-size: 90%;
+}
+
+.ajaxresponse0 {
+	color: red; 
+	font-weight: bold;
+}
+
+.ajaxresponse1 {
+	color: green;
+}
+
+
+#oasherparomeocontainer, openAccessClassificationContainer{
+	padding: 0.4ex 0.7em;
+	margin-top: 1ex; 
+	margin-bottom: 1ex; 
+}
+
+#oasherparomeocontainer {
+	background-color: #EFDBCE; 
+}
+
+
+#divClassificationContainerName {
+	display: none;
+	background-color: #00ffff;
+}
+
+#divClassificationListName {
+	display: none;
+	background-color: #ffff00;;
+}
+
+#divClassificationSelectName {
+	display: none;
+	background-color: #ff00ff;;
+}
+
+input[type="button"].ajaxButton {
+	color: #DF430D;
+	font-weight: normal;
+	margin: 0.2ex;
+	padding-top: 0px;
+	padding-bottom: 0px;
+	border: none;
+	font-size: 80%;
+	cursor: pointer;
+}
+
+#pumaSword input[type="button"].ajaxButton {
+	color: #000000;
+	border: 2px solid #EFAC95;
+	margin-top: 2ex;
+	margin-bottom: 2ex;
+	font-size: 100%;
+}
+ 
+
+#pumaSword input[type="button"].ajaxButton.oadisabledsend2repositorybutton {
+	color: #ccc;
+	border: 1px dotted #ccc;
+}
+
+#openAccessClassificationSelect input[type="button"].ajaxButton:hover {
+	color: #438f38;
+}
+
+#openAccessClassificationList input[type="button"].ajaxButton:hover {
+	color: #000000;
+}
+
+#pumaSword input[type="button"].ajaxButton:hover {
+	background-color: #DCC;
+	color: black; 
+}
+
+.refererButton {
+   float: right;
+   font-size:20px;
+   width:350px;
+   height:35px;
+   background-color:#DDDDDD;
+   border-color:#EEEEDD;
+   border-style: dashed;
+   border-width:3px;
+   text-align: center;
+   padding-top: 8px;
+}
+
+#pumaSword input[type="button"].ajaxButton.oadisabledsend2repositorybutton:hover {
+	background-color: transparent;
+	color: #ccc; 
+	cursor: default;
+	
+}
+
+.classificationListItemContainer {
+	clear:left;
+}
+	
+.classificationListItem {
+	margin-top: 2px;
+	font-weight: normal;
+	display: inline;
+	float:left;
+ }
+
+.classificationListItemDescriptionContainer {
+  color: #444;
+  margin-left: 7em;
+}
+
+.classificationListItemDescription {
+  display: inline;
+}
+
+.classificationListItemRemove {
+	display: inline;
+}
+
+#openAccessClassificationList {
+	margin-bottom: 1.5ex;
+}
+#openAccessClassificationSelect {
+	margin-top: 0.5ex;
+	margin-bottom: 0.5ex;
+}
+
+#openAccessContainer h4 {
+	margin-top: 1ex;
+	margin-bottom: 1.5ex;
+}
+
+#openAccessContainer .fsLabel {
+	width: 16em;
+}
+
+.clearboth {
+	clear:both;
+}
+
+.tagnormal a, .tagnormal {
+    color: #222222 !important;
+}
+
+#saveMetadataButton {
+	color: green;
+	font-weight: bold;
+	border:1px solid #EFAC95;
+	padding: 1px 3px;
+}
+
+#saveMetadataButton.dataChanged {
+	color: red;
+}
+
+#saveMetadataButtonContainer {
+	clear: both;
+}
+
+input#authorcontractconfirm {
+	margin: 2px;
+	
+}
+
+#authorcontractconfirmcontainer {
+
+}
+
+#openAccessMetaDataContainer .fsInput {
+	width: 60%;
+}
+
+#oasherparomeopublisher {
+	font-weight: bold;
+	margin: 2ex 0;
+}
+
+
+#oasherparomeo {
+	margin: 2ex 0;
+}
+
+.oadescription {
+	font-size: 90%;
+	color: #444444;
+	margin-bottom: 1.5ex;
+}
+
+.scroller {
+	border: 1px solid #EFAC95;
+}
+
+#oaRepositorySentInfo {
+	float: right;
+	font-weight: bold;
+	font-size: 90%;
+	margin-top: 0.6ex;
+	padding: 5px;
+	
+}
+
+#oaRepositorySent {
+	margin-top: 1.5ex;
+}
+
+#oaRepositorySentHeader {
+	font-weight: bold;
+}
+
+#sendMetadataMarker {
+	padding-left:0.5em;
+	display: inline;
+	color: green;
+}
+
+#sendMetadataMarker.highlight {
+	color: red;
+}
+
+
+
+.license_headline {
+	font-weight: bold;
+    color: #DF430D;
+    font-size: 114%;
+    margin: 2ex 10px 10px 0;
+    padding: 0;
+}
+
+#license {
+	float:left;
+	width:97%; 
+	margin-left:10px; 
+	margin-top:10px; 
+	margin-bottom: 2ex; 
+	padding: 3ex;
+	padding-bottom:13px;
+	background-color: white;
+	border: 1px solid #333;
+}
+
+#license_header {
+	padding-bottom: 2ex;
+}
+
+#license_logo {
+	float: left;
+}
+
+#license_headline0 {
+	float:none; 
+	font-size: 150%; 
+	text-align: center; 
+	padding-top: 1ex;
+}
+
+#license hr {
+	clear: left; 
+	margin-bottom: 2ex;
+}
+
+#license_data {
+}
+
+#license_data .license_headline {
+	margin-bottom: 3ex;
+}
+
+#license_data input {
+	font-size: 140%;
+	width: 97%;
+}
+
+
+#license_data .lfdesc {
+	clear: left;
+    display: inline;
+    float: left;
+	vertical-align: text-bottom;
+	height: 4ex;
+	padding-left: 2ex;
+}
+
+#license_data .lfval {
+	margin-left: 16em;
+	vertical-align: text-bottom;
+	height: 4ex;
+}
+
+#license_signature {
+	width: 80%;
+	margin-left: 10%;
+	margin-top: 14ex; 
+	margin-bottom: 21ex; 
+}
+
+.signatureline {
+	float: left;
+	border-top: 1px solid black;
+	padding-top: 2px;
+	margin-left: 7%; 
+	margin-right: 7%;
+	width: 36%; 
+}
+
+#license_sendinfo {
+	margin-top: 3ex;
+}
+
+
+ul.newMenu li a {
+	background-color: #DF430D;
+}

@@ -1,0 +1,42 @@
+<jsp:root version="2.0" 
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:rc="urn:jsptagdir:/WEB-INF/tags/resources/common"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:bm="urn:jsptagdir:/WEB-INF/tags/resources/bookmark"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
+	
+	<!-- 
+		shows bookmark posts - only title + date
+	 -->
+	
+	<jsp:directive.attribute name="posts" type="java.util.Collection" required="true" description="some bookmarks"/>
+	<jsp:directive.attribute name="cssClass" type="java.lang.String" required="false"/>
+	<jsp:directive.attribute name="showDescription" type="java.lang.Boolean" required="false"/>
+	<jsp:directive.attribute name="showMeta" type="java.lang.Boolean" required="false"/>
+
+	<ul class="${cssClass}">
+		<c:forEach items="${posts}" var="post">
+			<!-- <bm:title post="${post}"/> -->
+			<li>
+				<a class="bmtitle" href="${fn:escapeXml(post.resource.url)}"><c:out value="${post.resource.title}"/></a>
+				<c:if test="${not empty showDescription and showDescription == true and not empty post.description}">
+					<span class="bmdesc">
+					<c:out value="${post.description}"/>
+					</span> 
+					<c:out value=" "/>
+				</c:if>
+				<c:if test="${empty showMeta or showMeta == true}">
+					<span class="bmmeta">
+						<c:out value=" "/>
+						<fmt:message key="post.meta.taggedOn"/>
+						<c:out value=" "/>
+						<fmt:formatDate type="date" dateStyle="medium" value="${post.date}"/>
+					</span>
+				</c:if>
+			</li>
+		</c:forEach>
+	</ul>
+
+</jsp:root>

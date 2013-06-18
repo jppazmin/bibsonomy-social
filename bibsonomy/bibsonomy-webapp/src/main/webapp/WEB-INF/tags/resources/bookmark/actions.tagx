@@ -1,0 +1,99 @@
+<jsp:root version="2.0" 
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
+
+	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true" />
+	<jsp:directive.attribute name="loginUserName" type="java.lang.String" required="true" />
+
+	<c:if test="${command.context.userLoggedIn}">
+		<c:choose>
+			<c:when test="${loginUserName eq post.user.name}">
+				<!-- user's own post -->
+					
+				<!-- EDIT link -->
+				<c:url var="url_edit" value="/editBookmark" context="${projectContext}">
+					<c:param name="intraHashToUpdate" value="${post.resource.intraHash}" />
+				</c:url>
+				<fmt:message key="bookmark.actions.edit.title" var="editTitle" />
+				<a onclick="editTags(this,'${ckey}');return false;"
+					tags="${fn:escapeXml(mtl:toTagString(post.tags))}"
+					title="${editTitle}"
+					name="${post.resource.intraHash}"
+					href="${fn:escapeXml(url_edit)}">
+					<fmt:message key="bookmark.actions.edit"/>
+				</a>
+
+	            <c:out value=" "/>${mtl:ch('post.actions.delim')}<c:out value=" "/>
+	
+				<!-- DELETE link -->
+				<c:url var="url_delete" value="/deletePost" context="${projectContext}">
+					<c:param name="resourceHash" value="${post.resource.intraHash}" />
+					<c:param name="ckey" value="${ckey}" />
+				</c:url>
+				<fmt:message key="bookmark.actions.delete.title" var="deleteTitle" />
+			    <c:choose>
+			    	<!-- SHOW A CONFIRM WINDOW -->
+			    	<c:when test="${command.context.loginUser.settings.confirmDelete}">
+			    		<a href="${fn:escapeXml(url_delete)}" title="${deleteTitle}"
+			    			onclick="javascript: return confirmDelete(event);">
+			    			<fmt:message key="bookmark.actions.delete"/>
+			    		</a>
+			    	</c:when>
+			    	<!-- JUST DELETE -->
+			    	<c:otherwise>
+			    		<a href="${fn:escapeXml(url_delete)}" title="${deleteTitle}">		       
+			       			<fmt:message key="bookmark.actions.delete"/>
+			    		</a>
+			    	</c:otherwise>
+			    </c:choose>
+			</c:when>
+			<c:otherwise>
+				<!-- another user's post -->
+				
+				<!-- COPY link -->
+				<fmt:message key="bookmark.actions.copy.title" var="copyTitle"/>			
+				<a href="/editBookmark?hash=${post.resource.intraHash}&amp;user=${mtl:encodeURI(post.user.name)}&amp;copytag=${mtl:encodeURI(mtl:toTagString(post.tags))}" title="${fn:escapeXml(copyTitle)}">				
+					<fmt:message key="bookmark.actions.copy"/>
+				</a>
+			</c:otherwise>
+		</c:choose>		
+		
+		<c:out value=" "/>${mtl:ch('post.actions.delim')}<c:out value=" "/>
+								
+		<c:if test="${post.inboxPost}">
+			<!-- REMOVE Message from Inbox -->
+			<c:url var="message_remove" value="/removeMessage" context="${projectContext}">
+				<c:param name="hash" value="${post.resource.intraHash}" />
+				<c:param name="user" value="${post.user.name}" />
+				<c:param name="ckey" value="${ckey}" />
+				<c:param name="clear" value="false" />
+			</c:url>
+			<fmt:message key="bookmark.actions.removeMessage.title" var="removeTitle" />
+			
+		    <c:choose>
+		    	<!-- SHOW A CONFIRM WINDOW -->
+		    	<c:when test="${command.context.loginUser.settings.confirmDelete}">
+		    		<a href="${fn:escapeXml(message_remove)}" title="${removeTitle}" 
+		    			onclick="javascript: return confirmDelete(event);">
+		    			<fmt:message key="bookmark.actions.removeMessage"/>
+		    		</a>
+		    	</c:when>
+		    	<!-- JUST DELETE -->
+		    	<c:otherwise>
+		    		<a href="${fn:escapeXml(message_remove)}" title="${removeTitle}">		       
+		       			<fmt:message key="bookmark.actions.removeMessage"/>
+		    		</a>
+		    	</c:otherwise>
+		    </c:choose>
+		    <c:out value=" "/>${mtl:ch('post.actions.delim')}<c:out value=" "/>
+		</c:if>
+		
+		<!-- DISCUSS link -->					
+		<fmt:message key="post.resource.discussion.title.bookmark" var="title"/>
+		<a href="/url/${post.resource.interHash}#discussion" title="${title}"><fmt:message key="post.resource.discussion" /></a>
+	</c:if>	
+	  
+</jsp:root>

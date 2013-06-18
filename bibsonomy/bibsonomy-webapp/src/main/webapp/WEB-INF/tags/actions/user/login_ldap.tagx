@@ -1,0 +1,33 @@
+<?xml version="1.0" ?>
+<jsp:root version="2.0" 
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:form="http://www.springframework.org/tags/form"
+>
+
+	<jsp:directive.tag language="java" pageEncoding="UTF-8" display-name="LDAP Login Form" description="Renders the login form for LDAP login." />
+
+	<fieldset class="fsInner">
+		<div class="fsRow">
+       		<form:label cssClass="fsLabel" path="username" ><fmt:message key="navi.username"/></form:label>
+       		<form:input cssClass="fsInput" path="username"/>
+      		<div class="dissError"><form:errors path="username" /></div>
+   		</div>
+		<div class="fsRow">
+       		<form:label cssClass="fsLabel" path="password" ><fmt:message key="navi.password"/></form:label>
+       		<form:password cssClass="fsInput" path="password"/>
+      		<div class="dissError"><form:errors path="password" /></div>
+   		</div>
+	   	<div class="fsRow">
+       		<form:label cssClass="fsLabel" path="rememberMe" ><fmt:message key="login.rememberMe"/></form:label>
+       		<form:checkbox path="rememberMe"/>
+      		<div class="dissError"><form:errors path="rememberMe" /></div>
+   		</div>
+   		<div>
+			<form:hidden path="referer" /> 
+			<fmt:message key="navi.login" var="submit" />
+			<input type="submit" value="${submit}" />
+   		</div>
+	</fieldset>
+</jsp:root>

@@ -1,0 +1,18 @@
+<jsp:root version="2.0"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:c="http://java.sun.com/jsp/jstl/core">
+
+	<p class="adminNavi">
+	          
+	<a href="admin_statistics.jsp?showSpammer=no"><fmt:message key="navi.statistics"/></a><c:out value=" "/>
+	
+	<a href="/admin_spammertags.jsp"><fmt:message key="navi.spammertags"/></a><c:out value=" "/>
+	
+	<c:url var="adminUrl" value="/admin" context="${projectContext}"/>	
+	
+	<a class="spammerKillerButton" title="killSpammer" href="javascript:location.href='${adminUrl}/spam?action=flag_spammer&amp;aclUserInfo='+encodeURIComponent(location.href.replace(/.*\//, ''))" onclick="return false;">SpammerKillerButton</a>
+	
+	</p>
+</jsp:root>

@@ -1,0 +1,95 @@
+<?xml version="1.0" ?>
+<!--
+
+
+     BibSonomy-Webapp - The webapplication for Bibsonomy.
+
+     Copyright (C) 2006 - 2011 Knowledge & Data Engineering Group,
+                               University of Kassel, Germany
+                               http://www.kde.cs.uni-kassel.de/
+
+     This program is free software; you can redistribute it and/or
+     modify it under the terms of the GNU General Public License
+     as published by the Free Software Foundation; either version 2
+     of the License, or (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+
+     You should have received a copy of the GNU General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+
+-->
+
+<jsp:root version="2.0"
+		  xmlns="http://www.w3.org/1999/xhtml"
+		  xmlns:jsp="http://java.sun.com/JSP/Page"
+		  xmlns:c="http://java.sun.com/jsp/jstl/core"
+		  xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+		  xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
+		  xmlns:tags="urn:jsptagdir:/WEB-INF/tags/tags"
+		  xmlns:bmark="urn:jsptagdir:/WEB-INF/tags/resources/bookmark"
+		  xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+		  xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"> 
+
+<!-- rss output for bookmarks -->
+
+<jsp:directive.page contentType="application/xml; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" isELIgnored="false"/>	
+
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+		 xmlns="http://purl.org/rss/1.0/"
+		 xmlns:taxo="http://purl.org/rss/1.0/modules/taxonomy/"
+		 xmlns:dc="http://purl.org/dc/elements/1.1/"
+		 xmlns:content="http://purl.org/rss/1.0/modules/content/"
+		 > 
+
+<channel rdf:about="${projectHome}${fn:escapeXml(requPath)}">
+  <title>${projectName} bookmarks for /<c:out value='${requPath}'/></title>
+  <link>${projectHome}rss/<c:out value="${requPath}"/></link>
+  <description>${projectName} RSS Feed for /<c:out value='${requPath}'/></description>
+
+  <items>
+    <rdf:Seq>
+      <c:forEach var="post" items="${command.bookmark.list}">
+        <rdf:li rdf:resource="${fn:escapeXml(mtl:removeXmlControlChars(post.resource.url))}"/>
+      </c:forEach>
+    </rdf:Seq>
+  </items>
+</channel>
+
+<c:forEach var="post" items="${command.bookmark.list}">
+  <c:set var="bookmark" value="${post.resource}"/>
+  <item rdf:about="${fn:escapeXml(mtl:removeXmlControlChars(bookmark.url))}">
+    <title><c:out value="${fn:escapeXml(mtl:removeXmlControlChars(bookmark.title))}"/></title>
+    <description>    
+    	<c:out value="${fn:escapeXml(mtl:removeXmlControlChars(post.description))}"/>
+		<c:if test="${command.context.userLoggedIn}">
+		&amp;lt;a href="/editBookmark&amp;#63;hash=${post.resource.intraHash}&amp;amp;user=${mtl:encodeURI(post.user.name)}&amp;amp;copytag=${mtl:encodeURI(mtl:toTagString(post.tags))}" title="${fn:escapeXml(copyTitle)}"&amp;gt;				
+			<fmt:message key="bookmark.actions.copy"/>
+		&amp;lt;/a&amp;gt;
+		</c:if>
+    </description>
+    <link><c:out value='${fn:escapeXml(mtl:removeXmlControlChars(bookmark.url))}'/></link>
+    <dc:creator><c:out value="${post.user.name}" /></dc:creator>
+    <dc:date><mtl:formatDate value="${post.date}"/></dc:date>
+    <dc:subject>
+      <c:forEach var="tag" items="${post.tags}"><c:out value='${fn:escapeXml(mtl:removeXmlControlChars(tag.name))}'/><c:out value=" "/></c:forEach>  
+    </dc:subject>
+    <content:encoded>
+	    <c:set var="desc"><bmark:desc post="${post}"/></c:set>
+	    ${fn:escapeXml(mtl:removeXmlControlChars(desc))}	        	    
+    </content:encoded>
+    <taxo:topics>
+      <rdf:Bag>
+        <c:forEach var="tag" items="${post.tags}">
+          <rdf:li rdf:resource="${projectHome}tag/${fn:escapeXml(mtl:removeXmlControlChars(tag.name))}"/>
+        </c:forEach>  
+      </rdf:Bag>
+    </taxo:topics>
+  </item>
+</c:forEach>
+</rdf:RDF>
+</jsp:root>

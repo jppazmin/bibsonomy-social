@@ -1,0 +1,12 @@
+<jsp:root
+    version="2.0"
+    xmlns:jsp="http://java.sun.com/JSP/Page">
+    <jsp:directive.tag
+        language="java"
+        pageEncoding="UTF-8"
+        body-content="scriptless"
+        description="Does nothing but invoke its body. Can be used as a root element in JSP 
+                     document fragments that don't have a single root. This is a workaround
+                     for Resin, otherwise a jsp:root element would be perfectly sufficient." />
+    <jsp:doBody />
+</jsp:root>

@@ -1,0 +1,180 @@
+/**
+ *
+ *  BibSonomy-Webapp - The webapplication for Bibsonomy.
+ *
+ *  Copyright (C) 2006 - 2011 Knowledge & Data Engineering Group,
+ *                            University of Kassel, Germany
+ *                            http://www.kde.cs.uni-kassel.de/
+ *
+ *  This program is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU General Public License
+ *  as published by the Free Software Foundation; either version 2
+ *  of the License, or (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ */
+
+/* elements for admin pages */
+.logbox {
+	height: 100px;
+	overflow: auto;
+	font-family: Arial, Helvetica, sans-serif;
+	overflow-x: hidden;
+	overflow-y: hidden;
+	background-color: #E5F3FA;
+	border: 1px solid #069;
+	font-size: 0.8em;
+	padding: 2px;
+	margin-top: 10px;
+	margin-bottom: 10px;
+}
+
+.stattable {
+	font-size: 80%;
+	border-collapse: collapse;
+	empty-cells: show;
+	margin-top: 10px;
+	width: 90%;
+}
+
+.stattable th {
+	text-align: left;
+	font-weight: bold;
+	padding: 3px;
+}
+
+.stattable td {
+	margin-left: 2px;
+	padding: 0.1em 0.12em;
+}
+
+.spammertable {
+	font-size: 60%;
+	border-collapse: collapse;
+	empty-cells: show;
+	margin-top: 15px;
+	width: 100%;
+}
+
+.spammertable th {
+	font-weight: bold;
+	background-color: #EEEEEE;
+	border: 1px solid #CCCCCC;
+	padding: 2px;
+	text-align: center;
+	font-size: 100%;
+}
+
+.spammertable td {
+	border: 1px solid #CCCCCC;
+	padding: 2px;
+}
+
+.poststable {
+	font-size: 75%;
+	border-collapse: collapse;
+	empty-cells: show;
+	margin-top: 15px;
+	width: 100%;
+}
+
+.poststable th {
+	font-weight: bold;
+	background-color: #EEEEEE;
+	border: 1px solid #CCCCCC;
+	padding: 2px;
+	text-align: center;
+}
+
+.poststable td {
+	border-left: 1px solid #CCCCCC;
+	border-right: 1px solid #CCCCCC;
+	padding: 2px;
+}
+
+td.title {
+	font-weight: bold;
+}
+
+td.urlTitle {
+	font-weight: bold;
+	color: #069;
+}
+
+tr.lastrow {
+	border-bottom: 1px solid #CCCCCC;
+}
+
+div.tipHeader {
+	width: 100%;
+	font-size: 0.7em;
+	text-align: left;
+}
+
+.spammer {
+	background-color: #ffeeee;
+}
+
+.nonspammer {
+	background-color: #FFFFCC;
+}
+
+.uncertainUser {
+	background-color: #F0FFF0;
+}
+
+.spamflag a {
+	padding-right: 0.3em;
+}
+
+#ajax_tooltipObj {
+	z-index: 1000000;
+	text-align: left;
+}
+
+#ajax_tooltipObj div {
+	position: relative;
+}
+
+#ajax_tooltipObj .ajax_tooltip_arrow {
+	/* Left div for the small arrow */
+	background-image: url('../image/arrow.png');
+	width: 20px;
+	position: absolute;
+	left: 0px;
+	top: 0px;
+	background-repeat: no-repeat;
+	background-position: center left;
+	z-index: 1000005;
+	height: 60px;
+}
+
+#ajax_tooltipObj .ajax_tooltip_content {
+	border: 2px solid #069; /* Border width */
+	left: 18px; /* Same as border thickness */
+	top: 0px;
+	position: absolute;
+	width: 450px; /*Width of tooltip content */
+	background-color: #FFF; /* Background color */
+	padding: 5px; /* Space between border and content */
+	font-size: 0.9em; /* Font size of content */
+	overflow: auto; /* Hide overflow content */
+	z-index: 1000001;
+}
+
+.important {
+	background-color: #ff0;
+}
+
+#spammerKillerButton {
+	border: 1px solid #aaa; 
+	padding:2px; 
+	background: #eee;
+}

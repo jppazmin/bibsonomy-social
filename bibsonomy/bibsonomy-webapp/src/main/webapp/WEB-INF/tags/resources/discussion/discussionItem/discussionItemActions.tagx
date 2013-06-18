@@ -1,0 +1,70 @@
+<jsp:root version="2.0" xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt">
+	
+	<jsp:directive.attribute name="discussionItem" type="org.bibsonomy.model.DiscussionItem" required="false" />
+	<jsp:directive.attribute name="disableReply" type="java.lang.Boolean" required="false" />
+	
+	<c:set var="discussionItemClass" value="${fn:toLowerCase(discussionItem.class.simpleName)}" />
+	
+	<ul class="discussionitemMenu">
+	
+	<!-- reply links  -->
+	<c:if test="${command.context.userLoggedIn and !disableReply}">
+		<li>
+			<fmt:message key="post.resource.comment.actions.reply.title" var="title"/>
+			<a href="#reply" class="reply" title="${title}">
+				<fmt:message key="post.resource.comment.actions.reply" />
+			</a>
+		</li>
+<!--		<li>-->
+<!--			<fmt:message key="post.resource.comment.actions.create.title" var="title"/>-->
+<!--			<a href="#createReview" class="createReview" title="${title}">-->
+<!--				<fmt:message key="post.resource.review.actions.create" />-->
+<!--			</a>-->
+<!--		</li>-->
+	</c:if>
+	<c:set var="subDiscussionItemsSize" value="${fn:length(discussionItem.subDiscussionItems)}" />
+	
+	<!-- number of replies and toggle link -->
+	<fmt:message key="post.resource.discussion.replies.hide.title" var="title"/>
+	<c:choose>
+		<c:when test="${subDiscussionItemsSize > 0}">
+			<li class="replies">
+				<a href="#toggleReplies" class="toggleReplies" title="${title}">
+					<fmt:message key="post.resource.discussion.replies.hide" />
+				</a>
+			</li>
+		</c:when>
+		<c:otherwise>
+			<li style="display:none;">
+				<a href="#toggleReplies" class="toggleReplies">
+					<fmt:message key="post.resource.discussion.replies.hide" />
+				</a>
+			</li>
+		</c:otherwise>
+	</c:choose>
+	
+	<!-- edit and delete link -->
+	<!-- TODO: use spring security tag lib -->
+	<c:set var="own" value="${command.context.loginUser.name eq discussionItem.user.name}" />
+	<c:if test="${command.context.userLoggedIn and own}">
+		<fmt:message key="post.resource.${discussionItemClass}.actions.edit.title" var="title"/>
+		<li><a href="#edit${discussionItemClass}" class="${discussionItemClass}EditLink editLink" title="${title}"><fmt:message key="post.resource.${discussionItemClass}.actions.edit" /></a></li>
+		<li>
+			<span class="deleteInfo initiallyHidden">
+				<img src="${resdir}/image/ajax_loader.gif" alt="loading" />
+				<fmt:message key="post.resource.${discussionItemClass}.action.delete" />
+			</span>
+			<fmt:message key="post.resource.${discussionItemClass}.actions.delete.title" var="title"/>
+			<a href="#delete${discussionItemClass}" class="${discussionItemClass}DeleteLink deleteLink" title="${title}">
+				<fmt:message key="post.resource.${discussionItemClass}.actions.delete" />
+			</a>
+		</li>
+	</c:if>
+	
+	<!-- TODO: admin actions for mark as spammer -->
+	</ul>
+</jsp:root>

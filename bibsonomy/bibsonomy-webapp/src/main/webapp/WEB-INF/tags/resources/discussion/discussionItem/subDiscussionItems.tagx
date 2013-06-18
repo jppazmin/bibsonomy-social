@@ -1,0 +1,59 @@
+<jsp:root version="2.0" xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:review="urn:jsptagdir:/WEB-INF/tags/resources/discussion/review"
+	xmlns:comment="urn:jsptagdir:/WEB-INF/tags/resources/discussion/comment"
+	xmlns:discussionItem="urn:jsptagdir:/WEB-INF/tags/resources/discussion/discussionItem">
+	
+   	<jsp:directive.attribute name="discussionItems" type="java.util.List" required="true" />
+  	<jsp:directive.attribute name="resource" type="org.bibsonomy.model.Resource" required="true" />
+   	<jsp:directive.attribute name="loginUser" type="org.bibsonomy.model.User" required="true" />
+   	
+   	<ul class="subdiscussionItems">
+    	<c:if test="${not empty discussionItems}">
+    		<c:forEach var="discussionItem" items="${discussionItems}">
+    			<c:set var="class" value="${fn:toLowerCase(discussionItem.class.simpleName)}" />
+	
+				<c:if test="${discussionItem.anonymous}">
+					<c:set var="class" value="${class} anonymous" />
+				</c:if>
+				
+				<c:choose>
+					<c:when test="${discussionItem.class.simpleName eq 'Review'}">
+						<c:choose>
+			    			<!-- check if user has reviewed this resource -->
+				    		<c:when test="${discussionItem.user.name eq command.context.loginUser.name}">
+				    			<li id="ownReview" class="${class}">
+				    				<review:review review="${discussionItem}" resource="${resource}" loginUser="${loginUser}" />
+				    			</li>
+				    		</c:when>
+			    			<c:otherwise>
+			    				<li class="${class}">
+			    					<review:review review="${discussionItem}" resource="${resource}" loginUser="${loginUser}" />
+			    				</li>
+			    			</c:otherwise>
+			    		</c:choose>	   
+					</c:when>
+					<c:when test="${discussionItem.class.simpleName eq 'Comment'}">
+						<li class="${class}"><comment:comment comment="${discussionItem}" loginUser="${loginUser}" resource="${resource}"/></li>
+					</c:when>
+					<c:when test="${discussionItem.class.simpleName eq 'DiscussionItem'}">
+						<li class="${class}">
+							<div class="deletedInfo">
+								<fmt:message key="post.resource.discussion.info" />
+							</div>
+							<discussionItem:discussionItemActions discussionItem="${discussionItem}" disableReply="true" />
+							<discussionItem:subDiscussionItems discussionItems="${discussionItem.subDiscussionItems}" loginUser="${loginUser}" resource="${resource}" />
+						</li>
+					</c:when>
+					<c:otherwise>
+						WARN: no view for ${discussionItem.class.simpleName}
+					</c:otherwise>
+				</c:choose>
+    		</c:forEach>
+    	</c:if>
+		<!-- placeholder -->
+    </ul>
+</jsp:root>

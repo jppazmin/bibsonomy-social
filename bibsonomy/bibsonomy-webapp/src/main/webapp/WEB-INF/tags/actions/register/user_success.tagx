@@ -1,0 +1,76 @@
+<?xml version="1.0" ?>
+<jsp:root version="2.0"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
+    xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+    xmlns:user="urn:jsptagdir:/WEB-INF/tags/resources/user"
+	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/tags"
+    xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/buttons"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
+	
+	<jsp:directive.attribute name="confirmationMailFragment" required="false" fragment="true"/>
+
+
+	<layout:layout loginUser="${command.context.loginUser}" pageTitle="${command.pageTitle}" requPath="${requPath}">
+  
+        <jsp:attribute name="heading">
+          <fmt:message key="navi.register"/>
+        </jsp:attribute>
+      
+        
+        <jsp:attribute name="content">
+
+		  <div id="bookbox">
+      
+      
+            <!-- ###################### welcome ####################### -->
+            <h2><fmt:message key="register.success" ><fmt:param value="${command.context.loginUser.name}"/></fmt:message></h2>
+          
+            <p><fmt:message key="register.welcome"/> <a href="/">${projectName}</a>! <fmt:message key="register.signedIn"/></p>
+  
+            <h2><fmt:message key="register.nextSteps"/></h2>
+
+            <ol>
+              <li><fmt:message key="register.nextSteps.step1"/>
+                
+                <!-- ###################### buttons ####################### -->
+                <p>
+                  <buttons:myBibSonomy username="${command.context.loginUser.name}"/>  
+                  <buttons:postBookmark/>
+                  <buttons:postPublication/>
+                </p>
+                <p style="font-size: 80%;">
+                  <fmt:message key="register.internetExplorer"/> <a href="/help"><fmt:message key="register.internetExplorer.here"/></a>.
+                </p>
+              </li>
+              <li style="padding-top:2em;">
+                <fmt:message key="register.nextSteps.step2.surf"/>
+                <br/>
+                <fmt:message key="register.nextSteps.step2.click"><fmt:param value="${projectName}"/></fmt:message>
+              </li>
+            </ol>
+
+			<c:if test="${not empty confirmationMailFragment}">
+				<jsp:invoke fragment="confirmationMailFragment"/>
+			</c:if>
+          </div>
+
+
+          <div id="bibbox">
+
+            <!-- ###################### help graphic ####################### -->
+			<!-- TODO: Bild erneuern, Groesse korrekt angeben, lokalisieren -->
+            <fmt:message key="register.dragButtons" var="dragButtons"/>
+            <fmt:message key="image.register.success" var="successImage"/>
+            <img src="${successImage}" style="float:left;" alt="${dragButtons}" title="${dragButtons}"/>
+
+          </div>
+      
+	    </jsp:attribute>
+      
+	</layout:layout>
+
+</jsp:root>

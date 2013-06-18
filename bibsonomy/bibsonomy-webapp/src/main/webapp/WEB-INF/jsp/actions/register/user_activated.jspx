@@ -1,0 +1,52 @@
+<?xml version="1.0" ?>
+<!--
+
+
+     BibSonomy-Webapp - The webapplication for Bibsonomy.
+
+     Copyright (C) 2006 - 2011 Knowledge & Data Engineering Group,
+                               University of Kassel, Germany
+                               http://www.kde.cs.uni-kassel.de/
+
+     This program is free software; you can redistribute it and/or
+     modify it under the terms of the GNU General Public License
+     as published by the Free Software Foundation; either version 2
+     of the License, or (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+
+     You should have received a copy of the GNU General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+
+-->
+
+<jsp:root version="2.0"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+    xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+    xmlns:register="urn:jsptagdir:/WEB-INF/tags/actions/register"
+	>
+	
+	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
+
+	<register:user_success>
+		<jsp:attribute name="confirmationMailFragment">
+			<hr style="margin: 2em 0em 2em 0em;"/>
+
+            <!-- ###################### confirmation ####################### -->
+			<p><fmt:message key="register.confirmationMail"/></p>
+			<table>
+				<tr><td><fmt:message key="navi.username"/>:</td><td><c:out value="${command.context.loginUser.name}"/></td></tr>
+				<tr><td><fmt:message key="user.settings.email"/>:</td><td><c:out value="${command.context.loginUser.email}"/></td></tr>
+			</table>  
+		
+		</jsp:attribute>
+	</register:user_success>
+
+</jsp:root>

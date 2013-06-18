@@ -1,0 +1,173 @@
+/**
+ *
+ *  BibSonomy-Webapp - The webapplication for Bibsonomy.
+ *
+ *  Copyright (C) 2006 - 2011 Knowledge & Data Engineering Group,
+ *                            University of Kassel, Germany
+ *                            http://www.kde.cs.uni-kassel.de/
+ *
+ *  This program is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU General Public License
+ *  as published by the Free Software Foundation; either version 2
+ *  of the License, or (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ */
+
+ul#sidebar .goldstandard {
+	padding-left: 20px;
+}
+
+ul#sidebar .goldstandard .goldstandard_references ul {
+	padding-left: 25px;	
+}
+
+ul#sidebar .goldstandard .goldstandard_references ul li {
+	list-style-type: disc !important;
+}
+
+div#goldstandard {
+	padding-left: 20px;
+	padding-top: 15px;
+	padding-bottom: 10px;
+}
+
+div#goldstandard textarea {
+	width: 99%;
+	padding: 5px;
+}
+
+.gold_headline {
+	padding-top:30px;
+}
+
+h2#gold_title {
+	margin-bottom: 0px;
+	font-size: 135%;
+}
+
+#gold_resources_links {
+	display: table-cell;
+	width: 45%;
+}
+
+div#gold_refs, div#postUsers, div#gold_exports {
+	clear: both;	
+}
+
+div#gold_references, div#gold_referencedBy {
+	margin-top: 15px;
+}
+
+div#gold_references ol, div#gold_referencedBy ol {
+	list-style: upper-roman;
+}
+
+span.ref_authors_editors, #gold_authorsEditors {
+	font-size: 85%;
+	color: grey;
+}
+
+.gold_info {
+	font-weight: bold;	
+}
+
+#gold_abstract, #gold_resources {
+	margin-top: 15px;
+}
+
+ul#gold_menu {
+	float: right;
+}
+
+ul#gold_menu li {
+	display: inline;
+	padding: 3px;
+	margin-right: 5px;	
+}
+
+ul#gold_menu li a {
+	background-color: #069; /* TODO: puma */
+	color: white !important;
+	padding: 3px 5px 3px 5px;
+	font-size: 80%;
+	border: 1px solid black;
+}
+
+ul#gold_menu li a:hover {
+	background-color: rgb(233, 233, 233); /* TODO: puma */
+	color: rgb(96, 96, 96) !important;
+}
+
+#gold_resources_links ul {
+	padding-left: 1em;	
+}
+
+#gold_resources_pdf {
+	display: table-cell;
+	width: 50%;	
+}
+
+#gold_references {
+	clear: both;
+}
+
+#gold_exports, #postUsers {
+	margin-top: 15px;
+}
+
+#gold_resources #gold_resources_links {
+	margin-right: 15px;
+}
+
+#goldstandard #gold_resources_links ul , #goldstandard #gold_refs ul, #goldstandard #postUsers ul {
+	list-style: disc;
+	margin-left: 20px;
+}
+
+#goldstandard #gold_resources_pdf ul {
+	margin-left: 20px;
+}
+
+span.reference_menu {
+	margin-left: 5px;	
+}
+
+a.publicationLink {
+	font-weight: bold;
+}
+
+ul.ui-menu {
+	border: 1px solid #069; /* TODO: puma */
+	border-top: none;
+	max-width: 400px;
+}
+
+ul.ui-menu .ui-menu-item a {
+	display: block;
+	padding: 5px;
+	background-color: white;
+}
+
+li.ui-menu-item {
+	font-size: 90%;
+	border-top: 1px solid #069; /* TODO: puma */
+}
+
+li.ui-menu-item:first a {
+	color:red;	
+}
+
+ul.ui-menu .ui-menu-item a.ui-state-hover {
+	cursor: pointer;
+	font-weight: normal;
+	color: white;
+	background-color: #069; /* TODO: puma */
+}

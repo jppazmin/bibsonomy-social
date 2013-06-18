@@ -1,0 +1,371 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!-- a tag library descriptor -->
+
+<taglib xmlns="http://java.sun.com/xml/ns/j2ee" 
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+		xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee/web-jsptaglibrary_2_0.xsd" 
+		version="2.0">
+   <tlibversion>1.1</tlibversion>
+   <jspversion>1.1</jspversion>
+   <shortname>mytaglib</shortname>
+   <uri></uri>
+   <info>Some helpers to shorten syntax</info>
+
+	<tag>
+		<name>cdata</name>
+		<tagclass>tags.CData</tagclass>
+		<bodycontent>tagdependent</bodycontent>
+		<info>Writes an XML CDATA section around the given content</info>
+	</tag> 
+
+  <tag>
+    <name>encode</name>
+    <tagclass>tags.Encode</tagclass>
+    <bodycontent>empty</bodycontent>
+    <info>Encodes the given string with URLEncoder</info>
+    <attribute>
+       <name>value</name>
+       <required>true</required>
+       <rtexprvalue>true</rtexprvalue>
+    </attribute>
+  </tag>
+  
+  <tag>
+    <name>entrytype</name>
+    <tagclass>tags.EntryType</tagclass>
+    <bodycontent>empty</bodycontent>
+    <info>Encodes the given string with URLEncoder</info>
+    <attribute>
+       <name>value</name>
+       <required>true</required>
+       <rtexprvalue>true</rtexprvalue>
+    </attribute>
+  </tag>
+           
+  <tag>
+    <name>encode2</name>
+    <tagclass>tags.Encode2</tagclass>
+    <bodycontent>empty</bodycontent>
+    <info>Encodes the given string TWO TIMES with URLEncoder</info>
+    <attribute>
+       <name>value</name>
+       <required>true</required>
+       <rtexprvalue>true</rtexprvalue>
+    </attribute>
+  </tag>
+    
+  <tag>
+    <name>bibcleancsv</name>
+    <tagclass>tags.BibcleanCSV</tagclass>
+    <bodycontent>empty</bodycontent>
+    <info>Removes {} and other symbols from the input String</info>
+    <attribute>
+       <name>value</name>
+       <required>true</required>
+       <rtexprvalue>true</rtexprvalue>
+    </attribute>
+  </tag>
+  
+  <tag>
+    <name>xOtherPersonsStyle</name>
+    <tagclass>tags.XotherPersonsStyle</tagclass>
+    <bodycontent>empty</bodycontent>
+    <info>returns CSS for formating the "... and X other persons" link</info>
+    <attribute>
+       <name>value</name>
+       <required>true</required>
+       <rtexprvalue>true</rtexprvalue>
+    </attribute>
+  </tag>
+  
+  <tag>
+    <name>formatDate</name>
+    <tagclass>tags.FormatDate</tagclass>
+    <bodycontent>empty</bodycontent>
+    <info>formats the date according to given format type</info>
+    <attribute>
+       <name>value</name>
+       <required>true</required>
+       <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+       <name>type</name>
+       <required>false</required>
+       <rtexprvalue>true</rtexprvalue>
+    </attribute>
+  </tag>
+  
+  <tag>
+    <name>debug</name>
+    <tagclass>tags.Debug</tagclass>
+    <bodycontent>empty</bodycontent>
+    <info>Writes a debug message using the logger</info>
+    <attribute>
+       <name>message</name>
+       <required>true</required>
+       <rtexprvalue>true</rtexprvalue>
+    </attribute>
+  </tag>
+
+  
+  <tag>
+  	<name>exists</name>
+  	<info>Checks, if the given (command) property exists. Only when it exists, the body of the tag is executed.</info>
+  	<tagclass>tags.Exists</tagclass>
+  	<bodycontent>JSP</bodycontent>
+  	<attribute>
+  		<name>path</name>
+  		<required>true</required>
+  		<rtexprvalue>true</rtexprvalue>
+  	</attribute>
+  </tag>
+  
+  <tag>
+  	<name>renderJabRefLayout</name>
+  	<info>renders the JabRef layout</info>
+  	<tagclass>org.bibsonomy.webapp.util.tags.JabrefLayoutRendererTag</tagclass>
+  	<bodycontent>JSP</bodycontent>
+  	<attribute>
+  		<name>layout</name>
+  		<required>true</required>
+  		<rtexprvalue>true</rtexprvalue>
+  	</attribute>
+  	<attribute>
+  		<name>post</name>
+  		<required>false</required>
+  		<rtexprvalue>true</rtexprvalue>
+  	</attribute>
+  	<attribute>
+  		<name>posts</name>
+  		<required>false</required>
+  		<rtexprvalue>true</rtexprvalue>
+  	</attribute>
+  </tag>
+    
+  <function>
+    <name>normalize</name>
+    <function-class>tags.Functions</function-class>
+    <function-signature>String normalize(java.lang.String, java.lang.String)</function-signature>
+  </function> 
+  
+  <function>
+    <name>trimWhiteSpace</name>
+    <function-class>tags.Functions</function-class>
+    <function-signature>String trimWhiteSpace (java.lang.String)</function-signature>
+  </function> 
+
+  <function>
+    <name>decodeURI</name>
+    <function-class>tags.Functions</function-class>
+    <function-signature>String decodeURI (java.lang.String)</function-signature>
+  </function>
+  
+  <function>
+    <name>encodeURI</name>
+    <function-class>tags.Functions</function-class>
+    <function-signature>String encodeURI (java.lang.String)</function-signature>
+  </function>
+  
+  <function>
+    <name>toTagString</name>
+    <function-class>tags.Functions</function-class>
+    <function-signature>String toTagString (java.util.Collection)</function-signature>
+  </function>
+  
+  <function>
+    <name>getPath</name>
+    <function-class>tags.Functions</function-class>
+    <function-signature>String getPath (java.lang.String)</function-signature>
+  </function> 
+  
+  <function>
+    <name>getLowerPath</name>
+    <function-class>tags.Functions</function-class>
+    <function-signature>String getLowerPath (java.lang.String)</function-signature>
+  </function> 
+  
+  <function>
+    <name>getQuery</name>
+    <function-class>tags.Functions</function-class>
+    <function-signature>String getQuery (java.lang.String)</function-signature>
+  </function>   
+
+  <function>
+    <name>ch</name>
+    <function-class>tags.Functions</function-class>
+    <function-signature>String ch (java.lang.String)</function-signature>
+  </function>
+  
+  <function>
+    <name>containsResourceClass</name>
+    <function-class>tags.Functions</function-class>
+    <function-signature>boolean containsResourceClass (java.util.Collection, java.lang.String)</function-signature>
+  </function>    
+  
+  <function>
+    <name>computeTagFontsize</name>
+    <function-class>tags.Functions</function-class>
+    <function-signature>java.lang.Integer computeTagFontsize (java.lang.Integer, java.lang.Integer, java.lang.String)</function-signature>
+  </function>  
+
+  <function>
+    <name>cleanUrl</name>
+    <function-class>tags.Functions</function-class>
+    <function-signature>String cleanUrl (java.lang.String)</function-signature>
+  </function>
+  
+  <function>
+    <name>setParam</name>
+    <function-class>tags.Functions</function-class>
+    <function-signature>String setParam(java.lang.String, java.lang.String, java.lang.String)</function-signature>
+  </function>   
+
+  <function>
+    <name>removeParam</name>
+    <function-class>tags.Functions</function-class>
+    <function-signature>String removeParam(java.lang.String, java.lang.String)</function-signature>
+  </function>   
+  
+  <function>
+  	<name>cleanBibtex</name>
+  	<function-class>tags.Functions</function-class>
+  	<function-signature>String cleanBibtex(java.lang.String)</function-signature>
+  </function>
+  
+   <function>
+  	<name>predictionString</name>
+  	<function-class>tags.Functions</function-class>
+  	<function-signature>String getPredictionString(java.lang.Integer)</function-signature>
+  </function>
+  
+  <function>
+  	<name>isSpammer</name>
+  	<function-class>tags.Functions</function-class>
+  	<function-signature>Boolean isSpammer(java.lang.Integer)</function-signature>
+  </function>
+
+  <function>
+  	<name>quoteJSON</name>
+  	<function-class>tags.Functions</function-class>
+  	<function-signature>String quoteJSON(java.lang.String)</function-signature>
+  </function>
+
+  <function>
+  	<name>quoteJSONcleanBibTeX</name>
+  	<function-class>tags.Functions</function-class>
+  	<function-signature>String quoteJSONcleanBibTeX(java.lang.String)</function-signature>
+  </function>
+
+  <function>
+    <!-- maps BibTeX entrytypes to SWRC entrytypes  -->
+  	<name>getSWRCEntryType</name>
+  	<function-class>tags.Functions</function-class>
+  	<function-signature>String getSWRCEntryType(java.lang.String)</function-signature>
+  </function>
+  <function>
+    <!-- maps BibTeX entrytypes to RIS/EndNote entrytypes  -->
+  	<name>getRISEntryType</name>
+  	<function-class>tags.Functions</function-class>
+  	<function-signature>String getRISEntryType(java.lang.String)</function-signature>
+  </function>
+  
+  <function>
+  	<name>getBibTeXEntryTypes</name>
+  	<function-class>tags.Functions</function-class>
+  	<function-signature>String[] getBibTeXEntryTypes()</function-signature>
+  </function>
+
+  
+  <function>
+  	<name>tagFontSize</name>
+  	<function-class>tags.Functions</function-class>
+  	<function-signature>Double getTagFontSize(org.bibsonomy.model.Tag)</function-signature>
+  </function>
+  
+  <function>
+  	<name>getTagSize</name>
+  	<function-class>tags.Functions</function-class>
+  	<function-signature>String getTagSize(java.lang.Integer, java.lang.Integer)</function-signature>
+  </function>
+  
+  <function>
+  	<name>getHostName</name>
+  	<function-class>tags.Functions</function-class>
+  	<function-signature>String getHostName(java.lang.String)</function-signature>
+  </function>
+  
+  <function>
+    <name>isLinkToDocument</name>
+    <function-class>tags.Functions</function-class>
+    <function-signature>Boolean isLinkToDocument(java.lang.String)</function-signature>
+  </function> 
+  
+    
+  <function>
+  	<name>authorFontSize</name>
+  	<function-class>tags.Functions</function-class>
+  	<function-signature>Double authorFontSize(org.bibsonomy.model.Author, java.lang.Integer)</function-signature>
+  </function>
+  
+  <function>
+  	<name>shortPublicationDescription</name>
+  	<function-class>tags.Functions</function-class>
+  	<function-signature>String shortPublicationDescription(org.bibsonomy.model.Post)</function-signature>
+  </function>
+  
+  <function>
+  	<name>shorten</name>
+  	<function-class>tags.Functions</function-class>
+  	<function-signature>String shorten(java.lang.String, java.lang.Integer)</function-signature>
+  </function>
+  
+  <function>
+  	<name>toBibtexString</name>
+  	<function-class>tags.Functions</function-class>
+  	<function-signature>String toBibtexString(org.bibsonomy.model.Post, java.lang.String)</function-signature>
+  </function>
+  
+  <function>
+  	<name>contains</name>
+  	<function-class>tags.Functions</function-class>
+  	<function-signature>boolean contains(java.util.Collection, java.lang.Object)</function-signature>
+  </function>
+  
+  <function>
+  	<name>toggleUserSimilarity</name>
+  	<function-class>tags.Functions</function-class>
+  	<function-signature>String toggleUserSimilarity(java.lang.String)</function-signature>
+  </function>
+  
+  <function>
+  	<name>extractDOI</name>
+  	<function-class>tags.Functions</function-class>
+  	<function-signature>String extractDOI(java.lang.String)</function-signature>
+  </function>
+  
+  <function>
+  	<name>getErrorHint</name>
+  	<function-class>tags.Functions</function-class>
+  	<function-signature>String getErrorHint(java.lang.String)</function-signature>
+  </function>
+  
+  <function>
+  	<name>removeXmlControlChars</name>
+  	<function-class>tags.Functions</function-class>
+  	<function-signature>String removeXmlControlChars(java.lang.String)</function-signature>
+  </function>    
+  
+  <function>
+  	<name>hasTagMyown</name>
+  	<function-class>tags.Functions</function-class>
+  	<function-signature>boolean hasTagMyown(org.bibsonomy.model.Post)</function-signature>
+  </function>    
+
+  <function>
+  	<name>getDate</name>
+  	<function-class>tags.Functions</function-class>
+  	<function-signature>String getDate(java.lang.String, java.lang.String, java.lang.String, java.util.Locale)</function-signature>
+  </function>
+  
+</taglib>

@@ -1,0 +1,65 @@
+<?xml version="1.0" ?>
+<!--
+
+
+     BibSonomy-Webapp - The webapplication for Bibsonomy.
+
+     Copyright (C) 2006 - 2011 Knowledge & Data Engineering Group,
+                               University of Kassel, Germany
+                               http://www.kde.cs.uni-kassel.de/
+
+     This program is free software; you can redistribute it and/or
+     modify it under the terms of the GNU General Public License
+     as published by the Free Software Foundation; either version 2
+     of the License, or (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+
+     You should have received a copy of the GNU General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+
+-->
+
+<jsp:root version="2.0"
+		  xmlns="http://www.w3.org/1999/xhtml"
+		  xmlns:jsp="http://java.sun.com/JSP/Page"
+		  xmlns:c="http://java.sun.com/jsp/jstl/core"
+		  xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+		  xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
+		  xmlns:tags="urn:jsptagdir:/WEB-INF/tags/tags"
+		  xmlns:bmark="urn:jsptagdir:/WEB-INF/tags/resources/bookmark"
+		  xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+		  xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"> 
+
+<!-- rss output for bookmarks -->
+
+<jsp:directive.page contentType="application/xml; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" isELIgnored="false"/>	
+
+<!-- the time -->
+<jsp:useBean id="now" class="java.util.Date" />
+
+<!-- Bookmarks -->
+<c:set var="now"><fmt:formatDate type="both" value="${now}" pattern="yyyy-MM-dd HH:mm:ss"/></c:set>
+<posts update="${now}" user="${user.name}">
+	<c:forEach var="post" items="${command.bookmark.list}">
+		<c:set var="bmark" value="${post.resource}"/>
+		<c:forEach var="tag" items='${post.tags}'>
+			<c:set var="tags" value="${tags} ${tag.name}"/>
+		</c:forEach>
+		<c:set var="postDate"><fmt:formatDate type='both' pattern="yyyy-MM-dd'T'HH:mm:ssZ" value='${post.date}'/></c:set>
+		<post href="${fn:escapeXml(bmark.url)}" 
+			  description="${fn:escapeXml(bmark.title)}" 
+			  hash="${bmark.intraHash}"
+			  user="${fn:escapeXml(post.user.name)}"
+			  tag="${fn:escapeXml(tags)}"
+			  time="${postDate}"/>
+		<!-- otherwise tags accumulate over all posts ...-->
+		<c:set var="tags" value=""/>
+	</c:forEach>
+</posts>
+
+</jsp:root>

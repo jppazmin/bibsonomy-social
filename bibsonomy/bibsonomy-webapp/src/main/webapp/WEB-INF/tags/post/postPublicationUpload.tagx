@@ -1,0 +1,83 @@
+<jsp:root version="2.0" 
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:post="urn:jsptagdir:/WEB-INF/tags/post"
+	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/buttons"
+	xmlns:form="http://www.springframework.org/tags/form">
+
+    <!-- 
+    	the form for uploading a BibTeX/EndNote files on /postPublication
+     -->
+     
+					
+	<h2><fmt:message key="post_bibtex.upload.heading" /></h2>
+	<p class="smalltext"><fmt:message key="post_bibtex.upload.description" /></p>
+
+
+	<form:form name="upload" method="post" enctype="multipart/form-data" action="/import/publications">
+		<div id="fsform">
+			<fieldset class="fsOuter">
+				<input type="hidden" name="selTab" value="2" />
+				<input type="hidden" name="ckey" value="${ckey}"/>
+				
+
+				<!-- 
+					file, group, SUBMIT
+				 -->
+			  	<div class="fsRow">
+			      	<label class="fsLabel" for="file"><fmt:message key="post_bibtex.upload.my_file" />*</label>
+			      	<input type="file" name="file" class="reqinput fsInput" />
+			    </div>
+		    	
+			    <div class="fsLabel"><!--  --></div>
+			    <post:groupBox groups="${command.context.loginUser.groups}"/>
+				
+				<div class="fsRow">
+					<fmt:message var="post_button" key="post_bibtex.button_label_post" />
+					<input type="submit" class="fsFormSubmit" name="submit" value="${post_button}" />
+				</div>
+
+
+
+				<!-- 
+					options (overwrite, charset, tag separator, etc.)
+				 -->
+				<fieldset class="fsInner">
+					<legend><fmt:message key="post_bibtex.upload.options" /></legend>
+					<post:postPublicationOptions/>
+
+					<div class="fsRow">
+						<form:label cssClass="fsLabel" path="encoding"><fmt:message key="post_bibtex.upload.option.character_encoding" /></form:label>
+						<buttons:help message="post_bibtex.upload.option.character_encoding_help"/>
+					    <form:select path="encoding" cssClass="fsInput fsSmall" id="lencoding">
+					      	<form:option value="UTF-8">UTF-8</form:option>
+					      	<form:option value="ISO-8859-1">ISO-8859-1</form:option>
+					      	<form:option value="ISO-8859-2">ISO-8859-2</form:option>
+					      	<form:option value="ISO-8859-3">ISO-8859-3</form:option>
+					      	<form:option value="ISO-8859-4">ISO-8859-4</form:option>
+					      	<form:option value="ISO-8859-5">ISO-8859-5</form:option>
+					      	<form:option value="ISO-8859-6">ISO-8859-6</form:option>
+					      	<form:option value="ISO-8859-7">ISO-8859-7</form:option>
+					      	<form:option value="ISO-8859-8">ISO-8859-8</form:option>
+					      	<form:option value="ISO-8859-9">ISO-8859-9</form:option>
+					      	<form:option value="ISO-8859-10">ISO-8859-10</form:option>
+					      	<form:option value="ISO-8859-13">ISO-8859-13</form:option>
+					      	<form:option value="ISO-8859-14">ISO-8859-14</form:option>
+					      	<form:option value="ISO-8859-15">ISO-8859-15</form:option>
+					      	<form:option value="ISO-8859-16">ISO-8859-16</form:option>
+					      	<form:option value="US-ASCII">US-ASCII</form:option>
+					      	<form:option value="UTF-16">UTF-16</form:option>
+					      	<form:option value="UTF-16BE">UTF-16BE</form:option>
+					      	<form:option value="UTF-16LE">UTF-16LE</form:option>
+					    </form:select>
+					</div>					
+
+				</fieldset>
+			</fieldset>
+		</div>
+	</form:form>
+
+</jsp:root>

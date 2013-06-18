@@ -1,0 +1,90 @@
+<jsp:root version="2.0" 
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:form="http://www.springframework.org/tags/form"
+    xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/buttons"
+  >
+  
+
+    <!-- 
+    
+        Shows the required form fields entrytype, bibtexkey, title, author, 
+          editor, year for publications      
+    
+     -->
+	
+    <jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true"/>
+    <jsp:directive.attribute name="autocompletion" type="java.lang.Boolean" required="true"/>
+    	<c:if test="${not empty autocompletion and autocompletion eq true}">
+			<link rel="stylesheet" href="${resdir}/jquery/plugins/ui/jquery-ui.css" type="text/css" media="all" />
+			<link rel="stylesheet" href="${resdir}/jquery/plugins/ui/ui.theme.css" type="text/css" media="all" />
+			<script src="${resdir}/jquery/plugins/bgiframe/jquery.bgiframe.js" type="text/javascript"><!--  --></script>
+			<script src="${resdir}/jquery/plugins/ui/jquery-ui.js" type="text/javascript"><!--  --></script>
+		  	<script src="${resdir}/jquery/plugins/ui//jquery-ui-i18n.js" type="text/javascript"><!--  --></script>
+		</c:if>
+		<script type="text/javascript" src="${resdir}/javascript/publicationRequiredFields.js"> <!--  --></script>
+         <div class="fsRow">
+            <form:label cssClass="fsLabel" path="post.resource.entrytype" ><fmt:message key="post.resource.entrytype"/>* </form:label><buttons:help message="post.resource.entrytype.help"/>
+            <form:select multiple="false" path="post.resource.entrytype" cssClass="reqinput" tabindex="2" size="1" id="post.resource.entrytype" items="${mtl:getBibTeXEntryTypes()}" onchange="changeView();"/>
+            <div class="dissError"><form:errors path="post.resource.entrytype" /></div>
+		
+		  <form:input cssClass="fsFloatInput reqinput" path="post.resource.bibtexKey" tabindex="2"/>
+            <!-- reload button for BibTeX key -->
+            <fmt:message var="generateBibtexKey" key="post.resource.generateBibtexKey"/>
+            <a style="cursor:pointer">
+              <img src="${resdir}/image/button_reload.png" alt="${generateBibtexKey}" title="${generateBibtexKey}" onclick="javascript:generateBibTexKey(this)" />
+            </a>
+            <buttons:help message="post.resource.bibtexKey.help" cssStyle="float:none;"/>
+            <form:label cssClass="fsFloatLabel" cssStyle="clear: none !important;" path="post.resource.bibtexKey" ><fmt:message key="post.resource.bibtexKey"/>* </form:label>
+            <div class="dissError"><form:errors path="post.resource.bibtexKey" /></div>
+		</div>
+
+
+          <div class="fsRow">
+		  	<form:label cssClass="fsLabel" path="post.resource.title" ><fmt:message key="post.resource.title"/>* </form:label><buttons:help message="post.resource.title.help"/>
+            <form:textarea cssClass="fsInput reqinput" path="post.resource.title" tabindex="2" rows="2"/>
+		  	<div class="dissError"><form:errors path="post.resource.title" /></div>
+          </div>
+
+          <div class="fsRow">
+            <form:label cssClass="fsLabel" path="post.resource.author" ><fmt:message key="post.resource.author"/>* </form:label><buttons:help message="post.resource.author.help"/>
+            <form:textarea cssClass="fsInput reqinput" path="post.resource.author" tabindex="2" rows="2"/>
+            <div class="dissError"><form:errors path="post.resource.author" /></div>
+          </div>
+
+          <div class="fsRow hiddenElement">
+			<label class="fsLabel"><fmt:message key="post.resource.myown"/>*</label><buttons:help message="post.resource.myown.help"/>
+			<input type="checkbox" id="myownChkBox" tabindex="2"/>
+          </div>
+          
+          <div class="fsRow">
+            <form:label cssClass="fsLabel" path="post.resource.editor" ><fmt:message key="post.resource.editor"/>* </form:label><buttons:help message="post.resource.editor.help"/>
+            <form:textarea cssClass="fsInput reqinput" path="post.resource.editor" tabindex="2" rows="2"/>
+            <div class="dissError"><form:errors path="post.resource.editor" /></div>
+          </div>
+          
+		  <div class="fsRow">
+            <form:label cssClass="fsLabel" path="post.resource.year" ><fmt:message key="post.resource.year"/>* </form:label><buttons:help message="post.resource.year.help"/>
+            <form:input cssClass="fsInput fsSmall reqinput" path="post.resource.year" tabindex="2"/>
+            <div class="dissError"><form:errors path="post.resource.year" /></div>
+          </div>
+
+		<c:if test="${autocompletion}">
+			<script type="text/javascript">
+            	//<mtl:cdata>
+            	<![CDATA[
+					$(document).ready(
+	    	     		function(){
+	    	     			initSuggestionForPartTitles($('#post\\.resource\\.title'));
+							$('body').append($('<div id="title_window" style="position:absolute;display:none;"></div>'));
+				     	}
+	    	     	);
+	     		]]> 
+            	//</mtl:cdata>
+     		</script>
+		</c:if>
+	    
+</jsp:root>

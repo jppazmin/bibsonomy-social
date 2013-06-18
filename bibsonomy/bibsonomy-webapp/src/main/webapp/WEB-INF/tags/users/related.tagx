@@ -1,0 +1,71 @@
+<jsp:root version="2.0" xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions">
+
+	<jsp:directive.attribute name="cmd" type="org.bibsonomy.webapp.command.RelatedUserCommand" required="true" />
+	<jsp:directive.attribute name="userSimilarity" type="java.lang.String" required="true" />
+	<jsp:directive.attribute name="personalized" type="java.lang.Boolean" required="false" />
+	<jsp:directive.attribute name="ckey" type="java.lang.String"/>
+	<jsp:directive.attribute name="displayFollowLink" type="java.lang.Boolean"/>
+
+	<!--  counter for the ranking position of similar users -->
+	<c:set var="userRank" value="${0}"/>
+
+	<ul class="taglist">
+		<c:forEach var="user" items="${cmd.relatedUsers}">
+		
+			<!-- increment ranking counter -->
+			<c:set var="userRank" value="${userRank + 1}"/>
+
+			<!-- determine user css depending on its frequency -->
+			<c:choose>
+				<c:when test="${user.prediction > 10}">
+					<c:set var="userclass" value="tagten" />
+				</c:when>			
+				<c:when test="${user.prediction > 5}">
+					<c:set var="userclass" value="tagone" />				
+				</c:when>							
+				<c:otherwise>
+					<c:set var="userclass" value="" />
+				</c:otherwise>
+			</c:choose>
+		
+			<!-- title -->
+
+			<c:set var="userTitle">
+				<c:choose>
+					<c:when test="${not empty user.prediction}">
+						<fmt:message key="sort.folkrank.weight" />: ${user.prediction} <!-- we misuse the prediction field here, which is normally used for spam predictions -->
+					</c:when>
+					<c:otherwise>${user.name}</c:otherwise>
+				</c:choose>
+			</c:set>
+
+			<!-- reference for evaluatio purposes -->
+			<c:set var="userSimilarityRef" value="${userSimilarity}_${userRank}"/>
+			
+			<!-- url -->
+			<c:set var="personalized">
+				<c:if test="${not empty personalized}">/personalized</c:if>
+			</c:set>
+			<c:url var="userUrl" context="${projectContext}" value="${personalized}/user/${fn:escapeXml(user.name)}">
+				<c:param name="userSimilarityRef">${userSimilarityRef}</c:param>
+			</c:url>
+														
+			<li class="${userclass}">			  
+		      <a title="${fn:escapeXml(userTitle)}" rel="${userSimilarityRef}" href="${userUrl}"><c:out value="${user.name}"/></a>
+		      <c:out value=" "/>
+		      	<c:if test="${displayFollowLink}">	      
+				<a class="action"
+						onClick="javascript:addFollowerFollowerPage('${user.name}', this, '${ckey}');return false;"
+						style="cursor: pointer;" title="${addFriendTitle}"
+						href="/ajax/handleFollower?requestedUserName=${fn:escapeXml(user.name)}&amp;action=addFollower&amp;ckey=${ckey}&amp;forward=followers">
+    		        <fmt:message key="follow.link.text.follow" />
+                </a>		  
+                </c:if>    		      
+		    </li>
+		</c:forEach>
+	</ul> 	
+</jsp:root>

@@ -1,0 +1,48 @@
+<jsp:root version="2.0" 
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:rc="urn:jsptagdir:/WEB-INF/tags/resources/common"
+	xmlns:bib="urn:jsptagdir:/WEB-INF/tags/resources/bibtex"
+	xmlns:jsp="http://java.sun.com/JSP/Page">
+	
+	<jsp:directive.attribute name="listView" type="org.bibsonomy.webapp.command.ListCommand" required="true"/>
+	<jsp:directive.attribute name="loginUserName" type="java.lang.String" required="true"/>
+	<jsp:directive.attribute name="info" type="java.lang.String" required="false"/>
+	<jsp:directive.attribute name="disableActions" type="java.lang.Boolean" required="true"/>
+	<jsp:directive.attribute name="disableListNavigation" type="java.lang.Boolean" required="true"/>
+	<jsp:directive.attribute name="requPath" type="java.lang.String" required="true"/>
+	
+	<rc:list
+		titleKey="publications" 
+		loginUserName="${loginUserName}"
+		listViewStartParamName="bibtex.start"
+		otherPostsUrlPrefix="/bibtex/${hash.inter.id}"
+		disableActions="${disableActions}"
+		disableListNavigation="${disableListNavigation}"
+		listView="${listView}">
+		<jsp:attribute name="formatButtons">
+			<!-- popular days -->
+			<h2 class="listh">(${info} <fmt:message key="days"/>)</h2>
+		</jsp:attribute>
+		<jsp:attribute name="title">
+			<c:if test='${not empty post.resource.documents}'> 
+				<a href="/documents/${post.resource.documents[0].fileHash}"><img alt="PDF" src="${resdir}/image/document-txt-blue.png" style="float: left;"/></a>
+			</c:if>
+			<c:set var="bibUrlTemplate">/bibtex/2${post.resource.intraHash}/<mtl:encode value='${post.user.name}'/></c:set>
+			<c:url var="bibUrl" value="${bibUrlTemplate}" context="${projectContext}"/>
+			<a href="${bibUrl}">${mtl:cleanBibtex(post.resource.title)}"</a>
+		</jsp:attribute>
+		
+		<!-- Bibtex description -->
+		<jsp:attribute name="desc">
+			<bib:desc post="${post}"/>
+		</jsp:attribute>
+		
+		<!-- BibTeX action -->
+		<jsp:attribute name="actions">
+			<bib:actions loginUserName="${loginUserName}" post="${post}"/>
+		</jsp:attribute>
+		
+	</rc:list>
+</jsp:root>

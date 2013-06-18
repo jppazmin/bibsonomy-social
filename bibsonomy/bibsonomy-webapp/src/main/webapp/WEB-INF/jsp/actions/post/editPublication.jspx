@@ -1,0 +1,103 @@
+<?xml version="1.0" ?>
+<!--
+
+
+     BibSonomy-Webapp - The webapplication for Bibsonomy.
+
+     Copyright (C) 2006 - 2011 Knowledge & Data Engineering Group,
+                               University of Kassel, Germany
+                               http://www.kde.cs.uni-kassel.de/
+
+     This program is free software; you can redistribute it and/or
+     modify it under the terms of the GNU General Public License
+     as published by the Free Software Foundation; either version 2
+     of the License, or (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+
+     You should have received a copy of the GNU General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+
+-->
+
+<jsp:root version="2.0" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:form="http://www.springframework.org/tags/form"
+	xmlns:spring="http://www.springframework.org/tags"
+	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
+	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/tags"
+    xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:errors="urn:jsptagdir:/WEB-INF/tags/errors"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+    xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/buttons"
+    xmlns:editpub="urn:jsptagdir:/WEB-INF/tags/actions/edit/publication"
+  >
+  
+  
+    <!--
+       | 
+       | TODO:
+       |   - Einblendung des existierenden Eintrages (bzw. des geposteten - der
+       |     existierende wird editiert, der gepostete ist in "diffPost") 
+       |   - JavaScript zur Ausblendung optionaler Felder (siehe edit_bibtex.jsp)
+       -->
+
+    <jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
+ 
+	<layout:editPostLayout command="${command}" requPath="${requPath}" resourceType="Publication" selectedNaviTab="nav_postPub">
+
+		<jsp:attribute name="generalInformation">
+        	<editpub:required post="${post}" autocompletion="$(false)"/>
+		</jsp:attribute>
+		
+        <jsp:attribute name="detailedInformation">
+			<editpub:files post="${post}" />
+			<editpub:details post="${post}" />
+			
+			<c:if test="${not empty command.scrapingContext}">
+          		<parts:fieldset maximized="false" legendKey="post.resource.fields.scraper" >
+          			<jsp:attribute name="content">
+
+		                  <div class="fsRow">
+		                    <span class="fsLabel"><fmt:message key="post.resource.fields.scraper.url"/></span>
+		                    <span class="fsInput"><a href="${fn:escapeXml(command.scrapingContext.url)}"><c:out value="${command.scrapingContext.url}"/></a></span>
+		                  </div>
+		
+		                  <c:if test="${not empty command.scrapingContext.selectedText}">
+		                    <div class="fsRow">
+		                      <span class="fsLabel"><fmt:message key="post.resource.fields.scraper.selectedText"/></span>
+		                      <span class="fsInput" style="max-width: 800px; overflow: scroll;"><c:out value="${command.scrapingContext.selectedText}"/></span>
+		                    </div>
+		                  </c:if>
+		
+		                  <div class="fsRow">
+		                    <span class="fsLabel"><fmt:message key="post.resource.fields.scraper.scraper"/></span>
+		                    <!-- for some strange reason, "#" destroys the functionality of "$" and thus "/scraperinfo#${..}" does not work -->
+		                    <c:set var="scraperinfourl" value="/scraperinfo#"/>
+		                    <span class="fsInput"><a href="${scraperinfourl}${fn:escapeXml(command.scrapingContext.scraper.class.simpleName)}"><c:out value="${command.scrapingContext.scraper.class.simpleName}"/></a>: ${command.scrapingContext.scraper.info}</span>
+		                  </div>
+		
+		                  <div class="fsRow">
+		                    <span class="fsLabel"><fmt:message key="post.resource.fields.scraper.result"/></span>
+		                    <div style="overflow: scroll;">
+		                    	<pre class="fsInput" style="width:0px;"><c:out value="${command.scrapingContext.bibtexResult}"/></pre>
+		                    </div>
+		                  </div>
+		                  
+                	</jsp:attribute>
+            	</parts:fieldset>
+         	</c:if>
+         	
+       </jsp:attribute>
+
+		                  
+	</layout:editPostLayout>
+
+</jsp:root>

@@ -1,0 +1,97 @@
+<?xml version="1.0" ?>
+<!--
+
+
+     BibSonomy-Webapp - The webapplication for Bibsonomy.
+
+     Copyright (C) 2006 - 2011 Knowledge & Data Engineering Group,
+                               University of Kassel, Germany
+                               http://www.kde.cs.uni-kassel.de/
+
+     This program is free software; you can redistribute it and/or
+     modify it under the terms of the GNU General Public License
+     as published by the Free Software Foundation; either version 2
+     of the License, or (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+
+     You should have received a copy of the GNU General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+
+-->
+
+<jsp:root version="2.0"
+  xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:jsp="http://java.sun.com/JSP/Page"
+  xmlns:c="http://java.sun.com/jsp/jstl/core"
+  xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+  xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
+  xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+  xmlns:form="http://www.springframework.org/tags/form"
+  xmlns:spring="http://www.springframework.org/tags"
+  xmlns:errors="urn:jsptagdir:/WEB-INF/tags/errors"
+  xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
+  
+  <jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
+  <fmt:message key="navi.register" var="pageTitle" />
+  <layout:layout loginUser="${command.context.loginUser}" pageTitle="${pageTitle}" requPath="${requPath}">
+  
+        <jsp:attribute name="heading">
+          <c:out value="${pageTitle}" />
+        </jsp:attribute>
+      
+        <jsp:attribute name="content">
+
+          <div id="general">
+			
+			<!-- OpenID logo -->
+			<img src="${resdir}/image/openid-logo-small.png"/>
+			
+			<p>			           
+            <form:form action="/registerOpenID" method="POST">
+
+				<!-- global error messages -->			
+	            <errors:global errors="${errors}"/>             
+		
+				<fmt:message key="register.send" var="submit"/>
+	
+				<h2><fmt:message key="register.notice.openid"/></h2> 
+				
+				<br/>
+				
+				<h3><fmt:message key="register.openid.step1"/></h3>
+				
+				<br/>
+				
+	            <form:input path="registerUser.openID" cssClass="openid" size="30"/>
+				<c:out value=" "/>
+				<input type="submit" value="${submit}" />
+				<c:out value=" "/>
+				<form:errors cssClass="errmsg" path="registerUser.openID" />
+	 
+	            <br/>
+	
+	            <small><fmt:message key="register.openid.example"/></small>
+	            
+	            <!-- forward to second registration step -->
+	            <input type="hidden" name="step" value="2"/>
+            </form:form>
+            </p>
+            
+			<br/>     
+			       
+			<!-- OpenID description -->
+            <h3><fmt:message key="register.openid.desc.title"/></h3>
+            <p><fmt:message key="register.openid.desc"/></p>
+			
+          </div>
+      
+      </jsp:attribute>
+      
+  </layout:layout>
+  
+</jsp:root>

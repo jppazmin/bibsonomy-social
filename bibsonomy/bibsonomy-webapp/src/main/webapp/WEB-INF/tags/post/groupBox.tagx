@@ -1,0 +1,50 @@
+<jsp:root version="2.0" 
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
+	xmlns:form="http://www.springframework.org/tags/form">
+
+    <!-- 
+    
+        Shows form fields to choose group(s) the post should be viewable for.
+        Consists of three radio buttons: public, private, other
+        and a select box which contains the group "friends" plus other possible groups.     
+    
+     -->
+
+	<jsp:directive.attribute name="groups" type="java.util.List" required="true"/>
+	
+	<div id="groupBoxleft">
+		<parts:fieldset maximized="${not command.context.loginUser.settings.simpleInterface}" legendKey="post.resource.viewablefor">
+		<!-- fieldset id="fsgroupBoxleft"-->
+			<jsp:attribute name="content">
+	
+				<div style="float: left; margin-right: 1ex;">
+	           		<!-- radio buttons for public, private, other -->
+	           		<form:radiobutton path="abstractGrouping" onclick="toggleGroupBox()" value="public" tabindex="2" />  <span class="expl"><fmt:message key="post.resource.public"/></span><br/>
+	           		<form:radiobutton path="abstractGrouping" onclick="toggleGroupBox()" value="private" tabindex="2" /> <span class="expl"><fmt:message key="post.resource.private"/></span><br/>
+	           		<form:radiobutton path="abstractGrouping" onclick="toggleGroupBox()" value="other" tabindex="2" id="post.groups.other" />  <span class="expl"><fmt:message key="post.resource.other"/></span>
+				</div>	
+	            <!-- select box for "other" groups TODO: allow multiple groups-->
+	            <form:select multiple="false" path="groups" size="5" id="post.groups.other2" tabindex="2">
+	            	<form:option label="friends" value="friends"/>
+	              	<form:options items="${groups}" itemValue="name" itemLabel="name"/>
+	            </form:select>
+	            <div class="dissError"><form:errors path="post.groups" /><!-- This comment is needed, otherwise this will result in an self-closing element --></div>
+	            
+	    	</jsp:attribute>
+		</parts:fieldset>
+	</div>
+	
+	<script type="text/javascript">
+	<![CDATA[
+      function toggleGroupBox() {
+        document.getElementById("post.groups.other2").disabled = !document.getElementById("post.groups.other").checked;
+      }
+      toggleGroupBox();
+	]]>
+	</script>
+</jsp:root>

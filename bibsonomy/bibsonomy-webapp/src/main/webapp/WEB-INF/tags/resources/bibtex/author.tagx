@@ -1,0 +1,35 @@
+<jsp:root version="2.0" 
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+    xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"		
+	xmlns:jsp="http://java.sun.com/JSP/Page">
+	
+	<jsp:directive.attribute name="publication" type="org.bibsonomy.model.BibTex" required="true" />
+
+	<!-- initialize with empty list -->
+	<c:set var="personList" value=""/>	
+	<c:choose>
+		<c:when test="${not empty publication.author}">
+			<c:set var="personList" value="${publication.authorList}"/>
+		</c:when>
+		<c:when test="${not empty publication.editor}">
+			<c:set var="personList" value="${publication.editorList}"/>
+		</c:when>
+	</c:choose>
+
+	<span class="authorEditorList"> 
+		<c:forEach var="person" items="${personList}" varStatus="loopStatus">
+			<c:if test="${loopStatus.last and not loopStatus.first}"><c:out value=" "/><fmt:message key="and"/><c:out value=" "/></c:if>
+			${mtl:cleanBibtex(person.firstName)}
+			<c:out value=" "/><c:url var="personUrl" value="/author/${mtl:cleanBibtex(person.lastName)}"/><a href="${personUrl}">${mtl:cleanBibtex(person.lastName)}</a>
+			<!-- append separator "," -->
+			<c:if test="${not loopStatus.last}"><c:out value=", "/></c:if>
+		</c:forEach>
+		<!-- append "(eds.)" -->
+		<c:if test="${empty publication.author and not empty publication.editor}">
+			<c:out value=" ("/><fmt:message key="bibtex.editors.abbr"/>).
+		</c:if>
+		<c:out value=" "/>
+	</span>
+</jsp:root>

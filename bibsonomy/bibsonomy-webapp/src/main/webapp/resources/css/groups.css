@@ -1,0 +1,89 @@
+/**
+ *
+ *  BibSonomy-Webapp - The webapplication for Bibsonomy.
+ *
+ *  Copyright (C) 2006 - 2011 Knowledge & Data Engineering Group,
+ *                            University of Kassel, Germany
+ *                            http://www.kde.cs.uni-kassel.de/
+ *
+ *  This program is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU General Public License
+ *  as published by the Free Software Foundation; either version 2
+ *  of the License, or (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ */
+
+/*
+ * Stylesheet for /groups
+ * @author Folke Eisterlehner
+ */
+ 
+/* the introductory text about groups */
+#groupIntro {
+	text-align: justify;
+} 
+
+/* the navigation-alphabet on top of the list */
+#linkedAlphabet a {
+  margin-right: .5em;
+}
+
+/*----------------------------------------------------------------------------
+ * Buttons - derived from listhButtons in style.css 
+ *--------------------------------------------------------------------------*/
+.groupsButtons {
+	float: right;
+	margin-right: 0 ! important;
+	padding: 0;
+}
+
+.groupsButtons a {
+	border: 1px solid #6F6F6F;
+	background-color: #EEEEEE;
+	color: #5F5F5F;
+	padding-left: 2px;
+	padding-right: 2px;
+	margin: 0;
+}
+
+.groupsButtons a:hover {
+	border: 1px solid #6F6F6F;
+	background-color: #006699;
+	color: #FFFFFF;
+}
+
+
+/*----------------------------------------------------------------------------
+ * the table which holds the groups list
+ *--------------------------------------------------------------------------*/
+#groupsList {
+	border-collapse: collapse;
+	/*border-spacing: 20px;*/
+}
+
+#groupsList .characterColumn {
+	background-color: #EEEEEE;
+}
+
+/* row in table which only shows the corresponding character in the alphabet */
+#groupsList .groupsNewChar {
+	background-color: #EEEEEE;
+}
+
+#groupsList .groupsNewChar a {
+}
+
+#groupsList .groupName {
+	width: 10em;
+}
+
+#groupsList .groupDescription {
+}

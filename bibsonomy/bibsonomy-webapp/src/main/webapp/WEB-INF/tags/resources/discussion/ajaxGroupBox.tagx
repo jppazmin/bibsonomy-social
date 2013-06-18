@@ -1,0 +1,95 @@
+<jsp:root version="2.0" 
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts">
+
+	<jsp:useBean id="publicGroup" class="org.bibsonomy.model.Group">
+		<jsp:setProperty name="publicGroup" property="name" value="public"/>
+	</jsp:useBean>
+	
+	<jsp:useBean id="privateGroup" class="org.bibsonomy.model.Group">
+		<jsp:setProperty name="privateGroup" property="name" value="private"/>
+	</jsp:useBean>
+
+	<jsp:useBean id="friendsGroup" class="org.bibsonomy.model.Group">
+		<jsp:setProperty name="friendsGroup" property="name" value="friends"/>
+	</jsp:useBean>
+	
+    <!-- 
+    
+        Shows form fields to choose group(s) the post should be viewable for.
+        Consists of three radio buttons: public, private, other
+        and a select box which contains the group "friends" plus other possible groups.     
+    	(for ajax views = without command path binding)
+     -->
+
+	<jsp:directive.attribute name="groups" type="java.util.List" required="true"/>
+	<jsp:directive.attribute name="selectedGroups" type="java.util.Set" required="false"/>
+	
+	<c:set var="isPublic" value="${mtl:contains(selectedGroups, publicGroup)}" />
+	<c:set var="isPrivate" value="${mtl:contains(selectedGroups, privateGroup)}" />
+	<c:set var="isFriend" value="${mtl:contains(selectedGroups, friendsGroup)}" />
+	
+	<div class="groupBoxleft">
+		<div style="float: left; margin-right: 1ex;" class="abstractGroupingGroup">
+	        <!-- radio buttons for public, private, other -->
+			<!-- public -->
+			<c:choose>
+				<c:when test="${fn:length(selectedGroups) == 0 or isPublic}">
+					<input name="abstractGrouping" value="public" tabindex="2" type="radio"  checked="checked" />
+				</c:when>
+				<c:otherwise>
+					<input name="abstractGrouping" value="public" tabindex="2" type="radio" />
+				</c:otherwise>
+			</c:choose>
+			<c:out value=" " /><span class="expl"><fmt:message key="post.resource.public"/></span><br/>
+      		<!-- private -->
+      		<c:choose>
+				<c:when test="${isPrivate}">
+					<input name="abstractGrouping" value="private" tabindex="2" type="radio" checked="checked"  />
+				</c:when>
+				<c:otherwise>
+					<input name="abstractGrouping" value="private" tabindex="2" type="radio" />
+				</c:otherwise>
+			</c:choose>
+			<c:out value=" " /><span class="expl"><fmt:message key="post.resource.private"/></span><br/>
+      		<!-- other -->
+      		<c:choose>
+				<c:when test="${fn:length(selectedGroups) > 0 and not isPrivate and not isPublic}">
+					<input name="abstractGrouping" value="other" tabindex="2" type="radio" checked="checked" class="otherGroups" />
+				</c:when>
+				<c:otherwise>
+					<input name="abstractGrouping" value="other" tabindex="2" type="radio" class="otherGroups" />
+				</c:otherwise>
+			</c:choose>
+      		<c:out value=" " /><span class="expl"><fmt:message key="post.resource.other"/></span>
+		</div>	
+	    <!-- select box for "other" groups -->
+	    <!-- TODO: allow multiple groups ( multiple="multiples") -->
+		<select name="groups" size="5" class="otherGroupsBox" tabindex="2">
+		<c:set var="friendsLabel" value="friends" /> <!-- TODO: i18n? -->
+			<c:choose>
+				<c:when test="${isFriend}">
+					<option label="friends" value="friends" selected="selected"><c:out value="${friendsLabel}" /></option>
+				</c:when>
+				<c:otherwise>
+					<option label="friends" value="friends"><c:out value="${friendsLabel}" /></option>
+				</c:otherwise>
+			</c:choose>
+			
+			<c:forEach var="group" items="${groups}">
+				<c:choose>
+					<c:when test="${mtl:contains(selectedGroups, group)}">
+						<option label="${group.name}" value="${group.name}" selected="selected"><c:out value="${group.name}" /></option>
+					</c:when>
+					<c:otherwise>
+						<option label="${group.name}" value="${group.name}"><c:out value="${group.name}" /></option>
+					</c:otherwise>
+				</c:choose>
+			</c:forEach>
+		</select>
+	</div>
+</jsp:root>

@@ -1,0 +1,96 @@
+<jsp:root version="2.0" 
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:rc="urn:jsptagdir:/WEB-INF/tags/resources/common"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions">
+	
+	<jsp:directive.attribute name="titleKey" type="java.lang.String" required="true"/>
+	<jsp:directive.attribute name="listView" type="org.bibsonomy.webapp.command.ListCommand" required="true"/>
+	<jsp:directive.attribute name="loginUserName" type="java.lang.String" required="true"/>
+	<jsp:directive.attribute name="otherPostsUrlPrefix" type="java.lang.String" required="true"/>
+	<jsp:directive.attribute name="disableActions" type="java.lang.Boolean" required="true"/>
+	<jsp:directive.attribute name="disableListNavigation" type="java.lang.Boolean" required="true"/>
+    <jsp:directive.attribute name="listID"  type="java.lang.String" required="true"/>
+    <jsp:directive.attribute name="listViewStartParamName" type="java.lang.String" required="true"/>
+
+	<jsp:directive.attribute name="formatButtons" fragment="true" required="true"/>
+	<jsp:directive.attribute name="title" fragment="true" required="true"/>
+	<jsp:directive.attribute name="desc" fragment="true" required="true"/>
+	<jsp:directive.attribute name="actions" fragment="true" required="true"/>
+	<jsp:directive.attribute name="bmicon" fragment="true" required="true"/>
+	
+	<jsp:directive.attribute name="fullscreen" type="java.lang.Boolean" required="false"/>
+
+	<jsp:directive.variable name-given="post" scope="NESTED"/>
+	
+	<c:set var="className" value="bookbox" />
+	
+	<c:if test="${fullscreen}">
+		<c:set var="className" value="full_${className}" />
+	</c:if>
+	
+	<div class="${className}" id="${listID}">
+	
+		<div class="bboxheader">
+			<!-- Buttons -->
+			<c:if test="${!empty listView.list}">
+					<div class="listhButtons">
+						<jsp:invoke fragment="formatButtons"/>
+					</div>
+			</c:if>
+	
+			<!-- Headline -->
+			<h2 class="listh"><fmt:message key="${titleKey}" /></h2>
+		
+			<!-- Display total number of entries in list -->
+			<c:if test="${!empty listView.list}">
+				<c:if test="${listView.totalCount != 0}">
+					<div class="listh">
+						<c:set var="totalTitle"><fmt:message key="list.total" />: <c:out value=" ${listView.totalCount} "/> <fmt:message key="${titleKey}" /></c:set>
+						${mtl:ch('nbsp')}<span id="ttlctr" title="${totalTitle}">(${listView.totalCount})</span>
+					</div>
+				</c:if>
+			</c:if>
+		</div>
+		
+		<c:if test="${!empty listView.list}">
+				<!-- show available actions -->
+				<div class="kiste">		
+					<rc:nextprev listView="${listView}" listViewStartParamName="${listViewStartParamName}" disableActions="${disableActions}" disableListNavigation="${disableListNavigation}"/>
+					<rc:actions resourceType="${listView.resourcetype}"/>				
+					${mtl:ch('nbsp')}
+				</div>
+	   
+                <fmt:message key="post.meta.own_post" var="alreadyOwn" />
+                <fmt:message key="post.meta.copy_this_post" var="copyThisPost" />
+    
+                <!-- iterate over a list of resources and create the list -->
+                <ul id="${listView.resourcetype}">
+                  <c:forEach var="post" items="${listView.list}">
+				  
+                    <!-- show one post -->
+        			<rc:post post="${post}" otherPostsUrlPrefix="${otherPostsUrlPrefix}" loginUserName="${loginUserName}" copyThisPost="${copyThisPost}" alreadyOwn="${alreadyOwn}">
+    					<jsp:attribute name="title">  <jsp:invoke fragment="title"/>  </jsp:attribute>
+    					<jsp:attribute name="actions"><jsp:invoke fragment="actions"/></jsp:attribute>
+    					<jsp:attribute name="bmicon"> <jsp:invoke fragment="bmicon"/> </jsp:attribute>
+    					<jsp:attribute name="desc">   <jsp:invoke fragment="desc"/>   </jsp:attribute>
+    				</rc:post>
+	            
+                  </c:forEach>
+                </ul>
+		</c:if>
+			
+		<div class="kiste">		
+			<rc:nextprev listView="${listView}" listViewStartParamName="${listViewStartParamName}" disableActions="${disableActions}" disableListNavigation="${disableListNavigation}"/>
+			<c:if test="${disableListNavigation == false}">
+				<rc:itemcount entriesPerPage="${listView.entriesPerPage}" entryType="${listView.resourcetype}" titleKey="${titleKey}"/>
+			</c:if>
+			${mtl:ch('nbsp')}
+		</div>
+		
+	</div>
+
+
+</jsp:root>
